@@ -1,0 +1,2 @@
+C:\Projects\FXMindLastNET6jul2014\FXBusinessLogic\obj\Debug\FXBusinessLogic.csprojResolveAssemblyReference.cache
+C:\Projects\FXMindLastNET6jul2014\FXBusinessLogic\obj\Debug\FXBusinessLogic.csproj.CoreCompileInputs.cache

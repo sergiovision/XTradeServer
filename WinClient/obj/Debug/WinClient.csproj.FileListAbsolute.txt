@@ -1,0 +1,6 @@
+C:\Projects\FXMindLastNET6jul2014\WinClient\obj\Debug\WinClient.csprojResolveAssemblyReference.cache
+C:\Projects\FXMindLastNET6jul2014\WinClient\obj\Debug\FXMind.WinClient.MainForm.resources
+C:\Projects\FXMindLastNET6jul2014\WinClient\obj\Debug\FXMind.WinClient.Properties.Resources.resources
+C:\Projects\FXMindLastNET6jul2014\WinClient\obj\Debug\WinClient.csproj.GenerateResource.Cache
+C:\Projects\FXMindLastNET6jul2014\WinClient\obj\Debug\FXMind.WinClient.exe.licenses
+C:\Projects\FXMindLastNET6jul2014\WinClient\obj\Debug\WinClient.csproj.CoreCompileInputs.cache
