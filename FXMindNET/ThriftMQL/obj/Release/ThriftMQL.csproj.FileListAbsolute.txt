@@ -1,0 +1,2 @@
+C:\Projects\FXMindLastNET6jul2014\ThriftMQL\obj\Release\ThriftMQL.csprojResolveAssemblyReference.cache
+C:\Projects\FXMindLastNET6jul2014\ThriftMQL\obj\Release\ThriftMQL.csproj.CoreCompileInputs.cache
