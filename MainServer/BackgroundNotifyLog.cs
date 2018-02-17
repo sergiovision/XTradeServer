@@ -6,7 +6,7 @@ namespace FXMind.MainServer
 {
     public class BackgroundNotifyLog : INotificationUi
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof (BackgroundNotifyLog));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(BackgroundNotifyLog));
 
         public BackgroundNotifyLog()
         {

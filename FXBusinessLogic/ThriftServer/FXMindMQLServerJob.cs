@@ -9,7 +9,7 @@ namespace FXBusinessLogic.Thrift
     [DisallowConcurrentExecution]
     public class FXMindMQLServerJob : GenericJob
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (FXMindMQLServerJob));
+        private static readonly ILog log = LogManager.GetLogger(typeof(FXMindMQLServerJob));
         private FXMindMQLServer ts;
 
         public FXMindMQLServerJob()
@@ -28,6 +28,7 @@ namespace FXBusinessLogic.Thrift
                     Exit(context);
                     return;
                 }
+
                 FXMindMQLServer.Run();
                 SetMessage("FXMindMQLServerJob Finished.");
                 Exit(context);

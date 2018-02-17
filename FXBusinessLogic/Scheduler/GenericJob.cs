@@ -1,6 +1,5 @@
 using System;
 using BusinessObjects;
-using FXBusinessLogic.BusinessObjects;
 using log4net;
 using Quartz;
 
@@ -37,12 +36,12 @@ namespace FXBusinessLogic.Scheduler
         {
             DateTimeOffset now = SystemTime.UtcNow();
             TimeSpan duration = now - runTime;
-            strMessage += ". For " + (long) duration.TotalMilliseconds + " ms. At " + now.ToString(fxmindConstants.MTDATETIMEFORMAT) + " GMT";
+            strMessage += ". For " + (long) duration.TotalMilliseconds + " ms. At " +
+                          now.ToString(fxmindConstants.MTDATETIMEFORMAT) + " GMT";
             SchedulerService.LogJob(context, strMessage);
             log.InfoFormat(strMessage);
             if (s_ownerUI != null)
                 s_ownerUI.ReloadAllViewsNotification();
         }
-
     }
 }

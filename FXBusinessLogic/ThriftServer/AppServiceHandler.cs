@@ -13,7 +13,7 @@ namespace FXBusinessLogic.ThriftServer
 
         public AppServiceHandler()
         {
-            fxmind = MainService.thisGlobal; 
+            fxmind = MainService.thisGlobal;
         }
 
         public string GetGlobalProp(string name)
@@ -76,9 +76,11 @@ namespace FXBusinessLogic.ThriftServer
             fxmind.ResumeScheduler();
         }
 
-        public List<CurrencyStrengthSummary> GetCurrencyStrengthSummary(bool recalc, bool bUseLast, long startInterval, long endInterval)
+        public List<CurrencyStrengthSummary> GetCurrencyStrengthSummary(bool recalc, bool bUseLast, long startInterval,
+            long endInterval)
         {
-            return new List<CurrencyStrengthSummary>();//fxmind.GetCurrencyStrengthSummary(recalc, bUseLast, startInterval, endInterval);
+            return
+                new List<CurrencyStrengthSummary>(); //fxmind.GetCurrencyStrengthSummary(recalc, bUseLast, startInterval, endInterval);
         }
 
         public List<Currency> GetCurrencies()

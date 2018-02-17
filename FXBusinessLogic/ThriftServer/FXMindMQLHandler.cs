@@ -9,7 +9,7 @@ namespace FXBusinessLogic.ThriftServer
 {
     internal class FXMindMQLHandler : FXMindMQL.Iface
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (FXMindMQLHandler));
+        private static readonly ILog log = LogManager.GetLogger(typeof(FXMindMQLHandler));
 
         private readonly MainService fxmind;
 
@@ -28,6 +28,7 @@ namespace FXBusinessLogic.ThriftServer
                 log.Error("server(" + GetHashCode() + ") ProcessStringData: Params error");
                 return list;
             }
+
             string func = paramsList["func"];
             try
             {
@@ -52,18 +53,18 @@ namespace FXBusinessLogic.ThriftServer
                             list.Add(info.Name);
                         }
                     }
-                    break;
+                        break;
                     case "Somefunc":
                     {
-
                     }
-                    break;
+                        break;
                 }
             }
             catch (Exception e)
             {
                 log.Error("ProcessStringData Error:" + e);
             }
+
             return list;
         }
 
@@ -77,6 +78,7 @@ namespace FXBusinessLogic.ThriftServer
                 log.Error("server(" + GetHashCode() + ") ProcessDoubleData: Params error");
                 return list;
             }
+
             try
             {
                 string func = paramsList["func"];
@@ -98,14 +100,14 @@ namespace FXBusinessLogic.ThriftServer
                     case "SentimentsArray":
                     {
                         string symbolStr = paramsList["symbol"];
-                        int siteId = Int32.Parse(paramsList["site"]);
+                        int siteId = int.Parse(paramsList["site"]);
                         list = fxmind.iGlobalSentimentsArray(symbolStr, inputData, siteId);
                     }
                         break;
                     case "CurrencyStrengthArray":
                     {
                         string currencyStr = paramsList["currency"];
-                        int timeframe = Int32.Parse(paramsList["timeframe"]);
+                        int timeframe = int.Parse(paramsList["timeframe"]);
                         list = fxmind.iCurrencyStrengthAll(currencyStr, inputData, timeframe);
                     }
                         break;
@@ -115,6 +117,7 @@ namespace FXBusinessLogic.ThriftServer
             {
                 log.Error("ProcessDoubleData Error:" + e);
             }
+
             return list;
         }
 

@@ -8,9 +8,9 @@ using Thrift.Transport;
 
 namespace FXBusinessLogic.Thrift
 {
-    public class FXMindMQLServer 
+    public class FXMindMQLServer
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (FXMindMQLServer));
+        private static readonly ILog log = LogManager.GetLogger(typeof(FXMindMQLServer));
         public static TServer server;
         protected static short port;
         protected Thread myThread;
@@ -41,7 +41,7 @@ namespace FXBusinessLogic.Thrift
         {
             try
             {
-                System.Threading.Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
                 var handler = new FXMindMQLHandler();
                 var processor = new FXMindMQL.Processor(handler);
                 TServerTransport serverTransport = new TServerSocket(port);
@@ -57,6 +57,7 @@ namespace FXBusinessLogic.Thrift
             {
                 log.Error(x.ToString());
             }
+
             server = null;
         }
     }

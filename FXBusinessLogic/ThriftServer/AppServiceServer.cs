@@ -8,7 +8,7 @@ using Thrift.Transport;
 
 namespace FXBusinessLogic.Thrift
 {
-    public class AppServiceServer 
+    public class AppServiceServer
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(AppServiceServer));
         public static TServer server;
@@ -41,7 +41,7 @@ namespace FXBusinessLogic.Thrift
         {
             try
             {
-                System.Threading.Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
                 var handler = new AppServiceHandler();
                 var processor = new AppService.Processor(handler);
                 TServerTransport serverTransport = new TServerSocket(port);
@@ -57,6 +57,7 @@ namespace FXBusinessLogic.Thrift
             {
                 log.Error(x.ToString());
             }
+
             server = null;
         }
     }

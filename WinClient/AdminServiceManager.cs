@@ -11,7 +11,7 @@ namespace FXMind.WinClient
     {
         public const string ServiceName = "FXMindMainServer";
         public const int TimeoutMilliseconds = 10000;
-        private static readonly ILog log = LogManager.GetLogger(typeof (AdminServiceManager));
+        private static readonly ILog log = LogManager.GetLogger(typeof(AdminServiceManager));
 
         public static string GetCurrentServiceStatus()
         {
@@ -31,9 +31,9 @@ namespace FXMind.WinClient
                     log.Error("Registry key for the service: " + ServiceName + " doesn't exist");
                     return "Error Retrieve Service Status";
                 }
+
                 object value = key.GetValue("Start");
                 if (value != null)
-                {
                     switch (value.ToString())
                     {
                         case "2":
@@ -46,7 +46,6 @@ namespace FXMind.WinClient
                             EnabledStatus = "Disabled";
                             break;
                     }
-                }
 
                 var service = new ServiceController(ServiceName);
                 switch (service.Status)
@@ -78,6 +77,7 @@ namespace FXMind.WinClient
             {
                 return "Error retrieving status for service " + e;
             }
+
             return EnabledStatus + " and " + RunningStatus;
         }
 
@@ -97,6 +97,7 @@ namespace FXMind.WinClient
                 log.Error(e.ToString());
                 // ...
             }
+
             return false;
         }
 
@@ -116,6 +117,7 @@ namespace FXMind.WinClient
             {
                 log.Error(e.ToString());
             }
+
             return false;
         }
 
@@ -143,6 +145,7 @@ namespace FXMind.WinClient
             {
                 log.Error(e.ToString());
             }
+
             return false;
         }
 
@@ -160,6 +163,7 @@ namespace FXMind.WinClient
                 log.Error("Registry key for the service: " + ServiceName + " doesn't exist");
                 return false;
             }
+
             key.SetValue("Start", 4);
             log.Info("Service DISABLED.");
             return true;
@@ -179,6 +183,7 @@ namespace FXMind.WinClient
                 log.Error("Registry key for the service: " + ServiceName + " doesn't exist");
                 return false;
             }
+
             key.SetValue("Start", 2);
             log.Info("Service ENABLED.");
             return true;

@@ -41,7 +41,7 @@ namespace BusinessObjects
         List<double> iCurrencyStrengthAll(string currency, List<string> brokerDates, int iTimeframe);
 
         List<double> iGlobalSentimentsArray(string symbolName, List<string> brokerDates, int siteId);
- 
+
         TimeZoneInfo GetBrokerTimeZone();
 
         void GetAverageLastGlobalSentiments(DateTime date, string symbolStr, out double longPos, out double shortPos);
@@ -57,6 +57,5 @@ namespace BusinessObjects
         void SaveCurrency(Currency c);
 
         void SaveIndicator(TechIndicator i);
-
     }
 }

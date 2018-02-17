@@ -12,7 +12,7 @@ namespace FXMind.MainServer
     public class QuartzServer : ServiceControl, IQuartzServer
     {
         //public static QuartzServer quartz;
-        private static readonly ILog Log = LogManager.GetLogger(typeof (QuartzServer));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(QuartzServer));
         private IMainService fxmindServer;
 
         /// <summary>

@@ -169,10 +169,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Quartz223\src\Quartz\Quartz.2010.csproj">
-      <Project>{aef8823b-e45b-4b35-a4d0-c08c1196d017}</Project>
-      <Name>Quartz.2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BusinessObjects\BusinessObjects.csproj">
       <Project>{b9151e6c-e756-43c2-a70f-c6fb46621809}</Project>
       <Name>BusinessObjects</Name>

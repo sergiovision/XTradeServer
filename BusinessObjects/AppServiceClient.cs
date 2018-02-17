@@ -9,9 +9,10 @@ namespace BusinessObjects
 {
     public class AppServiceClient : AppService.Iface
     {
-        protected TTransport transport;
-        protected TProtocol protocol;
         public AppService.Client client;
+        protected TProtocol protocol;
+        protected TTransport transport;
+
         public AppServiceClient(string host, short port)
         {
             try
@@ -30,11 +31,6 @@ namespace BusinessObjects
             }
         }
 
-        public void Dispose()
-        {
-            client.Dispose();
-        }
-
         public string GetGlobalProp(string name)
         {
             string val;
@@ -47,6 +43,7 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+
             return val;
         }
 
@@ -69,12 +66,13 @@ namespace BusinessObjects
             transport.Open();
             try
             {
-               b  = client.InitScheduler(serverMode);
+                b = client.InitScheduler(serverMode);
             }
             finally
             {
                 transport.Close();
             }
+
             return b;
         }
 
@@ -103,6 +101,7 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+
             return val;
         }
 
@@ -131,6 +130,7 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+
             return list;
         }
 
@@ -146,6 +146,7 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+
             return list;
         }
 
@@ -155,12 +156,13 @@ namespace BusinessObjects
             transport.Open();
             try
             {
-               val = client.GetJobNextTime(group, name);
+                val = client.GetJobNextTime(group, name);
             }
             finally
             {
                 transport.Close();
             }
+
             return val;
         }
 
@@ -176,6 +178,7 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+
             return val;
         }
 
@@ -205,7 +208,8 @@ namespace BusinessObjects
             }
         }
 
-        public List<CurrencyStrengthSummary> GetCurrencyStrengthSummary(bool recalc, bool bUseLast, long startInterval, long endInterval)
+        public List<CurrencyStrengthSummary> GetCurrencyStrengthSummary(bool recalc, bool bUseLast, long startInterval,
+            long endInterval)
         {
             List<CurrencyStrengthSummary> val;
             transport.Open();
@@ -217,6 +221,7 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+
             return val;
         }
 
@@ -232,6 +237,7 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+
             return val;
         }
 
@@ -247,6 +253,7 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+
             return val;
         }
 
@@ -262,6 +269,7 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+
             return val;
         }
 
@@ -289,6 +297,11 @@ namespace BusinessObjects
             {
                 transport.Close();
             }
+        }
+
+        public void Dispose()
+        {
+            client.Dispose();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace FXBusinessLogic.Thrift
     [DisallowConcurrentExecution]
     public class AppServiceServerJob : GenericJob
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (AppServiceServerJob));
+        private static readonly ILog log = LogManager.GetLogger(typeof(AppServiceServerJob));
         private AppServiceServer ts;
 
         public AppServiceServerJob()
@@ -28,6 +28,7 @@ namespace FXBusinessLogic.Thrift
                     Exit(context);
                     return;
                 }
+
                 SetMessage("AppServiceServerJob listening endpoint localhost:" + fxmindConstants.AppService_PORT);
                 SchedulerService.LogJob(context, strMessage);
                 AppServiceServer.Run();

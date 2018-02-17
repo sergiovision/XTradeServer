@@ -24,14 +24,14 @@ namespace FXBusinessLogic.BusinessObjects
 
         //public const string MYSQLDATETIMEFORMAT = "yyyy-MM-dd HH:mm:ss";
         public const int SENTIMENTS_FETCH_PERIOD = 100;
-        private static readonly ILog log = LogManager.GetLogger(typeof (MainService));
+        private static readonly ILog log = LogManager.GetLogger(typeof(MainService));
         public static MainService thisGlobal;
         private static int isDebug = -1;
-        protected TimeZoneInfo BrokerTimeZoneInfo;
-        private bool Initialized;
         private SchedulerService _gSchedulerService;
         private INotificationUi _ui;
-        
+        protected TimeZoneInfo BrokerTimeZoneInfo;
+        private bool Initialized;
+
         public MainService()
         {
             RegisterContainer();
@@ -52,7 +52,8 @@ namespace FXBusinessLogic.BusinessObjects
                 curr.Enabled = dbCurrency.Enabled;
                 list.Add(curr);
             }
-            return list; 
+
+            return list;
         }
 
         public List<TechIndicator> GetIndicators()
@@ -68,6 +69,7 @@ namespace FXBusinessLogic.BusinessObjects
                 ti.Enabled = dbI.Enabled;
                 list.Add(ti);
             }
+
             return list;
         }
 
@@ -76,8 +78,8 @@ namespace FXBusinessLogic.BusinessObjects
             Session session = FXConnectionHelper.Session();
             var cQuery = new XPQuery<DBCurrency>(session);
             IQueryable<DBCurrency> curs = from c in cQuery
-                                           where c.ID == currency.ID
-                                          select c;
+                where c.ID == currency.ID
+                select c;
             DBCurrency gvar = null;
             if (curs.Any())
             {
@@ -90,6 +92,7 @@ namespace FXBusinessLogic.BusinessObjects
                 gvar.Name = currency.Name;
                 gvar.Enabled = currency.Enabled;
             }
+
             gvar.Save();
         }
 
@@ -98,8 +101,8 @@ namespace FXBusinessLogic.BusinessObjects
             Session session = FXConnectionHelper.Session();
             var cQuery = new XPQuery<DBTechIndicator>(session);
             IQueryable<DBTechIndicator> curs = from c in cQuery
-                                          where c.ID == i.ID
-                                          select c;
+                where c.ID == i.ID
+                select c;
             DBTechIndicator gvar = null;
             if (curs.Any())
             {
@@ -112,6 +115,7 @@ namespace FXBusinessLogic.BusinessObjects
                 gvar.IndicatorName = i.IndicatorName;
                 gvar.Enabled = i.Enabled;
             }
+
             gvar.Save();
         }
 
@@ -138,15 +142,6 @@ namespace FXBusinessLogic.BusinessObjects
             //testDate("2014.02.26 09:00");
 
             Initialized = true;
-        }
-
-        protected void testDate(string date)
-        {
-            DateTime from;
-                DateTime.TryParseExact(date, fxmindConstants.MTDATETIMEFORMAT,
-                    CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.None, out from);
-            NewsEventInfo info = new NewsEventInfo();
-            GetNextNewsEvent(from, "EURUSD", 1, ref info);
         }
 
         public bool InitScheduler(bool serverMode)
@@ -186,7 +181,7 @@ namespace FXBusinessLogic.BusinessObjects
                 return resultDoubles;
 
             // new session should be created for crossthread issues
-            Session session = FXConnectionHelper.GetNewSession(); 
+            Session session = FXConnectionHelper.GetNewSession();
 
             const string queryStrInterval =
                 @"SELECT TD.SummaryId, TD.IndicatorId, TD.Action, TD.Value, TS.ID, TS.SymbolId,  TS.Timeframe, TS.Date, S.Name, S.C1, S.C2
@@ -232,10 +227,12 @@ namespace FXBusinessLogic.BusinessObjects
                         to = to.AddMonths(1);
                         break;
                 }
+
                 string[] paramnames = {"fr_dt", "to_dt", "tf", "curr"};
                 object[] parameters =
                 {
-                    from.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), to.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), dbTimeFrame, "%" +currencyStr +"%"
+                    from.ToString(fxmindConstants.MYSQLDATETIMEFORMAT),
+                    to.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), dbTimeFrame, "%" + currencyStr + "%"
                 };
                 SelectedData data = session.ExecuteQuery(queryStrInterval, paramnames, parameters);
                 int count = data.ResultSet[0].Rows.Count();
@@ -245,7 +242,7 @@ namespace FXBusinessLogic.BusinessObjects
                 var ProcessedSymbols = new HashSet<int>();
                 foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
                 {
-                    var symbol = (Int32) row.Values[5];
+                    var symbol = (int) row.Values[5];
                     if (ProcessedSymbols.Contains(symbol))
                         continue;
                     ProcessedSymbols.Add(symbol);
@@ -253,19 +250,23 @@ namespace FXBusinessLogic.BusinessObjects
                         multiplier = new decimal(-1.0);
                     else
                         multiplier = new decimal(1.0);
-                    var actionValue = (Int16) row.Values[2];
+                    var actionValue = (short) row.Values[2];
                     //var tf = (Byte)row.Values[6];
-                    result += actionValue*multiplier;
+                    result += actionValue * multiplier;
                     TFcnt++;
                 }
+
                 if (TFcnt > 0)
                 {
-                    result = 100*result/TFcnt;
-                    resultDoubles.Add((double)result);
+                    result = 100 * result / TFcnt;
+                    resultDoubles.Add((double) result);
                 }
                 else
+                {
                     resultDoubles.Add(fxmindConstants.GAP_VALUE);
+                }
             }
+
             session.Dispose();
             return resultDoubles;
         }
@@ -346,15 +347,15 @@ namespace FXBusinessLogic.BusinessObjects
                 FROM NewsEvent NE
                 INNER JOIN Currency C ON NE.CurrencyId = C.ID
                 WHERE (C.Name=@c1 OR C.Name=@c2) AND (NE.HappenTime >= @fr_dt) AND (NE.HappenTime <= @to_dt) AND (NE.Importance >= @imp) ORDER BY NE.HappenTime ASC, NE.Importance DESC";
-                
+
                 string C1 = symbolStr.Substring(0, 3);
                 string C2 = C1;
                 if (symbolStr.Length == 6)
                     C2 = symbolStr.Substring(3, 3);
 
                 DateTime from = TimeZoneInfo.ConvertTimeToUtc(date, BrokerTimeZoneInfo);
-                    // date.AddHours(-BrokerTimeZoneInfo.BaseUtcOffset.Hours);
-                DateTime to = from.AddDays(1);//.AddMinutes(beforeIntervalMinutes);
+                // date.AddHours(-BrokerTimeZoneInfo.BaseUtcOffset.Hours);
+                DateTime to = from.AddDays(1); //.AddMinutes(beforeIntervalMinutes);
                 //to = to.AddHours(-BrokerTimeZoneInfo.BaseUtcOffset.Hours);
 
                 string[] paramnames = {"c1", "c2", "fr_dt", "to_dt", "imp"};
@@ -371,6 +372,7 @@ namespace FXBusinessLogic.BusinessObjects
                     eventInfo = null;
                     return false;
                 }
+
                 foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
                 {
                     eventInfo = new NewsEventInfo();
@@ -383,6 +385,7 @@ namespace FXBusinessLogic.BusinessObjects
                     eventInfo.Importance = (byte) row.Values[4];
                     break;
                 }
+
                 session.Dispose();
                 return true;
             }
@@ -390,6 +393,7 @@ namespace FXBusinessLogic.BusinessObjects
             {
                 log.Error(e.ToString());
             }
+
             return false;
         }
 
@@ -416,7 +420,11 @@ namespace FXBusinessLogic.BusinessObjects
                                                 ORDER BY ParseTime DESC";
 
                 string[] paramnames = {"symID", "fr_dt", "to_dt"};
-                object[] parameters = { dbsym.ID, from.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), to.ToString(fxmindConstants.MYSQLDATETIMEFORMAT) };
+                object[] parameters =
+                {
+                    dbsym.ID, from.ToString(fxmindConstants.MYSQLDATETIMEFORMAT),
+                    to.ToString(fxmindConstants.MYSQLDATETIMEFORMAT)
+                };
                 SelectedData data = session.ExecuteQuery(queryStrInterval, paramnames, parameters);
 
                 int count = data.ResultSet[0].Rows.Count();
@@ -431,16 +439,16 @@ namespace FXBusinessLogic.BusinessObjects
                         valShort += (double) row.Values[1];
                         cnt++;
                     }
-                    longPos = valLong/cnt;
-                    shortPos = valShort/cnt;
+
+                    longPos = valLong / cnt;
+                    shortPos = valShort / cnt;
                 }
+
                 INotificationUi ui = GetUi();
                 if (ui != null)
-                {
                     if (IsDebug())
                         ui.LogStatus("GetLastAverageGlobalSentiments for " + symbolName + " : " + longPos + ", " +
                                      shortPos);
-                }
                 session.Dispose();
             }
             catch (Exception e)
@@ -461,30 +469,98 @@ namespace FXBusinessLogic.BusinessObjects
                     isDebug = 1;
                     return true;
                 }
+
                 isDebug = 0;
                 return false;
             }
+
             return isDebug > 0 ? true : false;
         }
 
-        #region Jobs
-
-        public void RunJobNow(string group, string name)
+        public List<double> iGlobalSentimentsArray(string symbolName, List<string> brokerDates, int siteId)
         {
-            SchedulerService.RunJobNow(new JobKey(name, group));
+            Session session = FXConnectionHelper.GetNewSession();
+
+            if (symbolName.Length == 6)
+                symbolName = symbolName.Insert(3, "/");
+            DBSymbol dbsym = FXMindHelpers.getSymbolID(session, symbolName);
+            if (dbsym == null)
+                return null;
+            string queryStrInterval;
+            var paramnames = new string[] { };
+            if (siteId == 0)
+            {
+                queryStrInterval = @"SELECT LongRatio, ShortRatio, SiteID FROM OpenPosRatio
+                                                WHERE (SymbolID=@symID) AND (ParseTime >= @fr_dt) AND (ParseTime <= @to_dt) 
+                                                ORDER BY ParseTime DESC";
+                paramnames = new[] {"symID", "fr_dt", "to_dt"};
+            }
+            else
+            {
+                queryStrInterval = @"SELECT LongRatio, ShortRatio FROM OpenPosRatio
+                                            WHERE (SymbolID=@symID) AND (ParseTime >= @fr_dt) AND (ParseTime <= @to_dt) AND (SiteID = @siteID)
+                                            ORDER BY ParseTime ASC";
+                paramnames = new[] {"symID", "fr_dt", "to_dt", "siteID"};
+            }
+
+            var resList = new List<double>();
+            foreach (string brokerDate in brokerDates)
+            {
+                DateTime date;
+                DateTime.TryParseExact(brokerDate, fxmindConstants.MTDATETIMEFORMAT,
+                    CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.None, out date);
+
+                date = TimeZoneInfo.ConvertTimeToUtc(date, BrokerTimeZoneInfo);
+                DateTime hourPlus = date;
+                hourPlus = hourPlus.AddHours(1);
+                object[] parameters = { };
+                if (siteId == 0)
+                    parameters = new object[]
+                    {
+                        dbsym.ID, date.ToString(fxmindConstants.MYSQLDATETIMEFORMAT),
+                        hourPlus.ToString(fxmindConstants.MYSQLDATETIMEFORMAT)
+                    };
+                else
+                    parameters = new object[]
+                    {
+                        dbsym.ID, date.ToString(fxmindConstants.MYSQLDATETIMEFORMAT),
+                        hourPlus.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), siteId
+                    };
+                SelectedData data = session.ExecuteQuery(queryStrInterval, paramnames, parameters);
+                int count = data.ResultSet[0].Rows.Count();
+                if (count == 0)
+                {
+                    resList.Add(fxmindConstants.GAP_VALUE);
+                }
+                else
+                {
+                    int cnt = 0;
+                    double valLong = 0;
+                    //double valShort = 0;
+                    foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
+                    {
+                        valLong += (double) row.Values[0];
+                        //valShort += (double) row.Values[1];
+                        cnt++;
+                    }
+
+                    resList.Add(valLong / cnt);
+                }
+            }
+
+            session.Disconnect();
+            session.Dispose();
+            return resList;
         }
 
-        public string GetJobProp(string group, string name, string prop)
+        protected void testDate(string date)
         {
-            return SchedulerService.GetJobProp(group, name, prop);
+            DateTime from;
+            DateTime.TryParseExact(date, fxmindConstants.MTDATETIMEFORMAT,
+                CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.None, out from);
+            NewsEventInfo info = new NewsEventInfo();
+            GetNextNewsEvent(from, "EURUSD", 1, ref info);
         }
-
-        public void SetJobCronSchedule(string group, string name, string cron)
-        {
-            SchedulerService.SetJobCronSchedule(group, name, cron);
-        }
-
-        #endregion
 
         private void RegisterContainer()
         {
@@ -499,76 +575,9 @@ namespace FXBusinessLogic.BusinessObjects
             string strTimeZone = GetGlobalProp(propName);
             ReadOnlyCollection<TimeZoneInfo> tz = TimeZoneInfo.GetSystemTimeZones();
             foreach (TimeZoneInfo tzi in tz)
-            {
                 if (tzi.StandardName.Equals(strTimeZone))
-                {
                     return tzi;
-                }
-            }
             return null;
-        }
-
-        public List<double> iGlobalSentimentsArray(string symbolName, List<string> brokerDates, int siteId)
-        {
-            Session session = FXConnectionHelper.GetNewSession();
-
-            if (symbolName.Length == 6)
-                symbolName = symbolName.Insert(3, "/");
-            DBSymbol dbsym = FXMindHelpers.getSymbolID(session, symbolName);
-            if (dbsym == null)
-                return null;
-            string queryStrInterval;
-            var paramnames = new string[] {};
-            if (siteId == 0)
-            {
-                queryStrInterval = @"SELECT LongRatio, ShortRatio, SiteID FROM OpenPosRatio
-                                                WHERE (SymbolID=@symID) AND (ParseTime >= @fr_dt) AND (ParseTime <= @to_dt) 
-                                                ORDER BY ParseTime DESC";
-                paramnames = new string[] { "symID", "fr_dt", "to_dt" };
-            }
-            else
-            {
-                queryStrInterval = @"SELECT LongRatio, ShortRatio FROM OpenPosRatio
-                                            WHERE (SymbolID=@symID) AND (ParseTime >= @fr_dt) AND (ParseTime <= @to_dt) AND (SiteID = @siteID)
-                                            ORDER BY ParseTime ASC";
-                paramnames = new string[] { "symID", "fr_dt", "to_dt", "siteID" };
-            }
-            var resList = new List<double>();
-            foreach (string brokerDate in brokerDates)
-            {
-                DateTime date;
-                DateTime.TryParseExact(brokerDate, fxmindConstants.MTDATETIMEFORMAT,
-                    CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.None, out date);
-
-                date = TimeZoneInfo.ConvertTimeToUtc(date, BrokerTimeZoneInfo);
-                DateTime hourPlus = date;
-                hourPlus = hourPlus.AddHours(1);
-                object[] parameters = new object[] {};
-                if (siteId == 0)
-                    parameters = new object[] { dbsym.ID, date.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), hourPlus.ToString(fxmindConstants.MYSQLDATETIMEFORMAT) };
-                else
-                    parameters = new object[] { dbsym.ID, date.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), hourPlus.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), siteId };
-                SelectedData data = session.ExecuteQuery(queryStrInterval, paramnames, parameters);
-                int count = data.ResultSet[0].Rows.Count();
-                if (count == 0)
-                    resList.Add(fxmindConstants.GAP_VALUE); 
-                else 
-                {
-                    int cnt = 0;
-                    double valLong = 0;
-                    //double valShort = 0;
-                    foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
-                    {
-                        valLong += (double) row.Values[0];
-                        //valShort += (double) row.Values[1];
-                        cnt++;
-                    }
-                    resList.Add(valLong/cnt);
-                }
-            }
-            session.Disconnect();
-            session.Dispose();
-            return resList;
         }
 
         private double CalcCS4CurrencyLast(Session session, string currencyName, int Timeframe)
@@ -594,7 +603,7 @@ namespace FXBusinessLogic.BusinessObjects
             var ProcessedSymbols = new HashSet<int>();
             foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
             {
-                var symbol = (Int32) row.Values[5];
+                var symbol = (int) row.Values[5];
                 if (ProcessedSymbols.Contains(symbol))
                     continue;
                 ProcessedSymbols.Add(symbol);
@@ -602,13 +611,14 @@ namespace FXBusinessLogic.BusinessObjects
                     multiplier = -1.0;
                 else
                     multiplier = 1.0;
-                var actionValue = (Int16) row.Values[2];
+                var actionValue = (short) row.Values[2];
                 //var tf = (Byte)row.Values[6];
-                result += actionValue*multiplier;
+                result += actionValue * multiplier;
                 TFcnt++;
             }
+
             if (TFcnt > 0)
-                result = 100*result/TFcnt;
+                result = 100 * result / TFcnt;
             return result;
         }
 
@@ -636,7 +646,27 @@ namespace FXBusinessLogic.BusinessObjects
                 case 43200: //Monthly
                     return 8;
             }
+
             return -1;
         }
+
+        #region Jobs
+
+        public void RunJobNow(string group, string name)
+        {
+            SchedulerService.RunJobNow(new JobKey(name, group));
+        }
+
+        public string GetJobProp(string group, string name, string prop)
+        {
+            return SchedulerService.GetJobProp(group, name, prop);
+        }
+
+        public void SetJobCronSchedule(string group, string name, string cron)
+        {
+            SchedulerService.SetJobCronSchedule(group, name, cron);
+        }
+
+        #endregion
     }
 }

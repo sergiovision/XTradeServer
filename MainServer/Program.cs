@@ -12,7 +12,7 @@ namespace FXMind.MainServer
     /// </summary>
     public static class Program
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof (Program));
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
 
         public static IContainer Container { get; set; }
 

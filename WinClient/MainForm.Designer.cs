@@ -519,7 +519,7 @@ namespace FXMind.WinClient
             this.BarDockCurrencyStrength.Dock = System.Windows.Forms.DockStyle.Top;
             this.BarDockCurrencyStrength.Location = new System.Drawing.Point(0, 0);
             this.BarDockCurrencyStrength.Manager = this.MainBarManager;
-            this.BarDockCurrencyStrength.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.BarDockCurrencyStrength.Margin = new System.Windows.Forms.Padding(6);
             this.BarDockCurrencyStrength.Name = "BarDockCurrencyStrength";
             this.BarDockCurrencyStrength.Size = new System.Drawing.Size(2396, 59);
             this.BarDockCurrencyStrength.Text = "standaloneBarDockControl2";
@@ -550,7 +550,7 @@ namespace FXMind.WinClient
             this.BarDockAuto.Dock = System.Windows.Forms.DockStyle.Top;
             this.BarDockAuto.Location = new System.Drawing.Point(0, 0);
             this.BarDockAuto.Manager = this.MainBarManager;
-            this.BarDockAuto.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.BarDockAuto.Margin = new System.Windows.Forms.Padding(6);
             this.BarDockAuto.Name = "BarDockAuto";
             this.BarDockAuto.Size = new System.Drawing.Size(2396, 59);
             this.BarDockAuto.Text = "standaloneBarDockControl1";
@@ -561,7 +561,7 @@ namespace FXMind.WinClient
             this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControlTop.Location = new System.Drawing.Point(24, 23);
             this.barDockControlTop.Manager = this.MainBarManager;
-            this.barDockControlTop.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControlTop.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControlTop.Size = new System.Drawing.Size(2408, 0);
             // 
             // barDockControlBottom
@@ -570,7 +570,7 @@ namespace FXMind.WinClient
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.barDockControlBottom.Location = new System.Drawing.Point(24, 1199);
             this.barDockControlBottom.Manager = this.MainBarManager;
-            this.barDockControlBottom.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControlBottom.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControlBottom.Size = new System.Drawing.Size(2408, 0);
             // 
             // barDockControlLeft
@@ -579,7 +579,7 @@ namespace FXMind.WinClient
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(24, 23);
             this.barDockControlLeft.Manager = this.MainBarManager;
-            this.barDockControlLeft.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControlLeft.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControlLeft.Size = new System.Drawing.Size(0, 1176);
             // 
             // barDockControlRight
@@ -588,7 +588,7 @@ namespace FXMind.WinClient
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(2432, 23);
             this.barDockControlRight.Manager = this.MainBarManager;
-            this.barDockControlRight.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControlRight.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControlRight.Size = new System.Drawing.Size(0, 1176);
             // 
             // barEditItem1
@@ -932,7 +932,7 @@ namespace FXMind.WinClient
             // 
             this.xtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.xtraTabControl1.Location = new System.Drawing.Point(24, 23);
-            this.xtraTabControl1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.xtraTabControl1.Margin = new System.Windows.Forms.Padding(6);
             this.xtraTabControl1.Name = "xtraTabControl1";
             this.xtraTabControl1.SelectedTabPage = this.jobsPage;
             this.xtraTabControl1.Size = new System.Drawing.Size(2408, 1176);
@@ -946,7 +946,7 @@ namespace FXMind.WinClient
             // jobsPage
             // 
             this.jobsPage.Controls.Add(this.gridJobs1);
-            this.jobsPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.jobsPage.Margin = new System.Windows.Forms.Padding(6);
             this.jobsPage.Name = "jobsPage";
             this.jobsPage.Size = new System.Drawing.Size(2396, 1123);
             this.jobsPage.Text = "Jobs";
@@ -954,10 +954,10 @@ namespace FXMind.WinClient
             // gridJobs1
             // 
             this.gridJobs1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridJobs1.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.gridJobs1.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(6);
             this.gridJobs1.Location = new System.Drawing.Point(0, 0);
             this.gridJobs1.MainView = this.gridView3;
-            this.gridJobs1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.gridJobs1.Margin = new System.Windows.Forms.Padding(6);
             this.gridJobs1.MenuManager = this.MainBarManager;
             this.gridJobs1.Name = "gridJobs1";
             this.gridJobs1.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
@@ -1091,21 +1091,21 @@ namespace FXMind.WinClient
             // 
             this.strengthPage.Controls.Add(this.BarDockCurrencyStrength);
             this.strengthPage.Controls.Add(this.strengthGrid);
-            this.strengthPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.strengthPage.Margin = new System.Windows.Forms.Padding(6);
             this.strengthPage.Name = "strengthPage";
-            this.strengthPage.Size = new System.Drawing.Size(2396, 1126);
+            this.strengthPage.Size = new System.Drawing.Size(2396, 1123);
             this.strengthPage.Text = "Currencies Strength";
             // 
             // strengthGrid
             // 
             this.strengthGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.strengthGrid.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.strengthGrid.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(6);
             this.strengthGrid.Location = new System.Drawing.Point(0, 0);
             this.strengthGrid.MainView = this.gridView4;
-            this.strengthGrid.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.strengthGrid.Margin = new System.Windows.Forms.Padding(6);
             this.strengthGrid.MenuManager = this.MainBarManager;
             this.strengthGrid.Name = "strengthGrid";
-            this.strengthGrid.Size = new System.Drawing.Size(2396, 1126);
+            this.strengthGrid.Size = new System.Drawing.Size(2396, 1123);
             this.strengthGrid.TabIndex = 0;
             this.strengthGrid.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView4});
@@ -1220,22 +1220,22 @@ namespace FXMind.WinClient
             // 
             this.autoPage.Controls.Add(this.BarDockAuto);
             this.autoPage.Controls.Add(this.splitContainerAuto);
-            this.autoPage.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.autoPage.Margin = new System.Windows.Forms.Padding(6);
             this.autoPage.Name = "autoPage";
-            this.autoPage.Size = new System.Drawing.Size(2396, 1126);
+            this.autoPage.Size = new System.Drawing.Size(2396, 1123);
             this.autoPage.Text = "Auto";
             // 
             // splitContainerAuto
             // 
             this.splitContainerAuto.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainerAuto.Location = new System.Drawing.Point(0, 0);
-            this.splitContainerAuto.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.splitContainerAuto.Margin = new System.Windows.Forms.Padding(6);
             this.splitContainerAuto.Name = "splitContainerAuto";
             this.splitContainerAuto.Panel1.Controls.Add(this.splitContainerControl1);
             this.splitContainerAuto.Panel1.Text = "Panel1";
             this.splitContainerAuto.Panel2.Controls.Add(this.propertyGridControl1);
             this.splitContainerAuto.Panel2.Text = "Panel2";
-            this.splitContainerAuto.Size = new System.Drawing.Size(2396, 1126);
+            this.splitContainerAuto.Size = new System.Drawing.Size(2396, 1123);
             this.splitContainerAuto.SplitterPosition = 654;
             this.splitContainerAuto.TabIndex = 2;
             this.splitContainerAuto.Text = "splitContainerControl1";
@@ -1245,7 +1245,7 @@ namespace FXMind.WinClient
             this.splitContainerControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainerControl1.Horizontal = false;
             this.splitContainerControl1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainerControl1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.splitContainerControl1.Margin = new System.Windows.Forms.Padding(6);
             this.splitContainerControl1.Name = "splitContainerControl1";
             this.splitContainerControl1.Panel1.Controls.Add(this.applyBtn);
             this.splitContainerControl1.Panel1.Controls.Add(this.groupBox1);
@@ -1253,7 +1253,7 @@ namespace FXMind.WinClient
             this.splitContainerControl1.Panel1.Text = "Panel1";
             this.splitContainerControl1.Panel2.Controls.Add(this.memoAuto);
             this.splitContainerControl1.Panel2.Text = "Panel2";
-            this.splitContainerControl1.Size = new System.Drawing.Size(654, 1126);
+            this.splitContainerControl1.Size = new System.Drawing.Size(654, 1123);
             this.splitContainerControl1.SplitterPosition = 575;
             this.splitContainerControl1.TabIndex = 0;
             this.splitContainerControl1.Text = "splitContainerControl1";
@@ -1261,7 +1261,7 @@ namespace FXMind.WinClient
             // applyBtn
             // 
             this.applyBtn.Location = new System.Drawing.Point(10, 485);
-            this.applyBtn.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.applyBtn.Margin = new System.Windows.Forms.Padding(6);
             this.applyBtn.Name = "applyBtn";
             this.applyBtn.Size = new System.Drawing.Size(604, 48);
             this.applyBtn.TabIndex = 20;
@@ -1273,9 +1273,9 @@ namespace FXMind.WinClient
             // 
             this.groupBox1.Controls.Add(this.labelStatus);
             this.groupBox1.Location = new System.Drawing.Point(10, 67);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox1.Size = new System.Drawing.Size(604, 152);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
@@ -1299,9 +1299,9 @@ namespace FXMind.WinClient
             this.groupBox2.Controls.Add(this.radioStop);
             this.groupBox2.Controls.Add(this.radioStart);
             this.groupBox2.Location = new System.Drawing.Point(8, 231);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox2.Size = new System.Drawing.Size(606, 242);
             this.groupBox2.TabIndex = 18;
             this.groupBox2.TabStop = false;
@@ -1311,7 +1311,7 @@ namespace FXMind.WinClient
             // 
             this.radioDisable.AutoSize = true;
             this.radioDisable.Location = new System.Drawing.Point(76, 175);
-            this.radioDisable.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioDisable.Margin = new System.Windows.Forms.Padding(6);
             this.radioDisable.Name = "radioDisable";
             this.radioDisable.Size = new System.Drawing.Size(110, 29);
             this.radioDisable.TabIndex = 14;
@@ -1323,7 +1323,7 @@ namespace FXMind.WinClient
             // 
             this.radioEnable.AutoSize = true;
             this.radioEnable.Location = new System.Drawing.Point(76, 129);
-            this.radioEnable.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioEnable.Margin = new System.Windows.Forms.Padding(6);
             this.radioEnable.Name = "radioEnable";
             this.radioEnable.Size = new System.Drawing.Size(106, 29);
             this.radioEnable.TabIndex = 13;
@@ -1335,7 +1335,7 @@ namespace FXMind.WinClient
             // 
             this.radioStop.AutoSize = true;
             this.radioStop.Location = new System.Drawing.Point(76, 83);
-            this.radioStop.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioStop.Margin = new System.Windows.Forms.Padding(6);
             this.radioStop.Name = "radioStop";
             this.radioStop.Size = new System.Drawing.Size(85, 29);
             this.radioStop.TabIndex = 12;
@@ -1347,7 +1347,7 @@ namespace FXMind.WinClient
             // 
             this.radioStart.AutoSize = true;
             this.radioStart.Location = new System.Drawing.Point(76, 37);
-            this.radioStart.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioStart.Margin = new System.Windows.Forms.Padding(6);
             this.radioStart.Name = "radioStart";
             this.radioStart.Size = new System.Drawing.Size(88, 29);
             this.radioStart.TabIndex = 11;
@@ -1360,17 +1360,17 @@ namespace FXMind.WinClient
             this.memoAuto.Dock = System.Windows.Forms.DockStyle.Fill;
             this.memoAuto.EditValue = "";
             this.memoAuto.Location = new System.Drawing.Point(0, 0);
-            this.memoAuto.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.memoAuto.Margin = new System.Windows.Forms.Padding(6);
             this.memoAuto.MenuManager = this.MainBarManager;
             this.memoAuto.Name = "memoAuto";
-            this.memoAuto.Size = new System.Drawing.Size(654, 541);
+            this.memoAuto.Size = new System.Drawing.Size(654, 538);
             this.memoAuto.TabIndex = 0;
             // 
             // propertyGridControl1
             // 
             this.propertyGridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGridControl1.Location = new System.Drawing.Point(0, 0);
-            this.propertyGridControl1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.propertyGridControl1.Margin = new System.Windows.Forms.Padding(6);
             this.propertyGridControl1.Name = "propertyGridControl1";
             this.propertyGridControl1.Rows.AddRange(new DevExpress.XtraVerticalGrid.Rows.BaseRow[] {
             this.rowMagicNumber,
@@ -1378,7 +1378,7 @@ namespace FXMind.WinClient
             this.rowSlippage,
             this.rowComment,
             this.rowMaxOpenOrders});
-            this.propertyGridControl1.Size = new System.Drawing.Size(1732, 1126);
+            this.propertyGridControl1.Size = new System.Drawing.Size(1732, 1123);
             this.propertyGridControl1.TabIndex = 0;
             // 
             // rowMagicNumber
@@ -1427,7 +1427,7 @@ namespace FXMind.WinClient
             this.barDockControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControl1.Location = new System.Drawing.Point(24, 23);
             this.barDockControl1.Manager = this.barManager2;
-            this.barDockControl1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl1.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl1.Size = new System.Drawing.Size(2408, 0);
             // 
             // barDockControl2
@@ -1436,7 +1436,7 @@ namespace FXMind.WinClient
             this.barDockControl2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.barDockControl2.Location = new System.Drawing.Point(24, 1199);
             this.barDockControl2.Manager = this.barManager2;
-            this.barDockControl2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl2.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl2.Size = new System.Drawing.Size(2408, 0);
             // 
             // barDockControl3
@@ -1445,7 +1445,7 @@ namespace FXMind.WinClient
             this.barDockControl3.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControl3.Location = new System.Drawing.Point(24, 23);
             this.barDockControl3.Manager = this.barManager2;
-            this.barDockControl3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl3.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl3.Size = new System.Drawing.Size(0, 1176);
             // 
             // barDockControl4
@@ -1454,7 +1454,7 @@ namespace FXMind.WinClient
             this.barDockControl4.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControl4.Location = new System.Drawing.Point(2432, 23);
             this.barDockControl4.Manager = this.barManager2;
-            this.barDockControl4.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl4.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl4.Size = new System.Drawing.Size(0, 1176);
             // 
             // barStaticItem5
@@ -1511,7 +1511,7 @@ namespace FXMind.WinClient
             this.barDockControl5.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControl5.Location = new System.Drawing.Point(24, 23);
             this.barDockControl5.Manager = this.barManager3;
-            this.barDockControl5.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl5.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl5.Size = new System.Drawing.Size(2408, 0);
             // 
             // barDockControl6
@@ -1520,7 +1520,7 @@ namespace FXMind.WinClient
             this.barDockControl6.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.barDockControl6.Location = new System.Drawing.Point(24, 1199);
             this.barDockControl6.Manager = this.barManager3;
-            this.barDockControl6.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl6.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl6.Size = new System.Drawing.Size(2408, 51);
             // 
             // barDockControl7
@@ -1529,7 +1529,7 @@ namespace FXMind.WinClient
             this.barDockControl7.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControl7.Location = new System.Drawing.Point(24, 23);
             this.barDockControl7.Manager = this.barManager3;
-            this.barDockControl7.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl7.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl7.Size = new System.Drawing.Size(0, 1176);
             // 
             // barDockControl8
@@ -1538,7 +1538,7 @@ namespace FXMind.WinClient
             this.barDockControl8.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControl8.Location = new System.Drawing.Point(2432, 23);
             this.barDockControl8.Manager = this.barManager3;
-            this.barDockControl8.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl8.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl8.Size = new System.Drawing.Size(0, 1176);
             // 
             // barButtonItem5
@@ -1610,7 +1610,7 @@ namespace FXMind.WinClient
             this.barDockControl9.Dock = System.Windows.Forms.DockStyle.Top;
             this.barDockControl9.Location = new System.Drawing.Point(24, 23);
             this.barDockControl9.Manager = null;
-            this.barDockControl9.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl9.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl9.Size = new System.Drawing.Size(2408, 0);
             // 
             // barDockControl10
@@ -1619,7 +1619,7 @@ namespace FXMind.WinClient
             this.barDockControl10.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.barDockControl10.Location = new System.Drawing.Point(24, 1199);
             this.barDockControl10.Manager = null;
-            this.barDockControl10.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl10.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl10.Size = new System.Drawing.Size(2408, 0);
             // 
             // barDockControl11
@@ -1628,7 +1628,7 @@ namespace FXMind.WinClient
             this.barDockControl11.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControl11.Location = new System.Drawing.Point(24, 23);
             this.barDockControl11.Manager = null;
-            this.barDockControl11.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl11.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl11.Size = new System.Drawing.Size(0, 1176);
             // 
             // barDockControl12
@@ -1637,7 +1637,7 @@ namespace FXMind.WinClient
             this.barDockControl12.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControl12.Location = new System.Drawing.Point(2432, 23);
             this.barDockControl12.Manager = null;
-            this.barDockControl12.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.barDockControl12.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControl12.Size = new System.Drawing.Size(0, 1176);
             // 
             // MainForm
@@ -1662,7 +1662,7 @@ namespace FXMind.WinClient
             this.Controls.Add(this.barDockControl8);
             this.Controls.Add(this.barDockControl6);
             this.Controls.Add(this.barDockControl5);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(24, 23, 24, 23);
             this.Text = "FXMind Client";

@@ -6,8 +6,6 @@ using System.Threading;
 using System.Windows.Forms;
 using Autofac;
 using BusinessObjects;
-using DevExpress.Xpo;
-using FXBusinessLogic.BusinessObjects;
 using FXBusinessLogic.Thrift;
 using log4net;
 using Quartz;
@@ -18,7 +16,7 @@ namespace FXBusinessLogic.Scheduler
 {
     internal class SchedulerService
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (SchedulerService));
+        private static readonly ILog log = LogManager.GetLogger(typeof(SchedulerService));
         public static IScheduler sched;
         protected static ISchedulerFactory sf;
 
@@ -109,6 +107,7 @@ namespace FXBusinessLogic.Scheduler
                     // to run from client side - WinClient
                     //InitClustered(properties);
                 }
+
                 // First we must get a reference to a scheduler
                 sf = new StdSchedulerFactory(properties);
                 sched = sf.GetScheduler();
@@ -121,6 +120,7 @@ namespace FXBusinessLogic.Scheduler
                     log.Info("Waiting for scheduler to start.");
                     Thread.Sleep(1000);
                 }
+
                 log.Info("IsStarted=" + sched.IsStarted);
                 log.Info("InstanceId=" + sched.SchedulerInstanceId);
                 log.Info("SchedulerName=" + sched.SchedulerName);
@@ -130,7 +130,6 @@ namespace FXBusinessLogic.Scheduler
 
                 if (serverMode)
                     RunJobSupervisor();
-                
             }
             catch (Exception ex)
             {
@@ -138,6 +137,7 @@ namespace FXBusinessLogic.Scheduler
                 bInitialized = false;
                 return bInitialized;
             }
+
             bInitialized = true;
             return bInitialized;
         }
@@ -167,10 +167,7 @@ namespace FXBusinessLogic.Scheduler
         public static void removeJobTriggers(IJobDetail job)
         {
             IList<ITrigger> trigs = sched.GetTriggersOfJob(job.Key);
-            foreach (ITrigger trigger in trigs)
-            {
-                sched.UnscheduleJob(trigger.Key);
-            }
+            foreach (ITrigger trigger in trigs) sched.UnscheduleJob(trigger.Key);
         }
 
         public void Shutdown()
@@ -180,6 +177,7 @@ namespace FXBusinessLogic.Scheduler
                 log.Info("------- Clustred Disconnect, Not Shutting Down ---------------------");
                 return;
             }
+
             AppServiceServer.Stop();
             FXMindMQLServer.Stop();
             if (bInitialized)
@@ -301,10 +299,7 @@ namespace FXBusinessLogic.Scheduler
         public static ITrigger GetJobTrigger(string group, string name)
         {
             IList<ITrigger> trigs = sched.GetTriggersOfJob(new JobKey(name, group));
-            foreach (ITrigger trigger in trigs)
-            {
-                return trigger;
-            }
+            foreach (ITrigger trigger in trigs) return trigger;
             return null;
         }
 
@@ -334,10 +329,7 @@ namespace FXBusinessLogic.Scheduler
         {
             if (!bInitialized)
                 return;
-            if (!sched.CheckExists(key))
-            {
-                return;
-            }
+            if (!sched.CheckExists(key)) return;
             sched.TriggerJob(key);
         }
 
@@ -347,7 +339,7 @@ namespace FXBusinessLogic.Scheduler
             if (!bInitialized)
                 return list;
             IList<string> jobGroups = sched.GetJobGroupNames();
-            foreach (String group in jobGroups)
+            foreach (string group in jobGroups)
             {
                 Quartz.Collection.ISet<JobKey> keys = sched.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(group));
                 foreach (JobKey key in keys)
@@ -373,7 +365,6 @@ namespace FXBusinessLogic.Scheduler
                     //jobview.Description = detail.Description;
                     IList<ITrigger> trigs = sched.GetTriggersOfJob(detail.Key);
                     if (trigs != null)
-                    {
                         foreach (ITrigger trigger in trigs)
                         {
                             DateTimeOffset? prev = trigger.GetPreviousFireTimeUtc();
@@ -383,15 +374,13 @@ namespace FXBusinessLogic.Scheduler
                             if (next.HasValue)
                                 jobview.NextTime = next.Value.DateTime.ToBinary();
                             var crontrig = trigger as ICronTrigger;
-                            if (crontrig != null)
-                            {
-                                jobview.Schedule = crontrig.CronExpressionString;
-                            }
+                            if (crontrig != null) jobview.Schedule = crontrig.CronExpressionString;
                         }
-                    }
+
                     list.Add(jobview);
                 }
             }
+
             return list;
         }
 
@@ -408,6 +397,7 @@ namespace FXBusinessLogic.Scheduler
                 view.Name = ic.JobDetail.Key.Name;
                 list.Add(view.Group + view.Name, view);
             }
+
             return list;
         }
     }

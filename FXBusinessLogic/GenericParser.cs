@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using FXBusinessLogic.fx_mind;
 
@@ -15,10 +13,11 @@ namespace FXBusinessLogic
         public const string UserAgent =
             "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Zune 4.0; InfoPath.3; MS-RTC LM 8; .NET4.0C; .NET4.0E)";
 
-        protected DateTime IntervalEndDate;
-        protected DateTime IntervalStartDate;
         protected bool? bUseInterval;
         protected bool doHistoryParsing;
+
+        protected DateTime IntervalEndDate;
+        protected DateTime IntervalStartDate;
         protected Session session;
 
         public GenericParser(Session ses, bool parseHistory)
@@ -47,7 +46,7 @@ namespace FXBusinessLogic
                 return true;
             if (IsUseDateInterval() == false)
                 return true;
-            if ((date >= IntervalStartDate) && (date <= IntervalEndDate))
+            if (date >= IntervalStartDate && date <= IntervalEndDate)
                 return true;
             return false;
         }
@@ -62,6 +61,7 @@ namespace FXBusinessLogic
                 else
                     bUseInterval = false;
             }
+
             return bUseInterval.Value;
         }
 
@@ -69,10 +69,7 @@ namespace FXBusinessLogic
         {
             var httpClient = new HttpClient();
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, url);
-            if (useAgent)
-            {
-                httpRequestMessage.Headers.Add("User-Agent", UserAgent);
-            }
+            if (useAgent) httpRequestMessage.Headers.Add("User-Agent", UserAgent);
             HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
@@ -85,10 +82,7 @@ namespace FXBusinessLogic
             IQueryable<DBSymbol> symbols = from c in symbolsQuery
                 where c.Name == SymbolStr
                 select c;
-            if (symbols.Any())
-            {
-                return symbols.First();
-            }
+            if (symbols.Any()) return symbols.First();
             return null;
         }
     }

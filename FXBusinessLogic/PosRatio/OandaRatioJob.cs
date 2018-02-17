@@ -14,7 +14,7 @@ namespace FXBusinessLogic.PosRatio
     [DisallowConcurrentExecution]
     public class OandaRatioJob : GenericJob
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (OandaRatioJob));
+        private static readonly ILog log = LogManager.GetLogger(typeof(OandaRatioJob));
         public static string URL;
 
         public OandaRatioJob()
@@ -33,8 +33,10 @@ namespace FXBusinessLogic.PosRatio
                     Exit(context);
                     return;
                 }
+
                 JobKey jobKey = context.JobDetail.Key;
-                log.InfoFormat("OandaRatioJob started parsing: {0} executing at {1}", jobKey, DateTime.Now.ToString("r"));
+                log.InfoFormat("OandaRatioJob started parsing: {0} executing at {1}", jobKey,
+                    DateTime.Now.ToString("r"));
 
                 var browser = new ScrapingBrowser();
                 WebPage homePage = browser.NavigateToPage(new Uri(URL));
@@ -45,6 +47,7 @@ namespace FXBusinessLogic.PosRatio
                     SetMessage("Error parsing OANDA ratio page");
                     return;
                 }
+
                 Session session = FXConnectionHelper.GetNewSession();
                 char[] trimarr = {' ', '\n', '%', '&', 'n', 'b', 's', 'p', ';'};
                 foreach (HtmlNode symnode in colSymbols)
@@ -65,6 +68,7 @@ namespace FXBusinessLogic.PosRatio
                         else
                             posRatio.LongRatio = float.Parse(trim);
                     }
+
                     HtmlNode nodeShort = symnode.Descendants("div").ElementAt(1).Descendants("span").ElementAt(1);
                     if (nodeShort != null)
                     {
@@ -74,8 +78,10 @@ namespace FXBusinessLogic.PosRatio
                         else
                             posRatio.ShortRatio = float.Parse(trim);
                     }
+
                     session.Save(posRatio);
                 }
+
                 session.Dispose();
 
                 SetMessage("Succeeded");
@@ -84,6 +90,7 @@ namespace FXBusinessLogic.PosRatio
             {
                 SetMessage("ERROR: " + ex);
             }
+
             Exit(context);
         }
     }

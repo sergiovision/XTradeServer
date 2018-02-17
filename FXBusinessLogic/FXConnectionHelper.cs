@@ -15,7 +15,7 @@ namespace FXBusinessLogic
 
     internal static class FXConnectionHelper
     {
-        public static String connString;
+        public static string connString;
         public static Session dbSession;
 
         public static string getConnectionString()
@@ -86,8 +86,8 @@ namespace FXBusinessLogic
 
             // replace everything and keep only IP
             string ipAddress = html.Replace(
-                "<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).
-                Replace("</body></html>", string.Empty);
+                    "<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty)
+                .Replace("</body></html>", string.Empty);
             char[] trim = {'\r', '\n'};
             ipAddress = ipAddress.TrimEnd(trim);
             return ipAddress;

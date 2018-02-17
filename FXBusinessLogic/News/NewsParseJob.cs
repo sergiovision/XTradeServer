@@ -18,15 +18,15 @@ namespace FXBusinessLogic.News
     [DisallowConcurrentExecution]
     public class NewsParseJob : GenericJob
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (NewsParseJob));
+        private static readonly ILog log = LogManager.GetLogger(typeof(NewsParseJob));
         public static string URL;
 
         public static string DATEFORMAT = "dd MMM yyyy";
         public static string TIMEFORMAT = "HH:mm";
         public static string SHORTDATETIMEFORMAT = "yyyy-M-d";
+        protected string mCheckQuery;
 
         protected DateTime PARSEDATETIME;
-        protected string mCheckQuery;
 
         public NewsParseJob()
             : base(log)
@@ -64,6 +64,7 @@ namespace FXBusinessLogic.News
                     Exit(context);
                     return;
                 }
+
                 JobKey jobKey = context.JobDetail.Key;
                 log.InfoFormat("NewsParseJob started parsing: {0} executing at {1}", jobKey,
                     DateTime.Now.ToString("r"));
@@ -74,26 +75,19 @@ namespace FXBusinessLogic.News
                 WebPage homePage = null;
                 Session session = FXConnectionHelper.GetNewSession();
                 string strParseHistory = FXMindHelpers.GetGlobalVar(session, "NewsEvent.ParseHistory");
-                
+
                 bool parseAllHistory = false;
                 DateTime curDateTime = DateTime.UtcNow;
-                if (strParseHistory != null)
-                {
-                    parseAllHistory = Boolean.Parse(strParseHistory);
-                }
+                if (strParseHistory != null) parseAllHistory = bool.Parse(strParseHistory);
                 if (parseAllHistory)
                 {
                     string strParseHistoryStartDate = FXMindHelpers.GetGlobalVar(session, "NewsEvent.StartHistoryDate");
                     string strParseHistoryEndDate = FXMindHelpers.GetGlobalVar(session, "NewsEvent.EndHistoryDate");
- 
+
                     if (strParseHistoryStartDate == null)
-                    {
                         strParseHistoryStartDate = PARSEDATETIME.ToString(SHORTDATETIMEFORMAT);
-                    }
                     if (strParseHistoryEndDate == null)
-                    {
                         strParseHistoryEndDate = PARSEDATETIME.ToString(SHORTDATETIMEFORMAT);
-                    }
 
                     string postData =
                         "Date=" + strParseHistoryStartDate +
@@ -125,7 +119,7 @@ namespace FXBusinessLogic.News
                         homePage = browser.NavigateToPage(new Uri(postUrl), HttpVerb.Post, postData);
                         if (homePage == null)
                             break;
-                    } while ((curDateTime <= nowDate) && (curDateTime <= endDate));
+                    } while (curDateTime <= nowDate && curDateTime <= endDate);
                 }
                 else
                 {
@@ -152,6 +146,7 @@ namespace FXBusinessLogic.News
             {
                 SetMessage("ERROR: " + ex);
             }
+
             Exit(context);
         }
 
@@ -189,6 +184,7 @@ namespace FXBusinessLogic.News
                                 log.Info("Error parsing date column: " + trimDate);
                         }
                     }
+
                     HtmlNode nodeTime = htmlEventRows.ElementAt(1);
                     if (nodeTime != null)
                     {
@@ -196,29 +192,24 @@ namespace FXBusinessLogic.News
                         string trimTime = nodeTime.InnerText; // .TrimStart(trimarr);
                         trimTime = trimTime.Trim(trimarr);
                         if (trimTime.Length != 0)
-                        {
                             if (DateTime.TryParseExact(trimTime, TIMEFORMAT,
                                 CultureInfo.InvariantCulture.DateTimeFormat,
                                 DateTimeStyles.AdjustToUniversal, out currentTime))
-                            {
                                 curDateTime = new DateTime(curDateTime.Year, curDateTime.Month, curDateTime.Day,
                                     currentTime.Hour, currentTime.Minute, 0);
-                            }
                             else
                                 log.Info("Error parsing time event column: " + trimTime);
-                        }
                     }
+
                     eventRow.HappenTime = curDateTime;
                     HtmlNode nodeCurrency = htmlEventRows.ElementAt(2);
                     if (nodeCurrency != null)
                     {
                         string trimCurr = nodeCurrency.InnerText;
                         trimCurr = trimCurr.Trim(trimarr);
-                        if (trimCurr.Length != 0)
-                        {
-                            eventRow.CurrencyId = FXMindHelpers.getCurrencyID(session, trimCurr);
-                        }
+                        if (trimCurr.Length != 0) eventRow.CurrencyId = FXMindHelpers.getCurrencyID(session, trimCurr);
                     }
+
                     if (eventRow.CurrencyId == null)
                         continue;
 
@@ -230,6 +221,7 @@ namespace FXBusinessLogic.News
                         eventName = eventName.Trim(trimarr);
                         eventRow.Name = eventName;
                     }
+
                     HtmlNode nodeImportance = htmlEventRows.ElementAt(4);
                     if (nodeImportance != null)
                     {
@@ -249,6 +241,7 @@ namespace FXBusinessLogic.News
                                 break;
                         }
                     }
+
                     HtmlNode nodeActual = htmlEventRows.ElementAt(5);
                     if (nodeActual != null)
                     {
@@ -256,6 +249,7 @@ namespace FXBusinessLogic.News
                         eventActual = eventActual.Trim(trimarr);
                         eventRow.ActualVal = eventActual;
                     }
+
                     HtmlNode nodeForecast = htmlEventRows.ElementAt(6);
                     if (nodeForecast != null)
                     {
@@ -263,6 +257,7 @@ namespace FXBusinessLogic.News
                         eventForecast = eventForecast.Trim(trimarr);
                         eventRow.ForecastVal = eventForecast;
                     }
+
                     HtmlNode nodePrevious = htmlEventRows.ElementAt(7);
                     if (nodePrevious != null)
                     {
@@ -291,6 +286,7 @@ namespace FXBusinessLogic.News
                 session.Save(eventRow);
                 //eventscol.Add(eventRow);
             }
+
             //session.Save(eventscol);
             SetMessage("Events for start Date: " + curDateTime + " parsed successfully");
             log.Info(strMessage);

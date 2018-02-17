@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FXBusinessLogic", "FXBusinessLogic\FXBusinessLogic.csproj", "{64761A20-F2D4-4AC1-BE44-07AB7EACE6F6}"
 EndProject
@@ -12,8 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObjects", "BusinessObjects\BusinessObjects.csproj", "{B9151E6C-E756-43C2-A70F-C6FB46621809}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThriftMQL", "ThriftMQL\ThriftMQL.csproj", "{499EB63C-D74C-47E8-AE48-A2FC94538E9D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quartz.2010", "..\Quartz223\src\Quartz\Quartz.2010.csproj", "{AEF8823B-E45B-4B35-A4D0-C08C1196D017}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fxmindmql", "fxmindmql\fxmindmql.vcxproj", "{909E5644-91DD-4D98-8364-FC794F85DCDD}"
 EndProject
@@ -228,41 +226,6 @@ Global
 		{499EB63C-D74C-47E8-AE48-A2FC94538E9D}.Release-mt|Win32.ActiveCfg = Release|Any CPU
 		{499EB63C-D74C-47E8-AE48-A2FC94538E9D}.Release-mt|x64.ActiveCfg = Release|Any CPU
 		{499EB63C-D74C-47E8-AE48-A2FC94538E9D}.Release-mt|x86.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug-mt|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug-mt|Any CPU.Build.0 = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug-mt|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug-mt|Mixed Platforms.Build.0 = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug-mt|Win32.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug-mt|x64.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Debug-mt|x86.ActiveCfg = Debug|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.EasyTest|Any CPU.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.EasyTest|Any CPU.Build.0 = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.EasyTest|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.EasyTest|Mixed Platforms.Build.0 = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.EasyTest|Win32.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.EasyTest|x64.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.EasyTest|x86.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release|Win32.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release|x64.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release|x86.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release-mt|Any CPU.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release-mt|Any CPU.Build.0 = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release-mt|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release-mt|Mixed Platforms.Build.0 = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release-mt|Win32.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release-mt|x64.ActiveCfg = Release|Any CPU
-		{AEF8823B-E45B-4B35-A4D0-C08C1196D017}.Release-mt|x86.ActiveCfg = Release|Any CPU
 		{909E5644-91DD-4D98-8364-FC794F85DCDD}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{909E5644-91DD-4D98-8364-FC794F85DCDD}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{909E5644-91DD-4D98-8364-FC794F85DCDD}.Debug|Mixed Platforms.Build.0 = Debug|Win32
@@ -391,5 +354,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {27364BEC-D1F2-4F4D-9CA5-70F9C9F1FA67}
 	EndGlobalSection
 EndGlobal

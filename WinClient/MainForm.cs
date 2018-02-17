@@ -21,7 +21,7 @@ namespace FXMind.WinClient
     {
         public delegate void InitProgressDelegate(int min, int max);
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (MainForm));
+        private static readonly ILog log = LogManager.GetLogger(typeof(MainForm));
 
         public static string DATEFORMAT = "yyyy,M,d";
         public static string TIMEFORMAT = "H,m,s";
@@ -29,9 +29,9 @@ namespace FXMind.WinClient
 
         public static BarStaticItem statusBar;
         public static TimeZoneInfo g_userTimeZone;
-        private Dictionary<string, ScheduledJob> RunningJobs = new Dictionary<string, ScheduledJob>();
 
         private AppServiceClient appclient;
+        private Dictionary<string, ScheduledJob> RunningJobs = new Dictionary<string, ScheduledJob>();
         private Dictionary<int, TimeZoneInfo> tz_col;
 
         public MainForm()
@@ -53,10 +53,7 @@ namespace FXMind.WinClient
 
         public void LogStatus(string statMessage)
         {
-            if (statusBar != null)
-            {
-                statusBar.Caption = statMessage;
-            }
+            if (statusBar != null) statusBar.Caption = statMessage;
         }
 
         public void ReloadAllViewsNotification()
@@ -92,7 +89,8 @@ namespace FXMind.WinClient
             try
             {
                 var builder = new ContainerBuilder();
-                builder.Register(c => new AppServiceClient("127.0.0.1", BusinessObjects.fxmindConstants.AppService_PORT)).As<AppServiceClient>().SingleInstance();
+                builder.Register(c => new AppServiceClient("127.0.0.1", fxmindConstants.AppService_PORT))
+                    .As<AppServiceClient>().SingleInstance();
                 container = builder.Build();
             }
             catch (Exception ex)
@@ -110,14 +108,13 @@ namespace FXMind.WinClient
 
             tz = TimeZoneInfo.GetSystemTimeZones();
             int index = 0;
-            if ((tz != null) && (tz.Count > 0))
-            {
+            if (tz != null && tz.Count > 0)
                 foreach (TimeZoneInfo timezone in tz)
                 {
                     barTimeZone2.Strings.Add(timezone.DisplayName);
                     index++;
                     tz_col.Add(index - 1, timezone);
-                    if ((gtimezone != null) && timezone.StandardName.Equals(gtimezone))
+                    if (gtimezone != null && timezone.StandardName.Equals(gtimezone))
                     {
                         barTimeZone2.ItemIndex = index - 1;
                         g_userTimeZone = tz_col[barTimeZone2.ItemIndex];
@@ -132,7 +129,6 @@ namespace FXMind.WinClient
                         }
                     }
                 }
-            }
 
             // reset this valuse on start
             appclient.SetGlobalProp("UseDateInterval", "false");
@@ -156,7 +152,7 @@ namespace FXMind.WinClient
                 //fxmind = container.Resolve<IMainService>();
                 //dbservice = container.Resolve<IDBService>();
                 appclient = container.Resolve<AppServiceClient>();
-                if (appclient!=null)
+                if (appclient != null)
                     log.Info("FXMind Main Service successfully initialized!");
                 else
                     log.Error("FXMind Main Service failed to initialize properly!");
@@ -194,10 +190,7 @@ namespace FXMind.WinClient
 
             Program.LogStatus("Connected to DB.");
 
-            if (!appclient.IsDebug())
-            {
-                barButtonTestClient.Enabled = false;
-            }
+            if (!appclient.IsDebug()) barButtonTestClient.Enabled = false;
 
             log.Info("Main Form Load Finished.");
         }
@@ -212,8 +205,10 @@ namespace FXMind.WinClient
                     LogStatus("!!!Please run FXMind.MainServer service!!!!");
                     return;
                 }
+
                 list = appclient.GetAllJobsList();
             }
+
             RunningJobs = appclient.GetRunningJobs();
             gridJobs1.DataSource = list;
         }
@@ -226,40 +221,48 @@ namespace FXMind.WinClient
                 if (barCSStart.EditValue != null)
                 {
                     var from = (DateTime) barCSStart.EditValue;
-                    String resDT = from.ToString(DATEFORMAT);
+                    string resDT = from.ToString(DATEFORMAT);
                     if (barCSStartTime.EditValue != null)
                     {
                         var dTimeStart = (DateTime) barCSStartTime.EditValue;
-                        String resT = dTimeStart.ToString(TIMEFORMAT);
+                        string resT = dTimeStart.ToString(TIMEFORMAT);
                         resDT += "," + resT;
                         DateTime.TryParseExact(resDT, DATETIMEFORMAT, CultureInfo.InvariantCulture.DateTimeFormat,
                             DateTimeStyles.AdjustToUniversal, out from);
                     }
                     else
+                    {
                         DateTime.TryParseExact(resDT, DATEFORMAT, CultureInfo.InvariantCulture.DateTimeFormat,
                             DateTimeStyles.AdjustToUniversal, out from);
+                    }
+
                     dt_from = TimeZoneInfo.ConvertTimeToUtc(from, g_userTimeZone).ToBinary();
                 }
+
                 long dt_to = 0;
                 if (barCSEnd.EditValue != null)
                 {
                     var to = (DateTime) barCSEnd.EditValue;
-                    String resDT = to.ToString(DATEFORMAT);
+                    string resDT = to.ToString(DATEFORMAT);
                     if (barCSEndTime.EditValue != null)
                     {
                         var dTimeEnd = (DateTime) barCSEndTime.EditValue;
-                        String resT = dTimeEnd.ToString(TIMEFORMAT);
+                        string resT = dTimeEnd.ToString(TIMEFORMAT);
                         resDT += "," + resT;
                         DateTime.TryParseExact(resDT, DATETIMEFORMAT, CultureInfo.InvariantCulture.DateTimeFormat,
                             DateTimeStyles.AdjustToUniversal, out to);
                     }
                     else
+                    {
                         DateTime.TryParseExact(resDT, DATEFORMAT, CultureInfo.InvariantCulture.DateTimeFormat,
                             DateTimeStyles.AdjustToUniversal, out to);
+                    }
 
                     dt_to = TimeZoneInfo.ConvertTimeToUtc(to, g_userTimeZone).ToBinary();
                 }
-                strengthGrid.DataSource = appclient.GetCurrencyStrengthSummary(recalc, !barCSUseInterval.Checked, dt_from,
+
+                strengthGrid.DataSource = appclient.GetCurrencyStrengthSummary(recalc, !barCSUseInterval.Checked,
+                    dt_from,
                     dt_to);
 
                 strengthGrid.RefreshDataSource();
@@ -341,7 +344,7 @@ namespace FXMind.WinClient
 
         private void barTimeZone2SelectionChange_ItemClick(object sender, ListItemClickEventArgs e)
         {
-            if ((barTimeZone2.ItemIndex >= 0) && (barTimeZone2.ItemIndex < tz_col.Count))
+            if (barTimeZone2.ItemIndex >= 0 && barTimeZone2.ItemIndex < tz_col.Count)
             {
                 g_userTimeZone = tz_col[barTimeZone2.ItemIndex];
                 appclient.SetGlobalProp("UserTimeZone", g_userTimeZone.StandardName);
@@ -358,7 +361,7 @@ namespace FXMind.WinClient
             {
                 object valJobName = gridView3.GetListSourceRowCellValue(e.ListSourceRowIndex, colJobName);
                 object valJobGroup = gridView3.GetListSourceRowCellValue(e.ListSourceRowIndex, colJobGroup);
-                if ((valJobName != null) && (valJobGroup != null))
+                if (valJobName != null && valJobGroup != null)
                 {
                     string jobName = valJobName.ToString();
                     string jobGroup = valJobGroup.ToString();
@@ -369,6 +372,7 @@ namespace FXMind.WinClient
                             e.Value = ConvertToLocalDateTime(val);
                         return;
                     }
+
                     if (e.Column.FieldName == "colNextTime")
                     {
                         long val = appclient.GetJobNextTime(jobGroup, jobName);
@@ -376,6 +380,7 @@ namespace FXMind.WinClient
                             e.Value = ConvertToLocalDateTime(val);
                         return;
                     }
+
                     if (e.Column.FieldName == "colLog")
                     {
                         string val = appclient.GetJobProp(jobGroup, jobName, "log");
@@ -390,10 +395,7 @@ namespace FXMind.WinClient
             DateTime datetime = DateTime.FromBinary(datelong);
             int offset_hours = -7;
             if (g_userTimeZone != null)
-            {
-                //offset_hours = g_userTimeZone.BaseUtcOffset.Hours;
                 return TimeZoneInfo.ConvertTime(datetime, g_userTimeZone); //datetime.AddHours(offset_hours);
-            }
             return datetime.AddHours(offset_hours);
         }
 
@@ -403,13 +405,14 @@ namespace FXMind.WinClient
             {
                 var strJobName = (string) gridView3.GetRowCellValue(e.RowHandle, colJobName);
                 var strJobGroup = (string) gridView3.GetRowCellValue(e.RowHandle, colJobGroup);
-                if ((strJobName == null) || (strJobGroup == null))
+                if (strJobName == null || strJobGroup == null)
                     return;
                 if (RunningJobs.ContainsKey(strJobGroup + strJobName))
                 {
                     e.Appearance.BackColor = DXColor.LightGreen;
                     return;
                 }
+
                 e.Appearance.BackColor = DXColor.White;
             }
             catch (Exception ex)
@@ -418,7 +421,6 @@ namespace FXMind.WinClient
             }
         }
 
-      
 
         private void gridView4_RowCellStyle(object sender, RowCellStyleEventArgs e)
         {
@@ -474,6 +476,7 @@ namespace FXMind.WinClient
                 //    LoadMTRelatedControls();
                 //    break;
             }
+
             justReloadAllViews();
         }
 
@@ -537,7 +540,7 @@ namespace FXMind.WinClient
                 var val = (bool) e.CellValue;
                 val = !val;
                 var row = (Currency) gridview.GetRow(e.RowHandle);
-                if ((row != null) && gridview.IsRowLoaded(e.RowHandle))
+                if (row != null && gridview.IsRowLoaded(e.RowHandle))
                 {
                     row.Enabled = val;
                     appclient.SaveCurrency(row);
@@ -566,7 +569,7 @@ namespace FXMind.WinClient
                 var val = (bool) e.CellValue;
                 val = !val;
                 var row = (TechIndicator) gridview.GetRow(e.RowHandle);
-                if ((row != null) && gridview.IsRowLoaded(e.RowHandle))
+                if (row != null && gridview.IsRowLoaded(e.RowHandle))
                 {
                     row.Enabled = val;
                     appclient.SaveIndicator(row);
@@ -580,7 +583,9 @@ namespace FXMind.WinClient
             if (oVal == null)
                 return;
             if (oVal is string)
+            {
                 e.Value = oVal.ToString();
+            }
             else
             {
                 var cron = (CronExpressionInfo) oVal;
@@ -590,6 +595,7 @@ namespace FXMind.WinClient
 
                 e.Value = cron._cron;
             }
+
             e.Handled = true;
         }
 
@@ -648,122 +654,6 @@ namespace FXMind.WinClient
             // TestThriftClient();
         }
 
-        /*   public void TestThriftClient()
-        {
-            FXMindMQLClient client = new FXBusinessLogic.BusinessObjects.Thrift.FXMindMQLClient("127.0.0.1", 2011);
-            List<string> list = new List<string>();
-            list.Add("Hello from client");
-            list = client.ProcessStringData(list);
-            log.Info("Client got: " + list[0] + "and " + list[1]);
-            
-        }*/
-        /*
-        public void TestThriftClientDLL()
-        {
-            var tc = new ThriftCalls.THRIFT_CLIENT();
-            //tc.host = "127.0.0.1";
-            tc.port = 2011;
-            tc.Magic = 5555;
-            string[] instr = {"hello", "world"};
-            string[] res = {"", "", "", ""};
-
-            //ThriftCalls.ProcessStringMethod(ref tc, instr, instr.Length, res);
-            //StringBuilder str = new StringBuilder("hellow|world|2");
-            //ThriftCalls.ProcessStringData(str);
-            string parameters = "func=CurrentSentiments|symbol=USDCHF|time=2014.05.09 23:45";
-            double[] d = {2, 4};
-            string data = "0|0";
-            long retval = ThriftCalls.ProcessDoubleData(d, 2, parameters, data, ref tc);
-            log.Info("Retval got: " + retval + "data: " + d[0] + ", " + d[1]);
-        }
-        */
-        #region ServiceFunctionality
-
-        private bool RefreshServicePage()
-        {
-            return UpdateServiceStatus();
-        }
-
-        protected bool UpdateServiceStatus()
-        {
-            bool status = false;
-            labelStatus.Text = AdminServiceManager.GetCurrentServiceStatus();
-            if (labelStatus.Text.Contains("Running"))
-                status = true;
-            else
-            {
-                if (!appclient.IsDebug())
-                    status = false;
-            }
-            xtraTabControl1.TabPages[0].PageEnabled = status;
-            return status;
-        }
-
-        private void applyBtn_Click(object sender, EventArgs e)
-        {
-            if (radioStart.Checked)
-            {
-                AdminServiceManager.EnableService();
-                AdminServiceManager.StartService();
-                UpdateServiceStatus();
-                return;
-            }
-            if (radioStop.Checked)
-            {
-                AdminServiceManager.StopService();
-                UpdateServiceStatus();
-                return;
-            }
-            if (radioEnable.Checked)
-            {
-                AdminServiceManager.EnableService();
-                UpdateServiceStatus();
-                return;
-            }
-            if (radioDisable.Checked)
-            {
-                AdminServiceManager.StopService();
-                AdminServiceManager.DisableService();
-                UpdateServiceStatus();
-            }
-        }
-
-        #endregion
-
-        #region CalculateTradersCount
-
-        public static SortedSet<string> tradersCount;
-
-        public static void initTradersCount()
-        {
-            tradersCount = new SortedSet<string>();
-        }
-
-        public static void AddTrader(string strTrader)
-        {
-            if (tradersCount != null)
-            {
-                tradersCount.Add(strTrader);
-            }
-        }
-
-        public static int GetTradersCountValue()
-        {
-            if (tradersCount != null)
-            {
-                return tradersCount.Count();
-            }
-            return 0;
-        }
-
-        public static void CleanTradersCount()
-        {
-            tradersCount.Clear();
-            tradersCount = null;
-        }
-
-        #endregion
-
         public class CronExpressionInfo
         {
             public CronExpressionInfo(string cron, string desc)
@@ -793,5 +683,121 @@ namespace FXMind.WinClient
             public int Max { get; internal set; }
         }
 
+        /*   public void TestThriftClient()
+        {
+            FXMindMQLClient client = new FXBusinessLogic.BusinessObjects.Thrift.FXMindMQLClient("127.0.0.1", 2011);
+            List<string> list = new List<string>();
+            list.Add("Hello from client");
+            list = client.ProcessStringData(list);
+            log.Info("Client got: " + list[0] + "and " + list[1]);
+            
+        }*/
+        /*
+        public void TestThriftClientDLL()
+        {
+            var tc = new ThriftCalls.THRIFT_CLIENT();
+            //tc.host = "127.0.0.1";
+            tc.port = 2011;
+            tc.Magic = 5555;
+            string[] instr = {"hello", "world"};
+            string[] res = {"", "", "", ""};
+
+            //ThriftCalls.ProcessStringMethod(ref tc, instr, instr.Length, res);
+            //StringBuilder str = new StringBuilder("hellow|world|2");
+            //ThriftCalls.ProcessStringData(str);
+            string parameters = "func=CurrentSentiments|symbol=USDCHF|time=2014.05.09 23:45";
+            double[] d = {2, 4};
+            string data = "0|0";
+            long retval = ThriftCalls.ProcessDoubleData(d, 2, parameters, data, ref tc);
+            log.Info("Retval got: " + retval + "data: " + d[0] + ", " + d[1]);
+        }
+        */
+
+        #region ServiceFunctionality
+
+        private bool RefreshServicePage()
+        {
+            return UpdateServiceStatus();
+        }
+
+        protected bool UpdateServiceStatus()
+        {
+            bool status = false;
+            labelStatus.Text = AdminServiceManager.GetCurrentServiceStatus();
+            if (labelStatus.Text.Contains("Running"))
+            {
+                status = true;
+            }
+            else
+            {
+                if (!appclient.IsDebug())
+                    status = false;
+            }
+
+            xtraTabControl1.TabPages[0].PageEnabled = status;
+            return status;
+        }
+
+        private void applyBtn_Click(object sender, EventArgs e)
+        {
+            if (radioStart.Checked)
+            {
+                AdminServiceManager.EnableService();
+                AdminServiceManager.StartService();
+                UpdateServiceStatus();
+                return;
+            }
+
+            if (radioStop.Checked)
+            {
+                AdminServiceManager.StopService();
+                UpdateServiceStatus();
+                return;
+            }
+
+            if (radioEnable.Checked)
+            {
+                AdminServiceManager.EnableService();
+                UpdateServiceStatus();
+                return;
+            }
+
+            if (radioDisable.Checked)
+            {
+                AdminServiceManager.StopService();
+                AdminServiceManager.DisableService();
+                UpdateServiceStatus();
+            }
+        }
+
+        #endregion
+
+        #region CalculateTradersCount
+
+        public static SortedSet<string> tradersCount;
+
+        public static void initTradersCount()
+        {
+            tradersCount = new SortedSet<string>();
+        }
+
+        public static void AddTrader(string strTrader)
+        {
+            if (tradersCount != null) tradersCount.Add(strTrader);
+        }
+
+        public static int GetTradersCountValue()
+        {
+            if (tradersCount != null) return tradersCount.Count();
+            return 0;
+        }
+
+        public static void CleanTradersCount()
+        {
+            tradersCount.Clear();
+            tradersCount = null;
+        }
+
+        #endregion
     }
 }

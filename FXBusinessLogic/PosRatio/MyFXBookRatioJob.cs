@@ -13,7 +13,7 @@ namespace FXBusinessLogic.PosRatio
     [DisallowConcurrentExecution]
     public class MyFXBookRatioJob : GenericJob
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (MyFXBookRatioJob));
+        private static readonly ILog log = LogManager.GetLogger(typeof(MyFXBookRatioJob));
         public static string URL;
 
         public MyFXBookRatioJob() : base(log)
@@ -31,6 +31,7 @@ namespace FXBusinessLogic.PosRatio
                     Exit(context);
                     return;
                 }
+
                 JobKey jobKey = context.JobDetail.Key;
                 log.InfoFormat("MyFXBookRatioJob started parsing: {0} executing at {1}", jobKey,
                     DateTime.Now.ToString("r"));
@@ -39,7 +40,7 @@ namespace FXBusinessLogic.PosRatio
                 WebPage homePage = browser.NavigateToPage(new Uri(URL));
                 HtmlNode document = homePage.Html;
                 int i = 0;
-                HtmlNode nodeTooltip = document.SelectSingleNode("//*[@id=\"outlookTip" + (i++) + "\"]");
+                HtmlNode nodeTooltip = document.SelectSingleNode("//*[@id=\"outlookTip" + i++ + "\"]");
 
                 Session session = FXConnectionHelper.GetNewSession();
 
@@ -52,7 +53,7 @@ namespace FXBusinessLogic.PosRatio
                         var docTable = new HtmlDocument();
                         docTable.LoadHtml(HTMLTable);
                         HtmlNode nodeSymbol = docTable.DocumentNode.SelectSingleNode("table/tr[1]/td");
-                        String strSymbol = "";
+                        string strSymbol = "";
                         if (nodeSymbol != null)
                             strSymbol = nodeSymbol.InnerText;
                         if (strSymbol.Length == 6)
@@ -74,6 +75,7 @@ namespace FXBusinessLogic.PosRatio
                                 else
                                     posRatio.LongRatio = float.Parse(trim);
                             }
+
                             HtmlNode nodeShort = docTable.DocumentNode.SelectSingleNode("table/tr[2]/td[2]");
                             if (nodeShort != null)
                             {
@@ -83,10 +85,12 @@ namespace FXBusinessLogic.PosRatio
                                 else
                                     posRatio.ShortRatio = float.Parse(trim);
                             }
+
                             session.Save(posRatio);
                         }
                     }
-                    nodeTooltip = document.SelectSingleNode("//*[@id=\"outlookTip" + (i++) + "\"]");
+
+                    nodeTooltip = document.SelectSingleNode("//*[@id=\"outlookTip" + i++ + "\"]");
                     //nodeTooltip = document.DocumentNode.SelectSingleNode("//*[@id=\"outlookTip" + (i++) + "\"]");
                 }
 
@@ -98,6 +102,7 @@ namespace FXBusinessLogic.PosRatio
             {
                 SetMessage("ERROR: " + ex);
             }
+
             Exit(context);
         }
     }

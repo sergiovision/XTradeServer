@@ -60,6 +60,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Quartz, Version=2.2.3.400, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Quartz.2.2.3\lib\net40\Quartz.dll</HintPath>
+    </Reference>
     <Reference Include="ScrapySharp">
       <HintPath>..\packages\ScrapySharp.2.2.63\lib\net40\ScrapySharp.dll</HintPath>
     </Reference>
@@ -228,10 +231,6 @@
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Quartz223\src\Quartz\Quartz.2010.csproj">
-      <Project>{aef8823b-e45b-4b35-a4d0-c08c1196d017}</Project>
-      <Name>Quartz.2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BusinessObjects\BusinessObjects.csproj">
       <Project>{b9151e6c-e756-43c2-a70f-c6fb46621809}</Project>
       <Name>BusinessObjects</Name>

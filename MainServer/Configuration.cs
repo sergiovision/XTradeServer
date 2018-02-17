@@ -17,8 +17,8 @@ namespace FXMind.MainServer
         private const string DefaultServiceName = "FXMindMainServer";
         private const string DefaultServiceDisplayName = "FXMind Main Server";
         private const string DefaultServiceDescription = "FXMind Main Tasks Running Service";
-        private static readonly ILog log = LogManager.GetLogger(typeof (Configuration));
-        private static readonly string DefaultServerImplementationType = typeof (QuartzServer).AssemblyQualifiedName;
+        private static readonly ILog log = LogManager.GetLogger(typeof(Configuration));
+        private static readonly string DefaultServerImplementationType = typeof(QuartzServer).AssemblyQualifiedName;
 
 
         /// <summary>
@@ -77,37 +77,28 @@ namespace FXMind.MainServer
         ///     Gets the name of the service.
         /// </summary>
         /// <value>The name of the service.</value>
-        public static string ServiceName
-        {
-            get { return GetConfigurationOrDefault(KeyServiceName, DefaultServiceName); }
-        }
+        public static string ServiceName => GetConfigurationOrDefault(KeyServiceName, DefaultServiceName);
 
         /// <summary>
         ///     Gets the display name of the service.
         /// </summary>
         /// <value>The display name of the service.</value>
-        public static string ServiceDisplayName
-        {
-            get { return GetConfigurationOrDefault(KeyServiceDisplayName, DefaultServiceDisplayName); }
-        }
+        public static string ServiceDisplayName =>
+            GetConfigurationOrDefault(KeyServiceDisplayName, DefaultServiceDisplayName);
 
         /// <summary>
         ///     Gets the service description.
         /// </summary>
         /// <value>The service description.</value>
-        public static string ServiceDescription
-        {
-            get { return GetConfigurationOrDefault(KeyServiceDescription, DefaultServiceDescription); }
-        }
+        public static string ServiceDescription =>
+            GetConfigurationOrDefault(KeyServiceDescription, DefaultServiceDescription);
 
         /// <summary>
         ///     Gets the type name of the server implementation.
         /// </summary>
         /// <value>The type of the server implementation.</value>
-        public static string ServerImplementationType
-        {
-            get { return GetConfigurationOrDefault(KeyServerImplementationType, DefaultServerImplementationType); }
-        }
+        public static string ServerImplementationType =>
+            GetConfigurationOrDefault(KeyServerImplementationType, DefaultServerImplementationType);
 
         /// <summary>
         ///     Returns configuration value with given key. If configuration
@@ -124,10 +115,7 @@ namespace FXMind.MainServer
             //    retValue = configuration[configurationKey];
             //}
 
-            if (retValue == null || retValue.Trim().Length == 0)
-            {
-                retValue = defaultValue;
-            }
+            if (retValue == null || retValue.Trim().Length == 0) retValue = defaultValue;
             return retValue;
         }
     }

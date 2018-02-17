@@ -16,7 +16,7 @@ namespace FXBusinessLogic.PosRatio
     [DisallowConcurrentExecution]
     public class EToroRatioJob : GenericJob
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (EToroRatioJob));
+        private static readonly ILog log = LogManager.GetLogger(typeof(EToroRatioJob));
 
         //public static string URL = "https://openbook.etoro.com/API/markets";  // https://openbook.etoro.com/markets/currencies/";
         public static string URL = "https://openbook.etoro.com/API/Markets/Symbol/InstrumentRate/?name=";
@@ -54,10 +54,12 @@ namespace FXBusinessLogic.PosRatio
                     Exit(context);
                     return;
                 }
+
                 JobKey jobKey = context.JobDetail.Key;
-                log.InfoFormat("EToroRatioJob started parsing: {0} executing at {1}", jobKey, DateTime.Now.ToString("r"));
+                log.InfoFormat("EToroRatioJob started parsing: {0} executing at {1}", jobKey,
+                    DateTime.Now.ToString("r"));
                 Session session = FXConnectionHelper.GetNewSession();
-                
+
                 IQueryable<DBSymbol> symbols = FXMindHelpers.getTechSymbols(session);
                 foreach (DBSymbol symbol in symbols)
                 {
@@ -69,10 +71,7 @@ namespace FXBusinessLogic.PosRatio
                     try
                     {
                         Task<string> data = GenericParser.GetDataRequest(_urlAction, true);
-                        while (!data.IsCompleted)
-                        {
-                            Thread.Sleep(10);
-                        }
+                        while (!data.IsCompleted) Thread.Sleep(10);
                         if (data == null)
                             continue;
                         if (data.Result == null)
@@ -85,6 +84,7 @@ namespace FXBusinessLogic.PosRatio
                         log.InfoFormat("Parsing failed for Symbol: " + _urlAction);
                         continue;
                     }
+
                     if (result != null)
                     {
                         var posRatio = new DBOpenPosRatio(session);
@@ -99,20 +99,15 @@ namespace FXBusinessLogic.PosRatio
                             hasBuy = true;
                             posRatio.LongRatio = (float) result.SentimentPercent.Value;
                         }
+
                         if (result.SentimentPercent.HasValue && result.SentimentType.Contains("Sell"))
                         {
                             hasSell = true;
                             posRatio.ShortRatio = (float) result.SentimentPercent.Value;
                         }
 
-                        if (hasBuy)
-                        {
-                            posRatio.ShortRatio = (float) 100.0 - (float) result.SentimentPercent.Value;
-                        }
-                        if (hasSell)
-                        {
-                            posRatio.LongRatio = (float) 100.0 - (float) result.SentimentPercent.Value;
-                        }
+                        if (hasBuy) posRatio.ShortRatio = (float) 100.0 - (float) result.SentimentPercent.Value;
+                        if (hasSell) posRatio.LongRatio = (float) 100.0 - (float) result.SentimentPercent.Value;
 
                         session.Save(posRatio);
                     }
@@ -126,6 +121,7 @@ namespace FXBusinessLogic.PosRatio
             {
                 SetMessage("ERROR: " + ex);
             }
+
             Exit(context);
         }
     }

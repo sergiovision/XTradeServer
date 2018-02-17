@@ -35,10 +35,7 @@ namespace FXMind.WinClient
 
         public static void LogStatus(string statMessage)
         {
-            if (MainForm.statusBar != null)
-            {
-                MainForm.statusBar.Caption = statMessage;
-            }
+            if (MainForm.statusBar != null) MainForm.statusBar.Caption = statMessage;
         }
     }
 }

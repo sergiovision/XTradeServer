@@ -1,7 +1,6 @@
 ﻿using System;
 using Autofac;
 using BusinessObjects;
-using FXBusinessLogic.BusinessObjects;
 using FXBusinessLogic.News;
 using FXBusinessLogic.PosRatio;
 using FXBusinessLogic.Thrift;
@@ -13,7 +12,7 @@ namespace FXBusinessLogic.Scheduler
     // JobSupervisor responsible for sheduling and manage all jobs in quartz
     internal class JobSupervisor : IJob
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof (JobSupervisor));
+        private static readonly ILog log = LogManager.GetLogger(typeof(JobSupervisor));
         protected IScheduler sched;
 
         public JobSupervisor()
@@ -38,7 +37,8 @@ namespace FXBusinessLogic.Scheduler
         {
             log.Info("JobSuperviser: ------- Scheduling Jobs -------");
 
-            ScheduleThriftJob<AppServiceServerJob>(fxmindConstants.JOBGROUP_THRIFT, "AppServiceServer", fxmindConstants.AppService_PORT, 1);
+            ScheduleThriftJob<AppServiceServerJob>(fxmindConstants.JOBGROUP_THRIFT, "AppServiceServer",
+                fxmindConstants.AppService_PORT, 1);
             //ScheduleThriftJob<FXMindMQLServerJob>(fxmindConstants.JOBGROUP_THRIFT, "FXMindMQLServer", fxmindConstants.FXMindMQL_PORT, 5);
 
             ScheduleJob<OandaRatioJob>(fxmindConstants.JOBGROUP_OPENPOSRATIO, "OandaRatio", "0 0 0/1 ? * MON-FRI *");
@@ -47,8 +47,8 @@ namespace FXBusinessLogic.Scheduler
             ScheduleJob<EToroRatioJob>(fxmindConstants.JOBGROUP_OPENPOSRATIO, "EToroRatioJob", "0 0 0/1 ? * MON-FRI *");
 
             ScheduleJob<NewsParseJob>(fxmindConstants.JOBGROUP_NEWS, "NewsParseJob", "0 0 9 ? * MON-FRI *");
-                // runs every 4 hours by defailt
-            
+            // runs every 4 hours by defailt
+
             /*
             //ScheduleJobWithParam<TechnicalDetailsJob>(fxmindConstants.JOBGROUP_TECHDETAIL, "TechDetails_Min1",
             //    fxmindConstants.CRON_MANUAL, "TimeFrame", "60");
@@ -96,10 +96,7 @@ namespace FXBusinessLogic.Scheduler
                 .UsingJobData("Lock", "false")
                 .StoreDurably(true)
                 .Build();
-            if (sched.CheckExists(job.Key))
-            {
-                return;
-            }
+            if (sched.CheckExists(job.Key)) return;
             string triggerName = name + "Trigger";
             SchedulerService.SetJobDataMap(job.Key, job.JobDataMap);
             var trigger = (ICronTrigger) TriggerBuilder.Create()
@@ -123,10 +120,7 @@ namespace FXBusinessLogic.Scheduler
                 .UsingJobData(param, value)
                 .StoreDurably(true)
                 .Build();
-            if (sched.CheckExists(job.Key))
-            {
-                return;
-            }
+            if (sched.CheckExists(job.Key)) return;
             string triggerName = name + "Trigger";
             SchedulerService.SetJobDataMap(job.Key, job.JobDataMap);
             var trigger = (ICronTrigger) TriggerBuilder.Create()
@@ -151,10 +145,7 @@ namespace FXBusinessLogic.Scheduler
                 .UsingJobData("port", port.ToString())
                 .StoreDurably(true)
                 .Build();
-            if (sched.CheckExists(job.Key))
-            {
-                sched.DeleteJob(job.Key);
-            }
+            if (sched.CheckExists(job.Key)) sched.DeleteJob(job.Key);
             string triggerName = name + "Trigger";
             SchedulerService.SetJobDataMap(job.Key, job.JobDataMap);
             ITrigger trigger = TriggerBuilder.Create()

@@ -27,10 +27,7 @@ namespace FXBusinessLogic
             IQueryable<DBSymbol> symbols = from c in symbolsQuery
                 where c.ID == SymbolID
                 select c;
-            if (symbols.Count() > 0)
-            {
-                return symbols.First();
-            }
+            if (symbols.Count() > 0) return symbols.First();
             return null;
         }
 
@@ -40,10 +37,7 @@ namespace FXBusinessLogic
             IQueryable<DBSymbol> symbols = from c in symbolsQuery
                 where c.Name == SymbolStr
                 select c;
-            if (symbols.Any())
-            {
-                return symbols.First();
-            }
+            if (symbols.Any()) return symbols.First();
             return null;
         }
 
@@ -53,10 +47,7 @@ namespace FXBusinessLogic
             IQueryable<DBCurrency> varQCurrency = from c in qCurrency
                 where c.Name == currencyStr
                 select c;
-            if (varQCurrency.Any())
-            {
-                return varQCurrency.First();
-            }
+            if (varQCurrency.Any()) return varQCurrency.First();
             return null;
         }
 
@@ -64,11 +55,10 @@ namespace FXBusinessLogic
         {
             var symbolsQuery = new XPQuery<DBSymbol>(session);
             IQueryable<DBSymbol> symbols = from c in symbolsQuery
-                                           where c.Use4Tech
-                                           select c;
+                where c.Use4Tech
+                select c;
             return symbols;
         }
-
 
 
         #region GlobalVars
@@ -105,6 +95,7 @@ namespace FXBusinessLogic
                 DBSettings gvar = gvars.First();
                 return gvar.Value;
             }
+
             return null;
         }
 
