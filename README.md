@@ -34,4 +34,6 @@ If you need help building and setting up robot write me to my email: sergewinner
 
 If robot help you earn money you can thank me using Donation of any amount on my PayPal account sergeiwinner @ gmail  com
 
+Allowed to use in your programs and enhance your robots, just mention my name in your products.
+
 Copyright (C) Sergei Zhuravlev 2018
