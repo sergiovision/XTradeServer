@@ -8,10 +8,10 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using FXBusinessLogic.fx_mind;
 using FXBusinessLogic.Scheduler;
-using HtmlAgilityPack;
 using log4net;
 using Quartz;
 using ScrapySharp.Network;
+using HtmlAgilityPack;
 
 namespace FXBusinessLogic.News
 {

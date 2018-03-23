@@ -15,4 +15,3 @@ C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\WinClient.csproj.CoreCompileInp
 C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\WinClient.csproj.CopyComplete
 C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\FXMind.WinClient.exe
 C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\FXMind.WinClient.pdb
-C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\WinClient.csprojResolveAssemblyReference.cache

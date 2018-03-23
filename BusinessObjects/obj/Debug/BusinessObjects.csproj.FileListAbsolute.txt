@@ -5,4 +5,3 @@ C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.csproj.Co
 C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.csproj.CopyComplete
 C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.dll
 C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.pdb
-C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.csprojResolveAssemblyReference.cache
