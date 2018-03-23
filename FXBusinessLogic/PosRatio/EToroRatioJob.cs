@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ using FXBusinessLogic.fx_mind;
 using FXBusinessLogic.Scheduler;
 using log4net;
 using Quartz;
-using Quartz.Collection;
 
 namespace FXBusinessLogic.PosRatio
 {
@@ -44,7 +44,7 @@ namespace FXBusinessLogic.PosRatio
             set.Add("NZD/JPY");
         }
 
-        public override void Execute(IJobExecutionContext context)
+        public override async Task Execute(IJobExecutionContext context)
         {
             try
             {
@@ -123,6 +123,8 @@ namespace FXBusinessLogic.PosRatio
             }
 
             Exit(context);
+            await Task.CompletedTask;
+
         }
     }
 }

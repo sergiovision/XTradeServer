@@ -30,7 +30,6 @@ namespace FXMind.WinClient
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
             DevExpress.Utils.ToolTipTitleItem toolTipTitleItem1 = new DevExpress.Utils.ToolTipTitleItem();
             DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
@@ -39,10 +38,11 @@ namespace FXMind.WinClient
             DevExpress.Utils.ToolTipTitleItem toolTipTitleItem3 = new DevExpress.Utils.ToolTipTitleItem();
             DevExpress.Utils.SuperToolTip superToolTip4 = new DevExpress.Utils.SuperToolTip();
             DevExpress.Utils.ToolTipTitleItem toolTipTitleItem4 = new DevExpress.Utils.ToolTipTitleItem();
+            DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
             DevExpress.XtraEditors.Controls.EditorButtonImageOptions editorButtonImageOptions1 = new DevExpress.XtraEditors.Controls.EditorButtonImageOptions();
             this.barAdviserSymbol = new DevExpress.XtraBars.BarEditItem();
             this.gridView8 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.MainBarManager = new DevExpress.XtraBars.BarManager(this.components);
+            this.MainBarManager = new DevExpress.XtraBars.BarManager();
             this.currencyStrengthBar = new DevExpress.XtraBars.Bar();
             this.barCurrencyList = new DevExpress.XtraBars.BarEditItem();
             this.repositoryGridLookCurrency1 = new DevExpress.XtraEditors.Repository.RepositoryItemGridLookUpEdit();
@@ -160,14 +160,14 @@ namespace FXMind.WinClient
             this.rowSlippage = new DevExpress.XtraVerticalGrid.Rows.EditorRow();
             this.rowComment = new DevExpress.XtraVerticalGrid.Rows.EditorRow();
             this.rowMaxOpenOrders = new DevExpress.XtraVerticalGrid.Rows.EditorRow();
-            this.iOpenOrderBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.barManager2 = new DevExpress.XtraBars.BarManager(this.components);
+            this.iOpenOrderBindingSource = new System.Windows.Forms.BindingSource();
+            this.barManager2 = new DevExpress.XtraBars.BarManager();
             this.barDockControl1 = new DevExpress.XtraBars.BarDockControl();
             this.barDockControl2 = new DevExpress.XtraBars.BarDockControl();
             this.barDockControl3 = new DevExpress.XtraBars.BarDockControl();
             this.barDockControl4 = new DevExpress.XtraBars.BarDockControl();
             this.barStaticItem5 = new DevExpress.XtraBars.BarStaticItem();
-            this.barManager3 = new DevExpress.XtraBars.BarManager(this.components);
+            this.barManager3 = new DevExpress.XtraBars.BarManager();
             this.bar5 = new DevExpress.XtraBars.Bar();
             this.barStaticItem6 = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControl5 = new DevExpress.XtraBars.BarDockControl();
@@ -955,6 +955,9 @@ namespace FXMind.WinClient
             // 
             this.gridJobs1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gridJobs1.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(6);
+            gridLevelNode1.RelationName = "Level1";
+            this.gridJobs1.LevelTree.Nodes.AddRange(new DevExpress.XtraGrid.GridLevelNode[] {
+            gridLevelNode1});
             this.gridJobs1.Location = new System.Drawing.Point(0, 0);
             this.gridJobs1.MainView = this.gridView3;
             this.gridJobs1.Margin = new System.Windows.Forms.Padding(6);

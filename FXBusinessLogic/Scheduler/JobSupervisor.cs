@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Autofac;
 using BusinessObjects;
 using FXBusinessLogic.News;
@@ -20,7 +21,7 @@ namespace FXBusinessLogic.Scheduler
             log.Debug("JobSuperviser c-tor");
         }
 
-        public void Execute(IJobExecutionContext context)
+        public  async Task Execute(IJobExecutionContext context)
         {
             try
             {
@@ -31,6 +32,8 @@ namespace FXBusinessLogic.Scheduler
             {
                 log.InfoFormat("{0}***{0}Failed: {1}{0}***{0}", Environment.NewLine, ex.Message);
             }
+            await Task.CompletedTask;
+
         }
 
         protected void SchedulingAllJobs()
@@ -96,16 +99,19 @@ namespace FXBusinessLogic.Scheduler
                 .UsingJobData("Lock", "false")
                 .StoreDurably(true)
                 .Build();
-            if (sched.CheckExists(job.Key)) return;
+            var exists = sched.CheckExists(job.Key);
+            if (exists.Result) return;
             string triggerName = name + "Trigger";
             SchedulerService.SetJobDataMap(job.Key, job.JobDataMap);
             var trigger = (ICronTrigger) TriggerBuilder.Create()
                 .WithIdentity(triggerName, group)
-                .WithCronSchedule(cron).WithPriority(1)
+                .WithCronSchedule(cron)
+                //.WithPriority(1)
                 .Build();
             SetTimeZoneForTrigger(trigger);
 
-            DateTimeOffset ft = sched.ScheduleJob(job, trigger);
+            var result  = sched.ScheduleJob(job, trigger);
+            DateTimeOffset ft = result.Result;
 
             log.Info(job.Key + " scheduled at: " + ft.ToUniversalTime() + " and repeat on cron: " +
                      trigger.CronExpressionString);
@@ -120,18 +126,20 @@ namespace FXBusinessLogic.Scheduler
                 .UsingJobData(param, value)
                 .StoreDurably(true)
                 .Build();
-            if (sched.CheckExists(job.Key)) return;
+            var exists = sched.CheckExists(job.Key);
+            if (exists.Result) return;
             string triggerName = name + "Trigger";
             SchedulerService.SetJobDataMap(job.Key, job.JobDataMap);
             var trigger = (ICronTrigger) TriggerBuilder.Create()
                 .WithIdentity(triggerName, group)
                 .WithCronSchedule(cron)
-                .WithPriority(1)
+                //.WithPriority(1)
                 .Build();
 
             SetTimeZoneForTrigger(trigger);
 
-            DateTimeOffset ft = sched.ScheduleJob(job, trigger);
+            var result = sched.ScheduleJob(job, trigger);
+            DateTimeOffset ft = result.Result;
 
             log.Info(job.Key + " scheduled at: " + ft.ToUniversalTime() + " and repeat on cron: " +
                      trigger.CronExpressionString);
@@ -145,16 +153,19 @@ namespace FXBusinessLogic.Scheduler
                 .UsingJobData("port", port.ToString())
                 .StoreDurably(true)
                 .Build();
-            if (sched.CheckExists(job.Key)) sched.DeleteJob(job.Key);
+            var exists = sched.CheckExists(job.Key);
+            if (exists.Result) 
+                sched.DeleteJob(job.Key);
             string triggerName = name + "Trigger";
             SchedulerService.SetJobDataMap(job.Key, job.JobDataMap);
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity(triggerName, group)
-                .WithPriority(10)
+                //.WithPriority(10)
                 .StartAt(DateTime.Now.AddSeconds(timeoutsec))
                 .Build();
 
-            DateTimeOffset ft = sched.ScheduleJob(job, trigger);
+            var result = sched.ScheduleJob(job, trigger);
+            DateTimeOffset ft = result.Result;
 
             log.Info(job.Key + " scheduled to start at " + ft);
         }

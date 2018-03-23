@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using BusinessObjects;
 using log4net;
 using Quartz;
@@ -18,8 +19,6 @@ namespace FXBusinessLogic.Scheduler
             log = l;
         }
 
-        public abstract void Execute(IJobExecutionContext context);
-
         public void SetMessage(string message)
         {
             strMessage = message;
@@ -32,7 +31,7 @@ namespace FXBusinessLogic.Scheduler
             return false;
         }
 
-        public void Exit(IJobExecutionContext context)
+        public async void Exit(IJobExecutionContext context)
         {
             DateTimeOffset now = SystemTime.UtcNow();
             TimeSpan duration = now - runTime;
@@ -42,6 +41,9 @@ namespace FXBusinessLogic.Scheduler
             log.InfoFormat(strMessage);
             if (s_ownerUI != null)
                 s_ownerUI.ReloadAllViewsNotification();
+            await Task.CompletedTask;
         }
+
+        public abstract Task Execute(IJobExecutionContext context);
     }
 }

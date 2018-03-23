@@ -32,7 +32,7 @@ namespace FXBusinessLogic.Scheduler
 
         public static JobDataMap GetJobDataMap(JobKey key)
         {
-            IJobDetail jd = sched.GetJobDetail(key);
+            IJobDetail jd = sched.GetJobDetail(key).Result;
             if (jd != null)
                 return jd.JobDataMap;
             return null;
@@ -40,7 +40,8 @@ namespace FXBusinessLogic.Scheduler
 
         public static void SetJobDataMap(JobKey key, JobDataMap map)
         {
-            IJobDetail jd = sched.GetJobDetail(key);
+            var jobDetail = sched.GetJobDetail(key);
+            IJobDetail jd = jobDetail.Result;
             if (jd == null)
                 return;
             jd.JobDataMap.PutAll(map);
@@ -54,7 +55,7 @@ namespace FXBusinessLogic.Scheduler
             properties["quartz.scheduler.wrapJobExecutionInUserTransaction"] = "false";
             properties["quartz.threadPool.class"] = "Quartz.Simpl.SimpleThreadPool, Quartz";
             properties["quartz.threadPool.threadCount"] = "10";
-            properties["quartz.threadPool.threadPriority"] = "2";
+            //properties["quartz.threadPool.threadPriority"] = "2";
             properties["quartz.jobStore.misfireThreshold"] = "60000";
             properties["quartz.jobStore.class"] = "Quartz.Simpl.RAMJobStore, Quartz";
         }
@@ -96,10 +97,10 @@ namespace FXBusinessLogic.Scheduler
                 {
                     properties = (NameValueCollection) ConfigurationManager.GetSection("quartz");
 
-                    var finalProps = new NameValueCollection(properties);
-                    string DS = ConfigurationManager.ConnectionStrings["FXMind.MySQLConnection"].ConnectionString;
-                    finalProps["quartz.dataSource.default.connectionString"] = DS;
-                    properties = finalProps;
+                    //var finalProps = new NameValueCollection(properties);
+                    //string DS = ConfigurationManager.ConnectionStrings["FXMind.MySQLConnection"].ConnectionString;
+                    //finalProps["quartz.dataSource.default.connectionString"] = DS;
+                    //properties = finalProps;
                 }
                 else
                 {
@@ -110,7 +111,7 @@ namespace FXBusinessLogic.Scheduler
 
                 // First we must get a reference to a scheduler
                 sf = new StdSchedulerFactory(properties);
-                sched = sf.GetScheduler();
+                sched = sf.GetScheduler().Result;
                 // All of the jobs have been added to the scheduler, but none of the jobs
                 // will run until the scheduler has been started
                 sched.Start();
@@ -124,7 +125,7 @@ namespace FXBusinessLogic.Scheduler
                 log.Info("IsStarted=" + sched.IsStarted);
                 log.Info("InstanceId=" + sched.SchedulerInstanceId);
                 log.Info("SchedulerName=" + sched.SchedulerName);
-                SchedulerMetaData metadata = sched.GetMetaData();
+                SchedulerMetaData metadata = sched.GetMetaData().Result;
                 log.Info("IS REMOTE (CLUSTERED )=" + metadata.SchedulerRemote);
                 isClustered = metadata.SchedulerRemote;
 
@@ -151,7 +152,7 @@ namespace FXBusinessLogic.Scheduler
                 .UsingJobData("Lock", "false")
                 .Build();
 
-            if (!sched.CheckExists(job.Key))
+            if (!sched.CheckExists(job.Key).Result)
             {
                 ITrigger trigger = TriggerBuilder.Create()
                     .WithIdentity("JobSupervisorTrigger")
@@ -166,7 +167,8 @@ namespace FXBusinessLogic.Scheduler
 
         public static void removeJobTriggers(IJobDetail job)
         {
-            IList<ITrigger> trigs = sched.GetTriggersOfJob(job.Key);
+            var triggers = sched.GetTriggersOfJob(job.Key);
+            var trigs = triggers.Result;
             foreach (ITrigger trigger in trigs) sched.UnscheduleJob(trigger.Key);
         }
 
@@ -183,7 +185,7 @@ namespace FXBusinessLogic.Scheduler
             if (bInitialized)
             {
                 log.Info("------- Shutting Down ---------------------");
-                SchedulerMetaData metaData = sched.GetMetaData();
+                SchedulerMetaData metaData = sched.GetMetaData().Result;
                 log.Info(string.Format("Executed {0} jobs.", metaData.NumberOfJobsExecuted));
                 sched.Shutdown(true);
                 log.Info("------- Shutdown Complete -----------------");
@@ -204,7 +206,7 @@ namespace FXBusinessLogic.Scheduler
         public static string GetJobProp(string group, string name, string prop)
         {
             var key = new JobKey(name, group);
-            IJobDetail detail = sched.GetJobDetail(key);
+            IJobDetail detail = sched.GetJobDetail(key).Result;
             string res = "";
             if (detail == null)
                 return res;
@@ -253,7 +255,7 @@ namespace FXBusinessLogic.Scheduler
             {
                 var key = new JobKey(name, group);
                 // now store value in jobstore dictionary
-                IJobDetail detail = sched.GetJobDetail(key);
+                IJobDetail detail = sched.GetJobDetail(key).Result;
                 if (detail == null)
                     return;
 
@@ -263,13 +265,13 @@ namespace FXBusinessLogic.Scheduler
                     TriggerKey triggerkey = trigger.Key;
                     string triggerName = trigger.Key.Name;
                     string triggerGroup = trigger.Key.Group;
-                    int Priority = trigger.Priority;
+                    //int Priority = trigger.Priority;
 
                     //removeJobTriggers(detail);
                     var newtrigger = (ICronTrigger) TriggerBuilder.Create()
                         .WithIdentity(triggerName, triggerGroup)
                         .WithCronSchedule(cron)
-                        .WithPriority(Priority)
+                        //.WithPriority(Priority)
                         .Build();
 
                     if (GenericJob.s_ownerUI != null)
@@ -286,7 +288,7 @@ namespace FXBusinessLogic.Scheduler
                         }
                     }
 
-                    DateTimeOffset? ft = sched.RescheduleJob(triggerkey, newtrigger);
+                    DateTimeOffset? ft = sched.RescheduleJob(triggerkey, newtrigger).Result;
                     log.Info(key + " has been rescheduled");
                 }
             }
@@ -298,7 +300,7 @@ namespace FXBusinessLogic.Scheduler
 
         public static ITrigger GetJobTrigger(string group, string name)
         {
-            IList<ITrigger> trigs = sched.GetTriggersOfJob(new JobKey(name, group));
+            var trigs = sched.GetTriggersOfJob(new JobKey(name, group)).Result;
             foreach (ITrigger trigger in trigs) return trigger;
             return null;
         }
@@ -329,7 +331,9 @@ namespace FXBusinessLogic.Scheduler
         {
             if (!bInitialized)
                 return;
-            if (!sched.CheckExists(key)) return;
+
+            if (!(sched.CheckExists(key).Result))
+                return;
             sched.TriggerJob(key);
         }
 
@@ -338,13 +342,13 @@ namespace FXBusinessLogic.Scheduler
             var list = new List<ScheduledJob>();
             if (!bInitialized)
                 return list;
-            IList<string> jobGroups = sched.GetJobGroupNames();
+            var jobGroups = sched.GetJobGroupNames().Result;
             foreach (string group in jobGroups)
             {
-                Quartz.Collection.ISet<JobKey> keys = sched.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(group));
-                foreach (JobKey key in keys)
+                var keys = sched.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(group));
+                foreach (JobKey key in keys.Result)
                 {
-                    IJobDetail detail = sched.GetJobDetail(key);
+                    IJobDetail detail = sched.GetJobDetail(key).Result;
                     if (detail == null)
                         continue;
                     var jobview = new ScheduledJob();
@@ -363,7 +367,7 @@ namespace FXBusinessLogic.Scheduler
                     //    }
                     //}
                     //jobview.Description = detail.Description;
-                    IList<ITrigger> trigs = sched.GetTriggersOfJob(detail.Key);
+                    var trigs = sched.GetTriggersOfJob(detail.Key).Result;
                     if (trigs != null)
                         foreach (ITrigger trigger in trigs)
                         {
@@ -389,8 +393,8 @@ namespace FXBusinessLogic.Scheduler
             var list = new Dictionary<string, ScheduledJob>();
             if (!bInitialized)
                 return list;
-            IList<IJobExecutionContext> ilist = sched.GetCurrentlyExecutingJobs();
-            foreach (IJobExecutionContext ic in ilist)
+            var ilist = sched.GetCurrentlyExecutingJobs();
+            foreach (IJobExecutionContext ic in ilist.Result)
             {
                 var view = new ScheduledJob();
                 view.Group = ic.JobDetail.Key.Group;

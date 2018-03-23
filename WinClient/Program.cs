@@ -12,7 +12,7 @@ namespace FXMind.WinClient
         ///     The main entry point for the application.
         /// </summary>
         [STAThread]
-        private static void Main()
+        public static void Main()
         {
             try
             {

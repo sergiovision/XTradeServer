@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using BusinessObjects;
 using FXBusinessLogic.Scheduler;
 using log4net;
@@ -18,7 +19,7 @@ namespace FXBusinessLogic.Thrift
             ts = new FXMindMQLServer(fxmindConstants.FXMindMQL_PORT);
         }
 
-        public override void Execute(IJobExecutionContext context)
+        public override async Task Execute(IJobExecutionContext context)
         {
             try
             {
@@ -37,6 +38,8 @@ namespace FXBusinessLogic.Thrift
             {
                 log.Error(ex.ToString());
             }
+            await Task.CompletedTask;
+
         }
     }
 }

@@ -1,7 +1,8 @@
 C:\Projects\FXMindLastNET6jul2014\BusinessObjects\obj\Debug\BusinessObjects.csproj.CoreCompileInputs.cache
-C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.csprojResolveAssemblyReference.cache
-C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.csproj.CoreCompileInputs.cache
 C:\Projects\GitHub\FXMindNET\bin\BusinessObjects.dll
 C:\Projects\GitHub\FXMindNET\bin\BusinessObjects.pdb
+C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.csproj.CoreCompileInputs.cache
+C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.csproj.CopyComplete
 C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.dll
 C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.pdb
+C:\Projects\GitHub\FXMindNET\BusinessObjects\obj\Debug\BusinessObjects.csprojResolveAssemblyReference.cache

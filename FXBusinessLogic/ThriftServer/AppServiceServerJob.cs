@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using BusinessObjects;
 using FXBusinessLogic.Scheduler;
 using log4net;
@@ -18,7 +19,7 @@ namespace FXBusinessLogic.Thrift
             ts = new AppServiceServer(fxmindConstants.AppService_PORT);
         }
 
-        public override void Execute(IJobExecutionContext context)
+        public override async Task Execute(IJobExecutionContext context)
         {
             try
             {
@@ -26,9 +27,8 @@ namespace FXBusinessLogic.Thrift
                 {
                     SetMessage("Job Locked");
                     Exit(context);
-                    return;
+                    
                 }
-
                 SetMessage("AppServiceServerJob listening endpoint localhost:" + fxmindConstants.AppService_PORT);
                 SchedulerService.LogJob(context, strMessage);
                 AppServiceServer.Run();
@@ -39,6 +39,7 @@ namespace FXBusinessLogic.Thrift
             {
                 log.Error(ex.ToString());
             }
+            await Task.CompletedTask;
         }
     }
 }

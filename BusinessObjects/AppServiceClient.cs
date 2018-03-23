@@ -1,3 +1,4 @@
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -12,6 +13,7 @@ namespace BusinessObjects
         public AppService.Client client;
         protected TProtocol protocol;
         protected TTransport transport;
+        private static readonly ILog log = LogManager.GetLogger(typeof(AppServiceClient));
 
         public AppServiceClient(string host, short port)
         {
@@ -34,10 +36,14 @@ namespace BusinessObjects
         public string GetGlobalProp(string name)
         {
             string val;
-            transport.Open();
             try
             {
+                transport.Open();
                 val = client.GetGlobalProp(name);
+            }
+            catch (Exception e)
+            {
+                val = "Exception: " + e.ToString();
             }
             finally
             {
@@ -49,10 +55,14 @@ namespace BusinessObjects
 
         public void SetGlobalProp(string name, string value)
         {
-            transport.Open();
             try
             {
+                transport.Open();
                 client.SetGlobalProp(name, value);
+            }
+            catch (Exception e)
+            {
+                log.Error(e.ToString());
             }
             finally
             {
@@ -212,9 +222,9 @@ namespace BusinessObjects
             long endInterval)
         {
             List<CurrencyStrengthSummary> val;
-            transport.Open();
             try
             {
+                transport.Open();
                 val = client.GetCurrencyStrengthSummary(recalc, bUseLast, startInterval, endInterval);
             }
             finally
@@ -228,9 +238,9 @@ namespace BusinessObjects
         public List<Currency> GetCurrencies()
         {
             List<Currency> val;
-            transport.Open();
             try
             {
+                transport.Open();
                 val = client.GetCurrencies();
             }
             finally
@@ -259,11 +269,16 @@ namespace BusinessObjects
 
         public bool IsDebug()
         {
-            bool val;
-            transport.Open();
+            bool val = false;
             try
             {
+                transport.Open();
                 val = client.IsDebug();
+            }
+            catch (Exception e)
+            {
+                log.Error(e.ToString());
+                
             }
             finally
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
@@ -54,7 +55,7 @@ namespace FXBusinessLogic.News
                       WHERE C.Name='{0}' AND YEAR(NE.HappenTime)={1} AND MONTH(NE.HappenTime) = {2} AND DAY(NE.HappenTime)={3} AND HOUR(NE.HappenTime)={4} AND MINUTE(NE.HappenTime)={5} AND NE.Importance={6}";
         }
 
-        public override void Execute(IJobExecutionContext context)
+        public override async Task Execute(IJobExecutionContext context)
         {
             try
             {
@@ -148,6 +149,8 @@ namespace FXBusinessLogic.News
             }
 
             Exit(context);
+            await Task.CompletedTask;
+
         }
 
         public bool ParseOnePage(WebPage homePage, Session session, DateTime curDateTime)

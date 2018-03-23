@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using DevExpress.Xpo;
 using FXBusinessLogic.fx_mind;
 using FXBusinessLogic.Scheduler;
@@ -23,7 +24,7 @@ namespace FXBusinessLogic.PosRatio
             URL = "http://fxtrade.oanda.com/analysis/open-position-ratios";
         }
 
-        public override void Execute(IJobExecutionContext context)
+        public override async Task Execute(IJobExecutionContext context)
         {
             try
             {
@@ -92,6 +93,8 @@ namespace FXBusinessLogic.PosRatio
             }
 
             Exit(context);
+            await Task.CompletedTask;
+
         }
     }
 }
