@@ -109,7 +109,7 @@ struct  NewsEventInfo
 {
   1:string Currency,
   2:string Name,
-  3:byte   Importance,
+  3:i8     Importance,
   4:string RaiseDateTime // date returned in MTFormat
 }
 

@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License. You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -21,62 +21,50 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.20506</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DF58BDB0-2457-4A52-9981-65A0E8B50833}</ProjectGuid>
-    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <ProjectGuid>{EBCE35DA-CF6A-42BC-A357-A9C09B534299}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Thrift.WP7</RootNamespace>
-    <AssemblyName>Thrift.WP7</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
-    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
-    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-    <SilverlightApplication>false</SilverlightApplication>
-    <ValidateXaml>true</ValidateXaml>
-    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <RootNamespace>Thrift</RootNamespace>
+    <AssemblyName>Thrift45</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>Bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
-    <NoStdLib>true</NoStdLib>
-    <NoConfig>true</NoConfig>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>Bin\Release</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
-    <NoStdLib>true</NoStdLib>
-    <NoConfig>true</NoConfig>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>TRACE;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Phone" />
-    <Reference Include="Microsoft.Phone.Interop" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Servicemodel.Web" />
-    <Reference Include="System.Windows" />
-    <Reference Include="system" />
+    <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\TCollections.cs" />
     <Compile Include="Collections\THashSet.cs" />
-    <Compile Include="Properties\AssemblyInfo.WP7.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\TAbstractBase.cs" />
     <Compile Include="Protocol\TBase.cs" />
     <Compile Include="Protocol\TBase64Utils.cs" />
     <Compile Include="Protocol\TBinaryProtocol.cs" />
+    <Compile Include="Protocol\TCompactProtocol.cs" />
     <Compile Include="Protocol\TField.cs" />
     <Compile Include="Protocol\TJSONProtocol.cs" />
     <Compile Include="Protocol\TList.cs" />
@@ -93,20 +81,44 @@
     <Compile Include="Protocol\TSet.cs" />
     <Compile Include="Protocol\TStruct.cs" />
     <Compile Include="Protocol\TType.cs" />
-    <Compile Include="TException.cs" />
+    <Compile Include="Server\TServer.cs" />
+    <Compile Include="Server\TServerEventHandler.cs" />
+    <Compile Include="Server\TSimpleServer.cs" />
+    <Compile Include="Server\TThreadedServer.cs" />
+    <Compile Include="Server\TThreadPoolServer.cs" />
     <Compile Include="TApplicationException.cs" />
+    <Compile Include="TAsyncProcessor.cs" />
+    <Compile Include="TControllingHandler.cs" />
+    <Compile Include="TException.cs" />
     <Compile Include="TProcessor.cs" />
+    <Compile Include="TProcessorFactory.cs" />
+    <Compile Include="TPrototypeProcessorFactory.cs" />
+    <Compile Include="Transport\TBufferedTransport.cs" />
     <Compile Include="Transport\TFramedTransport.cs" />
     <Compile Include="Transport\THttpClient.cs" />
+    <Compile Include="Transport\THttpHandler.cs" />
+    <Compile Include="Transport\THttpTaskAsyncHandler.cs" />
+    <Compile Include="Transport\TMemoryBuffer.cs" />
+    <Compile Include="Transport\TNamedPipeClientTransport.cs" />
+    <Compile Include="Transport\TNamedPipeServerTransport.cs" />
+    <Compile Include="Transport\TServerSocket.cs" />
+    <Compile Include="Transport\TServerTransport.cs" />
+    <Compile Include="Transport\TSilverlightSocket.cs" />
+    <Compile Include="Transport\TSocket.cs" />
+    <Compile Include="Transport\TSocketVersionizer.cs" />
     <Compile Include="Transport\TStreamTransport.cs" />
+    <Compile Include="Transport\TTLSServerSocket.cs" />
+    <Compile Include="Transport\TTLSSocket.cs" />
     <Compile Include="Transport\TTransport.cs" />
     <Compile Include="Transport\TTransportException.cs" />
     <Compile Include="Transport\TTransportFactory.cs" />
-    <Compile Include="Transport\TMemoryBuffer.cs" />
+    <Compile Include="TSingletonProcessorFactory.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
-  <ProjectExtensions />
+  <ItemGroup>
+    <Folder Include="Server\Collections\" />
+    <Folder Include="Server\Protocol\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

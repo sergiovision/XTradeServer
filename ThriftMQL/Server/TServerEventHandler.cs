@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -23,21 +23,28 @@
 
 using System;
 
-namespace Thrift.Transport
+namespace Thrift.Server
 {
-    public abstract class TServerTransport
-    {
-        public abstract void Listen();
-        public abstract void Close();
-        protected abstract TTransport AcceptImpl();
-
-        public TTransport Accept()
-        {
-            TTransport transport = AcceptImpl();
-            if (transport == null) {
-              throw new TTransportException("accept() may not return NULL");
-            }
-            return transport;
-         }
-    }
+  /// <summary>
+  /// Interface implemented by server users to handle events from the server
+  /// </summary>
+  public interface TServerEventHandler
+  {
+    /// <summary>
+    /// Called before the server begins */
+    /// </summary>
+    void preServe();
+    /// <summary>
+    /// Called when a new client has connected and is about to being processing */
+    /// </summary>
+    Object createContext(Thrift.Protocol.TProtocol input, Thrift.Protocol.TProtocol output);
+    /// <summary>
+    /// Called when a client has finished request-handling to delete server context */
+    /// </summary>
+    void deleteContext(Object serverContext, Thrift.Protocol.TProtocol input, Thrift.Protocol.TProtocol output);
+    /// <summary>
+    /// Called when a client is about to call the processor */
+    /// </summary>
+    void processContext(Object serverContext, Thrift.Transport.TTransport transport);
+  };
 }

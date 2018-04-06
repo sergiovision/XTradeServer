@@ -90,7 +90,7 @@ namespace FXMind.WinClient
             try
             {
                 var builder = new ContainerBuilder();
-                builder.Register(c => new AppServiceClient("127.0.0.1", fxmindConstants.AppService_PORT))
+                builder.Register(c => new AppServiceClient("localhost", fxmindConstants.AppService_PORT))
                     .As<AppServiceClient>().SingleInstance();
                 container = builder.Build();
             }

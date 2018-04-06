@@ -28,6 +28,7 @@ namespace ThriftMQL
         //public static string host = "127.0.0.1";
 
         protected static FXMindMQLClient client;
+        protected static string GlobalErrorMessage;
 
         protected static List<string> StringToList(string str)
         {
@@ -93,9 +94,10 @@ namespace ThriftMQL
                     resDblList.CopyTo(arr);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 client = null;
+                GlobalErrorMessage = e.ToString();
                 return -1;
             }
             return 0;
@@ -122,8 +124,9 @@ namespace ThriftMQL
             {
                 string errstr = e.ToString();
                 if (errstr.Length>100)
-                errstr = errstr.Substring(0, 100);
+                    errstr = errstr.Substring(0, 100);
                 str.Append(errstr);
+                GlobalErrorMessage = str.ToString();
                 client = null;
                 return -1;
             }
@@ -142,9 +145,10 @@ namespace ThriftMQL
                 paramsDic["account"] = tc.accountNumber.ToString();
                 return client.IsServerActive(paramsDic);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 client = null;
+                GlobalErrorMessage = e.ToString();
                 return -1;
             }
         }
@@ -162,9 +166,10 @@ namespace ThriftMQL
                 paramsDic["message"] = message;
                 client.PostStatusMessage(paramsDic);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 client = null;
+                GlobalErrorMessage = e.ToString();
             }
         }
 
@@ -180,9 +185,10 @@ namespace ThriftMQL
                     GC.Collect();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 client = null;
+                GlobalErrorMessage = e.ToString();
             }
         }
     }

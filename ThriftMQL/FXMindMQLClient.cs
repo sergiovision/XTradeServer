@@ -1,3 +1,4 @@
+using BusinessObjects;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -21,6 +22,7 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
 
                 protocol = new TBinaryProtocol(transport);
                 client = new FXMindMQL.Client(protocol);
+                //transport.Open();
             }
             catch (TApplicationException x)
             {
@@ -35,14 +37,25 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
         public List<string> ProcessStringData(Dictionary<string, string> paramsList, List<string> inputData)
         {
             List<string> list = new List<string>();
-            transport.Open();
             try
             {
-                list = client.ProcessStringData(paramsList, inputData);
+                transport.Open();
+                try
+                {
+                    list = client.ProcessStringData(paramsList, inputData);
+                }
+                finally
+                {
+                    transport.Close();
+                }
             }
-            finally
+            catch (TApplicationException x)
             {
-                transport.Close();
+                Console.WriteLine(x.StackTrace);
+            }
+            catch (SocketException s)
+            {
+                Console.WriteLine(s.ToString());
             }
             return list;
         }
@@ -50,43 +63,74 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
         public List<double> ProcessDoubleData(Dictionary<string, string> paramsList, List<string> inputData)
         {
             List<double> list = new List<double>();
-            transport.Open();
-            try
-            {
-                list = client.ProcessDoubleData(paramsList, inputData);
+            try { 
+                transport.Open();
+                try
+                {
+                    list = client.ProcessDoubleData(paramsList, inputData);
+                }
+                finally
+                {
+                    transport.Close();
+                }
             }
-            finally
+            catch (TApplicationException x)
             {
-                transport.Close();
+                Console.WriteLine(x.StackTrace);
+            }
+            catch (SocketException s)
+            {
+                Console.WriteLine(s.ToString());
             }
             return list;
         }
 
         public long IsServerActive(Dictionary<string, string> paramsList)
         {
-            transport.Open();
             long retval = 0;
             try
             {
-                retval = client.IsServerActive(paramsList);
+                transport.Open();
+                try
+                {
+                    retval = client.IsServerActive(paramsList);
+                }
+                finally
+                {
+                    transport.Close();
+                }
             }
-            finally
+            catch (TApplicationException x)
             {
-                transport.Close();
+                Console.WriteLine(x.StackTrace);
+            }
+            catch (SocketException s)
+            {
+                Console.WriteLine(s.ToString());
             }
             return retval;
         }
 
         public void PostStatusMessage(Dictionary<string, string> paramsList)
         {
-            transport.Open();
-            try
-            {
-                client.PostStatusMessage(paramsList);
+            try { 
+                transport.Open();
+                try
+                {
+                    client.PostStatusMessage(paramsList);
+                }
+                finally
+                {
+                    transport.Close();
+                }
             }
-            finally
+            catch (TApplicationException x)
             {
-                transport.Close();
+                Console.WriteLine(x.StackTrace);
+            }
+            catch (SocketException s)
+            {
+                Console.WriteLine(s.ToString());
             }
         }
 

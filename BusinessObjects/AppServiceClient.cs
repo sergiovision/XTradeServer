@@ -22,6 +22,7 @@ namespace BusinessObjects
                 transport = new TSocket(host, port);
                 protocol = new TBinaryProtocol(transport);
                 client = new AppService.Client(protocol);
+                transport.Open();
             }
             catch (TApplicationException x)
             {

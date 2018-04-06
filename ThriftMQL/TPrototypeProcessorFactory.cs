@@ -1,4 +1,4 @@
-/**
+﻿/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -15,40 +15,41 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
- * Contains some contributions under the Thrift Software License.
- * Please see doc/old-thrift-license.txt in the Thrift distribution for
- * details.
  */
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Thrift.Server;
+using Thrift.Transport;
 
-namespace Thrift.Protocol
+namespace Thrift
 {
-    public struct TList
+    public class TPrototypeProcessorFactory<P, H> : TProcessorFactory where P : TProcessor
     {
-        private TType elementType;
-        private int count;
+        object[] handlerArgs = null;
 
-        public TList(TType elementType, int count)
-            :this()
+        public TPrototypeProcessorFactory()
         {
-            this.elementType = elementType;
-            this.count = count;
+            handlerArgs = new object[0];
         }
 
-        public TType ElementType
+        public TPrototypeProcessorFactory(params object[] handlerArgs)
         {
-            get { return elementType; }
-            set { elementType = value; }
+            this.handlerArgs = handlerArgs;
         }
 
-        public int Count
+        public TProcessor GetProcessor(TTransport trans, TServer server = null)
         {
-            get { return count; }
-            set { count = value; }
+            H handler = (H) Activator.CreateInstance(typeof(H), handlerArgs);
+
+            TControllingHandler handlerServerRef = handler as TControllingHandler;
+            if (handlerServerRef != null)
+            {
+                handlerServerRef.server = server;
+            }
+            return Activator.CreateInstance(typeof(P), new object[] { handler }) as TProcessor;
         }
     }
 }

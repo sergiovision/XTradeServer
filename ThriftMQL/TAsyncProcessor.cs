@@ -15,29 +15,24 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
- * Contains some contributions under the Thrift Software License.
- * Please see doc/old-thrift-license.txt in the Thrift distribution for
- * details.
  */
 
-using System;
+using System.Threading.Tasks;
+using Thrift.Protocol;
 
-namespace Thrift.Transport
+namespace Thrift
 {
-    public abstract class TServerTransport
+    /// <summary>
+    /// Processes a message asynchronously.
+    /// </summary>
+    public interface TAsyncProcessor
     {
-        public abstract void Listen();
-        public abstract void Close();
-        protected abstract TTransport AcceptImpl();
-
-        public TTransport Accept()
-        {
-            TTransport transport = AcceptImpl();
-            if (transport == null) {
-              throw new TTransportException("accept() may not return NULL");
-            }
-            return transport;
-         }
+        /// <summary>
+        /// Processes the next part of the message.
+        /// </summary>
+        /// <param name="iprot">The input protocol.</param>
+        /// <param name="oprot">The output protocol.</param>
+        /// <returns>true if there's more to process, false otherwise.</returns>
+        Task<bool> ProcessAsync(TProtocol iprot, TProtocol oprot);
     }
 }

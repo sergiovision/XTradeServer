@@ -21,7 +21,8 @@
 /WinClient/obj/Debug/FXMind.WinClient.exe
 /WinClient/obj/Debug/WinClient.csproj.CopyComplete
 /UpgradeLog.htm
-/BusinessObjects/obj/Release
-/FXBusinessLogic/obj/Release
-/MainServer/obj/Release
-/WinClient/obj/Release
+/BusinessObjects/obj
+/FXBusinessLogic/obj
+/MainServer/obj
+/WinClient/obj
+/ThriftMQL/obj
