@@ -28,6 +28,8 @@ namespace FXBusinessLogic
             string DS = ConfigurationManager.ConnectionStrings["FXMind.ConnectionString"].ConnectionString;
             connString = DS;
 
+            SimpleDataLayer.SuppressReentrancyAndThreadSafetyCheck = true;
+
             var autoCreateOption = AutoCreateOption.None; //.DatabaseAndSchema;
             XpoDefault.DataLayer = XpoDefault.GetDataLayer(connString, autoCreateOption);
             if (dbSession == null) // first connect

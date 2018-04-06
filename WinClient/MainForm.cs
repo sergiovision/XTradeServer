@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Autofac;
 using BusinessObjects;
 using DevExpress.Utils;
+using DevExpress.Xpo;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
@@ -169,6 +170,8 @@ namespace FXMind.WinClient
         private void TradersParserFrom_Load(object sender, EventArgs e)
         {
             log.Info("Main Form Load...");
+
+
 
             ReloadAllViews += TradersParserForm_ReloadAllViews;
             InitProgress += TradersParserForm_InitProgressBar;
@@ -734,7 +737,7 @@ namespace FXMind.WinClient
                     status = false;
             }
 
-            xtraTabControl1.TabPages[0].PageEnabled = status;
+            xtraTabControl1.TabPages[0].PageEnabled = true;
             return status;
         }
 

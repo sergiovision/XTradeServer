@@ -16,7 +16,7 @@ namespace FXBusinessLogic.Thrift
         public FXMindMQLServerJob()
             : base(log)
         {
-            ts = new FXMindMQLServer(fxmindConstants.FXMindMQL_PORT);
+            ts = new FXMindMQLServer();
         }
 
         public override async Task Execute(IJobExecutionContext context)

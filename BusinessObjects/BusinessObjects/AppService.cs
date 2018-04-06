@@ -4,161 +4,171 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
-
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
+using System.IO;
 using Thrift;
+using Thrift.Collections;
+using System.Runtime.Serialization;
 using Thrift.Protocol;
+using Thrift.Transport;
 
 namespace BusinessObjects
 {
-    public class AppService
-    {
-        public interface Iface
-        {
-            string GetGlobalProp(string name);
-#if SILVERLIGHT
+  public partial class AppService {
+    public interface Iface {
+      string GetGlobalProp(string name);
+      #if SILVERLIGHT
       IAsyncResult Begin_GetGlobalProp(AsyncCallback callback, object state, string name);
       string End_GetGlobalProp(IAsyncResult asyncResult);
       #endif
-            void SetGlobalProp(string name, string value);
-#if SILVERLIGHT
+      void SetGlobalProp(string name, string value);
+      #if SILVERLIGHT
       IAsyncResult Begin_SetGlobalProp(AsyncCallback callback, object state, string name, string value);
       void End_SetGlobalProp(IAsyncResult asyncResult);
       #endif
-            bool InitScheduler(bool serverMode);
-#if SILVERLIGHT
+      bool InitScheduler(bool serverMode);
+      #if SILVERLIGHT
       IAsyncResult Begin_InitScheduler(AsyncCallback callback, object state, bool serverMode);
       bool End_InitScheduler(IAsyncResult asyncResult);
       #endif
-            void RunJobNow(string group, string name);
-#if SILVERLIGHT
+      void RunJobNow(string group, string name);
+      #if SILVERLIGHT
       IAsyncResult Begin_RunJobNow(AsyncCallback callback, object state, string group, string name);
       void End_RunJobNow(IAsyncResult asyncResult);
       #endif
-            string GetJobProp(string group, string name, string prop);
-#if SILVERLIGHT
+      string GetJobProp(string group, string name, string prop);
+      #if SILVERLIGHT
       IAsyncResult Begin_GetJobProp(AsyncCallback callback, object state, string group, string name, string prop);
       string End_GetJobProp(IAsyncResult asyncResult);
       #endif
-            void SetJobCronSchedule(string group, string name, string cron);
-#if SILVERLIGHT
+      void SetJobCronSchedule(string group, string name, string cron);
+      #if SILVERLIGHT
       IAsyncResult Begin_SetJobCronSchedule(AsyncCallback callback, object state, string group, string name, string cron);
       void End_SetJobCronSchedule(IAsyncResult asyncResult);
       #endif
-            List<ScheduledJob> GetAllJobsList();
-#if SILVERLIGHT
+      List<ScheduledJob> GetAllJobsList();
+      #if SILVERLIGHT
       IAsyncResult Begin_GetAllJobsList(AsyncCallback callback, object state);
       List<ScheduledJob> End_GetAllJobsList(IAsyncResult asyncResult);
       #endif
-            Dictionary<string, ScheduledJob> GetRunningJobs();
-#if SILVERLIGHT
+      Dictionary<string, ScheduledJob> GetRunningJobs();
+      #if SILVERLIGHT
       IAsyncResult Begin_GetRunningJobs(AsyncCallback callback, object state);
       Dictionary<string, ScheduledJob> End_GetRunningJobs(IAsyncResult asyncResult);
       #endif
-            long GetJobNextTime(string group, string name);
-#if SILVERLIGHT
+      long GetJobNextTime(string group, string name);
+      #if SILVERLIGHT
       IAsyncResult Begin_GetJobNextTime(AsyncCallback callback, object state, string group, string name);
       long End_GetJobNextTime(IAsyncResult asyncResult);
       #endif
-            long GetJobPrevTime(string group, string name);
-#if SILVERLIGHT
+      long GetJobPrevTime(string group, string name);
+      #if SILVERLIGHT
       IAsyncResult Begin_GetJobPrevTime(AsyncCallback callback, object state, string group, string name);
       long End_GetJobPrevTime(IAsyncResult asyncResult);
       #endif
-            void PauseScheduler();
-#if SILVERLIGHT
+      void PauseScheduler();
+      #if SILVERLIGHT
       IAsyncResult Begin_PauseScheduler(AsyncCallback callback, object state);
       void End_PauseScheduler(IAsyncResult asyncResult);
       #endif
-            void ResumeScheduler();
-#if SILVERLIGHT
+      void ResumeScheduler();
+      #if SILVERLIGHT
       IAsyncResult Begin_ResumeScheduler(AsyncCallback callback, object state);
       void End_ResumeScheduler(IAsyncResult asyncResult);
       #endif
-            List<CurrencyStrengthSummary> GetCurrencyStrengthSummary(bool recalc, bool bUseLast, long startInterval,
-                long endInterval);
-#if SILVERLIGHT
+      List<CurrencyStrengthSummary> GetCurrencyStrengthSummary(bool recalc, bool bUseLast, long startInterval, long endInterval);
+      #if SILVERLIGHT
       IAsyncResult Begin_GetCurrencyStrengthSummary(AsyncCallback callback, object state, bool recalc, bool bUseLast, long startInterval, long endInterval);
       List<CurrencyStrengthSummary> End_GetCurrencyStrengthSummary(IAsyncResult asyncResult);
       #endif
-            List<Currency> GetCurrencies();
-#if SILVERLIGHT
+      List<Currency> GetCurrencies();
+      #if SILVERLIGHT
       IAsyncResult Begin_GetCurrencies(AsyncCallback callback, object state);
       List<Currency> End_GetCurrencies(IAsyncResult asyncResult);
       #endif
-            List<TechIndicator> GetIndicators();
-#if SILVERLIGHT
+      List<TechIndicator> GetIndicators();
+      #if SILVERLIGHT
       IAsyncResult Begin_GetIndicators(AsyncCallback callback, object state);
       List<TechIndicator> End_GetIndicators(IAsyncResult asyncResult);
       #endif
-            bool IsDebug();
-#if SILVERLIGHT
+      bool IsDebug();
+      #if SILVERLIGHT
       IAsyncResult Begin_IsDebug(AsyncCallback callback, object state);
       bool End_IsDebug(IAsyncResult asyncResult);
       #endif
-            void SaveCurrency(Currency c);
-#if SILVERLIGHT
+      void SaveCurrency(Currency c);
+      #if SILVERLIGHT
       IAsyncResult Begin_SaveCurrency(AsyncCallback callback, object state, Currency c);
       void End_SaveCurrency(IAsyncResult asyncResult);
       #endif
-            void SaveIndicator(TechIndicator i);
-#if SILVERLIGHT
+      void SaveIndicator(TechIndicator i);
+      #if SILVERLIGHT
       IAsyncResult Begin_SaveIndicator(AsyncCallback callback, object state, TechIndicator i);
       void End_SaveIndicator(IAsyncResult asyncResult);
       #endif
-        }
+    }
 
-        public class Client : IDisposable, Iface
+    public class Client : IDisposable, Iface {
+      public Client(TProtocol prot) : this(prot, prot)
+      {
+      }
+
+      public Client(TProtocol iprot, TProtocol oprot)
+      {
+        iprot_ = iprot;
+        oprot_ = oprot;
+      }
+
+      protected TProtocol iprot_;
+      protected TProtocol oprot_;
+      protected int seqid_;
+
+      public TProtocol InputProtocol
+      {
+        get { return iprot_; }
+      }
+      public TProtocol OutputProtocol
+      {
+        get { return oprot_; }
+      }
+
+
+      #region " IDisposable Support "
+      private bool _IsDisposed;
+
+      // IDisposable
+      public void Dispose()
+      {
+        Dispose(true);
+      }
+      
+
+      protected virtual void Dispose(bool disposing)
+      {
+        if (!_IsDisposed)
         {
-            public Client(TProtocol prot) : this(prot, prot)
+          if (disposing)
+          {
+            if (iprot_ != null)
             {
+              ((IDisposable)iprot_).Dispose();
             }
-
-            public Client(TProtocol iprot, TProtocol oprot)
+            if (oprot_ != null)
             {
-                iprot_ = iprot;
-                oprot_ = oprot;
+              ((IDisposable)oprot_).Dispose();
             }
-
-            protected TProtocol iprot_;
-            protected TProtocol oprot_;
-            protected int seqid_;
-
-            public TProtocol InputProtocol => iprot_;
-
-            public TProtocol OutputProtocol => oprot_;
+          }
+        }
+        _IsDisposed = true;
+      }
+      #endregion
 
 
-            #region " IDisposable Support "
-
-            private bool _IsDisposed;
-
-            // IDisposable
-            public void Dispose()
-            {
-                Dispose(true);
-            }
-
-
-            protected virtual void Dispose(bool disposing)
-            {
-                if (!_IsDisposed)
-                    if (disposing)
-                    {
-                        if (iprot_ != null) ((IDisposable) iprot_).Dispose();
-                        if (oprot_ != null) ((IDisposable) oprot_).Dispose();
-                    }
-
-                _IsDisposed = true;
-            }
-
-            #endregion
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_GetGlobalProp(AsyncCallback callback, object state, string name)
       {
         return send_GetGlobalProp(callback, state, name);
@@ -172,56 +182,55 @@ namespace BusinessObjects
 
       #endif
 
-            public string GetGlobalProp(string name)
-            {
-#if !SILVERLIGHT
-                send_GetGlobalProp(name);
-                return recv_GetGlobalProp();
+      public string GetGlobalProp(string name)
+      {
+        #if !SILVERLIGHT
+        send_GetGlobalProp(name);
+        return recv_GetGlobalProp();
 
-#else
+        #else
         var asyncResult = Begin_GetGlobalProp(null, null, name);
         return End_GetGlobalProp(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_GetGlobalProp(AsyncCallback callback, object state, string name)
       #else
-            public void send_GetGlobalProp(string name)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("GetGlobalProp", TMessageType.Call, seqid_));
-                GetGlobalProp_args args = new GetGlobalProp_args();
-                args.Name = name;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_GetGlobalProp(string name)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetGlobalProp", TMessageType.Call, seqid_));
+        GetGlobalProp_args args = new GetGlobalProp_args();
+        args.Name = name;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public string recv_GetGlobalProp()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public string recv_GetGlobalProp()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetGlobalProp_result result = new GetGlobalProp_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetGlobalProp failed: unknown result");
+      }
 
-                GetGlobalProp_result result = new GetGlobalProp_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "GetGlobalProp failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_SetGlobalProp(AsyncCallback callback, object state, string name, string value)
       {
         return send_SetGlobalProp(callback, state, name, value);
@@ -234,37 +243,37 @@ namespace BusinessObjects
 
       #endif
 
-            public void SetGlobalProp(string name, string value)
-            {
-#if !SILVERLIGHT
-                send_SetGlobalProp(name, value);
+      public void SetGlobalProp(string name, string value)
+      {
+        #if !SILVERLIGHT
+        send_SetGlobalProp(name, value);
 
-#else
+        #else
         var asyncResult = Begin_SetGlobalProp(null, null, name, value);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_SetGlobalProp(AsyncCallback callback, object state, string name, string value)
       #else
-            public void send_SetGlobalProp(string name, string value)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("SetGlobalProp", TMessageType.Call, seqid_));
-                SetGlobalProp_args args = new SetGlobalProp_args();
-                args.Name = name;
-                args.Value = value;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_SetGlobalProp(string name, string value)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("SetGlobalProp", TMessageType.Call, seqid_));
+        SetGlobalProp_args args = new SetGlobalProp_args();
+        args.Name = name;
+        args.Value = value;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_InitScheduler(AsyncCallback callback, object state, bool serverMode)
       {
         return send_InitScheduler(callback, state, serverMode);
@@ -278,56 +287,55 @@ namespace BusinessObjects
 
       #endif
 
-            public bool InitScheduler(bool serverMode)
-            {
-#if !SILVERLIGHT
-                send_InitScheduler(serverMode);
-                return recv_InitScheduler();
+      public bool InitScheduler(bool serverMode)
+      {
+        #if !SILVERLIGHT
+        send_InitScheduler(serverMode);
+        return recv_InitScheduler();
 
-#else
+        #else
         var asyncResult = Begin_InitScheduler(null, null, serverMode);
         return End_InitScheduler(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_InitScheduler(AsyncCallback callback, object state, bool serverMode)
       #else
-            public void send_InitScheduler(bool serverMode)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("InitScheduler", TMessageType.Call, seqid_));
-                InitScheduler_args args = new InitScheduler_args();
-                args.ServerMode = serverMode;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_InitScheduler(bool serverMode)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("InitScheduler", TMessageType.Call, seqid_));
+        InitScheduler_args args = new InitScheduler_args();
+        args.ServerMode = serverMode;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public bool recv_InitScheduler()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public bool recv_InitScheduler()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        InitScheduler_result result = new InitScheduler_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "InitScheduler failed: unknown result");
+      }
 
-                InitScheduler_result result = new InitScheduler_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "InitScheduler failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_RunJobNow(AsyncCallback callback, object state, string group, string name)
       {
         return send_RunJobNow(callback, state, group, name);
@@ -340,37 +348,37 @@ namespace BusinessObjects
 
       #endif
 
-            public void RunJobNow(string group, string name)
-            {
-#if !SILVERLIGHT
-                send_RunJobNow(group, name);
+      public void RunJobNow(string group, string name)
+      {
+        #if !SILVERLIGHT
+        send_RunJobNow(group, name);
 
-#else
+        #else
         var asyncResult = Begin_RunJobNow(null, null, group, name);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_RunJobNow(AsyncCallback callback, object state, string group, string name)
       #else
-            public void send_RunJobNow(string group, string name)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("RunJobNow", TMessageType.Call, seqid_));
-                RunJobNow_args args = new RunJobNow_args();
-                args.Group = group;
-                args.Name = name;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_RunJobNow(string group, string name)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("RunJobNow", TMessageType.Call, seqid_));
+        RunJobNow_args args = new RunJobNow_args();
+        args.Group = group;
+        args.Name = name;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_GetJobProp(AsyncCallback callback, object state, string group, string name, string prop)
       {
         return send_GetJobProp(callback, state, group, name, prop);
@@ -384,58 +392,57 @@ namespace BusinessObjects
 
       #endif
 
-            public string GetJobProp(string group, string name, string prop)
-            {
-#if !SILVERLIGHT
-                send_GetJobProp(group, name, prop);
-                return recv_GetJobProp();
+      public string GetJobProp(string group, string name, string prop)
+      {
+        #if !SILVERLIGHT
+        send_GetJobProp(group, name, prop);
+        return recv_GetJobProp();
 
-#else
+        #else
         var asyncResult = Begin_GetJobProp(null, null, group, name, prop);
         return End_GetJobProp(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_GetJobProp(AsyncCallback callback, object state, string group, string name, string prop)
       #else
-            public void send_GetJobProp(string group, string name, string prop)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("GetJobProp", TMessageType.Call, seqid_));
-                GetJobProp_args args = new GetJobProp_args();
-                args.Group = group;
-                args.Name = name;
-                args.Prop = prop;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_GetJobProp(string group, string name, string prop)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetJobProp", TMessageType.Call, seqid_));
+        GetJobProp_args args = new GetJobProp_args();
+        args.Group = group;
+        args.Name = name;
+        args.Prop = prop;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public string recv_GetJobProp()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public string recv_GetJobProp()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetJobProp_result result = new GetJobProp_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetJobProp failed: unknown result");
+      }
 
-                GetJobProp_result result = new GetJobProp_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "GetJobProp failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_SetJobCronSchedule(AsyncCallback callback, object state, string group, string name, string cron)
       {
         return send_SetJobCronSchedule(callback, state, group, name, cron);
@@ -448,38 +455,38 @@ namespace BusinessObjects
 
       #endif
 
-            public void SetJobCronSchedule(string group, string name, string cron)
-            {
-#if !SILVERLIGHT
-                send_SetJobCronSchedule(group, name, cron);
+      public void SetJobCronSchedule(string group, string name, string cron)
+      {
+        #if !SILVERLIGHT
+        send_SetJobCronSchedule(group, name, cron);
 
-#else
+        #else
         var asyncResult = Begin_SetJobCronSchedule(null, null, group, name, cron);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_SetJobCronSchedule(AsyncCallback callback, object state, string group, string name, string cron)
       #else
-            public void send_SetJobCronSchedule(string group, string name, string cron)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("SetJobCronSchedule", TMessageType.Call, seqid_));
-                SetJobCronSchedule_args args = new SetJobCronSchedule_args();
-                args.Group = group;
-                args.Name = name;
-                args.Cron = cron;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_SetJobCronSchedule(string group, string name, string cron)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("SetJobCronSchedule", TMessageType.Call, seqid_));
+        SetJobCronSchedule_args args = new SetJobCronSchedule_args();
+        args.Group = group;
+        args.Name = name;
+        args.Cron = cron;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_GetAllJobsList(AsyncCallback callback, object state)
       {
         return send_GetAllJobsList(callback, state);
@@ -493,55 +500,54 @@ namespace BusinessObjects
 
       #endif
 
-            public List<ScheduledJob> GetAllJobsList()
-            {
-#if !SILVERLIGHT
-                send_GetAllJobsList();
-                return recv_GetAllJobsList();
+      public List<ScheduledJob> GetAllJobsList()
+      {
+        #if !SILVERLIGHT
+        send_GetAllJobsList();
+        return recv_GetAllJobsList();
 
-#else
+        #else
         var asyncResult = Begin_GetAllJobsList(null, null);
         return End_GetAllJobsList(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_GetAllJobsList(AsyncCallback callback, object state)
       #else
-            public void send_GetAllJobsList()
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("GetAllJobsList", TMessageType.Call, seqid_));
-                GetAllJobsList_args args = new GetAllJobsList_args();
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_GetAllJobsList()
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetAllJobsList", TMessageType.Call, seqid_));
+        GetAllJobsList_args args = new GetAllJobsList_args();
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public List<ScheduledJob> recv_GetAllJobsList()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public List<ScheduledJob> recv_GetAllJobsList()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetAllJobsList_result result = new GetAllJobsList_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetAllJobsList failed: unknown result");
+      }
 
-                GetAllJobsList_result result = new GetAllJobsList_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "GetAllJobsList failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_GetRunningJobs(AsyncCallback callback, object state)
       {
         return send_GetRunningJobs(callback, state);
@@ -555,55 +561,54 @@ namespace BusinessObjects
 
       #endif
 
-            public Dictionary<string, ScheduledJob> GetRunningJobs()
-            {
-#if !SILVERLIGHT
-                send_GetRunningJobs();
-                return recv_GetRunningJobs();
+      public Dictionary<string, ScheduledJob> GetRunningJobs()
+      {
+        #if !SILVERLIGHT
+        send_GetRunningJobs();
+        return recv_GetRunningJobs();
 
-#else
+        #else
         var asyncResult = Begin_GetRunningJobs(null, null);
         return End_GetRunningJobs(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_GetRunningJobs(AsyncCallback callback, object state)
       #else
-            public void send_GetRunningJobs()
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("GetRunningJobs", TMessageType.Call, seqid_));
-                GetRunningJobs_args args = new GetRunningJobs_args();
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_GetRunningJobs()
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetRunningJobs", TMessageType.Call, seqid_));
+        GetRunningJobs_args args = new GetRunningJobs_args();
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public Dictionary<string, ScheduledJob> recv_GetRunningJobs()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public Dictionary<string, ScheduledJob> recv_GetRunningJobs()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetRunningJobs_result result = new GetRunningJobs_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetRunningJobs failed: unknown result");
+      }
 
-                GetRunningJobs_result result = new GetRunningJobs_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "GetRunningJobs failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_GetJobNextTime(AsyncCallback callback, object state, string group, string name)
       {
         return send_GetJobNextTime(callback, state, group, name);
@@ -617,57 +622,56 @@ namespace BusinessObjects
 
       #endif
 
-            public long GetJobNextTime(string group, string name)
-            {
-#if !SILVERLIGHT
-                send_GetJobNextTime(group, name);
-                return recv_GetJobNextTime();
+      public long GetJobNextTime(string group, string name)
+      {
+        #if !SILVERLIGHT
+        send_GetJobNextTime(group, name);
+        return recv_GetJobNextTime();
 
-#else
+        #else
         var asyncResult = Begin_GetJobNextTime(null, null, group, name);
         return End_GetJobNextTime(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_GetJobNextTime(AsyncCallback callback, object state, string group, string name)
       #else
-            public void send_GetJobNextTime(string group, string name)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("GetJobNextTime", TMessageType.Call, seqid_));
-                GetJobNextTime_args args = new GetJobNextTime_args();
-                args.Group = group;
-                args.Name = name;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_GetJobNextTime(string group, string name)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetJobNextTime", TMessageType.Call, seqid_));
+        GetJobNextTime_args args = new GetJobNextTime_args();
+        args.Group = group;
+        args.Name = name;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public long recv_GetJobNextTime()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public long recv_GetJobNextTime()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetJobNextTime_result result = new GetJobNextTime_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetJobNextTime failed: unknown result");
+      }
 
-                GetJobNextTime_result result = new GetJobNextTime_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "GetJobNextTime failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_GetJobPrevTime(AsyncCallback callback, object state, string group, string name)
       {
         return send_GetJobPrevTime(callback, state, group, name);
@@ -681,57 +685,56 @@ namespace BusinessObjects
 
       #endif
 
-            public long GetJobPrevTime(string group, string name)
-            {
-#if !SILVERLIGHT
-                send_GetJobPrevTime(group, name);
-                return recv_GetJobPrevTime();
+      public long GetJobPrevTime(string group, string name)
+      {
+        #if !SILVERLIGHT
+        send_GetJobPrevTime(group, name);
+        return recv_GetJobPrevTime();
 
-#else
+        #else
         var asyncResult = Begin_GetJobPrevTime(null, null, group, name);
         return End_GetJobPrevTime(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_GetJobPrevTime(AsyncCallback callback, object state, string group, string name)
       #else
-            public void send_GetJobPrevTime(string group, string name)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("GetJobPrevTime", TMessageType.Call, seqid_));
-                GetJobPrevTime_args args = new GetJobPrevTime_args();
-                args.Group = group;
-                args.Name = name;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_GetJobPrevTime(string group, string name)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetJobPrevTime", TMessageType.Call, seqid_));
+        GetJobPrevTime_args args = new GetJobPrevTime_args();
+        args.Group = group;
+        args.Name = name;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public long recv_GetJobPrevTime()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public long recv_GetJobPrevTime()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetJobPrevTime_result result = new GetJobPrevTime_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetJobPrevTime failed: unknown result");
+      }
 
-                GetJobPrevTime_result result = new GetJobPrevTime_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "GetJobPrevTime failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_PauseScheduler(AsyncCallback callback, object state)
       {
         return send_PauseScheduler(callback, state);
@@ -744,35 +747,35 @@ namespace BusinessObjects
 
       #endif
 
-            public void PauseScheduler()
-            {
-#if !SILVERLIGHT
-                send_PauseScheduler();
+      public void PauseScheduler()
+      {
+        #if !SILVERLIGHT
+        send_PauseScheduler();
 
-#else
+        #else
         var asyncResult = Begin_PauseScheduler(null, null);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_PauseScheduler(AsyncCallback callback, object state)
       #else
-            public void send_PauseScheduler()
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("PauseScheduler", TMessageType.Call, seqid_));
-                PauseScheduler_args args = new PauseScheduler_args();
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_PauseScheduler()
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("PauseScheduler", TMessageType.Call, seqid_));
+        PauseScheduler_args args = new PauseScheduler_args();
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_ResumeScheduler(AsyncCallback callback, object state)
       {
         return send_ResumeScheduler(callback, state);
@@ -785,35 +788,35 @@ namespace BusinessObjects
 
       #endif
 
-            public void ResumeScheduler()
-            {
-#if !SILVERLIGHT
-                send_ResumeScheduler();
+      public void ResumeScheduler()
+      {
+        #if !SILVERLIGHT
+        send_ResumeScheduler();
 
-#else
+        #else
         var asyncResult = Begin_ResumeScheduler(null, null);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_ResumeScheduler(AsyncCallback callback, object state)
       #else
-            public void send_ResumeScheduler()
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("ResumeScheduler", TMessageType.Call, seqid_));
-                ResumeScheduler_args args = new ResumeScheduler_args();
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_ResumeScheduler()
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("ResumeScheduler", TMessageType.Call, seqid_));
+        ResumeScheduler_args args = new ResumeScheduler_args();
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_GetCurrencyStrengthSummary(AsyncCallback callback, object state, bool recalc, bool bUseLast, long startInterval, long endInterval)
       {
         return send_GetCurrencyStrengthSummary(callback, state, recalc, bUseLast, startInterval, endInterval);
@@ -827,61 +830,58 @@ namespace BusinessObjects
 
       #endif
 
-            public List<CurrencyStrengthSummary> GetCurrencyStrengthSummary(bool recalc, bool bUseLast,
-                long startInterval, long endInterval)
-            {
-#if !SILVERLIGHT
-                send_GetCurrencyStrengthSummary(recalc, bUseLast, startInterval, endInterval);
-                return recv_GetCurrencyStrengthSummary();
+      public List<CurrencyStrengthSummary> GetCurrencyStrengthSummary(bool recalc, bool bUseLast, long startInterval, long endInterval)
+      {
+        #if !SILVERLIGHT
+        send_GetCurrencyStrengthSummary(recalc, bUseLast, startInterval, endInterval);
+        return recv_GetCurrencyStrengthSummary();
 
-#else
+        #else
         var asyncResult = Begin_GetCurrencyStrengthSummary(null, null, recalc, bUseLast, startInterval, endInterval);
         return End_GetCurrencyStrengthSummary(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_GetCurrencyStrengthSummary(AsyncCallback callback, object state, bool recalc, bool bUseLast, long startInterval, long endInterval)
       #else
-            public void send_GetCurrencyStrengthSummary(bool recalc, bool bUseLast, long startInterval,
-                long endInterval)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("GetCurrencyStrengthSummary", TMessageType.Call, seqid_));
-                GetCurrencyStrengthSummary_args args = new GetCurrencyStrengthSummary_args();
-                args.Recalc = recalc;
-                args.BUseLast = bUseLast;
-                args.StartInterval = startInterval;
-                args.EndInterval = endInterval;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_GetCurrencyStrengthSummary(bool recalc, bool bUseLast, long startInterval, long endInterval)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetCurrencyStrengthSummary", TMessageType.Call, seqid_));
+        GetCurrencyStrengthSummary_args args = new GetCurrencyStrengthSummary_args();
+        args.Recalc = recalc;
+        args.BUseLast = bUseLast;
+        args.StartInterval = startInterval;
+        args.EndInterval = endInterval;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public List<CurrencyStrengthSummary> recv_GetCurrencyStrengthSummary()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public List<CurrencyStrengthSummary> recv_GetCurrencyStrengthSummary()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetCurrencyStrengthSummary_result result = new GetCurrencyStrengthSummary_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetCurrencyStrengthSummary failed: unknown result");
+      }
 
-                GetCurrencyStrengthSummary_result result = new GetCurrencyStrengthSummary_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "GetCurrencyStrengthSummary failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_GetCurrencies(AsyncCallback callback, object state)
       {
         return send_GetCurrencies(callback, state);
@@ -895,55 +895,54 @@ namespace BusinessObjects
 
       #endif
 
-            public List<Currency> GetCurrencies()
-            {
-#if !SILVERLIGHT
-                send_GetCurrencies();
-                return recv_GetCurrencies();
+      public List<Currency> GetCurrencies()
+      {
+        #if !SILVERLIGHT
+        send_GetCurrencies();
+        return recv_GetCurrencies();
 
-#else
+        #else
         var asyncResult = Begin_GetCurrencies(null, null);
         return End_GetCurrencies(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_GetCurrencies(AsyncCallback callback, object state)
       #else
-            public void send_GetCurrencies()
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("GetCurrencies", TMessageType.Call, seqid_));
-                GetCurrencies_args args = new GetCurrencies_args();
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_GetCurrencies()
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetCurrencies", TMessageType.Call, seqid_));
+        GetCurrencies_args args = new GetCurrencies_args();
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public List<Currency> recv_GetCurrencies()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public List<Currency> recv_GetCurrencies()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetCurrencies_result result = new GetCurrencies_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetCurrencies failed: unknown result");
+      }
 
-                GetCurrencies_result result = new GetCurrencies_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "GetCurrencies failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_GetIndicators(AsyncCallback callback, object state)
       {
         return send_GetIndicators(callback, state);
@@ -957,55 +956,54 @@ namespace BusinessObjects
 
       #endif
 
-            public List<TechIndicator> GetIndicators()
-            {
-#if !SILVERLIGHT
-                send_GetIndicators();
-                return recv_GetIndicators();
+      public List<TechIndicator> GetIndicators()
+      {
+        #if !SILVERLIGHT
+        send_GetIndicators();
+        return recv_GetIndicators();
 
-#else
+        #else
         var asyncResult = Begin_GetIndicators(null, null);
         return End_GetIndicators(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_GetIndicators(AsyncCallback callback, object state)
       #else
-            public void send_GetIndicators()
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("GetIndicators", TMessageType.Call, seqid_));
-                GetIndicators_args args = new GetIndicators_args();
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_GetIndicators()
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetIndicators", TMessageType.Call, seqid_));
+        GetIndicators_args args = new GetIndicators_args();
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public List<TechIndicator> recv_GetIndicators()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public List<TechIndicator> recv_GetIndicators()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetIndicators_result result = new GetIndicators_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetIndicators failed: unknown result");
+      }
 
-                GetIndicators_result result = new GetIndicators_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "GetIndicators failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_IsDebug(AsyncCallback callback, object state)
       {
         return send_IsDebug(callback, state);
@@ -1019,55 +1017,54 @@ namespace BusinessObjects
 
       #endif
 
-            public bool IsDebug()
-            {
-#if !SILVERLIGHT
-                send_IsDebug();
-                return recv_IsDebug();
+      public bool IsDebug()
+      {
+        #if !SILVERLIGHT
+        send_IsDebug();
+        return recv_IsDebug();
 
-#else
+        #else
         var asyncResult = Begin_IsDebug(null, null);
         return End_IsDebug(asyncResult);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_IsDebug(AsyncCallback callback, object state)
       #else
-            public void send_IsDebug()
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("IsDebug", TMessageType.Call, seqid_));
-                IsDebug_args args = new IsDebug_args();
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_IsDebug()
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("IsDebug", TMessageType.Call, seqid_));
+        IsDebug_args args = new IsDebug_args();
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-            public bool recv_IsDebug()
-            {
-                TMessage msg = iprot_.ReadMessageBegin();
-                if (msg.Type == TMessageType.Exception)
-                {
-                    TApplicationException x = TApplicationException.Read(iprot_);
-                    iprot_.ReadMessageEnd();
-                    throw x;
-                }
+      public bool recv_IsDebug()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        IsDebug_result result = new IsDebug_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "IsDebug failed: unknown result");
+      }
 
-                IsDebug_result result = new IsDebug_result();
-                result.Read(iprot_);
-                iprot_.ReadMessageEnd();
-                if (result.__isset.success) return result.Success;
-                throw new TApplicationException(TApplicationException.ExceptionType.MissingResult,
-                    "IsDebug failed: unknown result");
-            }
-
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_SaveCurrency(AsyncCallback callback, object state, Currency c)
       {
         return send_SaveCurrency(callback, state, c);
@@ -1080,36 +1077,36 @@ namespace BusinessObjects
 
       #endif
 
-            public void SaveCurrency(Currency c)
-            {
-#if !SILVERLIGHT
-                send_SaveCurrency(c);
+      public void SaveCurrency(Currency c)
+      {
+        #if !SILVERLIGHT
+        send_SaveCurrency(c);
 
-#else
+        #else
         var asyncResult = Begin_SaveCurrency(null, null, c);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_SaveCurrency(AsyncCallback callback, object state, Currency c)
       #else
-            public void send_SaveCurrency(Currency c)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("SaveCurrency", TMessageType.Call, seqid_));
-                SaveCurrency_args args = new SaveCurrency_args();
-                args.C = c;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_SaveCurrency(Currency c)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("SaveCurrency", TMessageType.Call, seqid_));
+        SaveCurrency_args args = new SaveCurrency_args();
+        args.C = c;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-
-#if SILVERLIGHT
+      
+      #if SILVERLIGHT
       public IAsyncResult Begin_SaveIndicator(AsyncCallback callback, object state, TechIndicator i)
       {
         return send_SaveIndicator(callback, state, i);
@@ -1122,3082 +1119,3151 @@ namespace BusinessObjects
 
       #endif
 
-            public void SaveIndicator(TechIndicator i)
-            {
-#if !SILVERLIGHT
-                send_SaveIndicator(i);
+      public void SaveIndicator(TechIndicator i)
+      {
+        #if !SILVERLIGHT
+        send_SaveIndicator(i);
 
-#else
+        #else
         var asyncResult = Begin_SaveIndicator(null, null, i);
 
         #endif
-            }
-#if SILVERLIGHT
+      }
+      #if SILVERLIGHT
       public IAsyncResult send_SaveIndicator(AsyncCallback callback, object state, TechIndicator i)
       #else
-            public void send_SaveIndicator(TechIndicator i)
-#endif
-            {
-                oprot_.WriteMessageBegin(new TMessage("SaveIndicator", TMessageType.Call, seqid_));
-                SaveIndicator_args args = new SaveIndicator_args();
-                args.I = i;
-                args.Write(oprot_);
-                oprot_.WriteMessageEnd();
-#if SILVERLIGHT
+      public void send_SaveIndicator(TechIndicator i)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("SaveIndicator", TMessageType.Call, seqid_));
+        SaveIndicator_args args = new SaveIndicator_args();
+        args.I = i;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
         return oprot_.Transport.BeginFlush(callback, state);
         #else
-                oprot_.Transport.Flush();
-#endif
-            }
-        }
+        oprot_.Transport.Flush();
+        #endif
+      }
 
-        public class Processor : TProcessor
-        {
-            private readonly Iface iface_;
-            protected Dictionary<string, ProcessFunction> processMap_ = new Dictionary<string, ProcessFunction>();
-
-            public Processor(Iface iface)
-            {
-                iface_ = iface;
-                processMap_["GetGlobalProp"] = GetGlobalProp_Process;
-                processMap_["SetGlobalProp"] = SetGlobalProp_Process;
-                processMap_["InitScheduler"] = InitScheduler_Process;
-                processMap_["RunJobNow"] = RunJobNow_Process;
-                processMap_["GetJobProp"] = GetJobProp_Process;
-                processMap_["SetJobCronSchedule"] = SetJobCronSchedule_Process;
-                processMap_["GetAllJobsList"] = GetAllJobsList_Process;
-                processMap_["GetRunningJobs"] = GetRunningJobs_Process;
-                processMap_["GetJobNextTime"] = GetJobNextTime_Process;
-                processMap_["GetJobPrevTime"] = GetJobPrevTime_Process;
-                processMap_["PauseScheduler"] = PauseScheduler_Process;
-                processMap_["ResumeScheduler"] = ResumeScheduler_Process;
-                processMap_["GetCurrencyStrengthSummary"] = GetCurrencyStrengthSummary_Process;
-                processMap_["GetCurrencies"] = GetCurrencies_Process;
-                processMap_["GetIndicators"] = GetIndicators_Process;
-                processMap_["IsDebug"] = IsDebug_Process;
-                processMap_["SaveCurrency"] = SaveCurrency_Process;
-                processMap_["SaveIndicator"] = SaveIndicator_Process;
-            }
-
-            public bool Process(TProtocol iprot, TProtocol oprot)
-            {
-                try
-                {
-                    TMessage msg = iprot.ReadMessageBegin();
-                    ProcessFunction fn;
-                    processMap_.TryGetValue(msg.Name, out fn);
-                    if (fn == null)
-                    {
-                        TProtocolUtil.Skip(iprot, TType.Struct);
-                        iprot.ReadMessageEnd();
-                        TApplicationException x = new TApplicationException(
-                            TApplicationException.ExceptionType.UnknownMethod,
-                            "Invalid method name: '" + msg.Name + "'");
-                        oprot.WriteMessageBegin(new TMessage(msg.Name, TMessageType.Exception, msg.SeqID));
-                        x.Write(oprot);
-                        oprot.WriteMessageEnd();
-                        oprot.Transport.Flush();
-                        return true;
-                    }
-
-                    fn(msg.SeqID, iprot, oprot);
-                }
-                catch (IOException)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-
-            public void GetGlobalProp_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                GetGlobalProp_args args = new GetGlobalProp_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                GetGlobalProp_result result = new GetGlobalProp_result();
-                result.Success = iface_.GetGlobalProp(args.Name);
-                oprot.WriteMessageBegin(new TMessage("GetGlobalProp", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void SetGlobalProp_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                SetGlobalProp_args args = new SetGlobalProp_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                iface_.SetGlobalProp(args.Name, args.Value);
-            }
-
-            public void InitScheduler_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                InitScheduler_args args = new InitScheduler_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                InitScheduler_result result = new InitScheduler_result();
-                result.Success = iface_.InitScheduler(args.ServerMode);
-                oprot.WriteMessageBegin(new TMessage("InitScheduler", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void RunJobNow_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                RunJobNow_args args = new RunJobNow_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                iface_.RunJobNow(args.Group, args.Name);
-            }
-
-            public void GetJobProp_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                GetJobProp_args args = new GetJobProp_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                GetJobProp_result result = new GetJobProp_result();
-                result.Success = iface_.GetJobProp(args.Group, args.Name, args.Prop);
-                oprot.WriteMessageBegin(new TMessage("GetJobProp", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void SetJobCronSchedule_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                SetJobCronSchedule_args args = new SetJobCronSchedule_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                iface_.SetJobCronSchedule(args.Group, args.Name, args.Cron);
-            }
-
-            public void GetAllJobsList_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                GetAllJobsList_args args = new GetAllJobsList_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                GetAllJobsList_result result = new GetAllJobsList_result();
-                result.Success = iface_.GetAllJobsList();
-                oprot.WriteMessageBegin(new TMessage("GetAllJobsList", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void GetRunningJobs_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                GetRunningJobs_args args = new GetRunningJobs_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                GetRunningJobs_result result = new GetRunningJobs_result();
-                result.Success = iface_.GetRunningJobs();
-                oprot.WriteMessageBegin(new TMessage("GetRunningJobs", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void GetJobNextTime_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                GetJobNextTime_args args = new GetJobNextTime_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                GetJobNextTime_result result = new GetJobNextTime_result();
-                result.Success = iface_.GetJobNextTime(args.Group, args.Name);
-                oprot.WriteMessageBegin(new TMessage("GetJobNextTime", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void GetJobPrevTime_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                GetJobPrevTime_args args = new GetJobPrevTime_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                GetJobPrevTime_result result = new GetJobPrevTime_result();
-                result.Success = iface_.GetJobPrevTime(args.Group, args.Name);
-                oprot.WriteMessageBegin(new TMessage("GetJobPrevTime", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void PauseScheduler_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                PauseScheduler_args args = new PauseScheduler_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                iface_.PauseScheduler();
-            }
-
-            public void ResumeScheduler_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                ResumeScheduler_args args = new ResumeScheduler_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                iface_.ResumeScheduler();
-            }
-
-            public void GetCurrencyStrengthSummary_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                GetCurrencyStrengthSummary_args args = new GetCurrencyStrengthSummary_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                GetCurrencyStrengthSummary_result result = new GetCurrencyStrengthSummary_result();
-                result.Success =
-                    iface_.GetCurrencyStrengthSummary(args.Recalc, args.BUseLast, args.StartInterval, args.EndInterval);
-                oprot.WriteMessageBegin(new TMessage("GetCurrencyStrengthSummary", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void GetCurrencies_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                GetCurrencies_args args = new GetCurrencies_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                GetCurrencies_result result = new GetCurrencies_result();
-                result.Success = iface_.GetCurrencies();
-                oprot.WriteMessageBegin(new TMessage("GetCurrencies", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void GetIndicators_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                GetIndicators_args args = new GetIndicators_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                GetIndicators_result result = new GetIndicators_result();
-                result.Success = iface_.GetIndicators();
-                oprot.WriteMessageBegin(new TMessage("GetIndicators", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void IsDebug_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                IsDebug_args args = new IsDebug_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                IsDebug_result result = new IsDebug_result();
-                result.Success = iface_.IsDebug();
-                oprot.WriteMessageBegin(new TMessage("IsDebug", TMessageType.Reply, seqid));
-                result.Write(oprot);
-                oprot.WriteMessageEnd();
-                oprot.Transport.Flush();
-            }
-
-            public void SaveCurrency_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                SaveCurrency_args args = new SaveCurrency_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                iface_.SaveCurrency(args.C);
-            }
-
-            public void SaveIndicator_Process(int seqid, TProtocol iprot, TProtocol oprot)
-            {
-                SaveIndicator_args args = new SaveIndicator_args();
-                args.Read(iprot);
-                iprot.ReadMessageEnd();
-                iface_.SaveIndicator(args.I);
-            }
-
-            protected delegate void ProcessFunction(int seqid, TProtocol iprot, TProtocol oprot);
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetGlobalProp_args : TBase
-        {
-            public Isset __isset;
-            private string _name;
-
-            public string Name
-            {
-                get => _name;
-                set
-                {
-                    __isset.name = true;
-                    _name = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.String)
-                                Name = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetGlobalProp_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (Name != null && __isset.name)
-                {
-                    field.Name = "name";
-                    field.Type = TType.String;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Name);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetGlobalProp_args(");
-                bool __first = true;
-                if (Name != null && __isset.name)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Name: ");
-                    __sb.Append(Name);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool name;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetGlobalProp_result : TBase
-        {
-            public Isset __isset;
-            private string _success;
-
-            public string Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.String)
-                                Success = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetGlobalProp_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                    if (Success != null)
-                    {
-                        field.Name = "Success";
-                        field.Type = TType.String;
-                        field.ID = 0;
-                        oprot.WriteFieldBegin(field);
-                        oprot.WriteString(Success);
-                        oprot.WriteFieldEnd();
-                    }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetGlobalProp_result(");
-                bool __first = true;
-                if (Success != null && __isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class SetGlobalProp_args : TBase
-        {
-            public Isset __isset;
-            private string _name;
-            private string _value;
-
-            public string Name
-            {
-                get => _name;
-                set
-                {
-                    __isset.name = true;
-                    _name = value;
-                }
-            }
-
-            public string Value
-            {
-                get => _value;
-                set
-                {
-                    __isset.value = true;
-                    _value = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.String)
-                                Name = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 2:
-                            if (field.Type == TType.String)
-                                Value = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("SetGlobalProp_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (Name != null && __isset.name)
-                {
-                    field.Name = "name";
-                    field.Type = TType.String;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Name);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (Value != null && __isset.value)
-                {
-                    field.Name = "value";
-                    field.Type = TType.String;
-                    field.ID = 2;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Value);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("SetGlobalProp_args(");
-                bool __first = true;
-                if (Name != null && __isset.name)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Name: ");
-                    __sb.Append(Name);
-                }
-
-                if (Value != null && __isset.value)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Value: ");
-                    __sb.Append(Value);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool name;
-                public bool value;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class InitScheduler_args : TBase
-        {
-            public Isset __isset;
-            private bool _serverMode;
-
-            public bool ServerMode
-            {
-                get => _serverMode;
-                set
-                {
-                    __isset.serverMode = true;
-                    _serverMode = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.Bool)
-                                ServerMode = iprot.ReadBool();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("InitScheduler_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (__isset.serverMode)
-                {
-                    field.Name = "serverMode";
-                    field.Type = TType.Bool;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteBool(ServerMode);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("InitScheduler_args(");
-                bool __first = true;
-                if (__isset.serverMode)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("ServerMode: ");
-                    __sb.Append(ServerMode);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool serverMode;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class InitScheduler_result : TBase
-        {
-            public Isset __isset;
-            private bool _success;
-
-            public bool Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.Bool)
-                                Success = iprot.ReadBool();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("InitScheduler_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                {
-                    field.Name = "Success";
-                    field.Type = TType.Bool;
-                    field.ID = 0;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteBool(Success);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("InitScheduler_result(");
-                bool __first = true;
-                if (__isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class RunJobNow_args : TBase
-        {
-            public Isset __isset;
-            private string _group;
-            private string _name;
-
-            public string Group
-            {
-                get => _group;
-                set
-                {
-                    __isset.group = true;
-                    _group = value;
-                }
-            }
-
-            public string Name
-            {
-                get => _name;
-                set
-                {
-                    __isset.name = true;
-                    _name = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.String)
-                                Group = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 2:
-                            if (field.Type == TType.String)
-                                Name = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("RunJobNow_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (Group != null && __isset.group)
-                {
-                    field.Name = "group";
-                    field.Type = TType.String;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Group);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    field.Name = "name";
-                    field.Type = TType.String;
-                    field.ID = 2;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Name);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("RunJobNow_args(");
-                bool __first = true;
-                if (Group != null && __isset.group)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Group: ");
-                    __sb.Append(Group);
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Name: ");
-                    __sb.Append(Name);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool group;
-                public bool name;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetJobProp_args : TBase
-        {
-            public Isset __isset;
-            private string _group;
-            private string _name;
-            private string _prop;
-
-            public string Group
-            {
-                get => _group;
-                set
-                {
-                    __isset.group = true;
-                    _group = value;
-                }
-            }
-
-            public string Name
-            {
-                get => _name;
-                set
-                {
-                    __isset.name = true;
-                    _name = value;
-                }
-            }
-
-            public string Prop
-            {
-                get => _prop;
-                set
-                {
-                    __isset.prop = true;
-                    _prop = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.String)
-                                Group = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 2:
-                            if (field.Type == TType.String)
-                                Name = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 3:
-                            if (field.Type == TType.String)
-                                Prop = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetJobProp_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (Group != null && __isset.group)
-                {
-                    field.Name = "group";
-                    field.Type = TType.String;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Group);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    field.Name = "name";
-                    field.Type = TType.String;
-                    field.ID = 2;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Name);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (Prop != null && __isset.prop)
-                {
-                    field.Name = "prop";
-                    field.Type = TType.String;
-                    field.ID = 3;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Prop);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetJobProp_args(");
-                bool __first = true;
-                if (Group != null && __isset.group)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Group: ");
-                    __sb.Append(Group);
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Name: ");
-                    __sb.Append(Name);
-                }
-
-                if (Prop != null && __isset.prop)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Prop: ");
-                    __sb.Append(Prop);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool group;
-                public bool name;
-                public bool prop;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetJobProp_result : TBase
-        {
-            public Isset __isset;
-            private string _success;
-
-            public string Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.String)
-                                Success = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetJobProp_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                    if (Success != null)
-                    {
-                        field.Name = "Success";
-                        field.Type = TType.String;
-                        field.ID = 0;
-                        oprot.WriteFieldBegin(field);
-                        oprot.WriteString(Success);
-                        oprot.WriteFieldEnd();
-                    }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetJobProp_result(");
-                bool __first = true;
-                if (Success != null && __isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class SetJobCronSchedule_args : TBase
-        {
-            public Isset __isset;
-            private string _cron;
-            private string _group;
-            private string _name;
-
-            public string Group
-            {
-                get => _group;
-                set
-                {
-                    __isset.group = true;
-                    _group = value;
-                }
-            }
-
-            public string Name
-            {
-                get => _name;
-                set
-                {
-                    __isset.name = true;
-                    _name = value;
-                }
-            }
-
-            public string Cron
-            {
-                get => _cron;
-                set
-                {
-                    __isset.cron = true;
-                    _cron = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.String)
-                                Group = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 2:
-                            if (field.Type == TType.String)
-                                Name = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 3:
-                            if (field.Type == TType.String)
-                                Cron = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("SetJobCronSchedule_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (Group != null && __isset.group)
-                {
-                    field.Name = "group";
-                    field.Type = TType.String;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Group);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    field.Name = "name";
-                    field.Type = TType.String;
-                    field.ID = 2;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Name);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (Cron != null && __isset.cron)
-                {
-                    field.Name = "cron";
-                    field.Type = TType.String;
-                    field.ID = 3;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Cron);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("SetJobCronSchedule_args(");
-                bool __first = true;
-                if (Group != null && __isset.group)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Group: ");
-                    __sb.Append(Group);
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Name: ");
-                    __sb.Append(Name);
-                }
-
-                if (Cron != null && __isset.cron)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Cron: ");
-                    __sb.Append(Cron);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool group;
-                public bool name;
-                public bool cron;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetAllJobsList_args : TBase
-        {
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetAllJobsList_args");
-                oprot.WriteStructBegin(struc);
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetAllJobsList_args(");
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetAllJobsList_result : TBase
-        {
-            public Isset __isset;
-            private List<ScheduledJob> _success;
-
-            public List<ScheduledJob> Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.List)
-                            {
-                                Success = new List<ScheduledJob>();
-                                TList _list36 = iprot.ReadListBegin();
-                                for (int _i37 = 0; _i37 < _list36.Count; ++_i37)
-                                {
-                                    ScheduledJob _elem38 = new ScheduledJob();
-                                    _elem38 = new ScheduledJob();
-                                    _elem38.Read(iprot);
-                                    Success.Add(_elem38);
-                                }
-
-                                iprot.ReadListEnd();
-                            }
-                            else
-                            {
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            }
-
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetAllJobsList_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                    if (Success != null)
-                    {
-                        field.Name = "Success";
-                        field.Type = TType.List;
-                        field.ID = 0;
-                        oprot.WriteFieldBegin(field);
-                        {
-                            oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
-                            foreach (ScheduledJob _iter39 in Success) _iter39.Write(oprot);
-                            oprot.WriteListEnd();
-                        }
-                        oprot.WriteFieldEnd();
-                    }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetAllJobsList_result(");
-                bool __first = true;
-                if (Success != null && __isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetRunningJobs_args : TBase
-        {
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetRunningJobs_args");
-                oprot.WriteStructBegin(struc);
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetRunningJobs_args(");
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetRunningJobs_result : TBase
-        {
-            public Isset __isset;
-            private Dictionary<string, ScheduledJob> _success;
-
-            public Dictionary<string, ScheduledJob> Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.Map)
-                            {
-                                Success = new Dictionary<string, ScheduledJob>();
-                                TMap _map40 = iprot.ReadMapBegin();
-                                for (int _i41 = 0; _i41 < _map40.Count; ++_i41)
-                                {
-                                    string _key42;
-                                    ScheduledJob _val43;
-                                    _key42 = iprot.ReadString();
-                                    _val43 = new ScheduledJob();
-                                    _val43.Read(iprot);
-                                    Success[_key42] = _val43;
-                                }
-
-                                iprot.ReadMapEnd();
-                            }
-                            else
-                            {
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            }
-
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetRunningJobs_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                    if (Success != null)
-                    {
-                        field.Name = "Success";
-                        field.Type = TType.Map;
-                        field.ID = 0;
-                        oprot.WriteFieldBegin(field);
-                        {
-                            oprot.WriteMapBegin(new TMap(TType.String, TType.Struct, Success.Count));
-                            foreach (string _iter44 in Success.Keys)
-                            {
-                                oprot.WriteString(_iter44);
-                                Success[_iter44].Write(oprot);
-                            }
-
-                            oprot.WriteMapEnd();
-                        }
-                        oprot.WriteFieldEnd();
-                    }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetRunningJobs_result(");
-                bool __first = true;
-                if (Success != null && __isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetJobNextTime_args : TBase
-        {
-            public Isset __isset;
-            private string _group;
-            private string _name;
-
-            public string Group
-            {
-                get => _group;
-                set
-                {
-                    __isset.group = true;
-                    _group = value;
-                }
-            }
-
-            public string Name
-            {
-                get => _name;
-                set
-                {
-                    __isset.name = true;
-                    _name = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.String)
-                                Group = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 2:
-                            if (field.Type == TType.String)
-                                Name = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetJobNextTime_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (Group != null && __isset.group)
-                {
-                    field.Name = "group";
-                    field.Type = TType.String;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Group);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    field.Name = "name";
-                    field.Type = TType.String;
-                    field.ID = 2;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Name);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetJobNextTime_args(");
-                bool __first = true;
-                if (Group != null && __isset.group)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Group: ");
-                    __sb.Append(Group);
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Name: ");
-                    __sb.Append(Name);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool group;
-                public bool name;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetJobNextTime_result : TBase
-        {
-            public Isset __isset;
-            private long _success;
-
-            public long Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.I64)
-                                Success = iprot.ReadI64();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetJobNextTime_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                {
-                    field.Name = "Success";
-                    field.Type = TType.I64;
-                    field.ID = 0;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteI64(Success);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetJobNextTime_result(");
-                bool __first = true;
-                if (__isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetJobPrevTime_args : TBase
-        {
-            public Isset __isset;
-            private string _group;
-            private string _name;
-
-            public string Group
-            {
-                get => _group;
-                set
-                {
-                    __isset.group = true;
-                    _group = value;
-                }
-            }
-
-            public string Name
-            {
-                get => _name;
-                set
-                {
-                    __isset.name = true;
-                    _name = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.String)
-                                Group = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 2:
-                            if (field.Type == TType.String)
-                                Name = iprot.ReadString();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetJobPrevTime_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (Group != null && __isset.group)
-                {
-                    field.Name = "group";
-                    field.Type = TType.String;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Group);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    field.Name = "name";
-                    field.Type = TType.String;
-                    field.ID = 2;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteString(Name);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetJobPrevTime_args(");
-                bool __first = true;
-                if (Group != null && __isset.group)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Group: ");
-                    __sb.Append(Group);
-                }
-
-                if (Name != null && __isset.name)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Name: ");
-                    __sb.Append(Name);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool group;
-                public bool name;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetJobPrevTime_result : TBase
-        {
-            public Isset __isset;
-            private long _success;
-
-            public long Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.I64)
-                                Success = iprot.ReadI64();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetJobPrevTime_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                {
-                    field.Name = "Success";
-                    field.Type = TType.I64;
-                    field.ID = 0;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteI64(Success);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetJobPrevTime_result(");
-                bool __first = true;
-                if (__isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class PauseScheduler_args : TBase
-        {
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("PauseScheduler_args");
-                oprot.WriteStructBegin(struc);
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("PauseScheduler_args(");
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class ResumeScheduler_args : TBase
-        {
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("ResumeScheduler_args");
-                oprot.WriteStructBegin(struc);
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("ResumeScheduler_args(");
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetCurrencyStrengthSummary_args : TBase
-        {
-            public Isset __isset;
-            private bool _bUseLast;
-            private long _endInterval;
-            private bool _recalc;
-            private long _startInterval;
-
-            public bool Recalc
-            {
-                get => _recalc;
-                set
-                {
-                    __isset.recalc = true;
-                    _recalc = value;
-                }
-            }
-
-            public bool BUseLast
-            {
-                get => _bUseLast;
-                set
-                {
-                    __isset.bUseLast = true;
-                    _bUseLast = value;
-                }
-            }
-
-            public long StartInterval
-            {
-                get => _startInterval;
-                set
-                {
-                    __isset.startInterval = true;
-                    _startInterval = value;
-                }
-            }
-
-            public long EndInterval
-            {
-                get => _endInterval;
-                set
-                {
-                    __isset.endInterval = true;
-                    _endInterval = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.Bool)
-                                Recalc = iprot.ReadBool();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 2:
-                            if (field.Type == TType.Bool)
-                                BUseLast = iprot.ReadBool();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 3:
-                            if (field.Type == TType.I64)
-                                StartInterval = iprot.ReadI64();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        case 4:
-                            if (field.Type == TType.I64)
-                                EndInterval = iprot.ReadI64();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetCurrencyStrengthSummary_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (__isset.recalc)
-                {
-                    field.Name = "recalc";
-                    field.Type = TType.Bool;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteBool(Recalc);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (__isset.bUseLast)
-                {
-                    field.Name = "bUseLast";
-                    field.Type = TType.Bool;
-                    field.ID = 2;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteBool(BUseLast);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (__isset.startInterval)
-                {
-                    field.Name = "startInterval";
-                    field.Type = TType.I64;
-                    field.ID = 3;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteI64(StartInterval);
-                    oprot.WriteFieldEnd();
-                }
-
-                if (__isset.endInterval)
-                {
-                    field.Name = "endInterval";
-                    field.Type = TType.I64;
-                    field.ID = 4;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteI64(EndInterval);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetCurrencyStrengthSummary_args(");
-                bool __first = true;
-                if (__isset.recalc)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Recalc: ");
-                    __sb.Append(Recalc);
-                }
-
-                if (__isset.bUseLast)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("BUseLast: ");
-                    __sb.Append(BUseLast);
-                }
-
-                if (__isset.startInterval)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("StartInterval: ");
-                    __sb.Append(StartInterval);
-                }
-
-                if (__isset.endInterval)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("EndInterval: ");
-                    __sb.Append(EndInterval);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool recalc;
-                public bool bUseLast;
-                public bool startInterval;
-                public bool endInterval;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetCurrencyStrengthSummary_result : TBase
-        {
-            public Isset __isset;
-            private List<CurrencyStrengthSummary> _success;
-
-            public List<CurrencyStrengthSummary> Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.List)
-                            {
-                                Success = new List<CurrencyStrengthSummary>();
-                                TList _list45 = iprot.ReadListBegin();
-                                for (int _i46 = 0; _i46 < _list45.Count; ++_i46)
-                                {
-                                    CurrencyStrengthSummary _elem47 = new CurrencyStrengthSummary();
-                                    _elem47 = new CurrencyStrengthSummary();
-                                    _elem47.Read(iprot);
-                                    Success.Add(_elem47);
-                                }
-
-                                iprot.ReadListEnd();
-                            }
-                            else
-                            {
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            }
-
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetCurrencyStrengthSummary_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                    if (Success != null)
-                    {
-                        field.Name = "Success";
-                        field.Type = TType.List;
-                        field.ID = 0;
-                        oprot.WriteFieldBegin(field);
-                        {
-                            oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
-                            foreach (CurrencyStrengthSummary _iter48 in Success) _iter48.Write(oprot);
-                            oprot.WriteListEnd();
-                        }
-                        oprot.WriteFieldEnd();
-                    }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetCurrencyStrengthSummary_result(");
-                bool __first = true;
-                if (Success != null && __isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetCurrencies_args : TBase
-        {
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetCurrencies_args");
-                oprot.WriteStructBegin(struc);
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetCurrencies_args(");
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetCurrencies_result : TBase
-        {
-            public Isset __isset;
-            private List<Currency> _success;
-
-            public List<Currency> Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.List)
-                            {
-                                Success = new List<Currency>();
-                                TList _list49 = iprot.ReadListBegin();
-                                for (int _i50 = 0; _i50 < _list49.Count; ++_i50)
-                                {
-                                    Currency _elem51 = new Currency();
-                                    _elem51 = new Currency();
-                                    _elem51.Read(iprot);
-                                    Success.Add(_elem51);
-                                }
-
-                                iprot.ReadListEnd();
-                            }
-                            else
-                            {
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            }
-
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetCurrencies_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                    if (Success != null)
-                    {
-                        field.Name = "Success";
-                        field.Type = TType.List;
-                        field.ID = 0;
-                        oprot.WriteFieldBegin(field);
-                        {
-                            oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
-                            foreach (Currency _iter52 in Success) _iter52.Write(oprot);
-                            oprot.WriteListEnd();
-                        }
-                        oprot.WriteFieldEnd();
-                    }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetCurrencies_result(");
-                bool __first = true;
-                if (Success != null && __isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetIndicators_args : TBase
-        {
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetIndicators_args");
-                oprot.WriteStructBegin(struc);
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetIndicators_args(");
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class GetIndicators_result : TBase
-        {
-            public Isset __isset;
-            private List<TechIndicator> _success;
-
-            public List<TechIndicator> Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.List)
-                            {
-                                Success = new List<TechIndicator>();
-                                TList _list53 = iprot.ReadListBegin();
-                                for (int _i54 = 0; _i54 < _list53.Count; ++_i54)
-                                {
-                                    TechIndicator _elem55 = new TechIndicator();
-                                    _elem55 = new TechIndicator();
-                                    _elem55.Read(iprot);
-                                    Success.Add(_elem55);
-                                }
-
-                                iprot.ReadListEnd();
-                            }
-                            else
-                            {
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            }
-
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("GetIndicators_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                    if (Success != null)
-                    {
-                        field.Name = "Success";
-                        field.Type = TType.List;
-                        field.ID = 0;
-                        oprot.WriteFieldBegin(field);
-                        {
-                            oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
-                            foreach (TechIndicator _iter56 in Success) _iter56.Write(oprot);
-                            oprot.WriteListEnd();
-                        }
-                        oprot.WriteFieldEnd();
-                    }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("GetIndicators_result(");
-                bool __first = true;
-                if (Success != null && __isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class IsDebug_args : TBase
-        {
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("IsDebug_args");
-                oprot.WriteStructBegin(struc);
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("IsDebug_args(");
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class IsDebug_result : TBase
-        {
-            public Isset __isset;
-            private bool _success;
-
-            public bool Success
-            {
-                get => _success;
-                set
-                {
-                    __isset.success = true;
-                    _success = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 0:
-                            if (field.Type == TType.Bool)
-                                Success = iprot.ReadBool();
-                            else
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("IsDebug_result");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-
-                if (__isset.success)
-                {
-                    field.Name = "Success";
-                    field.Type = TType.Bool;
-                    field.ID = 0;
-                    oprot.WriteFieldBegin(field);
-                    oprot.WriteBool(Success);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("IsDebug_result(");
-                bool __first = true;
-                if (__isset.success)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("Success: ");
-                    __sb.Append(Success);
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool success;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class SaveCurrency_args : TBase
-        {
-            public Isset __isset;
-            private Currency _c;
-
-            public Currency C
-            {
-                get => _c;
-                set
-                {
-                    __isset.c = true;
-                    _c = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.Struct)
-                            {
-                                C = new Currency();
-                                C.Read(iprot);
-                            }
-                            else
-                            {
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            }
-
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("SaveCurrency_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (C != null && __isset.c)
-                {
-                    field.Name = "c";
-                    field.Type = TType.Struct;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    C.Write(oprot);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("SaveCurrency_args(");
-                bool __first = true;
-                if (C != null && __isset.c)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("C: ");
-                    __sb.Append(C == null ? "<null>" : C.ToString());
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool c;
-            }
-        }
-
-
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public class SaveIndicator_args : TBase
-        {
-            public Isset __isset;
-            private TechIndicator _i;
-
-            public TechIndicator I
-            {
-                get => _i;
-                set
-                {
-                    __isset.i = true;
-                    _i = value;
-                }
-            }
-
-            public void Read(TProtocol iprot)
-            {
-                TField field;
-                iprot.ReadStructBegin();
-                while (true)
-                {
-                    field = iprot.ReadFieldBegin();
-                    if (field.Type == TType.Stop) break;
-                    switch (field.ID)
-                    {
-                        case 1:
-                            if (field.Type == TType.Struct)
-                            {
-                                I = new TechIndicator();
-                                I.Read(iprot);
-                            }
-                            else
-                            {
-                                TProtocolUtil.Skip(iprot, field.Type);
-                            }
-
-                            break;
-                        default:
-                            TProtocolUtil.Skip(iprot, field.Type);
-                            break;
-                    }
-
-                    iprot.ReadFieldEnd();
-                }
-
-                iprot.ReadStructEnd();
-            }
-
-            public void Write(TProtocol oprot)
-            {
-                TStruct struc = new TStruct("SaveIndicator_args");
-                oprot.WriteStructBegin(struc);
-                TField field = new TField();
-                if (I != null && __isset.i)
-                {
-                    field.Name = "i";
-                    field.Type = TType.Struct;
-                    field.ID = 1;
-                    oprot.WriteFieldBegin(field);
-                    I.Write(oprot);
-                    oprot.WriteFieldEnd();
-                }
-
-                oprot.WriteFieldStop();
-                oprot.WriteStructEnd();
-            }
-
-            public override string ToString()
-            {
-                StringBuilder __sb = new StringBuilder("SaveIndicator_args(");
-                bool __first = true;
-                if (I != null && __isset.i)
-                {
-                    if (!__first) __sb.Append(", ");
-                    __first = false;
-                    __sb.Append("I: ");
-                    __sb.Append(I == null ? "<null>" : I.ToString());
-                }
-
-                __sb.Append(")");
-                return __sb.ToString();
-            }
-#if !SILVERLIGHT
-            [Serializable]
-#endif
-            public struct Isset
-            {
-                public bool i;
-            }
-        }
     }
+    public class Processor : TProcessor {
+      public Processor(Iface iface)
+      {
+        iface_ = iface;
+        processMap_["GetGlobalProp"] = GetGlobalProp_Process;
+        processMap_["SetGlobalProp"] = SetGlobalProp_Process;
+        processMap_["InitScheduler"] = InitScheduler_Process;
+        processMap_["RunJobNow"] = RunJobNow_Process;
+        processMap_["GetJobProp"] = GetJobProp_Process;
+        processMap_["SetJobCronSchedule"] = SetJobCronSchedule_Process;
+        processMap_["GetAllJobsList"] = GetAllJobsList_Process;
+        processMap_["GetRunningJobs"] = GetRunningJobs_Process;
+        processMap_["GetJobNextTime"] = GetJobNextTime_Process;
+        processMap_["GetJobPrevTime"] = GetJobPrevTime_Process;
+        processMap_["PauseScheduler"] = PauseScheduler_Process;
+        processMap_["ResumeScheduler"] = ResumeScheduler_Process;
+        processMap_["GetCurrencyStrengthSummary"] = GetCurrencyStrengthSummary_Process;
+        processMap_["GetCurrencies"] = GetCurrencies_Process;
+        processMap_["GetIndicators"] = GetIndicators_Process;
+        processMap_["IsDebug"] = IsDebug_Process;
+        processMap_["SaveCurrency"] = SaveCurrency_Process;
+        processMap_["SaveIndicator"] = SaveIndicator_Process;
+      }
+
+      protected delegate void ProcessFunction(int seqid, TProtocol iprot, TProtocol oprot);
+      private Iface iface_;
+      protected Dictionary<string, ProcessFunction> processMap_ = new Dictionary<string, ProcessFunction>();
+
+      public bool Process(TProtocol iprot, TProtocol oprot)
+      {
+        try
+        {
+          TMessage msg = iprot.ReadMessageBegin();
+          ProcessFunction fn;
+          processMap_.TryGetValue(msg.Name, out fn);
+          if (fn == null) {
+            TProtocolUtil.Skip(iprot, TType.Struct);
+            iprot.ReadMessageEnd();
+            TApplicationException x = new TApplicationException (TApplicationException.ExceptionType.UnknownMethod, "Invalid method name: '" + msg.Name + "'");
+            oprot.WriteMessageBegin(new TMessage(msg.Name, TMessageType.Exception, msg.SeqID));
+            x.Write(oprot);
+            oprot.WriteMessageEnd();
+            oprot.Transport.Flush();
+            return true;
+          }
+          fn(msg.SeqID, iprot, oprot);
+        }
+        catch (IOException)
+        {
+          return false;
+        }
+        return true;
+      }
+
+      public void GetGlobalProp_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetGlobalProp_args args = new GetGlobalProp_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetGlobalProp_result result = new GetGlobalProp_result();
+        result.Success = iface_.GetGlobalProp(args.Name);
+        oprot.WriteMessageBegin(new TMessage("GetGlobalProp", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void SetGlobalProp_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        SetGlobalProp_args args = new SetGlobalProp_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        iface_.SetGlobalProp(args.Name, args.Value);
+        return;
+      }
+      public void InitScheduler_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        InitScheduler_args args = new InitScheduler_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        InitScheduler_result result = new InitScheduler_result();
+        result.Success = iface_.InitScheduler(args.ServerMode);
+        oprot.WriteMessageBegin(new TMessage("InitScheduler", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void RunJobNow_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        RunJobNow_args args = new RunJobNow_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        iface_.RunJobNow(args.Group, args.Name);
+        return;
+      }
+      public void GetJobProp_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetJobProp_args args = new GetJobProp_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetJobProp_result result = new GetJobProp_result();
+        result.Success = iface_.GetJobProp(args.Group, args.Name, args.Prop);
+        oprot.WriteMessageBegin(new TMessage("GetJobProp", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void SetJobCronSchedule_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        SetJobCronSchedule_args args = new SetJobCronSchedule_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        iface_.SetJobCronSchedule(args.Group, args.Name, args.Cron);
+        return;
+      }
+      public void GetAllJobsList_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetAllJobsList_args args = new GetAllJobsList_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetAllJobsList_result result = new GetAllJobsList_result();
+        result.Success = iface_.GetAllJobsList();
+        oprot.WriteMessageBegin(new TMessage("GetAllJobsList", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void GetRunningJobs_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetRunningJobs_args args = new GetRunningJobs_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetRunningJobs_result result = new GetRunningJobs_result();
+        result.Success = iface_.GetRunningJobs();
+        oprot.WriteMessageBegin(new TMessage("GetRunningJobs", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void GetJobNextTime_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetJobNextTime_args args = new GetJobNextTime_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetJobNextTime_result result = new GetJobNextTime_result();
+        result.Success = iface_.GetJobNextTime(args.Group, args.Name);
+        oprot.WriteMessageBegin(new TMessage("GetJobNextTime", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void GetJobPrevTime_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetJobPrevTime_args args = new GetJobPrevTime_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetJobPrevTime_result result = new GetJobPrevTime_result();
+        result.Success = iface_.GetJobPrevTime(args.Group, args.Name);
+        oprot.WriteMessageBegin(new TMessage("GetJobPrevTime", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void PauseScheduler_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        PauseScheduler_args args = new PauseScheduler_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        iface_.PauseScheduler();
+        return;
+      }
+      public void ResumeScheduler_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        ResumeScheduler_args args = new ResumeScheduler_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        iface_.ResumeScheduler();
+        return;
+      }
+      public void GetCurrencyStrengthSummary_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetCurrencyStrengthSummary_args args = new GetCurrencyStrengthSummary_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetCurrencyStrengthSummary_result result = new GetCurrencyStrengthSummary_result();
+        result.Success = iface_.GetCurrencyStrengthSummary(args.Recalc, args.BUseLast, args.StartInterval, args.EndInterval);
+        oprot.WriteMessageBegin(new TMessage("GetCurrencyStrengthSummary", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void GetCurrencies_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetCurrencies_args args = new GetCurrencies_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetCurrencies_result result = new GetCurrencies_result();
+        result.Success = iface_.GetCurrencies();
+        oprot.WriteMessageBegin(new TMessage("GetCurrencies", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void GetIndicators_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetIndicators_args args = new GetIndicators_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetIndicators_result result = new GetIndicators_result();
+        result.Success = iface_.GetIndicators();
+        oprot.WriteMessageBegin(new TMessage("GetIndicators", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void IsDebug_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        IsDebug_args args = new IsDebug_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        IsDebug_result result = new IsDebug_result();
+        result.Success = iface_.IsDebug();
+        oprot.WriteMessageBegin(new TMessage("IsDebug", TMessageType.Reply, seqid)); 
+        result.Write(oprot);
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void SaveCurrency_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        SaveCurrency_args args = new SaveCurrency_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        iface_.SaveCurrency(args.C);
+        return;
+      }
+      public void SaveIndicator_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        SaveIndicator_args args = new SaveIndicator_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        iface_.SaveIndicator(args.I);
+        return;
+      }
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetGlobalProp_args : TBase
+    {
+      private string _name;
+
+      public string Name
+      {
+        get
+        {
+          return _name;
+        }
+        set
+        {
+          __isset.name = true;
+          this._name = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool name;
+      }
+
+      public GetGlobalProp_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.String) {
+                Name = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetGlobalProp_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (Name != null && __isset.name) {
+          field.Name = "name";
+          field.Type = TType.String;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Name);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetGlobalProp_args(");
+        bool __first = true;
+        if (Name != null && __isset.name) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Name: ");
+          __sb.Append(Name);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetGlobalProp_result : TBase
+    {
+      private string _success;
+
+      public string Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetGlobalProp_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.String) {
+                Success = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetGlobalProp_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          if (Success != null) {
+            field.Name = "Success";
+            field.Type = TType.String;
+            field.ID = 0;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteString(Success);
+            oprot.WriteFieldEnd();
+          }
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetGlobalProp_result(");
+        bool __first = true;
+        if (Success != null && __isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class SetGlobalProp_args : TBase
+    {
+      private string _name;
+      private string _value;
+
+      public string Name
+      {
+        get
+        {
+          return _name;
+        }
+        set
+        {
+          __isset.name = true;
+          this._name = value;
+        }
+      }
+
+      public string Value
+      {
+        get
+        {
+          return _value;
+        }
+        set
+        {
+          __isset.value = true;
+          this._value = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool name;
+        public bool value;
+      }
+
+      public SetGlobalProp_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.String) {
+                Name = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 2:
+              if (field.Type == TType.String) {
+                Value = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("SetGlobalProp_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (Name != null && __isset.name) {
+          field.Name = "name";
+          field.Type = TType.String;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Name);
+          oprot.WriteFieldEnd();
+        }
+        if (Value != null && __isset.value) {
+          field.Name = "value";
+          field.Type = TType.String;
+          field.ID = 2;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Value);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("SetGlobalProp_args(");
+        bool __first = true;
+        if (Name != null && __isset.name) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Name: ");
+          __sb.Append(Name);
+        }
+        if (Value != null && __isset.value) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Value: ");
+          __sb.Append(Value);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class InitScheduler_args : TBase
+    {
+      private bool _serverMode;
+
+      public bool ServerMode
+      {
+        get
+        {
+          return _serverMode;
+        }
+        set
+        {
+          __isset.serverMode = true;
+          this._serverMode = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool serverMode;
+      }
+
+      public InitScheduler_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.Bool) {
+                ServerMode = iprot.ReadBool();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("InitScheduler_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (__isset.serverMode) {
+          field.Name = "serverMode";
+          field.Type = TType.Bool;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteBool(ServerMode);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("InitScheduler_args(");
+        bool __first = true;
+        if (__isset.serverMode) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("ServerMode: ");
+          __sb.Append(ServerMode);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class InitScheduler_result : TBase
+    {
+      private bool _success;
+
+      public bool Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public InitScheduler_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.Bool) {
+                Success = iprot.ReadBool();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("InitScheduler_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          field.Name = "Success";
+          field.Type = TType.Bool;
+          field.ID = 0;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteBool(Success);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("InitScheduler_result(");
+        bool __first = true;
+        if (__isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class RunJobNow_args : TBase
+    {
+      private string _group;
+      private string _name;
+
+      public string Group
+      {
+        get
+        {
+          return _group;
+        }
+        set
+        {
+          __isset.group = true;
+          this._group = value;
+        }
+      }
+
+      public string Name
+      {
+        get
+        {
+          return _name;
+        }
+        set
+        {
+          __isset.name = true;
+          this._name = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool group;
+        public bool name;
+      }
+
+      public RunJobNow_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.String) {
+                Group = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 2:
+              if (field.Type == TType.String) {
+                Name = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("RunJobNow_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (Group != null && __isset.group) {
+          field.Name = "group";
+          field.Type = TType.String;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Group);
+          oprot.WriteFieldEnd();
+        }
+        if (Name != null && __isset.name) {
+          field.Name = "name";
+          field.Type = TType.String;
+          field.ID = 2;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Name);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("RunJobNow_args(");
+        bool __first = true;
+        if (Group != null && __isset.group) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Group: ");
+          __sb.Append(Group);
+        }
+        if (Name != null && __isset.name) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Name: ");
+          __sb.Append(Name);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetJobProp_args : TBase
+    {
+      private string _group;
+      private string _name;
+      private string _prop;
+
+      public string Group
+      {
+        get
+        {
+          return _group;
+        }
+        set
+        {
+          __isset.group = true;
+          this._group = value;
+        }
+      }
+
+      public string Name
+      {
+        get
+        {
+          return _name;
+        }
+        set
+        {
+          __isset.name = true;
+          this._name = value;
+        }
+      }
+
+      public string Prop
+      {
+        get
+        {
+          return _prop;
+        }
+        set
+        {
+          __isset.prop = true;
+          this._prop = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool group;
+        public bool name;
+        public bool prop;
+      }
+
+      public GetJobProp_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.String) {
+                Group = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 2:
+              if (field.Type == TType.String) {
+                Name = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 3:
+              if (field.Type == TType.String) {
+                Prop = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetJobProp_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (Group != null && __isset.group) {
+          field.Name = "group";
+          field.Type = TType.String;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Group);
+          oprot.WriteFieldEnd();
+        }
+        if (Name != null && __isset.name) {
+          field.Name = "name";
+          field.Type = TType.String;
+          field.ID = 2;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Name);
+          oprot.WriteFieldEnd();
+        }
+        if (Prop != null && __isset.prop) {
+          field.Name = "prop";
+          field.Type = TType.String;
+          field.ID = 3;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Prop);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetJobProp_args(");
+        bool __first = true;
+        if (Group != null && __isset.group) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Group: ");
+          __sb.Append(Group);
+        }
+        if (Name != null && __isset.name) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Name: ");
+          __sb.Append(Name);
+        }
+        if (Prop != null && __isset.prop) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Prop: ");
+          __sb.Append(Prop);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetJobProp_result : TBase
+    {
+      private string _success;
+
+      public string Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetJobProp_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.String) {
+                Success = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetJobProp_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          if (Success != null) {
+            field.Name = "Success";
+            field.Type = TType.String;
+            field.ID = 0;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteString(Success);
+            oprot.WriteFieldEnd();
+          }
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetJobProp_result(");
+        bool __first = true;
+        if (Success != null && __isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class SetJobCronSchedule_args : TBase
+    {
+      private string _group;
+      private string _name;
+      private string _cron;
+
+      public string Group
+      {
+        get
+        {
+          return _group;
+        }
+        set
+        {
+          __isset.group = true;
+          this._group = value;
+        }
+      }
+
+      public string Name
+      {
+        get
+        {
+          return _name;
+        }
+        set
+        {
+          __isset.name = true;
+          this._name = value;
+        }
+      }
+
+      public string Cron
+      {
+        get
+        {
+          return _cron;
+        }
+        set
+        {
+          __isset.cron = true;
+          this._cron = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool group;
+        public bool name;
+        public bool cron;
+      }
+
+      public SetJobCronSchedule_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.String) {
+                Group = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 2:
+              if (field.Type == TType.String) {
+                Name = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 3:
+              if (field.Type == TType.String) {
+                Cron = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("SetJobCronSchedule_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (Group != null && __isset.group) {
+          field.Name = "group";
+          field.Type = TType.String;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Group);
+          oprot.WriteFieldEnd();
+        }
+        if (Name != null && __isset.name) {
+          field.Name = "name";
+          field.Type = TType.String;
+          field.ID = 2;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Name);
+          oprot.WriteFieldEnd();
+        }
+        if (Cron != null && __isset.cron) {
+          field.Name = "cron";
+          field.Type = TType.String;
+          field.ID = 3;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Cron);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("SetJobCronSchedule_args(");
+        bool __first = true;
+        if (Group != null && __isset.group) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Group: ");
+          __sb.Append(Group);
+        }
+        if (Name != null && __isset.name) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Name: ");
+          __sb.Append(Name);
+        }
+        if (Cron != null && __isset.cron) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Cron: ");
+          __sb.Append(Cron);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetAllJobsList_args : TBase
+    {
+
+      public GetAllJobsList_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetAllJobsList_args");
+        oprot.WriteStructBegin(struc);
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetAllJobsList_args(");
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetAllJobsList_result : TBase
+    {
+      private List<ScheduledJob> _success;
+
+      public List<ScheduledJob> Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetAllJobsList_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.List) {
+                {
+                  Success = new List<ScheduledJob>();
+                  TList _list36 = iprot.ReadListBegin();
+                  for( int _i37 = 0; _i37 < _list36.Count; ++_i37)
+                  {
+                    ScheduledJob _elem38 = new ScheduledJob();
+                    _elem38 = new ScheduledJob();
+                    _elem38.Read(iprot);
+                    Success.Add(_elem38);
+                  }
+                  iprot.ReadListEnd();
+                }
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetAllJobsList_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          if (Success != null) {
+            field.Name = "Success";
+            field.Type = TType.List;
+            field.ID = 0;
+            oprot.WriteFieldBegin(field);
+            {
+              oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
+              foreach (ScheduledJob _iter39 in Success)
+              {
+                _iter39.Write(oprot);
+              }
+              oprot.WriteListEnd();
+            }
+            oprot.WriteFieldEnd();
+          }
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetAllJobsList_result(");
+        bool __first = true;
+        if (Success != null && __isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetRunningJobs_args : TBase
+    {
+
+      public GetRunningJobs_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetRunningJobs_args");
+        oprot.WriteStructBegin(struc);
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetRunningJobs_args(");
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetRunningJobs_result : TBase
+    {
+      private Dictionary<string, ScheduledJob> _success;
+
+      public Dictionary<string, ScheduledJob> Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetRunningJobs_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.Map) {
+                {
+                  Success = new Dictionary<string, ScheduledJob>();
+                  TMap _map40 = iprot.ReadMapBegin();
+                  for( int _i41 = 0; _i41 < _map40.Count; ++_i41)
+                  {
+                    string _key42;
+                    ScheduledJob _val43;
+                    _key42 = iprot.ReadString();
+                    _val43 = new ScheduledJob();
+                    _val43.Read(iprot);
+                    Success[_key42] = _val43;
+                  }
+                  iprot.ReadMapEnd();
+                }
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetRunningJobs_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          if (Success != null) {
+            field.Name = "Success";
+            field.Type = TType.Map;
+            field.ID = 0;
+            oprot.WriteFieldBegin(field);
+            {
+              oprot.WriteMapBegin(new TMap(TType.String, TType.Struct, Success.Count));
+              foreach (string _iter44 in Success.Keys)
+              {
+                oprot.WriteString(_iter44);
+                Success[_iter44].Write(oprot);
+              }
+              oprot.WriteMapEnd();
+            }
+            oprot.WriteFieldEnd();
+          }
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetRunningJobs_result(");
+        bool __first = true;
+        if (Success != null && __isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetJobNextTime_args : TBase
+    {
+      private string _group;
+      private string _name;
+
+      public string Group
+      {
+        get
+        {
+          return _group;
+        }
+        set
+        {
+          __isset.group = true;
+          this._group = value;
+        }
+      }
+
+      public string Name
+      {
+        get
+        {
+          return _name;
+        }
+        set
+        {
+          __isset.name = true;
+          this._name = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool group;
+        public bool name;
+      }
+
+      public GetJobNextTime_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.String) {
+                Group = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 2:
+              if (field.Type == TType.String) {
+                Name = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetJobNextTime_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (Group != null && __isset.group) {
+          field.Name = "group";
+          field.Type = TType.String;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Group);
+          oprot.WriteFieldEnd();
+        }
+        if (Name != null && __isset.name) {
+          field.Name = "name";
+          field.Type = TType.String;
+          field.ID = 2;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Name);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetJobNextTime_args(");
+        bool __first = true;
+        if (Group != null && __isset.group) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Group: ");
+          __sb.Append(Group);
+        }
+        if (Name != null && __isset.name) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Name: ");
+          __sb.Append(Name);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetJobNextTime_result : TBase
+    {
+      private long _success;
+
+      public long Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetJobNextTime_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.I64) {
+                Success = iprot.ReadI64();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetJobNextTime_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          field.Name = "Success";
+          field.Type = TType.I64;
+          field.ID = 0;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteI64(Success);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetJobNextTime_result(");
+        bool __first = true;
+        if (__isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetJobPrevTime_args : TBase
+    {
+      private string _group;
+      private string _name;
+
+      public string Group
+      {
+        get
+        {
+          return _group;
+        }
+        set
+        {
+          __isset.group = true;
+          this._group = value;
+        }
+      }
+
+      public string Name
+      {
+        get
+        {
+          return _name;
+        }
+        set
+        {
+          __isset.name = true;
+          this._name = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool group;
+        public bool name;
+      }
+
+      public GetJobPrevTime_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.String) {
+                Group = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 2:
+              if (field.Type == TType.String) {
+                Name = iprot.ReadString();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetJobPrevTime_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (Group != null && __isset.group) {
+          field.Name = "group";
+          field.Type = TType.String;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Group);
+          oprot.WriteFieldEnd();
+        }
+        if (Name != null && __isset.name) {
+          field.Name = "name";
+          field.Type = TType.String;
+          field.ID = 2;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteString(Name);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetJobPrevTime_args(");
+        bool __first = true;
+        if (Group != null && __isset.group) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Group: ");
+          __sb.Append(Group);
+        }
+        if (Name != null && __isset.name) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Name: ");
+          __sb.Append(Name);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetJobPrevTime_result : TBase
+    {
+      private long _success;
+
+      public long Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetJobPrevTime_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.I64) {
+                Success = iprot.ReadI64();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetJobPrevTime_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          field.Name = "Success";
+          field.Type = TType.I64;
+          field.ID = 0;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteI64(Success);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetJobPrevTime_result(");
+        bool __first = true;
+        if (__isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class PauseScheduler_args : TBase
+    {
+
+      public PauseScheduler_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("PauseScheduler_args");
+        oprot.WriteStructBegin(struc);
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("PauseScheduler_args(");
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class ResumeScheduler_args : TBase
+    {
+
+      public ResumeScheduler_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("ResumeScheduler_args");
+        oprot.WriteStructBegin(struc);
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("ResumeScheduler_args(");
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetCurrencyStrengthSummary_args : TBase
+    {
+      private bool _recalc;
+      private bool _bUseLast;
+      private long _startInterval;
+      private long _endInterval;
+
+      public bool Recalc
+      {
+        get
+        {
+          return _recalc;
+        }
+        set
+        {
+          __isset.recalc = true;
+          this._recalc = value;
+        }
+      }
+
+      public bool BUseLast
+      {
+        get
+        {
+          return _bUseLast;
+        }
+        set
+        {
+          __isset.bUseLast = true;
+          this._bUseLast = value;
+        }
+      }
+
+      public long StartInterval
+      {
+        get
+        {
+          return _startInterval;
+        }
+        set
+        {
+          __isset.startInterval = true;
+          this._startInterval = value;
+        }
+      }
+
+      public long EndInterval
+      {
+        get
+        {
+          return _endInterval;
+        }
+        set
+        {
+          __isset.endInterval = true;
+          this._endInterval = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool recalc;
+        public bool bUseLast;
+        public bool startInterval;
+        public bool endInterval;
+      }
+
+      public GetCurrencyStrengthSummary_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.Bool) {
+                Recalc = iprot.ReadBool();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 2:
+              if (field.Type == TType.Bool) {
+                BUseLast = iprot.ReadBool();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 3:
+              if (field.Type == TType.I64) {
+                StartInterval = iprot.ReadI64();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            case 4:
+              if (field.Type == TType.I64) {
+                EndInterval = iprot.ReadI64();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetCurrencyStrengthSummary_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (__isset.recalc) {
+          field.Name = "recalc";
+          field.Type = TType.Bool;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteBool(Recalc);
+          oprot.WriteFieldEnd();
+        }
+        if (__isset.bUseLast) {
+          field.Name = "bUseLast";
+          field.Type = TType.Bool;
+          field.ID = 2;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteBool(BUseLast);
+          oprot.WriteFieldEnd();
+        }
+        if (__isset.startInterval) {
+          field.Name = "startInterval";
+          field.Type = TType.I64;
+          field.ID = 3;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteI64(StartInterval);
+          oprot.WriteFieldEnd();
+        }
+        if (__isset.endInterval) {
+          field.Name = "endInterval";
+          field.Type = TType.I64;
+          field.ID = 4;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteI64(EndInterval);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetCurrencyStrengthSummary_args(");
+        bool __first = true;
+        if (__isset.recalc) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Recalc: ");
+          __sb.Append(Recalc);
+        }
+        if (__isset.bUseLast) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("BUseLast: ");
+          __sb.Append(BUseLast);
+        }
+        if (__isset.startInterval) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("StartInterval: ");
+          __sb.Append(StartInterval);
+        }
+        if (__isset.endInterval) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("EndInterval: ");
+          __sb.Append(EndInterval);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetCurrencyStrengthSummary_result : TBase
+    {
+      private List<CurrencyStrengthSummary> _success;
+
+      public List<CurrencyStrengthSummary> Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetCurrencyStrengthSummary_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.List) {
+                {
+                  Success = new List<CurrencyStrengthSummary>();
+                  TList _list45 = iprot.ReadListBegin();
+                  for( int _i46 = 0; _i46 < _list45.Count; ++_i46)
+                  {
+                    CurrencyStrengthSummary _elem47 = new CurrencyStrengthSummary();
+                    _elem47 = new CurrencyStrengthSummary();
+                    _elem47.Read(iprot);
+                    Success.Add(_elem47);
+                  }
+                  iprot.ReadListEnd();
+                }
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetCurrencyStrengthSummary_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          if (Success != null) {
+            field.Name = "Success";
+            field.Type = TType.List;
+            field.ID = 0;
+            oprot.WriteFieldBegin(field);
+            {
+              oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
+              foreach (CurrencyStrengthSummary _iter48 in Success)
+              {
+                _iter48.Write(oprot);
+              }
+              oprot.WriteListEnd();
+            }
+            oprot.WriteFieldEnd();
+          }
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetCurrencyStrengthSummary_result(");
+        bool __first = true;
+        if (Success != null && __isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetCurrencies_args : TBase
+    {
+
+      public GetCurrencies_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetCurrencies_args");
+        oprot.WriteStructBegin(struc);
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetCurrencies_args(");
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetCurrencies_result : TBase
+    {
+      private List<Currency> _success;
+
+      public List<Currency> Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetCurrencies_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.List) {
+                {
+                  Success = new List<Currency>();
+                  TList _list49 = iprot.ReadListBegin();
+                  for( int _i50 = 0; _i50 < _list49.Count; ++_i50)
+                  {
+                    Currency _elem51 = new Currency();
+                    _elem51 = new Currency();
+                    _elem51.Read(iprot);
+                    Success.Add(_elem51);
+                  }
+                  iprot.ReadListEnd();
+                }
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetCurrencies_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          if (Success != null) {
+            field.Name = "Success";
+            field.Type = TType.List;
+            field.ID = 0;
+            oprot.WriteFieldBegin(field);
+            {
+              oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
+              foreach (Currency _iter52 in Success)
+              {
+                _iter52.Write(oprot);
+              }
+              oprot.WriteListEnd();
+            }
+            oprot.WriteFieldEnd();
+          }
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetCurrencies_result(");
+        bool __first = true;
+        if (Success != null && __isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetIndicators_args : TBase
+    {
+
+      public GetIndicators_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetIndicators_args");
+        oprot.WriteStructBegin(struc);
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetIndicators_args(");
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetIndicators_result : TBase
+    {
+      private List<TechIndicator> _success;
+
+      public List<TechIndicator> Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetIndicators_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.List) {
+                {
+                  Success = new List<TechIndicator>();
+                  TList _list53 = iprot.ReadListBegin();
+                  for( int _i54 = 0; _i54 < _list53.Count; ++_i54)
+                  {
+                    TechIndicator _elem55 = new TechIndicator();
+                    _elem55 = new TechIndicator();
+                    _elem55.Read(iprot);
+                    Success.Add(_elem55);
+                  }
+                  iprot.ReadListEnd();
+                }
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("GetIndicators_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          if (Success != null) {
+            field.Name = "Success";
+            field.Type = TType.List;
+            field.ID = 0;
+            oprot.WriteFieldBegin(field);
+            {
+              oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
+              foreach (TechIndicator _iter56 in Success)
+              {
+                _iter56.Write(oprot);
+              }
+              oprot.WriteListEnd();
+            }
+            oprot.WriteFieldEnd();
+          }
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetIndicators_result(");
+        bool __first = true;
+        if (Success != null && __isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class IsDebug_args : TBase
+    {
+
+      public IsDebug_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("IsDebug_args");
+        oprot.WriteStructBegin(struc);
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("IsDebug_args(");
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class IsDebug_result : TBase
+    {
+      private bool _success;
+
+      public bool Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public IsDebug_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 0:
+              if (field.Type == TType.Bool) {
+                Success = iprot.ReadBool();
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("IsDebug_result");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+
+        if (this.__isset.success) {
+          field.Name = "Success";
+          field.Type = TType.Bool;
+          field.ID = 0;
+          oprot.WriteFieldBegin(field);
+          oprot.WriteBool(Success);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("IsDebug_result(");
+        bool __first = true;
+        if (__isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class SaveCurrency_args : TBase
+    {
+      private Currency _c;
+
+      public Currency C
+      {
+        get
+        {
+          return _c;
+        }
+        set
+        {
+          __isset.c = true;
+          this._c = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool c;
+      }
+
+      public SaveCurrency_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.Struct) {
+                C = new Currency();
+                C.Read(iprot);
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("SaveCurrency_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (C != null && __isset.c) {
+          field.Name = "c";
+          field.Type = TType.Struct;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          C.Write(oprot);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("SaveCurrency_args(");
+        bool __first = true;
+        if (C != null && __isset.c) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("C: ");
+          __sb.Append(C== null ? "<null>" : C.ToString());
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class SaveIndicator_args : TBase
+    {
+      private TechIndicator _i;
+
+      public TechIndicator I
+      {
+        get
+        {
+          return _i;
+        }
+        set
+        {
+          __isset.i = true;
+          this._i = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool i;
+      }
+
+      public SaveIndicator_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        TField field;
+        iprot.ReadStructBegin();
+        while (true)
+        {
+          field = iprot.ReadFieldBegin();
+          if (field.Type == TType.Stop) { 
+            break;
+          }
+          switch (field.ID)
+          {
+            case 1:
+              if (field.Type == TType.Struct) {
+                I = new TechIndicator();
+                I.Read(iprot);
+              } else { 
+                TProtocolUtil.Skip(iprot, field.Type);
+              }
+              break;
+            default: 
+              TProtocolUtil.Skip(iprot, field.Type);
+              break;
+          }
+          iprot.ReadFieldEnd();
+        }
+        iprot.ReadStructEnd();
+      }
+
+      public void Write(TProtocol oprot) {
+        TStruct struc = new TStruct("SaveIndicator_args");
+        oprot.WriteStructBegin(struc);
+        TField field = new TField();
+        if (I != null && __isset.i) {
+          field.Name = "i";
+          field.Type = TType.Struct;
+          field.ID = 1;
+          oprot.WriteFieldBegin(field);
+          I.Write(oprot);
+          oprot.WriteFieldEnd();
+        }
+        oprot.WriteFieldStop();
+        oprot.WriteStructEnd();
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("SaveIndicator_args(");
+        bool __first = true;
+        if (I != null && __isset.i) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("I: ");
+          __sb.Append(I== null ? "<null>" : I.ToString());
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+  }
 }

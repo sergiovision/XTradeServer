@@ -102,9 +102,21 @@
     <Compile Include="eToro\User.cs" />
     <Compile Include="FXMindHelpers.cs" />
     <Compile Include="FX_MindCode\ConnectionHelper.cs" />
+    <Compile Include="FX_MindCode\DBCountry.cs" />
+    <Compile Include="FX_MindCode\DBCountry.Designer.cs">
+      <DependentUpon>DBCountry.cs</DependentUpon>
+    </Compile>
     <Compile Include="FX_MindCode\DBCurrency.cs" />
     <Compile Include="FX_MindCode\DBCurrency.Designer.cs">
       <DependentUpon>DBCurrency.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FX_MindCode\DBJobs.cs" />
+    <Compile Include="FX_MindCode\DBJobs.Designer.cs">
+      <DependentUpon>DBJobs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FX_MindCode\DBPerson.cs" />
+    <Compile Include="FX_MindCode\DBPerson.Designer.cs">
+      <DependentUpon>DBPerson.cs</DependentUpon>
     </Compile>
     <Compile Include="FX_MindCode\DBSettings.cs" />
     <Compile Include="FX_MindCode\DBSettings.Designer.cs">
@@ -135,7 +147,8 @@
     <Compile Include="JSON.cs" />
     <Compile Include="JSONParserProvider.cs" />
     <Compile Include="eToro\OperationType.cs" />
-    <Compile Include="News\NewsParseJob.cs" />
+    <Compile Include="News\ExnessNewsJob.cs" />
+    <Compile Include="News\ForexFactoryNewsJob.cs" />
     <Compile Include="PosRatio\EToroRatioJob.cs" />
     <Compile Include="PosRatio\MyFXBookRatioJob.cs" />
     <Compile Include="PosRatio\OandaRatioJob.cs" />

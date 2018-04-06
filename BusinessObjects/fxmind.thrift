@@ -34,7 +34,7 @@ const string MTDATETIMEFORMAT = "yyyy.MM.dd HH:mm"
 const string MYSQLDATETIMEFORMAT = "yyyy-MM-dd HH:mm:ss"
 const string SOLRDATETIMEFORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 const i32 SENTIMENTS_FETCH_PERIOD = 100
-const i16 FXMindMQL_PORT = 2011
+const i16 FXMindMQL_PORT = 2010
 const i16 AppService_PORT = 2012
 
 const string JOBGROUP_TECHDETAIL = "Technical Details"

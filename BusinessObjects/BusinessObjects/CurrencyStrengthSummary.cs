@@ -4,386 +4,397 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
-
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
+using System.IO;
+using Thrift;
+using Thrift.Collections;
+using System.Runtime.Serialization;
 using Thrift.Protocol;
+using Thrift.Transport;
 
 namespace BusinessObjects
 {
-#if !SILVERLIGHT
-    [Serializable]
-#endif
-    public class CurrencyStrengthSummary : TBase
+
+  #if !SILVERLIGHT
+  [Serializable]
+  #endif
+  public partial class CurrencyStrengthSummary : TBase
+  {
+    private string _Currency;
+    private double _Min1;
+    private double _Min5;
+    private double _Min15;
+    private double _Min30;
+    private double _Hourly;
+    private double _Hourly5;
+    private double _Daily;
+    private double _Monthly;
+
+    public string Currency
     {
-        public Isset __isset;
-        private string _Currency;
-        private double _Daily;
-        private double _Hourly;
-        private double _Hourly5;
-        private double _Min1;
-        private double _Min15;
-        private double _Min30;
-        private double _Min5;
-        private double _Monthly;
-
-        public string Currency
-        {
-            get => _Currency;
-            set
-            {
-                __isset.Currency = true;
-                _Currency = value;
-            }
-        }
-
-        public double Min1
-        {
-            get => _Min1;
-            set
-            {
-                __isset.Min1 = true;
-                _Min1 = value;
-            }
-        }
-
-        public double Min5
-        {
-            get => _Min5;
-            set
-            {
-                __isset.Min5 = true;
-                _Min5 = value;
-            }
-        }
-
-        public double Min15
-        {
-            get => _Min15;
-            set
-            {
-                __isset.Min15 = true;
-                _Min15 = value;
-            }
-        }
-
-        public double Min30
-        {
-            get => _Min30;
-            set
-            {
-                __isset.Min30 = true;
-                _Min30 = value;
-            }
-        }
-
-        public double Hourly
-        {
-            get => _Hourly;
-            set
-            {
-                __isset.Hourly = true;
-                _Hourly = value;
-            }
-        }
-
-        public double Hourly5
-        {
-            get => _Hourly5;
-            set
-            {
-                __isset.Hourly5 = true;
-                _Hourly5 = value;
-            }
-        }
-
-        public double Daily
-        {
-            get => _Daily;
-            set
-            {
-                __isset.Daily = true;
-                _Daily = value;
-            }
-        }
-
-        public double Monthly
-        {
-            get => _Monthly;
-            set
-            {
-                __isset.Monthly = true;
-                _Monthly = value;
-            }
-        }
-
-        public void Read(TProtocol iprot)
-        {
-            TField field;
-            iprot.ReadStructBegin();
-            while (true)
-            {
-                field = iprot.ReadFieldBegin();
-                if (field.Type == TType.Stop) break;
-                switch (field.ID)
-                {
-                    case 1:
-                        if (field.Type == TType.String)
-                            Currency = iprot.ReadString();
-                        else
-                            TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                    case 2:
-                        if (field.Type == TType.Double)
-                            Min1 = iprot.ReadDouble();
-                        else
-                            TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                    case 3:
-                        if (field.Type == TType.Double)
-                            Min5 = iprot.ReadDouble();
-                        else
-                            TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                    case 4:
-                        if (field.Type == TType.Double)
-                            Min15 = iprot.ReadDouble();
-                        else
-                            TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                    case 5:
-                        if (field.Type == TType.Double)
-                            Min30 = iprot.ReadDouble();
-                        else
-                            TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                    case 6:
-                        if (field.Type == TType.Double)
-                            Hourly = iprot.ReadDouble();
-                        else
-                            TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                    case 7:
-                        if (field.Type == TType.Double)
-                            Hourly5 = iprot.ReadDouble();
-                        else
-                            TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                    case 8:
-                        if (field.Type == TType.Double)
-                            Daily = iprot.ReadDouble();
-                        else
-                            TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                    case 9:
-                        if (field.Type == TType.Double)
-                            Monthly = iprot.ReadDouble();
-                        else
-                            TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                    default:
-                        TProtocolUtil.Skip(iprot, field.Type);
-                        break;
-                }
-
-                iprot.ReadFieldEnd();
-            }
-
-            iprot.ReadStructEnd();
-        }
-
-        public void Write(TProtocol oprot)
-        {
-            TStruct struc = new TStruct("CurrencyStrengthSummary");
-            oprot.WriteStructBegin(struc);
-            TField field = new TField();
-            if (Currency != null && __isset.Currency)
-            {
-                field.Name = "Currency";
-                field.Type = TType.String;
-                field.ID = 1;
-                oprot.WriteFieldBegin(field);
-                oprot.WriteString(Currency);
-                oprot.WriteFieldEnd();
-            }
-
-            if (__isset.Min1)
-            {
-                field.Name = "Min1";
-                field.Type = TType.Double;
-                field.ID = 2;
-                oprot.WriteFieldBegin(field);
-                oprot.WriteDouble(Min1);
-                oprot.WriteFieldEnd();
-            }
-
-            if (__isset.Min5)
-            {
-                field.Name = "Min5";
-                field.Type = TType.Double;
-                field.ID = 3;
-                oprot.WriteFieldBegin(field);
-                oprot.WriteDouble(Min5);
-                oprot.WriteFieldEnd();
-            }
-
-            if (__isset.Min15)
-            {
-                field.Name = "Min15";
-                field.Type = TType.Double;
-                field.ID = 4;
-                oprot.WriteFieldBegin(field);
-                oprot.WriteDouble(Min15);
-                oprot.WriteFieldEnd();
-            }
-
-            if (__isset.Min30)
-            {
-                field.Name = "Min30";
-                field.Type = TType.Double;
-                field.ID = 5;
-                oprot.WriteFieldBegin(field);
-                oprot.WriteDouble(Min30);
-                oprot.WriteFieldEnd();
-            }
-
-            if (__isset.Hourly)
-            {
-                field.Name = "Hourly";
-                field.Type = TType.Double;
-                field.ID = 6;
-                oprot.WriteFieldBegin(field);
-                oprot.WriteDouble(Hourly);
-                oprot.WriteFieldEnd();
-            }
-
-            if (__isset.Hourly5)
-            {
-                field.Name = "Hourly5";
-                field.Type = TType.Double;
-                field.ID = 7;
-                oprot.WriteFieldBegin(field);
-                oprot.WriteDouble(Hourly5);
-                oprot.WriteFieldEnd();
-            }
-
-            if (__isset.Daily)
-            {
-                field.Name = "Daily";
-                field.Type = TType.Double;
-                field.ID = 8;
-                oprot.WriteFieldBegin(field);
-                oprot.WriteDouble(Daily);
-                oprot.WriteFieldEnd();
-            }
-
-            if (__isset.Monthly)
-            {
-                field.Name = "Monthly";
-                field.Type = TType.Double;
-                field.ID = 9;
-                oprot.WriteFieldBegin(field);
-                oprot.WriteDouble(Monthly);
-                oprot.WriteFieldEnd();
-            }
-
-            oprot.WriteFieldStop();
-            oprot.WriteStructEnd();
-        }
-
-        public override string ToString()
-        {
-            StringBuilder __sb = new StringBuilder("CurrencyStrengthSummary(");
-            bool __first = true;
-            if (Currency != null && __isset.Currency)
-            {
-                if (!__first) __sb.Append(", ");
-                __first = false;
-                __sb.Append("Currency: ");
-                __sb.Append(Currency);
-            }
-
-            if (__isset.Min1)
-            {
-                if (!__first) __sb.Append(", ");
-                __first = false;
-                __sb.Append("Min1: ");
-                __sb.Append(Min1);
-            }
-
-            if (__isset.Min5)
-            {
-                if (!__first) __sb.Append(", ");
-                __first = false;
-                __sb.Append("Min5: ");
-                __sb.Append(Min5);
-            }
-
-            if (__isset.Min15)
-            {
-                if (!__first) __sb.Append(", ");
-                __first = false;
-                __sb.Append("Min15: ");
-                __sb.Append(Min15);
-            }
-
-            if (__isset.Min30)
-            {
-                if (!__first) __sb.Append(", ");
-                __first = false;
-                __sb.Append("Min30: ");
-                __sb.Append(Min30);
-            }
-
-            if (__isset.Hourly)
-            {
-                if (!__first) __sb.Append(", ");
-                __first = false;
-                __sb.Append("Hourly: ");
-                __sb.Append(Hourly);
-            }
-
-            if (__isset.Hourly5)
-            {
-                if (!__first) __sb.Append(", ");
-                __first = false;
-                __sb.Append("Hourly5: ");
-                __sb.Append(Hourly5);
-            }
-
-            if (__isset.Daily)
-            {
-                if (!__first) __sb.Append(", ");
-                __first = false;
-                __sb.Append("Daily: ");
-                __sb.Append(Daily);
-            }
-
-            if (__isset.Monthly)
-            {
-                if (!__first) __sb.Append(", ");
-                __first = false;
-                __sb.Append("Monthly: ");
-                __sb.Append(Monthly);
-            }
-
-            __sb.Append(")");
-            return __sb.ToString();
-        }
-#if !SILVERLIGHT
-        [Serializable]
-#endif
-        public struct Isset
-        {
-            public bool Currency;
-            public bool Min1;
-            public bool Min5;
-            public bool Min15;
-            public bool Min30;
-            public bool Hourly;
-            public bool Hourly5;
-            public bool Daily;
-            public bool Monthly;
-        }
+      get
+      {
+        return _Currency;
+      }
+      set
+      {
+        __isset.Currency = true;
+        this._Currency = value;
+      }
     }
+
+    public double Min1
+    {
+      get
+      {
+        return _Min1;
+      }
+      set
+      {
+        __isset.Min1 = true;
+        this._Min1 = value;
+      }
+    }
+
+    public double Min5
+    {
+      get
+      {
+        return _Min5;
+      }
+      set
+      {
+        __isset.Min5 = true;
+        this._Min5 = value;
+      }
+    }
+
+    public double Min15
+    {
+      get
+      {
+        return _Min15;
+      }
+      set
+      {
+        __isset.Min15 = true;
+        this._Min15 = value;
+      }
+    }
+
+    public double Min30
+    {
+      get
+      {
+        return _Min30;
+      }
+      set
+      {
+        __isset.Min30 = true;
+        this._Min30 = value;
+      }
+    }
+
+    public double Hourly
+    {
+      get
+      {
+        return _Hourly;
+      }
+      set
+      {
+        __isset.Hourly = true;
+        this._Hourly = value;
+      }
+    }
+
+    public double Hourly5
+    {
+      get
+      {
+        return _Hourly5;
+      }
+      set
+      {
+        __isset.Hourly5 = true;
+        this._Hourly5 = value;
+      }
+    }
+
+    public double Daily
+    {
+      get
+      {
+        return _Daily;
+      }
+      set
+      {
+        __isset.Daily = true;
+        this._Daily = value;
+      }
+    }
+
+    public double Monthly
+    {
+      get
+      {
+        return _Monthly;
+      }
+      set
+      {
+        __isset.Monthly = true;
+        this._Monthly = value;
+      }
+    }
+
+
+    public Isset __isset;
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public struct Isset {
+      public bool Currency;
+      public bool Min1;
+      public bool Min5;
+      public bool Min15;
+      public bool Min30;
+      public bool Hourly;
+      public bool Hourly5;
+      public bool Daily;
+      public bool Monthly;
+    }
+
+    public CurrencyStrengthSummary() {
+    }
+
+    public void Read (TProtocol iprot)
+    {
+      TField field;
+      iprot.ReadStructBegin();
+      while (true)
+      {
+        field = iprot.ReadFieldBegin();
+        if (field.Type == TType.Stop) { 
+          break;
+        }
+        switch (field.ID)
+        {
+          case 1:
+            if (field.Type == TType.String) {
+              Currency = iprot.ReadString();
+            } else { 
+              TProtocolUtil.Skip(iprot, field.Type);
+            }
+            break;
+          case 2:
+            if (field.Type == TType.Double) {
+              Min1 = iprot.ReadDouble();
+            } else { 
+              TProtocolUtil.Skip(iprot, field.Type);
+            }
+            break;
+          case 3:
+            if (field.Type == TType.Double) {
+              Min5 = iprot.ReadDouble();
+            } else { 
+              TProtocolUtil.Skip(iprot, field.Type);
+            }
+            break;
+          case 4:
+            if (field.Type == TType.Double) {
+              Min15 = iprot.ReadDouble();
+            } else { 
+              TProtocolUtil.Skip(iprot, field.Type);
+            }
+            break;
+          case 5:
+            if (field.Type == TType.Double) {
+              Min30 = iprot.ReadDouble();
+            } else { 
+              TProtocolUtil.Skip(iprot, field.Type);
+            }
+            break;
+          case 6:
+            if (field.Type == TType.Double) {
+              Hourly = iprot.ReadDouble();
+            } else { 
+              TProtocolUtil.Skip(iprot, field.Type);
+            }
+            break;
+          case 7:
+            if (field.Type == TType.Double) {
+              Hourly5 = iprot.ReadDouble();
+            } else { 
+              TProtocolUtil.Skip(iprot, field.Type);
+            }
+            break;
+          case 8:
+            if (field.Type == TType.Double) {
+              Daily = iprot.ReadDouble();
+            } else { 
+              TProtocolUtil.Skip(iprot, field.Type);
+            }
+            break;
+          case 9:
+            if (field.Type == TType.Double) {
+              Monthly = iprot.ReadDouble();
+            } else { 
+              TProtocolUtil.Skip(iprot, field.Type);
+            }
+            break;
+          default: 
+            TProtocolUtil.Skip(iprot, field.Type);
+            break;
+        }
+        iprot.ReadFieldEnd();
+      }
+      iprot.ReadStructEnd();
+    }
+
+    public void Write(TProtocol oprot) {
+      TStruct struc = new TStruct("CurrencyStrengthSummary");
+      oprot.WriteStructBegin(struc);
+      TField field = new TField();
+      if (Currency != null && __isset.Currency) {
+        field.Name = "Currency";
+        field.Type = TType.String;
+        field.ID = 1;
+        oprot.WriteFieldBegin(field);
+        oprot.WriteString(Currency);
+        oprot.WriteFieldEnd();
+      }
+      if (__isset.Min1) {
+        field.Name = "Min1";
+        field.Type = TType.Double;
+        field.ID = 2;
+        oprot.WriteFieldBegin(field);
+        oprot.WriteDouble(Min1);
+        oprot.WriteFieldEnd();
+      }
+      if (__isset.Min5) {
+        field.Name = "Min5";
+        field.Type = TType.Double;
+        field.ID = 3;
+        oprot.WriteFieldBegin(field);
+        oprot.WriteDouble(Min5);
+        oprot.WriteFieldEnd();
+      }
+      if (__isset.Min15) {
+        field.Name = "Min15";
+        field.Type = TType.Double;
+        field.ID = 4;
+        oprot.WriteFieldBegin(field);
+        oprot.WriteDouble(Min15);
+        oprot.WriteFieldEnd();
+      }
+      if (__isset.Min30) {
+        field.Name = "Min30";
+        field.Type = TType.Double;
+        field.ID = 5;
+        oprot.WriteFieldBegin(field);
+        oprot.WriteDouble(Min30);
+        oprot.WriteFieldEnd();
+      }
+      if (__isset.Hourly) {
+        field.Name = "Hourly";
+        field.Type = TType.Double;
+        field.ID = 6;
+        oprot.WriteFieldBegin(field);
+        oprot.WriteDouble(Hourly);
+        oprot.WriteFieldEnd();
+      }
+      if (__isset.Hourly5) {
+        field.Name = "Hourly5";
+        field.Type = TType.Double;
+        field.ID = 7;
+        oprot.WriteFieldBegin(field);
+        oprot.WriteDouble(Hourly5);
+        oprot.WriteFieldEnd();
+      }
+      if (__isset.Daily) {
+        field.Name = "Daily";
+        field.Type = TType.Double;
+        field.ID = 8;
+        oprot.WriteFieldBegin(field);
+        oprot.WriteDouble(Daily);
+        oprot.WriteFieldEnd();
+      }
+      if (__isset.Monthly) {
+        field.Name = "Monthly";
+        field.Type = TType.Double;
+        field.ID = 9;
+        oprot.WriteFieldBegin(field);
+        oprot.WriteDouble(Monthly);
+        oprot.WriteFieldEnd();
+      }
+      oprot.WriteFieldStop();
+      oprot.WriteStructEnd();
+    }
+
+    public override string ToString() {
+      StringBuilder __sb = new StringBuilder("CurrencyStrengthSummary(");
+      bool __first = true;
+      if (Currency != null && __isset.Currency) {
+        if(!__first) { __sb.Append(", "); }
+        __first = false;
+        __sb.Append("Currency: ");
+        __sb.Append(Currency);
+      }
+      if (__isset.Min1) {
+        if(!__first) { __sb.Append(", "); }
+        __first = false;
+        __sb.Append("Min1: ");
+        __sb.Append(Min1);
+      }
+      if (__isset.Min5) {
+        if(!__first) { __sb.Append(", "); }
+        __first = false;
+        __sb.Append("Min5: ");
+        __sb.Append(Min5);
+      }
+      if (__isset.Min15) {
+        if(!__first) { __sb.Append(", "); }
+        __first = false;
+        __sb.Append("Min15: ");
+        __sb.Append(Min15);
+      }
+      if (__isset.Min30) {
+        if(!__first) { __sb.Append(", "); }
+        __first = false;
+        __sb.Append("Min30: ");
+        __sb.Append(Min30);
+      }
+      if (__isset.Hourly) {
+        if(!__first) { __sb.Append(", "); }
+        __first = false;
+        __sb.Append("Hourly: ");
+        __sb.Append(Hourly);
+      }
+      if (__isset.Hourly5) {
+        if(!__first) { __sb.Append(", "); }
+        __first = false;
+        __sb.Append("Hourly5: ");
+        __sb.Append(Hourly5);
+      }
+      if (__isset.Daily) {
+        if(!__first) { __sb.Append(", "); }
+        __first = false;
+        __sb.Append("Daily: ");
+        __sb.Append(Daily);
+      }
+      if (__isset.Monthly) {
+        if(!__first) { __sb.Append(", "); }
+        __first = false;
+        __sb.Append("Monthly: ");
+        __sb.Append(Monthly);
+      }
+      __sb.Append(")");
+      return __sb.ToString();
+    }
+
+  }
+
 }

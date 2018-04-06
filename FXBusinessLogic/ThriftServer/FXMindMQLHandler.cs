@@ -20,8 +20,8 @@ namespace FXBusinessLogic.ThriftServer
 
         public List<string> ProcessStringData(Dictionary<string, string> paramsList, List<string> inputData)
         {
-            if (fxmind.IsDebug())
-                log.Info("server(" + GetHashCode() + ") ProcessStringData: " + inputData.Count);
+            //if (fxmind.IsDebug())
+            //    log.Info("server(" + GetHashCode() + ") ProcessStringData: " + inputData.Count);
             var list = new List<string>();
             if (!paramsList.ContainsKey("func"))
             {
@@ -49,7 +49,7 @@ namespace FXBusinessLogic.ThriftServer
                             //log.Info( info.RaiseDateTime.ToString(MainService.MTDATETIMEFORMAT) + " Got news: (" + info.Name + ") Importance:  " + info.Importance.ToString());
                             list.Add(info.Currency);
                             list.Add(info.Importance.ToString());
-                            list.Add(info.RaiseDateTime.ToString(fxmindConstants.MTDATETIMEFORMAT));
+                            list.Add(info.RaiseDateTime);
                             list.Add(info.Name);
                         }
                     }

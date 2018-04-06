@@ -5,6 +5,5 @@ C:\Projects\GitHub\FXMindNET\bin\FXMind.MainServer.exe
 C:\Projects\GitHub\FXMindNET\bin\FXMind.MainServer.pdb
 C:\Projects\GitHub\FXMindNET\MainServer\obj\Debug\MainServer.csprojResolveAssemblyReference.cache
 C:\Projects\GitHub\FXMindNET\MainServer\obj\Debug\MainServer.csproj.CoreCompileInputs.cache
-C:\Projects\GitHub\FXMindNET\MainServer\obj\Debug\MainServer.csproj.CopyComplete
 C:\Projects\GitHub\FXMindNET\MainServer\obj\Debug\FXMind.MainServer.exe
 C:\Projects\GitHub\FXMindNET\MainServer\obj\Debug\FXMind.MainServer.pdb

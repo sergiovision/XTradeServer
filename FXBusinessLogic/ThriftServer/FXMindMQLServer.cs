@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using BusinessObjects;
+using FXBusinessLogic.BusinessObjects;
 using FXBusinessLogic.ThriftServer;
 using log4net;
 using Thrift.Server;
@@ -15,18 +16,21 @@ namespace FXBusinessLogic.Thrift
         protected static short port;
         protected Thread myThread;
 
-        public FXMindMQLServer(short p)
+        public FXMindMQLServer()
         {
             server = null;
-            port = p;
+            port = fxmindConstants.FXMindMQL_PORT;
         }
 
-        public bool StartServer()
+        /*
+         * public bool StartServer()
         {
+
             myThread = new Thread(Run);
             myThread.Start();
             return true;
         }
+        */
 
         public static void Stop()
         {
@@ -41,6 +45,11 @@ namespace FXBusinessLogic.Thrift
         {
             try
             {
+                var strPort = MainService.thisGlobal.GetGlobalProp(MainService.SETTINGS_PROPERTY_THRIFTPORT);
+                Int16 tryPortValue = port;
+                if (Int16.TryParse(strPort, out tryPortValue))
+                    port = tryPortValue;
+
                 Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
                 var handler = new FXMindMQLHandler();
                 var processor = new FXMindMQL.Processor(handler);
@@ -50,7 +59,7 @@ namespace FXBusinessLogic.Thrift
                 // Use this for a multithreaded server. This method works faster.
                 server = new TThreadPoolServer(processor, serverTransport);
 
-                log.Info("FXMindMQLServer listening...");
+                log.Info("FXMindMQLServer listening... on Port: " + port.ToString());
                 server.Serve();
             }
             catch (Exception x)

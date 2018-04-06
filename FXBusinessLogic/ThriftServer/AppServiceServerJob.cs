@@ -16,7 +16,7 @@ namespace FXBusinessLogic.Thrift
         public AppServiceServerJob()
             : base(log)
         {
-            ts = new AppServiceServer(fxmindConstants.AppService_PORT);
+            ts = new AppServiceServer();
         }
 
         public override async Task Execute(IJobExecutionContext context)

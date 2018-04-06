@@ -22,9 +22,9 @@ extern int   Slippage = 10;
 // Grid data
 //--------------------------------------------------------------------
 extern int  GridStep = 65;
+//extern int  MinGridStep = 45;
 extern double GridMultiplier = 2.0;
 extern int  GridProfit = 25;
-extern bool TrailGridHead = false;
 extern bool MartinLotsCalc = false;
 // Stop Trailing data
 //--------------------------------------------------------------------
@@ -63,6 +63,38 @@ bool EventRaiseSoon = false;
 bool InNewsPeriod = false;
 datetime timeNewsPeriodStarted;
 string labelEventString;
+char lastChar = 0;
+void OnChartEvent(const int id,         // Event identifier  
+                  const long& lparam,   // Event parameter of long type
+                  const double& dparam, // Event parameter of double type
+                  const string& sparam) // Event parameter of string type
+{
+//--- the key has been pressed
+  if( id == CHARTEVENT_KEYDOWN )
+  {
+      // "gc" keyboad type closes the Grid on the current chart
+      if (lparam=='G' || lparam=='g')
+         lastChar = 'g';
+
+      if ((lastChar=='g') && (lparam=='s' || lparam=='S')) { 
+         lastChar = 0;
+         int ticket = OpenOrder(OP_SELL, Lots);
+         if (ticket != -1) {
+            double TP = NormalizeDouble(Bid + TakeProfitLevel* Point , Digits); //* currentImportance
+            OrderModify(ticket, OrderOpenPrice(), 0, TP, 0);        
+            EventRaiseSoon = false;
+            return;
+         }
+      }
+
+      if ((lastChar=='g') && (lparam=='c' || lparam=='C')) { 
+         lastChar = 0;
+         Alert("Closing Grid...");
+         CloseGrid();
+      }
+  }
+}
+
 void CreateTextLabel(string msg, int Importance, datetime raisetime) 
 {
    if (StringCompare(labelEventString, msg) ==0)
@@ -282,11 +314,6 @@ int OnInit()
    Print(initMessage);
    thrift.PostMessage(initMessage);
   	  	
-  	//double longVal = 0;
-  	//double shortVal = 0;
-   //thrift.GetCurrentSentiments(Symbol(), longVal, shortVal);
-   //Print(Symbol() + " Long: " + longVal + ", ShortVal: " + shortVal);
-
    if ( Digits == 3 || Digits == 5 )
    {
       Slippage *= 10;
@@ -639,9 +666,6 @@ int CloseMyOrder(int Ticket)
    if (grid_optype == OrderType())
       if (head_grid_ticket != Ticket)
          return -1;
-      else 
-         if (TrailGridHead == false)
-              return -1;
          
    double lots = OrderLots();
 //   if (lots < Lots && grid_count > 1)
@@ -753,36 +777,8 @@ bool ProcessOrders()
       }
    }
    // CLOSING GRID
-   if ((Profit >= GridProfit) && (grid_optype != -1 ) && (head_grid_ticket != -1)) {
-      double closePrice = 0;
-      Print("*******Close Grid!!! count: " + grid_count + " *********");
-      i = 0;
-      while (i < OrdersTotal())
-      {
-         if (OrderSelect(i, SELECT_BY_POS))
-         {  
-            tip = OrderType();
-            if ( (tip == grid_optype) && (OrderSymbol()==Symbol()) && (OrderMagicNumber()==Magic) )
-            {
-               if (OP_BUY == tip) {
-                  closePrice = Bid;
-               }
-               else {
-                  closePrice = Ask;
-               }
-               if (TrailGridHead && (head_grid_ticket==OrderTicket()) )
-                  continue;
-               if (CloseOrder(OrderTicket(), OrderLots(), closePrice, Slippage, clrMediumSpringGreen))
-               {
-                  i = 0;
-                  continue;
-               }
-            }
-            i++;
-         }
-      }
-      grid_optype = -1;
-      head_grid_ticket = -1;
+   if ((Profit >= GridProfit) ) {
+      CloseGrid();
       return false;
    }
 
@@ -794,7 +790,7 @@ bool ProcessOrders()
    {
       ticket = OpenOrder(op_type, Lots);
       if (ticket != -1) {
-         TP = NormalizeDouble(Bid + TakeProfitLevel* Point, Digits);
+         TP = NormalizeDouble(Bid + TakeProfitLevel* Point , Digits); //* currentImportance
          OrderModify(ticket, OrderOpenPrice(), 0, TP, 0);        
          EventRaiseSoon = false;
          return true;
@@ -804,7 +800,7 @@ bool ProcessOrders()
    {
       ticket = OpenOrder(op_type, Lots);
       if (ticket != -1) {
-         TP = NormalizeDouble(Bid - TakeProfitLevel* Point, Digits);
+         TP = NormalizeDouble(Bid - TakeProfitLevel* Point , Digits); //* currentImportance
          OrderModify(ticket, OrderOpenPrice(), 0, TP, 0);        
          EventRaiseSoon = false;
          return true;
@@ -826,11 +822,14 @@ bool ProcessOrders()
             {
                CheckPrice = Ask;
             }
-            LossLevel = MathAbs(OrderOpenPrice() - CheckPrice)/Point;
-            if ( (LossLevel > GridStep) && (InNewsPeriod == false)) 
+            double gridHeadOpenPrice = OrderOpenPrice(); 
+            LossLevel = MathAbs(gridHeadOpenPrice - CheckPrice)/Point;
+            if ((LossLevel > GridStep) && (InNewsPeriod == false)) 
             {
                isbuy = GetBWSignal();
-               if (((isbuy > 0) && (grid_optype == OP_SELL)) || ((isbuy < 0) && (grid_optype == OP_BUY)))         
+               //double minDiff = MinGridStep*Point;
+               if (((isbuy > 0) && (grid_optype == OP_SELL)) //&& (CheckPrice > (gridHeadOpenPrice + minDiff)) ) 
+                || ((isbuy < 0) && (grid_optype == OP_BUY))) // && (CheckPrice < (gridHeadOpenPrice - minDiff)) )         
                {
                   grid_optype = tip;
                   lotsize = CalculateLotSize(grid_optype, lotsize);
@@ -847,7 +846,38 @@ bool ProcessOrders()
    }
    return true;
 }
-
+//+------------------------------------------------------------------+
+void CloseGrid() {
+   if ((grid_optype != -1 ) && (head_grid_ticket != -1)) {
+      double closePrice = 0;
+      Print("*******Close Grid!!! count: " + grid_count + " *********");
+      int i = 0;
+      while (i < OrdersTotal())
+      {
+         if (OrderSelect(i, SELECT_BY_POS))
+         {  
+            int tip = OrderType();
+            if ( (tip == grid_optype) && (OrderSymbol()==Symbol()) && (OrderMagicNumber()==Magic) )
+            {
+               if (OP_BUY == tip) {
+                  closePrice = Bid;
+               }
+               else {
+                  closePrice = Ask;
+               }
+               if (CloseOrder(OrderTicket(), OrderLots(), closePrice, Slippage, clrMediumSpringGreen))
+               {
+                  i = 0;
+                  continue;
+               }
+            }
+            i++;
+         }
+      }
+      grid_optype = -1;
+      head_grid_ticket = -1;
+   }
+}
 //+------------------------------------------------------------------+
 void DoTrailing()
 {
@@ -857,25 +887,24 @@ void DoTrailing()
    TIME = iTime(Symbol(),0,0);
    double fr;
    double prevfr;
-   // datetime currentTime = TimeCurrent();
+   datetime currentTime = TimeCurrent();
    for (int i=0; i<OrdersTotal(); i++)
    {
       if (OrderSelect(i, SELECT_BY_POS)==true)
       {  
          tip = OrderType();
 
-         if (tip == grid_optype) {
-            if ( TrailGridHead && (head_grid_ticket == OrderTicket()) )
-               ;
-            else 
-               continue;
-         }
+         if (tip == grid_optype) 
+               continue;              
          if ( (tip < 2) && (OrderSymbol()==Symbol()) && (OrderMagicNumber()==Magic)) // && CalcOrderRealProfit() >= 0)
          {
             OSL   = OrderStopLoss();
             OOP   = OrderOpenPrice();
             Ticket = OrderTicket();
+            double OOpenTime = OrderOpenTime();
             double TPPoints = 0;
+            if ((currentTime - OOpenTime) < (NewsPeriodMinutes*60) )
+                  continue;
             if (tip == OP_BUY && AllowBUY)             
             {  
                if (TrailByPSAR) 

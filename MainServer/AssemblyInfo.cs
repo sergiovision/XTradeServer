@@ -7,15 +7,15 @@ using System.Runtime.InteropServices;
 
 //#if NET_40
 
-[assembly: AssemblyConfiguration("net-4.5.win32; Release")]
+[assembly: AssemblyConfiguration("net-4.6.win64; Release")]
 //#else
 //[assembly: AssemblyConfiguration("net-3.5.win32; Release")]
 //#endif
 
 [assembly: AssemblyProduct("FXMind.MainServer")]
 [assembly: AssemblyDescription("FXMind Main Server")]
-[assembly: AssemblyCompany("http://quartznet.sourceforge.net/")]
-[assembly: AssemblyCopyright("Copyright 2007-2013 Marko Lahma")]
+[assembly: AssemblyCompany("http://facebook.com/sergei.zhuravlev")]
+[assembly: AssemblyCopyright("Copyright 2013-2018 Sergei Zhuravlev")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 //[assembly: CLSCompliant(true)]

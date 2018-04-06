@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Autofac;
 using BusinessObjects;
+using FXBusinessLogic.BusinessObjects;
 using FXBusinessLogic.News;
 using FXBusinessLogic.PosRatio;
 using FXBusinessLogic.Thrift;
@@ -26,7 +27,14 @@ namespace FXBusinessLogic.Scheduler
             try
             {
                 sched = context.Scheduler;
-                SchedulingAllJobs();
+
+                //var jobs2Check = MainService.thisGlobal.GetAllJobsList();
+                //setResultMessage("# of jobs to check: " + jobs2Check.size());
+                //removeObsoleteJobs(jobs2Check);
+                //if (jobs2Check.size() != 0)
+                //    addOrModifyJobs(jobs2Check);
+
+                ScheduleJobsStatic();
             }
             catch (Exception ex)
             {
@@ -36,40 +44,25 @@ namespace FXBusinessLogic.Scheduler
 
         }
 
-        protected void SchedulingAllJobs()
+        protected void ScheduleJobsStatic()
         {
             log.Info("JobSuperviser: ------- Scheduling Jobs -------");
 
             ScheduleThriftJob<AppServiceServerJob>(fxmindConstants.JOBGROUP_THRIFT, "AppServiceServer",
                 fxmindConstants.AppService_PORT, 1);
-            //ScheduleThriftJob<FXMindMQLServerJob>(fxmindConstants.JOBGROUP_THRIFT, "FXMindMQLServer", fxmindConstants.FXMindMQL_PORT, 5);
+            ScheduleThriftJob<FXMindMQLServerJob>(fxmindConstants.JOBGROUP_THRIFT, "FXMindMQLServer", fxmindConstants.FXMindMQL_PORT, 5);
 
             ScheduleJob<OandaRatioJob>(fxmindConstants.JOBGROUP_OPENPOSRATIO, "OandaRatio", "0 0 0/1 ? * MON-FRI *");
-            ScheduleJob<MyFXBookRatioJob>(fxmindConstants.JOBGROUP_OPENPOSRATIO, "MyFXBookRatio",
-                "0 0 0/1 ? * MON-FRI *");
-            ScheduleJob<EToroRatioJob>(fxmindConstants.JOBGROUP_OPENPOSRATIO, "EToroRatioJob", "0 0 0/1 ? * MON-FRI *");
+            ScheduleJob<MyFXBookRatioJob>(fxmindConstants.JOBGROUP_OPENPOSRATIO, "MyFXBookRatio", "0 0 0/1 ? * MON-FRI *");
 
-            ScheduleJob<NewsParseJob>(fxmindConstants.JOBGROUP_NEWS, "NewsParseJob", "0 0 9 ? * MON-FRI *");
-            // runs every 4 hours by defailt
-
-            /*
-            //ScheduleJobWithParam<TechnicalDetailsJob>(fxmindConstants.JOBGROUP_TECHDETAIL, "TechDetails_Min1",
-            //    fxmindConstants.CRON_MANUAL, "TimeFrame", "60");
-            ScheduleJobWithParam<TechnicalDetailsJob>(fxmindConstants.JOBGROUP_TECHDETAIL, "TechDetails_Min5",
-                fxmindConstants.CRON_MANUAL, "TimeFrame", "300"); //"0 0/5 * ? * MON-FRI *"
-            ScheduleJobWithParam<TechnicalDetailsJob>(fxmindConstants.JOBGROUP_TECHDETAIL, "TechDetails_Min15",
-                fxmindConstants.CRON_MANUAL, "TimeFrame", "900"); //"0 0/15 * ? * MON-FRI *"
-            ScheduleJobWithParam<TechnicalDetailsJob>(fxmindConstants.JOBGROUP_TECHDETAIL, "TechDetails_Min30",
-                fxmindConstants.CRON_MANUAL, "TimeFrame", "1800"); //"0 0/30 * ? * MON-FRI *"
-            ScheduleJobWithParam<TechnicalDetailsJob>(fxmindConstants.JOBGROUP_TECHDETAIL, "TechDetails_Hourly",
-                "0 0 0/1 ? * MON-FRI *", "TimeFrame", "3600"); //
-            //ScheduleJobWithParam<TechnicalDetailsJob>(fxmindConstants.JOBGROUP_TECHDETAIL, "TechDetails_5Hourly",
-            //    fxmindConstants.CRON_MANUAL, "TimeFrame", "18000"); "0 0 0/5 ? * MON-FRI *"
-            ScheduleJobWithParam<TechnicalDetailsJob>(fxmindConstants.JOBGROUP_TECHDETAIL, "TechDetails_Daily",
-                fxmindConstants.CRON_MANUAL, "TimeFrame", "86400");//"0 0 9 ? * MON-FRI *"
-            ScheduleJobWithParam<TechnicalDetailsJob>(fxmindConstants.JOBGROUP_TECHDETAIL, "TechDetails_Monthly",
-                fxmindConstants.CRON_MANUAL, "TimeFrame", "month"); //"0 0 9 ? * MON-FRI *"
-            */
+            // Disabled
+            //ScheduleJob<EToroRatioJob>(fxmindConstants.JOBGROUP_OPENPOSRATIO, "EToroRatioJob", "0 0 0/1 ? * MON-FRI *");
+            // Disabled
+            //ScheduleJob<ExnessNewsJob>(fxmindConstants.JOBGROUP_NEWS, "ExnessNewsJob", "0 0 9 ? * MON-FRI *");
+            ScheduleJob<ForexFactoryNewsJob>(fxmindConstants.JOBGROUP_NEWS, "ForexFactoryNewsJob", "0 0 6 ? * MON-FRI *");
+            
+            // For testing purposes
+            //MainService.thisGlobal.RunJobNow(fxmindConstants.JOBGROUP_NEWS, "ForexFactoryNewsJob");
 
             log.Info("JobSuperviser: ------- Jobs Scheduled -------");
         }

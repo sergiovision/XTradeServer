@@ -22,6 +22,12 @@ namespace FXBusinessLogic.BusinessObjects
         public const string NEWSEVENT_HANLDER = "NewsEvent";
         public const string SENTIMENTS_HANLDER = "Sentiments";
 
+        /// <summary>
+        /// Settings properties
+        /// </summary>
+        public const string SETTINGS_PROPERTY_THRIFTPORT = "FXMind.ThriftPort";
+        public const string SETTINGS_PROPERTY_NETSERVERPORT = "FXMind.NETServerPort";
+
         //public const string MYSQLDATETIMEFORMAT = "yyyy-MM-dd HH:mm:ss";
         public const int SENTIMENTS_FETCH_PERIOD = 100;
         private static readonly ILog log = LogManager.GetLogger(typeof(MainService));
@@ -155,7 +161,7 @@ namespace FXBusinessLogic.BusinessObjects
         //{
         //    return GetTimeZoneFromString("UserTimeZone");
         //}
-
+        
         public TimeZoneInfo GetBrokerTimeZone()
         {
             return GetTimeZoneFromString("BrokerServerTimeZone");
@@ -377,12 +383,14 @@ namespace FXBusinessLogic.BusinessObjects
                 {
                     eventInfo = new NewsEventInfo();
                     eventInfo.Currency = (string) row.Values[0];
-                    eventInfo.RaiseDateTime = (DateTime) row.Values[1];
-                    eventInfo.RaiseDateTime = TimeZoneInfo.ConvertTimeFromUtc(eventInfo.RaiseDateTime,
+                    DateTime raiseDT = (DateTime)row.Values[1];
+                    raiseDT = TimeZoneInfo.ConvertTimeFromUtc(raiseDT,
                         BrokerTimeZoneInfo);
+                    eventInfo.RaiseDateTime = raiseDT.ToString(fxmindConstants.MTDATETIMEFORMAT);
                     //eventInfo.RaiseDateTime.AddHours(BrokerTimeZoneInfo.BaseUtcOffset.Hours);
                     eventInfo.Name = (string) row.Values[2];
-                    eventInfo.Importance = (byte) row.Values[4];
+                    byte imp = (byte)row.Values[4];
+                    eventInfo.Importance = (sbyte)imp;
                     break;
                 }
 

@@ -30,6 +30,7 @@ namespace FXMind.WinClient
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             DevExpress.Utils.SuperToolTip superToolTip1 = new DevExpress.Utils.SuperToolTip();
             DevExpress.Utils.ToolTipTitleItem toolTipTitleItem1 = new DevExpress.Utils.ToolTipTitleItem();
             DevExpress.Utils.SuperToolTip superToolTip2 = new DevExpress.Utils.SuperToolTip();
@@ -42,7 +43,7 @@ namespace FXMind.WinClient
             DevExpress.XtraEditors.Controls.EditorButtonImageOptions editorButtonImageOptions1 = new DevExpress.XtraEditors.Controls.EditorButtonImageOptions();
             this.barAdviserSymbol = new DevExpress.XtraBars.BarEditItem();
             this.gridView8 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.MainBarManager = new DevExpress.XtraBars.BarManager();
+            this.MainBarManager = new DevExpress.XtraBars.BarManager(this.components);
             this.currencyStrengthBar = new DevExpress.XtraBars.Bar();
             this.barCurrencyList = new DevExpress.XtraBars.BarEditItem();
             this.repositoryGridLookCurrency1 = new DevExpress.XtraEditors.Repository.RepositoryItemGridLookUpEdit();
@@ -160,14 +161,14 @@ namespace FXMind.WinClient
             this.rowSlippage = new DevExpress.XtraVerticalGrid.Rows.EditorRow();
             this.rowComment = new DevExpress.XtraVerticalGrid.Rows.EditorRow();
             this.rowMaxOpenOrders = new DevExpress.XtraVerticalGrid.Rows.EditorRow();
-            this.iOpenOrderBindingSource = new System.Windows.Forms.BindingSource();
-            this.barManager2 = new DevExpress.XtraBars.BarManager();
+            this.iOpenOrderBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.barManager2 = new DevExpress.XtraBars.BarManager(this.components);
             this.barDockControl1 = new DevExpress.XtraBars.BarDockControl();
             this.barDockControl2 = new DevExpress.XtraBars.BarDockControl();
             this.barDockControl3 = new DevExpress.XtraBars.BarDockControl();
             this.barDockControl4 = new DevExpress.XtraBars.BarDockControl();
             this.barStaticItem5 = new DevExpress.XtraBars.BarStaticItem();
-            this.barManager3 = new DevExpress.XtraBars.BarManager();
+            this.barManager3 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar5 = new DevExpress.XtraBars.Bar();
             this.barStaticItem6 = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControl5 = new DevExpress.XtraBars.BarDockControl();
