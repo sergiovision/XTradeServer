@@ -1,6 +1,7 @@
 C:\Projects\FXMindLastNET6jul2014\ThriftMQL\obj\Release\ThriftMQL.csprojResolveAssemblyReference.cache
 C:\Projects\FXMindLastNET6jul2014\ThriftMQL\obj\Release\ThriftMQL.csproj.CoreCompileInputs.cache
 C:\Projects\Users\Sergei\AppData\Roaming\MetaQuotes\Terminal\786C086D750AFD6A209612668F58727A\MQL4\Libraries\ThriftMQL.dll
-C:\Projects\GitHub\FXMindNET\ThriftMQL\obj\Release\ThriftMQL.csprojResolveAssemblyReference.cache
 C:\Projects\GitHub\FXMindNET\ThriftMQL\obj\Release\ThriftMQL.csproj.CoreCompileInputs.cache
 C:\Projects\GitHub\FXMindNET\ThriftMQL\obj\Release\ThriftMQL.dll
+C:\Users\sergei.zhuravlev\AppData\Roaming\MetaQuotes\Terminal\287469DEA9630EA94D0715D755974F1B\MQL4\Libraries\ThriftMQL.dll
+C:\Projects\GitHub\FXMindNET\ThriftMQL\obj\Release\ThriftMQL.csprojResolveAssemblyReference.cache

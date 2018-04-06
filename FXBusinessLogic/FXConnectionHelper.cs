@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
+using DevExpress.Xpo.Metadata;
 
 namespace FXBusinessLogic
 {
@@ -28,10 +29,17 @@ namespace FXBusinessLogic
             string DS = ConfigurationManager.ConnectionStrings["FXMind.ConnectionString"].ConnectionString;
             connString = DS;
 
-            SimpleDataLayer.SuppressReentrancyAndThreadSafetyCheck = true;
+            //SimpleDataLayer.SuppressReentrancyAndThreadSafetyCheck = true;
 
             var autoCreateOption = AutoCreateOption.None; //.DatabaseAndSchema;
-            XpoDefault.DataLayer = XpoDefault.GetDataLayer(connString, autoCreateOption);
+
+            XPDictionary dict = new ReflectionDictionary();
+
+            IDataStore store = XpoDefault.GetConnectionProvider(connString, autoCreateOption);
+            dict.GetDataStoreSchema(System.Reflection.Assembly.GetExecutingAssembly());
+
+            XpoDefault.DataLayer = new ThreadSafeDataLayer(dict, store);
+            //XpoDefault.DataLayer = XpoDefault.GetDataLayer(connString, autoCreateOption);
             if (dbSession == null) // first connect
             {
                 //dbSession = XpoDefault.Session;

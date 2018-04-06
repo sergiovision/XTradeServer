@@ -1,9 +1,10 @@
 C:\Projects\FXMindLastNET6jul2014\FXBusinessLogic\obj\Debug\FXBusinessLogic.csprojResolveAssemblyReference.cache
 C:\Projects\FXMindLastNET6jul2014\FXBusinessLogic\obj\Debug\FXBusinessLogic.csproj.CoreCompileInputs.cache
-C:\Projects\GitHub\FXMindNET\bin\FXBusinessLogic.dll.config
 C:\Projects\GitHub\FXMindNET\bin\FXBusinessLogic.dll
 C:\Projects\GitHub\FXMindNET\bin\FXBusinessLogic.pdb
+C:\Projects\GitHub\FXMindNET\bin\FXBusinessLogic.dll.config
 C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.csprojResolveAssemblyReference.cache
 C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.csproj.CoreCompileInputs.cache
+C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.csproj.CopyComplete
 C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.dll
 C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.pdb

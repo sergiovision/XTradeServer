@@ -165,11 +165,12 @@ namespace FXBusinessLogic.Scheduler
             }
         }
 
-        public static void removeJobTriggers(IJobDetail job)
+        public static void removeJobTriggers(JobKey jobKey)
         {
-            var triggers = sched.GetTriggersOfJob(job.Key);
+            var triggers = sched.GetTriggersOfJob(jobKey);
             var trigs = triggers.Result;
             foreach (ITrigger trigger in trigs) sched.UnscheduleJob(trigger.Key);
+
         }
 
         public void Shutdown()
@@ -356,17 +357,6 @@ namespace FXBusinessLogic.Scheduler
                     jobview.Group = detail.Key.Group;
                     string strMessage = detail.JobDataMap.GetString("log");
                     jobview.Log = strMessage;
-                    //string TraderStr = detail.JobDataMap.GetString("traderID");
-                    //if (TraderStr != null)
-                    //{
-                    //    int iTraderID = Int32.Parse(TraderStr);
-                    //    DBTrader trader = FXMindHelpers.getTrader(FXConnectionHelper.dbSession, iTraderID);
-                    //    if (trader != null)
-                    //    {
-                    //        jobview.Entity = trader.Name;
-                    //    }
-                    //}
-                    //jobview.Description = detail.Description;
                     var trigs = sched.GetTriggersOfJob(detail.Key).Result;
                     if (trigs != null)
                         foreach (ITrigger trigger in trigs)

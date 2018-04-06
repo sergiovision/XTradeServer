@@ -12,8 +12,9 @@ using log4net;
 using Quartz;
 using ScrapySharp.Network;
 using HtmlAgilityPack;
+using FXBusinessLogic;
 
-namespace FXBusinessLogic.News
+namespace com.fxmind.manager.jobs
 {
     [PersistJobDataAfterExecution]
     [DisallowConcurrentExecution]

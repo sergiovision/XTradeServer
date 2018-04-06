@@ -70,8 +70,8 @@ namespace FXBusinessLogic.ThriftServer
 
         public List<double> ProcessDoubleData(Dictionary<string, string> paramsList, List<string> inputData)
         {
-            if (fxmind.IsDebug())
-                log.Info("server(" + GetHashCode() + ") ProcessDoubleData: " + inputData.Count);
+            //if (fxmind.IsDebug())
+            //    log.Info("server(" + GetHashCode() + ") ProcessDoubleData: " + inputData.Count);
             var list = new List<double>();
             if (!paramsList.ContainsKey("func"))
             {

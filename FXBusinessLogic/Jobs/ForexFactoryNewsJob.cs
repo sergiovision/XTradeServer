@@ -10,13 +10,12 @@ using FXBusinessLogic.fx_mind;
 using FXBusinessLogic.Scheduler;
 using log4net;
 using Quartz;
-using ScrapySharp.Network;
-using HtmlAgilityPack;
 using FXBusinessLogic.BusinessObjects;
 using System.Text;
 using System.Xml.Linq;
+using FXBusinessLogic;
 
-namespace FXBusinessLogic.News
+namespace com.fxmind.manager.jobs
 {
     [PersistJobDataAfterExecution]
     [DisallowConcurrentExecution]
@@ -71,7 +70,7 @@ namespace FXBusinessLogic.News
                 DateTime curDate = TimeZoneInfo.ConvertTimeFromUtc(parseDateTime, tz);
                 DateTime nowDate = curDate;
 
-                var browser = new ScrapingBrowser();
+                //var browser = new ScrapingBrowser();
                 //WebPage homePage = browser.NavigateToPage(new Uri(URL));
                 XElement homePage = XElement.Load(URL);
 
@@ -79,6 +78,9 @@ namespace FXBusinessLogic.News
 
                 DateTime midnight = new DateTime(curDate.Year, curDate.Month, curDate.Day);
                 ParseOnePage(homePage, session, midnight);
+
+                session.Disconnect();
+                session.Dispose();
 
                 //SetMessage("Succeeded");
             }

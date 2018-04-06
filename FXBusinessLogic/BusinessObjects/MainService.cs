@@ -127,6 +127,7 @@ namespace FXBusinessLogic.BusinessObjects
 
         public IContainer Container { get; private set; }
 
+
         public INotificationUi GetUi()
         {
             return _ui;
@@ -317,6 +318,31 @@ namespace FXBusinessLogic.BusinessObjects
             return SchedulerService.GetJobPrevTime(group, name);
         }
 
+        #region DBJobs
+        public IEnumerable<DBJobs> GetDBActiveJobsList(Session session)
+        {
+
+            var jobsQuery = new XPQuery<DBJobs>(session);
+            IQueryable<DBJobs> jobs = from c in jobsQuery
+                                           where c.DISABLED == 0
+                                           select c;
+
+            return jobs;
+        }
+
+        public void UnsheduleJobs(IEnumerable<JobKey> jobs)
+        {
+            foreach (var job in jobs)
+                SchedulerService.removeJobTriggers(job);
+        }
+
+        public bool DeleteJob(JobKey job)
+        {
+             return SchedulerService.sched.DeleteJob(job).Result;
+        }
+
+        #endregion
+
         public void Dispose()
         {
             if (_gSchedulerService != null)
@@ -382,18 +408,17 @@ namespace FXBusinessLogic.BusinessObjects
                 foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
                 {
                     eventInfo = new NewsEventInfo();
-                    eventInfo.Currency = (string) row.Values[0];
+                    eventInfo.Currency = (string)row.Values[0];
                     DateTime raiseDT = (DateTime)row.Values[1];
                     raiseDT = TimeZoneInfo.ConvertTimeFromUtc(raiseDT,
                         BrokerTimeZoneInfo);
                     eventInfo.RaiseDateTime = raiseDT.ToString(fxmindConstants.MTDATETIMEFORMAT);
                     //eventInfo.RaiseDateTime.AddHours(BrokerTimeZoneInfo.BaseUtcOffset.Hours);
-                    eventInfo.Name = (string) row.Values[2];
+                    eventInfo.Name = (string)row.Values[2];
                     byte imp = (byte)row.Values[4];
                     eventInfo.Importance = (sbyte)imp;
                     break;
                 }
-
                 session.Dispose();
                 return true;
             }
