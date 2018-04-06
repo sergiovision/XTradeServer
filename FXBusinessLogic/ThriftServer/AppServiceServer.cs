@@ -47,7 +47,7 @@ namespace FXBusinessLogic.Thrift
                 if (Int16.TryParse(strPort, out tryPortValue))
                     port = tryPortValue;
 
-                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+                //Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
                 var handler = new AppServiceHandler();
                 var processor = new AppService.Processor(handler);
                 TServerTransport serverTransport = new TServerSocket(port);
@@ -56,7 +56,7 @@ namespace FXBusinessLogic.Thrift
                 // Use this for a multithreaded server. This method works faster.
                 server = new TThreadPoolServer(processor, serverTransport);
 
-                log.Info("AppService.NET Server listening... on Port: " + port);
+                log.Info("AppService.NET Server listening... on Port: " + port + " as type: " + server.GetType().Name);
                 server.Serve();
             }
             catch (Exception x)

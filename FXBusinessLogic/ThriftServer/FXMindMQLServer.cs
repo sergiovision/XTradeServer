@@ -50,7 +50,7 @@ namespace FXBusinessLogic.Thrift
                 if (Int16.TryParse(strPort, out tryPortValue))
                     port = tryPortValue;
 
-                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+                //Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
                 var handler = new FXMindMQLHandler();
                 var processor = new FXMindMQL.Processor(handler);
                 TServerTransport serverTransport = new TServerSocket(port);
@@ -59,7 +59,7 @@ namespace FXBusinessLogic.Thrift
                 // Use this for a multithreaded server. This method works faster.
                 server = new TThreadPoolServer(processor, serverTransport);
 
-                log.Info("FXMindMQLServer listening... on Port: " + port.ToString());
+                log.Info("FXMindMQLServer listening... on Port: " + port.ToString()  + " as type: " + server.GetType().Name);
                 server.Serve();
             }
             catch (Exception x)

@@ -8,12 +8,6 @@ using DevExpress.Xpo.Metadata;
 
 namespace FXBusinessLogic
 {
-    /*
-     * Helper class to work with connections in DB for FXMind 
-     * To create connection call this at app start:
-     * ConnectionHelper.Connect(AutoCreateOption.DatabaseAndSchema);
-     */
-
     internal static class FXConnectionHelper
     {
         public static string connString;
