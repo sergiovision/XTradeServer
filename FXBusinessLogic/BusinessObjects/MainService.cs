@@ -27,6 +27,7 @@ namespace FXBusinessLogic.BusinessObjects
         /// </summary>
         public const string SETTINGS_PROPERTY_THRIFTPORT = "FXMind.ThriftPort";
         public const string SETTINGS_PROPERTY_NETSERVERPORT = "FXMind.NETServerPort";
+        public const string SETTINGS_APPREGKEY = "HKEY_LOCAL_MACHINE\\SOFTWARE\\FXMind";
 
         //public const string MYSQLDATETIMEFORMAT = "yyyy-MM-dd HH:mm:ss";
         public const int SENTIMENTS_FETCH_PERIOD = 100;
@@ -133,20 +134,25 @@ namespace FXBusinessLogic.BusinessObjects
             return _ui;
         }
 
+        protected void RegistryInit()
+        {
+            // TODO: implement registry settings read/write
+        }
+
         public void Init(INotificationUi ui, bool serverMode)
         {
             if (Initialized)
                 return;
             _ui = ui;
+
+            RegistryInit();
+
             FXConnectionHelper.Connect(null);
 
             BrokerTimeZoneInfo = GetBrokerTimeZone();
 
             if (serverMode)
                 InitScheduler(serverMode);
-
-            //testDate("2014.05.27 09:00");
-            //testDate("2014.02.26 09:00");
 
             Initialized = true;
         }

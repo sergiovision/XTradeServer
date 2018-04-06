@@ -39,11 +39,11 @@ namespace com.fxmind.manager.jobs
                 JobKey jobKey = context.JobDetail.Key;
                 log.InfoFormat("OandaRatioJob started parsing: {0} executing at {1}", jobKey,
                     DateTime.Now.ToString("r"));
-
+                //*[@id="long-short-ratio-graph"]
                 var browser = new ScrapingBrowser();
                 WebPage homePage = browser.NavigateToPage(new Uri(URL));
-                HtmlNodeCollection colSymbols =
-                    homePage.Html.SelectNodes("/html/body/section/div/div[4]/div/div/div/div[3]/ol/li");
+                //*[@id="long-short-ratio-graph"]
+                HtmlNodeCollection colSymbols = homePage.Html.SelectNodes("//*[@id=\"long-short-ratio-graph\"]/li");
                 if (colSymbols == null)
                 {
                     SetMessage("Error parsing OANDA ratio page");

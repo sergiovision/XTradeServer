@@ -43,6 +43,9 @@ namespace FXBusinessLogic.Scheduler
                 UnscheduleObsoleteJobs(jobs2Check);
                 addOrModifyJobs(jobs2Check);
 
+                // For testing purposes
+                //MainService.thisGlobal.RunJobNow("SYSTEM", "OandaRatioJob");
+
                 //ScheduleJobsStatic();
             }
             catch (Exception ex)
@@ -116,10 +119,7 @@ namespace FXBusinessLogic.Scheduler
             // Disabled
             //ScheduleJob<ExnessNewsJob>(fxmindConstants.JOBGROUP_NEWS, "ExnessNewsJob", "0 0 9 ? * MON-FRI *");
             ScheduleJob(typeof(ForexFactoryNewsJob).FullName, fxmindConstants.JOBGROUP_NEWS, "ForexFactoryNewsJob", "0 0 6 ? * MON-FRI *");
-            
-            // For testing purposes
-            //MainService.thisGlobal.RunJobNow(fxmindConstants.JOBGROUP_NEWS, "ForexFactoryNewsJob");
-
+           
             log.Info("JobSuperviser: ------- Jobs Scheduled -------");
         }
 
