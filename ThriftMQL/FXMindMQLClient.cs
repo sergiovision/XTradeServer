@@ -1,22 +1,29 @@
 using BusinessObjects;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using Thrift;
 using Thrift.Protocol;
 using Thrift.Transport;
+using ThriftMQL;
 
 namespace FXBusinessLogic.BusinessObjects.Thrift
 {
 
     public class FXMindMQLClient : ThriftClient<FXMindMQL.Client> 
     {
+
         public FXMindMQLClient(string host, ushort port)
         {
             try
             {
                 Host = host;
                 Port = port;
+
+                if (String.IsNullOrEmpty(ThriftCalls._FullFilePath))
+                    ThriftCalls.InitDLL(Host, Port);
+
                 InitBase();
             }
             catch (TApplicationException x)
@@ -28,6 +35,7 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
                 Console.WriteLine(s.ToString());
             }
         }
+
 
         public override FXMindMQL.Client CreateClient(TProtocol p)
         {

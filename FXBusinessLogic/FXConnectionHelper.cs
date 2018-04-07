@@ -59,7 +59,7 @@ namespace FXBusinessLogic
             connString = conn;
 
             XPDictionary dict = new ReflectionDictionary();
-            IDataStore store = XpoDefault.GetConnectionProvider(conn, AutoCreateOption.SchemaAlreadyExists);
+            IDataStore store = XpoDefault.GetConnectionProvider(conn, AutoCreateOption.None);
             dict.GetDataStoreSchema(System.Reflection.Assembly.GetExecutingAssembly());
             IDataLayer dl = new ThreadSafeDataLayer(dict, store);
             return dl;

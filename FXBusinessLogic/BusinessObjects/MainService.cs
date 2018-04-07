@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -12,6 +13,7 @@ using DevExpress.Xpo.DB;
 using FXBusinessLogic.fx_mind;
 using FXBusinessLogic.Scheduler;
 using log4net;
+using Microsoft.Win32;
 using Quartz;
 
 namespace FXBusinessLogic.BusinessObjects
@@ -27,7 +29,7 @@ namespace FXBusinessLogic.BusinessObjects
         /// </summary>
         public const string SETTINGS_PROPERTY_THRIFTPORT = "FXMind.ThriftPort";
         public const string SETTINGS_PROPERTY_NETSERVERPORT = "FXMind.NETServerPort";
-        public const string SETTINGS_APPREGKEY = "HKEY_LOCAL_MACHINE\\SOFTWARE\\FXMind";
+        public const string SETTINGS_APPREGKEY = @"SOFTWARE\\FXMind";
 
         //public const string MYSQLDATETIMEFORMAT = "yyyy-MM-dd HH:mm:ss";
         public const int SENTIMENTS_FETCH_PERIOD = 100;
@@ -38,6 +40,43 @@ namespace FXBusinessLogic.BusinessObjects
         private INotificationUi _ui;
         protected TimeZoneInfo BrokerTimeZoneInfo;
         private bool Initialized;
+
+        public static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
+
+        public static string RegistryInstallDir
+        {
+            get
+            {
+                string result = AssemblyDirectory;
+                try
+                {
+                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(SETTINGS_APPREGKEY, false);
+                    if (rk == null)
+                    {
+                        rk = Registry.LocalMachine.CreateSubKey(SETTINGS_APPREGKEY, true, RegistryOptions.None);
+                        rk.SetValue("InstallDir", result);
+                    } else
+                    {
+                        result = rk.GetValue("InstallDir")?.ToString();
+                    }
+                }
+                catch (Exception e)
+                {
+                    log.Error("ERROR FROM CONNECTION: " + e);
+                }
+                return result;
+            }
+        }
+
 
         public MainService()
         {
@@ -138,6 +177,8 @@ namespace FXBusinessLogic.BusinessObjects
 
         protected void RegistryInit()
         {
+
+            log.Info("Registry InstallDir: " + RegistryInstallDir);
             // TODO: implement registry settings read/write
         }
 

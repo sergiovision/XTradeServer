@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using FXBusinessLogic.BusinessObjects.Thrift;
+using Microsoft.Win32;
 using RGiesecke.DllExport;
 namespace ThriftMQL
 {
@@ -21,9 +22,47 @@ namespace ThriftMQL
             public byte ip3;
         }
 
+
         public static string HostFromClient(THRIFT_CLIENT tc)
         {
             return string.Format("{0}.{1}.{2}.{3}", tc.ip0, tc.ip1, tc.ip2, tc.ip3);
+        }
+
+        public const string SETTINGS_APPREGKEY = @"SOFTWARE\\FXMind";
+        public const string LOGFILENAME = @"FXMind.ThriftMQL.log";
+        protected static string GlobalErrorMessage;
+        public static string _FullFilePath = "";
+
+
+        public static string RegistryInstallDir
+        {
+            get
+            {
+                string result = @"C:\Projects\GitHub\FXMindNET\bin";
+                try
+                {
+                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(SETTINGS_APPREGKEY, false);
+                    if (rk != null)
+                        result = rk.GetValue("InstallDir")?.ToString();
+                }
+                catch (Exception e)
+                {
+                    GlobalErrorMessage = e.ToString();
+                }
+                return result;
+            }
+        }
+
+        public static string logFilePath
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(_FullFilePath))
+                {
+                    _FullFilePath = RegistryInstallDir + "\\" + LOGFILENAME;
+                }
+                return _FullFilePath;
+            }
         }
 
         public static void LogWriteLine(string text)
@@ -38,11 +77,11 @@ namespace ThriftMQL
             }
         }
 
-        //public static string host = "127.0.0.1";
 
-        //protected static volatile FXMindMQLClient client;
-        protected static string GlobalErrorMessage;
-        public static string logFilePath = @"C:\Projects\GitHub\FXMindNET\bin\FXMind.MainClient.log";
+        public static void InitDLL(string Host, int Port)
+        {
+            File.AppendAllText(ThriftCalls.logFilePath, $"\nInit ThriftMQL.dll on Host: {Host}:{Port}");
+        }
 
         protected static List<string> StringToList(string str)
         {

@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using Autofac;
 using BusinessObjects;
 using DevExpress.Utils;
-using DevExpress.Xpo;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
@@ -31,7 +30,6 @@ namespace FXMind.WinClient
         public static BarStaticItem statusBar;
         public static TimeZoneInfo g_userTimeZone;
 
-        //private AppServiceClient appclient;
         private Dictionary<string, ScheduledJob> RunningJobs = new Dictionary<string, ScheduledJob>();
         private Dictionary<int, TimeZoneInfo> tz_col;
 

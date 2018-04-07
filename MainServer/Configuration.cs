@@ -20,7 +20,6 @@ namespace FXMind.MainServer
         private static readonly ILog log = LogManager.GetLogger(typeof(Configuration));
         private static readonly string DefaultServerImplementationType = typeof(QuartzServer).AssemblyQualifiedName;
 
-
         /// <summary>
         ///     Initializes the <see cref="Configuration" /> class.
         /// </summary>

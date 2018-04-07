@@ -8,9 +8,6 @@ using System.Runtime.InteropServices;
 //#if NET_40
 
 [assembly: AssemblyConfiguration("net-4.6.win64; Release")]
-//#else
-//[assembly: AssemblyConfiguration("net-3.5.win32; Release")]
-//#endif
 
 [assembly: AssemblyProduct("FXMind.MainServer")]
 [assembly: AssemblyDescription("FXMind Main Server")]
