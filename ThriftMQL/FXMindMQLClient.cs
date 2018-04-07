@@ -8,25 +8,16 @@ using Thrift.Transport;
 
 namespace FXBusinessLogic.BusinessObjects.Thrift
 {
-    public class FXMindMQLClient : FXMindMQL.Iface //<Base>  where Base : new (Thrift.Protocol.TProtocol p) 
+
+    public class FXMindMQLClient : ThriftClient<FXMindMQL.Client> 
     {
-        protected TTransport transport;
-        protected TProtocol protocol;
-        protected FXMindMQL.Client client;
         public FXMindMQLClient(string host, ushort port)
         {
             try
             {
-                lock (this)  // makes calls thread safe on the client
-                {
-                    transport = new TSocket(host, port);
-                    //transport = new TFramedTransport(new TSocket(host, port));
-
-                    protocol = new TBinaryProtocol(transport);
-                    client = new FXMindMQL.Client(protocol);
-                    //transport.Open();
-                }
-
+                Host = host;
+                Port = port;
+                InitBase();
             }
             catch (TApplicationException x)
             {
@@ -38,12 +29,19 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
             }
         }
 
+        public override FXMindMQL.Client CreateClient(TProtocol p)
+        {
+            client = new FXMindMQL.Client(p);
+            return client;
+        }
+
+/*
         public List<string> ProcessStringData(Dictionary<string, string> paramsList, List<string> inputData)
         {
             List<string> list = new List<string>();
             try
             {
-                lock (this)
+                //lock (this)
                 {
 
                     transport.Open();
@@ -72,7 +70,7 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
         {
             List<double> list = new List<double>();
             try {
-                lock (this)
+                //lock (this)
                 {
 
                     transport.Open();
@@ -102,7 +100,7 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
             long retval = 0;
             try
             {
-                lock (this)
+                //lock (this)
                 {
 
                     transport.Open();
@@ -130,7 +128,7 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
         public void PostStatusMessage(Dictionary<string, string> paramsList)
         {
             try {
-                lock (this)
+                //lock (this)
                 {
 
                     transport.Open();
@@ -156,10 +154,11 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
 
         public void Dispose()
         {
-            lock (this)
+            //lock (this)
             {
                 client.Dispose();
             }
         }
+        */
     }
 }

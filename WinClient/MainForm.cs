@@ -31,7 +31,7 @@ namespace FXMind.WinClient
         public static BarStaticItem statusBar;
         public static TimeZoneInfo g_userTimeZone;
 
-        private AppServiceClient appclient;
+        //private AppServiceClient appclient;
         private Dictionary<string, ScheduledJob> RunningJobs = new Dictionary<string, ScheduledJob>();
         private Dictionary<int, TimeZoneInfo> tz_col;
 
@@ -90,8 +90,7 @@ namespace FXMind.WinClient
             try
             {
                 var builder = new ContainerBuilder();
-                builder.Register(c => new AppServiceClient("localhost", fxmindConstants.AppService_PORT))
-                    .As<AppServiceClient>().SingleInstance();
+                builder.Register(c => new AppServiceClient("localhost", fxmindConstants.AppService_PORT) );  //.SingleInstance();
                 container = builder.Build();
             }
             catch (Exception ex)
@@ -104,35 +103,38 @@ namespace FXMind.WinClient
         {
             ReadOnlyCollection<TimeZoneInfo> tz;
             tz_col = new Dictionary<int, TimeZoneInfo>();
+            using (AppServiceClient app = container.Resolve<AppServiceClient>())
+            {
+                string gtimezone = app.client.GetGlobalProp("UserTimeZone");
 
-            string gtimezone = appclient.GetGlobalProp("UserTimeZone");
-
-            tz = TimeZoneInfo.GetSystemTimeZones();
-            int index = 0;
-            if (tz != null && tz.Count > 0)
-                foreach (TimeZoneInfo timezone in tz)
-                {
-                    barTimeZone2.Strings.Add(timezone.DisplayName);
-                    index++;
-                    tz_col.Add(index - 1, timezone);
-                    if (gtimezone != null && timezone.StandardName.Equals(gtimezone))
+                tz = TimeZoneInfo.GetSystemTimeZones();
+                int index = 0;
+                if (tz != null && tz.Count > 0)
+                    foreach (TimeZoneInfo timezone in tz)
                     {
-                        barTimeZone2.ItemIndex = index - 1;
-                        g_userTimeZone = tz_col[barTimeZone2.ItemIndex];
-                    }
-                    else
-                    {
-                        // default is Mexico
-                        if (timezone.BaseUtcOffset == new TimeSpan(-7, 0, 0))
+                        barTimeZone2.Strings.Add(timezone.DisplayName);
+                        index++;
+                        tz_col.Add(index - 1, timezone);
+                        if (gtimezone != null && timezone.StandardName.Equals(gtimezone))
                         {
                             barTimeZone2.ItemIndex = index - 1;
                             g_userTimeZone = tz_col[barTimeZone2.ItemIndex];
                         }
+                        else
+                        {
+                            // default is Mexico
+                            if (timezone.BaseUtcOffset == new TimeSpan(-7, 0, 0))
+                            {
+                                barTimeZone2.ItemIndex = index - 1;
+                                g_userTimeZone = tz_col[barTimeZone2.ItemIndex];
+                            }
+                        }
                     }
-                }
 
-            // reset this valuse on start
-            appclient.SetGlobalProp("UseDateInterval", "false");
+                // reset this valuse on start
+                app.client.SetGlobalProp("UseDateInterval", "false");
+            }
+
         }
 
         protected override void OnLoad(EventArgs e)
@@ -144,27 +146,6 @@ namespace FXMind.WinClient
         public void InitLogger()
         {
             statusBar = barStaticItem6;
-        }
-
-        private void InitFXMindServer()
-        {
-            try
-            {
-                //fxmind = container.Resolve<IMainService>();
-                //dbservice = container.Resolve<IDBService>();
-                appclient = container.Resolve<AppServiceClient>();
-                if (appclient != null)
-                    log.Info("FXMind Main Service successfully initialized!");
-                else
-                    log.Error("FXMind Main Service failed to initialize properly!");
-
-                //fxmind.Init(this, false); // connection to DB happens here!!!!
-            }
-            catch (Exception e)
-            {
-                log.Error(e.ToString());
-                LogStatus(e.ToString());
-            }
         }
 
         private void TradersParserFrom_Load(object sender, EventArgs e)
@@ -180,7 +161,7 @@ namespace FXMind.WinClient
 
             barProgressParsing.Visibility = BarItemVisibility.Never;
 
-            InitFXMindServer();
+            //InitFXMindServer();
 
             InitTimeZones();
 
@@ -193,27 +174,34 @@ namespace FXMind.WinClient
 
             Program.LogStatus("Connected to DB.");
 
-            if (!appclient.IsDebug()) barButtonTestClient.Enabled = false;
+            using (var app = container.Resolve<AppServiceClient>())
+            {
+                if (!app.client.IsDebug()) barButtonTestClient.Enabled = false;
+            }
 
             log.Info("Main Form Load Finished.");
         }
 
         private void RefreshJobsGrid()
         {
-            List<ScheduledJob> list = appclient.GetAllJobsList();
-            if (list.Count == 0)
+            using (var app = container.Resolve<AppServiceClient>())
             {
-                if (appclient.InitScheduler(false) == false)
+
+                List<ScheduledJob> list = app.client.GetAllJobsList();
+                if (list.Count == 0)
                 {
-                    LogStatus("!!!Please run FXMind.MainServer service!!!!");
-                    return;
+                    if (app.client.InitScheduler(false) == false)
+                    {
+                        LogStatus("!!!Please run FXMind.MainServer service!!!!");
+                        return;
+                    }
+
+                    list = app.client.GetAllJobsList();
                 }
 
-                list = appclient.GetAllJobsList();
+                RunningJobs = app.client.GetRunningJobs();
+                gridJobs1.DataSource = list;
             }
-
-            RunningJobs = appclient.GetRunningJobs();
-            gridJobs1.DataSource = list;
         }
 
         private void RefreshCurrencyStrength(bool recalc)
@@ -264,9 +252,12 @@ namespace FXMind.WinClient
                     dt_to = TimeZoneInfo.ConvertTimeToUtc(to, g_userTimeZone).ToBinary();
                 }
 
-                strengthGrid.DataSource = appclient.GetCurrencyStrengthSummary(recalc, !barCSUseInterval.Checked,
+                using (var app = container.Resolve<AppServiceClient>())
+                {
+                    strengthGrid.DataSource = app.client.GetCurrencyStrengthSummary(recalc, !barCSUseInterval.Checked,
                     dt_from,
                     dt_to);
+                }
 
                 strengthGrid.RefreshDataSource();
             }
@@ -350,7 +341,12 @@ namespace FXMind.WinClient
             if (barTimeZone2.ItemIndex >= 0 && barTimeZone2.ItemIndex < tz_col.Count)
             {
                 g_userTimeZone = tz_col[barTimeZone2.ItemIndex];
-                appclient.SetGlobalProp("UserTimeZone", g_userTimeZone.StandardName);
+
+                using (var app = container.Resolve<AppServiceClient>())
+                {
+                    app.client.SetGlobalProp("UserTimeZone", g_userTimeZone.StandardName);
+
+                }
             }
         }
 
@@ -366,28 +362,32 @@ namespace FXMind.WinClient
                 object valJobGroup = gridView3.GetListSourceRowCellValue(e.ListSourceRowIndex, colJobGroup);
                 if (valJobName != null && valJobGroup != null)
                 {
-                    string jobName = valJobName.ToString();
-                    string jobGroup = valJobGroup.ToString();
-                    if (e.Column.FieldName == "colPrevTime")
+                    using (var app = container.Resolve<AppServiceClient>())
                     {
-                        long val = appclient.GetJobPrevTime(jobGroup, jobName);
-                        if (val > 0)
-                            e.Value = ConvertToLocalDateTime(val);
-                        return;
-                    }
 
-                    if (e.Column.FieldName == "colNextTime")
-                    {
-                        long val = appclient.GetJobNextTime(jobGroup, jobName);
-                        if (val > 0)
-                            e.Value = ConvertToLocalDateTime(val);
-                        return;
-                    }
+                        string jobName = valJobName.ToString();
+                        string jobGroup = valJobGroup.ToString();
+                        if (e.Column.FieldName == "colPrevTime")
+                        {
+                            long val = app.client.GetJobPrevTime(jobGroup, jobName);
+                            if (val > 0)
+                                e.Value = ConvertToLocalDateTime(val);
+                            return;
+                        }
 
-                    if (e.Column.FieldName == "colLog")
-                    {
-                        string val = appclient.GetJobProp(jobGroup, jobName, "log");
-                        e.Value = val;
+                        if (e.Column.FieldName == "colNextTime")
+                        {
+                            long val = app.client.GetJobNextTime(jobGroup, jobName);
+                            if (val > 0)
+                                e.Value = ConvertToLocalDateTime(val);
+                            return;
+                        }
+
+                        if (e.Column.FieldName == "colLog")
+                        {
+                            string val = app.client.GetJobProp(jobGroup, jobName, "log");
+                            e.Value = val;
+                        }
                     }
                 }
             }
@@ -462,7 +462,10 @@ namespace FXMind.WinClient
         {
             var strJobName = (string) gridView3.GetRowCellValue(gridView3.FocusedRowHandle, colJobName);
             var strJobGroup = (string) gridView3.GetRowCellValue(gridView3.FocusedRowHandle, colJobGroup);
-            appclient.RunJobNow(strJobGroup, strJobName);
+            using (var app = container.Resolve<AppServiceClient>())
+            {
+                app.client.RunJobNow(strJobGroup, strJobName);
+            }
         }
 
         private void xtraTabControl1_SelectedPageChanged(object sender, TabPageChangedEventArgs e)
@@ -523,16 +526,19 @@ namespace FXMind.WinClient
 
         protected void LoadCurrStrengthControls()
         {
-            List<Currency> currenciesDb = appclient.GetCurrencies();
-            // load currencies list
-            repositoryGridLookCurrency1.DataSource = currenciesDb;
-            repositoryGridLookCurrency1.View.OptionsSelection.MultiSelect = true;
-            repositoryGridLookCurrency1.PopulateViewColumns();
+            using (var app = container.Resolve<AppServiceClient>())
+            {
+                List<Currency> currenciesDb = app.client.GetCurrencies();
+                // load currencies list
+                repositoryGridLookCurrency1.DataSource = currenciesDb;
+                repositoryGridLookCurrency1.View.OptionsSelection.MultiSelect = true;
+                repositoryGridLookCurrency1.PopulateViewColumns();
 
-            List<TechIndicator> techIndiDb = appclient.GetIndicators();
-            repositoryGridLookIndi1.DataSource = techIndiDb;
-            repositoryGridLookIndi1.View.OptionsSelection.MultiSelect = true;
-            repositoryGridLookIndi1.PopulateViewColumns();
+                List<TechIndicator> techIndiDb = app.client.GetIndicators();
+                repositoryGridLookIndi1.DataSource = techIndiDb;
+                repositoryGridLookIndi1.View.OptionsSelection.MultiSelect = true;
+                repositoryGridLookIndi1.PopulateViewColumns();
+            }
         }
 
         private void gridView5_RowCellClick(object sender, RowCellClickEventArgs e)
@@ -546,7 +552,10 @@ namespace FXMind.WinClient
                 if (row != null && gridview.IsRowLoaded(e.RowHandle))
                 {
                     row.Enabled = val;
-                    appclient.SaveCurrency(row);
+                    using (var app = container.Resolve<AppServiceClient>())
+                    {
+                        app.client.SaveCurrency(row);
+                    }
                 }
             }
         }
@@ -560,7 +569,10 @@ namespace FXMind.WinClient
 
                 var strJobName = (string) gridview.GetRowCellValue(gridview.FocusedRowHandle, colJobName);
                 var strJobGroup = (string) gridview.GetRowCellValue(gridview.FocusedRowHandle, colJobGroup);
-                appclient.SetJobCronSchedule(strJobGroup, strJobName, val);
+                using (var app = container.Resolve<AppServiceClient>())
+                {
+                    app.client.SetJobCronSchedule(strJobGroup, strJobName, val);
+                }
             }
         }
 
@@ -575,7 +587,11 @@ namespace FXMind.WinClient
                 if (row != null && gridview.IsRowLoaded(e.RowHandle))
                 {
                     row.Enabled = val;
-                    appclient.SaveIndicator(row);
+                    using (var app = container.Resolve<AppServiceClient>())
+                    {
+
+                        app.client.SaveIndicator(row);
+                    }
                 }
             }
         }
@@ -605,11 +621,11 @@ namespace FXMind.WinClient
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (appclient != null)
-            {
-                appclient.Dispose();
-                appclient = null;
-            }
+            //if (appclient != null)
+            //{
+            //    appclient.Dispose();
+            //    appclient = null;
+            //}
         }
 
         /*
@@ -733,8 +749,11 @@ namespace FXMind.WinClient
             }
             else
             {
-                if (!appclient.IsDebug())
-                    status = false;
+                using (var app = container.Resolve<AppServiceClient>())
+                {
+                    if (!app.client.IsDebug())
+                        status = false;
+                }
             }
 
             xtraTabControl1.TabPages[0].PageEnabled = true;

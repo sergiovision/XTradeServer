@@ -123,6 +123,7 @@
     <Compile Include="TException.cs" />
     <Compile Include="ThriftCalls.cs" />
     <Compile Include="FXMindMQLClient.cs" />
+    <Compile Include="ThriftClient.cs" />
     <Compile Include="ThriftCode\FXMindMQL.cs" />
     <Compile Include="TProcessor.cs" />
     <Compile Include="TProcessorFactory.cs" />

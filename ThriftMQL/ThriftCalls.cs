@@ -40,7 +40,7 @@ namespace ThriftMQL
 
         //public static string host = "127.0.0.1";
 
-        protected static volatile FXMindMQLClient client;
+        //protected static volatile FXMindMQLClient client;
         protected static string GlobalErrorMessage;
         public static string logFilePath = @"C:\Projects\GitHub\FXMindNET\bin\FXMind.MainClient.log";
 
@@ -97,20 +97,20 @@ namespace ThriftMQL
             List<double> resDblList = null;
             try
             {
-                if (client == null)
-                    client = new FXMindMQLClient(HostFromClient(tc), tc.port);
-                Dictionary<string, string> paramsDic = new Dictionary<string, string>();
-                FillParams(ref tc, parameters, paramsDic);
-                List<string> list = StringToList(dataStr);
-                resDblList = client.ProcessDoubleData(paramsDic, list);
-                if (resDblList != null)
+                using (var fx = new FXMindMQLClient(HostFromClient(tc), tc.port))
                 {
-                    resDblList.CopyTo(arr);
+                    Dictionary<string, string> paramsDic = new Dictionary<string, string>();
+                    FillParams(ref tc, parameters, paramsDic);
+                    List<string> list = StringToList(dataStr);
+                    resDblList = fx.client.ProcessDoubleData(paramsDic, list);
+                    if (resDblList != null)
+                    {
+                        resDblList.CopyTo(arr);
+                    }
                 }
             }
             catch (Exception e)
             {
-                //client = null;
                 GlobalErrorMessage = "ProcessDoubleData: " +e.ToString();
                 LogWriteLine(GlobalErrorMessage);
                 resDblList = new List<double>();
@@ -125,16 +125,17 @@ namespace ThriftMQL
         {
             try
             {
-                if (client == null)
-                    client = new FXMindMQLClient(HostFromClient(tc), tc.port);
-                List<string> list = StringToList(str.ToString());
-                Dictionary<string, string> paramsDic = new Dictionary<string, string>();
-                FillParams(ref tc, parameters, paramsDic);
-                list = client.ProcessStringData(paramsDic, list);
-                if (list.Count > 0)
+                using (var fx = new FXMindMQLClient(HostFromClient(tc), tc.port))
                 {
-                    ListToString(ref str, list);
-                    return list.Count;
+                    List<string> list = StringToList(str.ToString());
+                    Dictionary<string, string> paramsDic = new Dictionary<string, string>();
+                    FillParams(ref tc, parameters, paramsDic);
+                    list = fx.client.ProcessStringData(paramsDic, list);
+                    if (list.Count > 0)
+                    {
+                        ListToString(ref str, list);
+                        return list.Count;
+                    }
                 }
             }
             catch (Exception e)
@@ -153,12 +154,15 @@ namespace ThriftMQL
         {
             try
             {
-                if (client == null)
-                    client = new FXMindMQLClient(HostFromClient(tc), tc.port);
-                Dictionary<string, string> paramsDic = new Dictionary<string, string>();
-                paramsDic["magic"] = tc.Magic.ToString();
-                paramsDic["account"] = tc.accountNumber.ToString();
-                return client.IsServerActive(paramsDic);
+                long ret = 0;
+                using (var fx = new FXMindMQLClient(HostFromClient(tc), tc.port))
+                {
+                    Dictionary<string, string> paramsDic = new Dictionary<string, string>();
+                    paramsDic["magic"] = tc.Magic.ToString();
+                    paramsDic["account"] = tc.accountNumber.ToString();
+                    ret = fx.client.IsServerActive(paramsDic);
+                }
+                return ret;
             }
             catch (Exception e)
             {
@@ -174,13 +178,14 @@ namespace ThriftMQL
         {
             try         
             {
-                if (client == null)
-                    client = new FXMindMQLClient(HostFromClient(tc), tc.port);
-                Dictionary<string, string> paramsDic = new Dictionary<string, string>();
-                paramsDic["magic"] = tc.Magic.ToString();
-                paramsDic["account"] = tc.accountNumber.ToString();
-                paramsDic["message"] = message;
-                client.PostStatusMessage(paramsDic);
+                using (var fx = new FXMindMQLClient(HostFromClient(tc), tc.port))
+                {
+                    Dictionary<string, string> paramsDic = new Dictionary<string, string>();
+                    paramsDic["magic"] = tc.Magic.ToString();
+                    paramsDic["account"] = tc.accountNumber.ToString();
+                    paramsDic["message"] = message;
+                    fx.client.PostStatusMessage(paramsDic);
+                }
 
             }
             catch (Exception e)
@@ -196,12 +201,12 @@ namespace ThriftMQL
         {
             try
             {
-                if (client != null)
-                {
-                    client.Dispose();
-                    client = null;
+                //if (client != null)
+                //{
+                //    client.Dispose();
+                //    client = null;
                     GC.Collect();
-                }
+                //}
             }
             catch (Exception e)
             {
