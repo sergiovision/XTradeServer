@@ -48,7 +48,7 @@ namespace FXBusinessLogic.BusinessObjects
 
         public List<Currency> GetCurrencies()
         {
-            Session session = FXConnectionHelper.Session();
+            Session session = FXConnectionHelper.GetNewSession();
             var currenciesDb = new XPCollection<DBCurrency>(session);
             List<Currency> list = new List<Currency>();
             foreach (var dbCurrency in currenciesDb)
@@ -59,13 +59,13 @@ namespace FXBusinessLogic.BusinessObjects
                 curr.Enabled = dbCurrency.Enabled;
                 list.Add(curr);
             }
-
+            session.Disconnect();
             return list;
         }
 
         public List<TechIndicator> GetIndicators()
         {
-            Session session = FXConnectionHelper.Session();
+            Session session = FXConnectionHelper.GetNewSession();
             var techIndiDb = new XPCollection<DBTechIndicator>(session);
             List<TechIndicator> list = new List<TechIndicator>();
             foreach (var dbI in techIndiDb)
@@ -76,13 +76,13 @@ namespace FXBusinessLogic.BusinessObjects
                 ti.Enabled = dbI.Enabled;
                 list.Add(ti);
             }
-
+            session.Disconnect();
             return list;
         }
 
         public void SaveCurrency(Currency currency)
         {
-            Session session = FXConnectionHelper.Session();
+            Session session = FXConnectionHelper.GetNewSession();
             var cQuery = new XPQuery<DBCurrency>(session);
             IQueryable<DBCurrency> curs = from c in cQuery
                 where c.ID == currency.ID
@@ -101,11 +101,12 @@ namespace FXBusinessLogic.BusinessObjects
             }
 
             gvar.Save();
+            session.Disconnect();
         }
 
         public void SaveIndicator(TechIndicator i)
         {
-            Session session = FXConnectionHelper.Session();
+            Session session = FXConnectionHelper.GetNewSession();
             var cQuery = new XPQuery<DBTechIndicator>(session);
             IQueryable<DBTechIndicator> curs = from c in cQuery
                 where c.ID == i.ID
@@ -124,6 +125,7 @@ namespace FXBusinessLogic.BusinessObjects
             }
 
             gvar.Save();
+            session.Disconnect();
         }
 
         public IContainer Container { get; private set; }
@@ -147,7 +149,7 @@ namespace FXBusinessLogic.BusinessObjects
 
             RegistryInit();
 
-            FXConnectionHelper.Connect(null);
+            //FXConnectionHelper.Connect(null);
 
             BrokerTimeZoneInfo = GetBrokerTimeZone();
 
@@ -164,24 +166,29 @@ namespace FXBusinessLogic.BusinessObjects
             return _gSchedulerService.Initialize(serverMode);
         }
 
-        //public TimeZoneInfo GetUserTimeZone()
-        //{
-        //    return GetTimeZoneFromString("UserTimeZone");
-        //}
-        
+
         public TimeZoneInfo GetBrokerTimeZone()
         {
-            return GetTimeZoneFromString("BrokerServerTimeZone");
+            if (BrokerTimeZoneInfo == null)
+            {
+                BrokerTimeZoneInfo = GetTimeZoneFromString("BrokerServerTimeZone");
+            }
+            return BrokerTimeZoneInfo;
         }
 
         public string GetGlobalProp(string name)
         {
-            return FXMindHelpers.GetGlobalVar(FXConnectionHelper.Session(), name);
+            Session session = FXConnectionHelper.GetNewSession();
+            var res = FXMindHelpers.GetGlobalVar(session, name);
+            session.Disconnect();
+            return res;
         }
 
         public void SetGlobalProp(string name, string value)
         {
-            FXMindHelpers.SetGlobalVar(FXConnectionHelper.Session(), name, value);
+            Session session = FXConnectionHelper.GetNewSession();
+            FXMindHelpers.SetGlobalVar(session, name, value);
+            session.Disconnect();
         }
 
 
@@ -367,14 +374,14 @@ namespace FXBusinessLogic.BusinessObjects
 
         public bool GetNextNewsEvent(DateTime date, string symbolStr, byte minImportance, ref NewsEventInfo eventInfo)
         {
+            Session session = FXConnectionHelper.GetNewSession();
+            bool result = false;
             try
             {
                 eventInfo = null;
                 // new session should be created for crossthread issues
-                Session session = FXConnectionHelper.GetNewSession();
 
-                if (BrokerTimeZoneInfo == null)
-                    BrokerTimeZoneInfo = GetBrokerTimeZone();
+                BrokerTimeZoneInfo = GetBrokerTimeZone();
 
                 const string queryStrInterval =
                     @"SELECT C.Name 
@@ -425,15 +432,19 @@ namespace FXBusinessLogic.BusinessObjects
                     eventInfo.Importance = (sbyte)imp;
                     break;
                 }
-                session.Dispose();
-                return true;
+                result = true;
             }
             catch (Exception e)
             {
                 log.Error(e.ToString());
             }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
 
-            return false;
+            return result;
         }
 
         public void GetAverageLastGlobalSentiments(DateTime date, string symbolName, out double longPos,
@@ -441,11 +452,10 @@ namespace FXBusinessLogic.BusinessObjects
         {
             longPos = -1;
             shortPos = -1;
+            Session session = FXConnectionHelper.GetNewSession();
             try
             {
-                Session session = FXConnectionHelper.GetNewSession();
-                if (BrokerTimeZoneInfo == null)
-                    BrokerTimeZoneInfo = GetBrokerTimeZone();
+                BrokerTimeZoneInfo = GetBrokerTimeZone();
                 if (symbolName.Length == 6)
                     symbolName = symbolName.Insert(3, "/");
                 DBSymbol dbsym = FXMindHelpers.getSymbolID(session, symbolName);
@@ -483,16 +493,20 @@ namespace FXBusinessLogic.BusinessObjects
                     shortPos = valShort / cnt;
                 }
 
-                INotificationUi ui = GetUi();
-                if (ui != null)
-                    if (IsDebug())
-                        ui.LogStatus("GetLastAverageGlobalSentiments for " + symbolName + " : " + longPos + ", " +
-                                     shortPos);
-                session.Dispose();
+                //INotificationUi ui = GetUi();
+                //if (ui != null)
+                //    if (IsDebug())
+                //        ui.LogStatus("GetLastAverageGlobalSentiments for " + symbolName + " : " + longPos + ", " +
+                //                     shortPos);
             }
             catch (Exception e)
             {
-                log.Info(e.ToString());
+                log.Error(e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
             }
         }
 
@@ -518,77 +532,86 @@ namespace FXBusinessLogic.BusinessObjects
 
         public List<double> iGlobalSentimentsArray(string symbolName, List<string> brokerDates, int siteId)
         {
-            Session session = FXConnectionHelper.GetNewSession();
-
-            if (symbolName.Length == 6)
-                symbolName = symbolName.Insert(3, "/");
-            DBSymbol dbsym = FXMindHelpers.getSymbolID(session, symbolName);
-            if (dbsym == null)
-                return null;
-            string queryStrInterval;
-            var paramnames = new string[] { };
-            if (siteId == 0)
-            {
-                queryStrInterval = @"SELECT LongRatio, ShortRatio, SiteID FROM OpenPosRatio
-                                                WHERE (SymbolID=@symID) AND (ParseTime >= @fr_dt) AND (ParseTime <= @to_dt) 
-                                                ORDER BY ParseTime DESC";
-                paramnames = new[] {"symID", "fr_dt", "to_dt"};
-            }
-            else
-            {
-                queryStrInterval = @"SELECT LongRatio, ShortRatio FROM OpenPosRatio
-                                            WHERE (SymbolID=@symID) AND (ParseTime >= @fr_dt) AND (ParseTime <= @to_dt) AND (SiteID = @siteID)
-                                            ORDER BY ParseTime ASC";
-                paramnames = new[] {"symID", "fr_dt", "to_dt", "siteID"};
-            }
-
             var resList = new List<double>();
-            foreach (string brokerDate in brokerDates)
+            Session session = FXConnectionHelper.GetNewSession();
+            try
             {
-                DateTime date;
-                DateTime.TryParseExact(brokerDate, fxmindConstants.MTDATETIMEFORMAT,
-                    CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.None, out date);
-
-                date = TimeZoneInfo.ConvertTimeToUtc(date, BrokerTimeZoneInfo);
-                DateTime hourPlus = date;
-                hourPlus = hourPlus.AddHours(1);
-                object[] parameters = { };
+                if (symbolName.Length == 6)
+                    symbolName = symbolName.Insert(3, "/");
+                DBSymbol dbsym = FXMindHelpers.getSymbolID(session, symbolName);
+                if (dbsym == null)
+                    return resList;
+                string queryStrInterval;
+                var paramnames = new string[] { };
                 if (siteId == 0)
-                    parameters = new object[]
-                    {
-                        dbsym.ID, date.ToString(fxmindConstants.MYSQLDATETIMEFORMAT),
-                        hourPlus.ToString(fxmindConstants.MYSQLDATETIMEFORMAT)
-                    };
-                else
-                    parameters = new object[]
-                    {
-                        dbsym.ID, date.ToString(fxmindConstants.MYSQLDATETIMEFORMAT),
-                        hourPlus.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), siteId
-                    };
-                SelectedData data = session.ExecuteQuery(queryStrInterval, paramnames, parameters);
-                int count = data.ResultSet[0].Rows.Count();
-                if (count == 0)
                 {
-                    resList.Add(fxmindConstants.GAP_VALUE);
+                    queryStrInterval = @"SELECT LongRatio, ShortRatio, SiteID FROM OpenPosRatio
+                                                    WHERE (SymbolID=@symID) AND (ParseTime >= @fr_dt) AND (ParseTime <= @to_dt) 
+                                                    ORDER BY ParseTime DESC";
+                    paramnames = new[] { "symID", "fr_dt", "to_dt" };
                 }
                 else
                 {
-                    int cnt = 0;
-                    double valLong = 0;
-                    //double valShort = 0;
-                    foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
-                    {
-                        valLong += (double) row.Values[0];
-                        //valShort += (double) row.Values[1];
-                        cnt++;
-                    }
+                    queryStrInterval = @"SELECT LongRatio, ShortRatio FROM OpenPosRatio
+                                                WHERE (SymbolID=@symID) AND (ParseTime >= @fr_dt) AND (ParseTime <= @to_dt) AND (SiteID = @siteID)
+                                                ORDER BY ParseTime ASC";
+                    paramnames = new[] { "symID", "fr_dt", "to_dt", "siteID" };
+                }
 
-                    resList.Add(valLong / cnt);
+                foreach (string brokerDate in brokerDates)
+                {
+                    DateTime date;
+                    DateTime.TryParseExact(brokerDate, fxmindConstants.MTDATETIMEFORMAT,
+                        CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.None, out date);
+
+                    date = TimeZoneInfo.ConvertTimeToUtc(date, BrokerTimeZoneInfo);
+                    DateTime hourPlus = date;
+                    hourPlus = hourPlus.AddHours(1);
+                    object[] parameters = { };
+                    if (siteId == 0)
+                        parameters = new object[]
+                        {
+                            dbsym.ID, date.ToString(fxmindConstants.MYSQLDATETIMEFORMAT),
+                            hourPlus.ToString(fxmindConstants.MYSQLDATETIMEFORMAT)
+                        };
+                    else
+                        parameters = new object[]
+                        {
+                            dbsym.ID, date.ToString(fxmindConstants.MYSQLDATETIMEFORMAT),
+                            hourPlus.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), siteId
+                        };
+                    SelectedData data = session.ExecuteQuery(queryStrInterval, paramnames, parameters);
+                    int count = data.ResultSet[0].Rows.Count();
+                    if (count == 0)
+                    {
+                        resList.Add(fxmindConstants.GAP_VALUE);
+                    }
+                    else
+                    {
+                        int cnt = 0;
+                        double valLong = 0;
+                        //double valShort = 0;
+                        foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
+                        {
+                            valLong += (double)row.Values[0];
+                            //valShort += (double) row.Values[1];
+                            cnt++;
+                        }
+
+                        resList.Add(valLong / cnt);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                log.Error(e.ToString());
+            }
+            finally
+            {
 
-            session.Disconnect();
-            session.Dispose();
+                session.Disconnect();
+                session.Dispose();
+            }
             return resList;
         }
 

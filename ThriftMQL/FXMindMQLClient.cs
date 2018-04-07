@@ -17,12 +17,16 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
         {
             try
             {
-                transport = new TSocket(host, port);
-                //transport = new TFramedTransport(new TSocket(host, port));
+                lock (this)  // makes calls thread safe on the client
+                {
+                    transport = new TSocket(host, port);
+                    //transport = new TFramedTransport(new TSocket(host, port));
 
-                protocol = new TBinaryProtocol(transport);
-                client = new FXMindMQL.Client(protocol);
-                //transport.Open();
+                    protocol = new TBinaryProtocol(transport);
+                    client = new FXMindMQL.Client(protocol);
+                    //transport.Open();
+                }
+
             }
             catch (TApplicationException x)
             {
@@ -39,14 +43,18 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
             List<string> list = new List<string>();
             try
             {
-                transport.Open();
-                try
+                lock (this)
                 {
-                    list = client.ProcessStringData(paramsList, inputData);
-                }
-                finally
-                {
-                    transport.Close();
+
+                    transport.Open();
+                    try
+                    {
+                        list = client.ProcessStringData(paramsList, inputData);
+                    }
+                    finally
+                    {
+                        transport.Close();
+                    }
                 }
             }
             catch (TApplicationException x)
@@ -63,15 +71,19 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
         public List<double> ProcessDoubleData(Dictionary<string, string> paramsList, List<string> inputData)
         {
             List<double> list = new List<double>();
-            try { 
-                transport.Open();
-                try
+            try {
+                lock (this)
                 {
-                    list = client.ProcessDoubleData(paramsList, inputData);
-                }
-                finally
-                {
-                    transport.Close();
+
+                    transport.Open();
+                    try
+                    {
+                        list = client.ProcessDoubleData(paramsList, inputData);
+                    }
+                    finally
+                    {
+                        transport.Close();
+                    }
                 }
             }
             catch (TApplicationException x)
@@ -90,14 +102,18 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
             long retval = 0;
             try
             {
-                transport.Open();
-                try
+                lock (this)
                 {
-                    retval = client.IsServerActive(paramsList);
-                }
-                finally
-                {
-                    transport.Close();
+
+                    transport.Open();
+                    try
+                    {
+                        retval = client.IsServerActive(paramsList);
+                    }
+                    finally
+                    {
+                        transport.Close();
+                    }
                 }
             }
             catch (TApplicationException x)
@@ -113,15 +129,19 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
 
         public void PostStatusMessage(Dictionary<string, string> paramsList)
         {
-            try { 
-                transport.Open();
-                try
+            try {
+                lock (this)
                 {
-                    client.PostStatusMessage(paramsList);
-                }
-                finally
-                {
-                    transport.Close();
+
+                    transport.Open();
+                    try
+                    {
+                        client.PostStatusMessage(paramsList);
+                    }
+                    finally
+                    {
+                        transport.Close();
+                    }
                 }
             }
             catch (TApplicationException x)
@@ -136,7 +156,10 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
 
         public void Dispose()
         {
-            client.Dispose();
+            lock (this)
+            {
+                client.Dispose();
+            }
         }
     }
 }

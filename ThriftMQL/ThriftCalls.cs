@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using FXBusinessLogic.BusinessObjects.Thrift;
@@ -25,10 +26,23 @@ namespace ThriftMQL
             return string.Format("{0}.{1}.{2}.{3}", tc.ip0, tc.ip1, tc.ip2, tc.ip3);
         }
 
+        public static void LogWriteLine(string text)
+        {
+            try
+            {
+                File.AppendAllText(logFilePath, "ThriftMQL.dll: " + text + Environment.NewLine);
+
+            } catch (Exception e)
+            {
+                GlobalErrorMessage = e.ToString();
+            }
+        }
+
         //public static string host = "127.0.0.1";
 
-        protected static FXMindMQLClient client;
+        protected static volatile FXMindMQLClient client;
         protected static string GlobalErrorMessage;
+        public static string logFilePath = @"C:\Projects\GitHub\FXMindNET\bin\FXMind.MainClient.log";
 
         protected static List<string> StringToList(string str)
         {
@@ -96,9 +110,12 @@ namespace ThriftMQL
             }
             catch (Exception e)
             {
-                client = null;
-                GlobalErrorMessage = e.ToString();
-                return -1;
+                //client = null;
+                GlobalErrorMessage = "ProcessDoubleData: " +e.ToString();
+                LogWriteLine(GlobalErrorMessage);
+                resDblList = new List<double>();
+                resDblList.Add(-125);
+                return 1;
             }
             return 0;
         }
@@ -122,13 +139,11 @@ namespace ThriftMQL
             }
             catch (Exception e)
             {
-                string errstr = e.ToString();
-                if (errstr.Length>100)
-                    errstr = errstr.Substring(0, 100);
-                str.Append(errstr);
-                GlobalErrorMessage = str.ToString();
-                client = null;
-                return -1;
+                GlobalErrorMessage = "ProcessStringData: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage);
+                //client = null;
+                str.Append("Error");
+                return 1;
             }
             return 0;
         }
@@ -147,16 +162,17 @@ namespace ThriftMQL
             }
             catch (Exception e)
             {
-                client = null;
-                GlobalErrorMessage = e.ToString();
-                return -1;
+                //client = null;
+                GlobalErrorMessage = "IsServerActive: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage);
+                return 0;
             }
         }
 
         [DllExport("PostStatusMessage", CallingConvention = CallingConvention.StdCall)]
         public static void PostStatusMessage(ref THRIFT_CLIENT tc, [MarshalAs(UnmanagedType.LPWStr)]string message)
         {
-            try
+            try         
             {
                 if (client == null)
                     client = new FXMindMQLClient(HostFromClient(tc), tc.port);
@@ -165,11 +181,13 @@ namespace ThriftMQL
                 paramsDic["account"] = tc.accountNumber.ToString();
                 paramsDic["message"] = message;
                 client.PostStatusMessage(paramsDic);
+
             }
             catch (Exception e)
             {
-                client = null;
-                GlobalErrorMessage = e.ToString();
+                //client = null;
+                GlobalErrorMessage = "PostStatusMessage: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage);
             }
         }
 
@@ -187,8 +205,10 @@ namespace ThriftMQL
             }
             catch (Exception e)
             {
-                client = null;
-                GlobalErrorMessage = e.ToString();
+                //client = null;
+                GlobalErrorMessage = "CloseClient: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage);
+
             }
         }
     }

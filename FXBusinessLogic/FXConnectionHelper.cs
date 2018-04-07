@@ -11,52 +11,87 @@ namespace FXBusinessLogic
     internal static class FXConnectionHelper
     {
         public static string connString;
-        public static Session dbSession;
+        private readonly static object lockObject = new object();
+        static volatile IDataLayer fDataLayer;
+
+        //public static Session dbSession;
 
         public static string getConnectionString()
         {
             return connString;
         }
 
-        public static void Connect(Session session)
-        {
-            string DS = ConfigurationManager.ConnectionStrings["FXMind.ConnectionString"].ConnectionString;
-            connString = DS;
+        //public static void Connect(Session session)
+        //{
+            //string DS = ConfigurationManager.ConnectionStrings["FXMind.ConnectionString"].ConnectionString;
+            //connString = DS;
 
             //SimpleDataLayer.SuppressReentrancyAndThreadSafetyCheck = true;
 
-            var autoCreateOption = AutoCreateOption.None; //.DatabaseAndSchema;
+            //var autoCreateOption = AutoCreateOption.None; //.DatabaseAndSchema;
+
+            //XPDictionary dict = new ReflectionDictionary();
+
+            //IDataStore store = XpoDefault.GetConnectionProvider(connString, autoCreateOption);
+            //dict.GetDataStoreSchema(System.Reflection.Assembly.GetExecutingAssembly());
+
+            //XpoDefault.DataLayer = new ThreadSafeDataLayer(dict, store);
+            //XpoDefault.DataLayer = XpoDefault.GetDataLayer(connString, autoCreateOption);
+            //if (dbSession == null) // first connect
+            //{
+            //    //dbSession = XpoDefault.Session;
+            //    dbSession = new Session(XpoDefault.DataLayer); // this method explicitly set SQL Driver!
+            //}
+            //else
+            //{
+            //    if (session != null)
+            //        dbSession = session;
+            //    dbSession.Disconnect();
+            //    dbSession.ConnectionString = getConnectionString();
+            //}
+        //}
+
+        private static IDataLayer GetDataLayer()
+        {
+            XpoDefault.Session = null;
+            string conn = ConfigurationManager.ConnectionStrings["FXMind.ConnectionString"].ConnectionString;
+            conn = XpoDefault.GetConnectionPoolString(conn);
+            connString = conn;
 
             XPDictionary dict = new ReflectionDictionary();
-
-            IDataStore store = XpoDefault.GetConnectionProvider(connString, autoCreateOption);
+            IDataStore store = XpoDefault.GetConnectionProvider(conn, AutoCreateOption.SchemaAlreadyExists);
             dict.GetDataStoreSchema(System.Reflection.Assembly.GetExecutingAssembly());
+            IDataLayer dl = new ThreadSafeDataLayer(dict, store);
+            return dl;
+        }
 
-            XpoDefault.DataLayer = new ThreadSafeDataLayer(dict, store);
-            //XpoDefault.DataLayer = XpoDefault.GetDataLayer(connString, autoCreateOption);
-            if (dbSession == null) // first connect
+        static IDataLayer DataLayer
+        {
+            get
             {
-                //dbSession = XpoDefault.Session;
-                dbSession = new Session(XpoDefault.DataLayer); // this method explicitly set SQL Driver!
-            }
-            else
-            {
-                if (session != null)
-                    dbSession = session;
-                dbSession.Disconnect();
-                dbSession.ConnectionString = getConnectionString();
+                if (fDataLayer == null)
+                {
+                    lock (lockObject)
+                    {
+                        if (fDataLayer == null)
+                        {
+                            fDataLayer = GetDataLayer();
+                        }
+                    }
+                }
+                return fDataLayer;
             }
         }
 
         public static Session GetNewSession()
         {
-            return new Session(XpoDefault.DataLayer);
+            return new Session(DataLayer);
         }
 
-        public static Session Session()
-        {
-            return dbSession;
-        }
+        //public static Session Session()
+        //{
+        //    return dbSession;
+        //}
 
         public static IDataStore GetConnectionProvider(AutoCreateOption autoCreateOption)
         {
@@ -70,10 +105,10 @@ namespace FXBusinessLogic
                 out objectsToDisposeOnDisconnect);
         }
 
-        public static IDataLayer GetDataLayer(AutoCreateOption autoCreateOption)
-        {
-            return XpoDefault.GetDataLayer(getConnectionString(), autoCreateOption);
-        }
+        //public static IDataLayer GetDataLayer(AutoCreateOption autoCreateOption)
+        //{
+        //    return XpoDefault.GetDataLayer(getConnectionString(), autoCreateOption);
+        //}
 
         private static string GetComputer_InternetIP()
         {

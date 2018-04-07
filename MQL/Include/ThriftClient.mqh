@@ -124,7 +124,6 @@ public:
    datetime prevSenttime;
    int GetCurrentSentiments(string symbol, double& longVal, double& shortVal) 
    {
-      //datetime curtime = iTime(NULL, PERIOD_M15, 0);
       datetime curtime = Time[0];
       if (prevSenttime != curtime)
          prevSenttime = curtime;
@@ -155,12 +154,6 @@ public:
    	string parameters = "func=SentimentsArray|symbol=" + symbol + "|size=" + IntegerToString(limit)
    	   + "|site=" + IntegerToString(site);
    	string timeArray;
-//   	for (int i = limit-1; i >= 0; i--)
-//   	{
-//  	      timeArray += TimeToString(times[i]);
-//  	      if (i > 0)
-//  	         timeArray += "|";
-//     	}
    	for (int i = 0; i < limit; i++)
    	{
   	      timeArray += TimeToString(times[i]);
