@@ -4,6 +4,10 @@ using FXBusinessLogic.BusinessObjects;
 using log4net;
 using log4net.Config;
 using Topshelf;
+using System.Management;
+using System;
+using System.ServiceProcess;
+using System.Reflection;
 
 namespace FXMind.MainServer
 {
@@ -25,6 +29,26 @@ namespace FXMind.MainServer
             Container = builder.Build();
         }
 
+        //public static void AlloWDesktopInteraction()
+        //{
+        //    var service = new System.Management.ManagementObject(string.Format("WIN32_Service.Name='{0}'", Configuration.ServiceName));
+        //    try
+        //    {
+        //        var paramList = new object[11];
+        //        paramList[5] = true;//We only need to set DesktopInteract parameter
+        //        var output = (int)service.InvokeMethod("Change", paramList);
+        //        //if zero is returned then it means change is done.
+        //        if (output != 0)
+        //            throw new Exception(string.Format("FAILED with code {0}", output));
+
+        //    }
+        //    finally
+        //    {
+        //        service.Dispose();
+        //    }
+
+        //}
+
         /// <summary>
         ///     Main.
         /// </summary>
@@ -35,45 +59,40 @@ namespace FXMind.MainServer
 
             RegisterContainer();
 
-            /*
-            FXBusinessLogic.BusinessObjects.MainServiceClient mainService = new FXBusinessLogic.BusinessObjects.MainServiceClient();
-            mainService.Init();
-            double shortPos;
-            double longPos;
-            mainService.GetLastAverageGlobalSentiments(out longPos, out shortPos);
-            mainService.CloseClient();
-            */
 
-            //double shortPos = 0;
-            // double longPos = 0;
-            // MQLBridge.ExportLib.CallMainService(ref shortPos, ref longPos);
-
-
-            HostFactory.Run(x =>
+            var rc = HostFactory.Run(x =>
             {
-                /*x.Service<WcfServiceWrapper<MainService, IMainService>>(factory =>
-                {
-                    factory.ConstructUsing(
-                        c => new WcfServiceWrapper<MainService, IMainService>(Configuration.ServiceName));
-                    factory.WhenStarted(service => service.Start());
-                    factory.WhenStopped(service => service.Stop());
-                });
-                 */
 
                 x.SetDescription(Configuration.ServiceDescription);
                 x.SetDisplayName(Configuration.ServiceDisplayName);
                 x.SetServiceName(Configuration.ServiceName);
+                x.RunAsLocalSystem();
                 //x.RunAsLocalService();
-                x.RunAsNetworkService();
+                //x.RunAsNetworkService();
 
-                x.Service(factory =>
-                {
-                    var server = Container.Resolve<QuartzServer>();
-                    server.Initialize();
-                    //server.Start();
-                    return server;
-                });
+                //if (Environment.UserInteractive && System.Diagnostics.Debugger.IsAttached)
+                //{
+                //    x.Service<QuartzServer>(factory =>
+                //    {
+                //        factory.ConstructUsing(name => Container.Resolve<QuartzServer>());
+                //        factory.WhenStarted(tc => tc.Start());
+                //        factory.WhenStopped(tc => tc.Stop());
+                //    });
+                //} else
+                //{
+                    x.Service(factory =>
+                    {
+                        var server = Container.Resolve<QuartzServer>();
+                        //server.Initialize();
+                        //server.Start();
+                        return server;
+                    });
+                //}
+
+
             });
+            var exitCode = (int)Convert.ChangeType(rc, rc.GetTypeCode());
+            Environment.ExitCode = exitCode;
         }
     }
 }

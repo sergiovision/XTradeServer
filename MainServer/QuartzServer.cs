@@ -15,6 +15,10 @@ namespace FXMind.MainServer
         private static readonly ILog Log = LogManager.GetLogger(typeof(QuartzServer));
         private IMainService fxmindServer;
 
+        public QuartzServer()
+        {
+            Initialize();
+        }
         /// <summary>
         ///     Initializes the instance of the <see cref="QuartzServer" /> class.
         /// </summary>
@@ -40,7 +44,7 @@ namespace FXMind.MainServer
             {
                 // scheduler.Start();
                 var gui = Program.Container.Resolve<INotificationUi>();
-                fxmindServer.Init(gui, true);
+                fxmindServer.Init(gui);
             }
             catch (Exception ex)
             {

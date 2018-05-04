@@ -130,8 +130,8 @@ namespace FXBusinessLogic.ThriftServer
 
         public void PostStatusMessage(Dictionary<string, string> paramsList)
         {
-            //if (fxmind.IsDebug())
-            log.Info("server(" + GetHashCode() + ") PostStatusMessage ("
+            if (fxmind.IsDebug())
+                log.Info("server(" + GetHashCode() + ") PostStatusMessage ("
                      + paramsList["account"] + ", " + paramsList["magic"] + "): " + paramsList["message"]);
         }
     }

@@ -38,6 +38,7 @@ namespace FXBusinessLogic.Scheduler
                 ScheduleThriftJob<AppServiceServerJob>(fxmindConstants.JOBGROUP_THRIFT, "AppServiceServer",
                     fxmindConstants.AppService_PORT, 1);
                 ScheduleThriftJob<FXMindMQLServerJob>(fxmindConstants.JOBGROUP_THRIFT, "FXMindMQLServer", fxmindConstants.FXMindMQL_PORT, 5);
+                //ScheduleJobWithParam<TerminalMonitoringJob>(fxmindConstants.JOBGROUP_THRIFT, "TerminalMonitoringJob", MainService.SETTINGS_TEMINAL_MONITOR_CRON, "noparam", "");
 
                 IEnumerable<DBJobs> jobs2Check = MainService.thisGlobal.GetDBActiveJobsList(session);
                 UnscheduleObsoleteJobs(jobs2Check);
@@ -171,7 +172,7 @@ namespace FXBusinessLogic.Scheduler
         }
 
         public void ScheduleJobWithParam<TJobType>(string group, string name, string cron, string param, string value)
-            where TJobType : GenericJob, new()
+            where TJobType : IJob, new()
         {
             IJobDetail job = JobBuilder.Create<TJobType>()
                 .WithIdentity(name, group)

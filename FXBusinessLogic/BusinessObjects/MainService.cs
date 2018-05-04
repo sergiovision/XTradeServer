@@ -30,6 +30,7 @@ namespace FXBusinessLogic.BusinessObjects
         public const string SETTINGS_PROPERTY_THRIFTPORT = "FXMind.ThriftPort";
         public const string SETTINGS_PROPERTY_NETSERVERPORT = "FXMind.NETServerPort";
         public const string SETTINGS_APPREGKEY = @"SOFTWARE\\FXMind";
+        //public const string SETTINGS_TEMINAL_MONITOR_CRON = "0 */2 * ? * MON-FRI *"; // @"0 */2 * ? * *"; // run every 5 minutes.
 
         //public const string MYSQLDATETIMEFORMAT = "yyyy-MM-dd HH:mm:ss";
         public const int SENTIMENTS_FETCH_PERIOD = 100;
@@ -182,7 +183,7 @@ namespace FXBusinessLogic.BusinessObjects
             // TODO: implement registry settings read/write
         }
 
-        public void Init(INotificationUi ui, bool serverMode)
+        public void Init(INotificationUi ui)
         {
             if (Initialized)
                 return;
@@ -194,17 +195,16 @@ namespace FXBusinessLogic.BusinessObjects
 
             BrokerTimeZoneInfo = GetBrokerTimeZone();
 
-            if (serverMode)
-                InitScheduler(serverMode);
+            InitScheduler(true);
 
             Initialized = true;
         }
 
-        public bool InitScheduler(bool serverMode)
+        public bool InitScheduler(bool serverMode /*unused*/)
         {
-            if (_gSchedulerService == null && serverMode)
+            if (_gSchedulerService == null)
                 _gSchedulerService = Container.Resolve<SchedulerService>(new NamedParameter("ui", _ui));
-            return _gSchedulerService.Initialize(serverMode);
+            return _gSchedulerService.Initialize();
         }
 
 

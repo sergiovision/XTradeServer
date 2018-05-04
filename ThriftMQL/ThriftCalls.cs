@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -77,10 +78,15 @@ namespace ThriftMQL
             }
         }
 
-
         public static void InitDLL(string Host, int Port)
         {
-            File.AppendAllText(ThriftCalls.logFilePath, $"\nInit ThriftMQL.dll on Host: {Host}:{Port}");
+            DateTime now = DateTime.Now;
+
+            Process proc = Process.GetCurrentProcess();
+            string path = "";
+            if (proc != null)
+                path = proc.MainModule.FileName;
+            File.AppendAllText(ThriftCalls.logFilePath, $"\nInit ThriftMQL.dll at { now.ToString() } on App: {path} Host: {Host}:{Port}");
         }
 
         protected static List<string> StringToList(string str)

@@ -8,7 +8,7 @@ namespace BusinessObjects
     {
         IContainer Container { get; }
 
-        void Init(INotificationUi ui, bool serverMode);
+        void Init(INotificationUi ui);
 
         INotificationUi GetUi();
 
@@ -18,7 +18,7 @@ namespace BusinessObjects
 
         void SetGlobalProp(string name, string value);
 
-        bool InitScheduler(bool serverMode);
+        bool InitScheduler(bool bServerMode);
 
         void RunJobNow(string group, string name);
 

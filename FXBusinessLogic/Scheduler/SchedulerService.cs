@@ -86,28 +86,13 @@ namespace FXBusinessLogic.Scheduler
             FillPropertiesClustered(properties, addressServer0);
         }*/
 
-        public virtual bool Initialize(bool serverMode)
+        public virtual bool Initialize()
         {
-            log.Info("------- Initializing Scheduler In " + (serverMode ? "SERVER" : "CLIENT") +
-                     " Mode -------------------");
+            log.Info("------- Initializing Scheduler -------------------");
             try
             {
                 var properties = new NameValueCollection();
-                if (serverMode)
-                {
-                    properties = (NameValueCollection) ConfigurationManager.GetSection("quartz");
-
-                    //var finalProps = new NameValueCollection(properties);
-                    //string DS = ConfigurationManager.ConnectionStrings["FXMind.MySQLConnection"].ConnectionString;
-                    //finalProps["quartz.dataSource.default.connectionString"] = DS;
-                    //properties = finalProps;
-                }
-                else
-                {
-                    return false;
-                    // to run from client side - WinClient
-                    //InitClustered(properties);
-                }
+                properties = (NameValueCollection) ConfigurationManager.GetSection("quartz");
 
                 // First we must get a reference to a scheduler
                 sf = new StdSchedulerFactory(properties);
@@ -129,8 +114,7 @@ namespace FXBusinessLogic.Scheduler
                 log.Info("IS REMOTE (CLUSTERED )=" + metadata.SchedulerRemote);
                 isClustered = metadata.SchedulerRemote;
 
-                if (serverMode)
-                    RunJobSupervisor();
+                RunJobSupervisor();
             }
             catch (Exception ex)
             {
@@ -159,7 +143,6 @@ namespace FXBusinessLogic.Scheduler
                     .ForJob(job)
                     .StartNow() // run once now
                     .Build();
-
 
                 sched.ScheduleJob(job, trigger);
             }

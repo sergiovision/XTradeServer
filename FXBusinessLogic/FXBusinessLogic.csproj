@@ -98,6 +98,10 @@
     <Compile Include="eToro\User.cs" />
     <Compile Include="FXMindHelpers.cs" />
     <Compile Include="FX_MindCode\ConnectionHelper.cs" />
+    <Compile Include="FX_MindCode\DBAdviser.cs" />
+    <Compile Include="FX_MindCode\DBAdviser.Designer.cs">
+      <DependentUpon>DBAdviser.cs</DependentUpon>
+    </Compile>
     <Compile Include="FX_MindCode\DBCountry.cs" />
     <Compile Include="FX_MindCode\DBCountry.Designer.cs">
       <DependentUpon>DBCountry.cs</DependentUpon>
@@ -138,6 +142,10 @@
     <Compile Include="FX_MindCode\DBTechindicator.Designer.cs">
       <DependentUpon>DBTechindicator.cs</DependentUpon>
     </Compile>
+    <Compile Include="FX_MindCode\DBTerminal.cs" />
+    <Compile Include="FX_MindCode\DBTerminal.Designer.cs">
+      <DependentUpon>DBTerminal.cs</DependentUpon>
+    </Compile>
     <Compile Include="GenericParser.cs" />
     <Compile Include="IJSONObject.cs" />
     <Compile Include="JSON.cs" />
@@ -148,12 +156,14 @@
     <Compile Include="Jobs\EToroRatioJob.cs" />
     <Compile Include="Jobs\MyFXBookRatioJob.cs" />
     <Compile Include="Jobs\OandaRatioJob.cs" />
+    <Compile Include="ProcessImpersonation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Jobs\TerminalMonitoringJob.cs" />
     <Compile Include="Scheduler\SchedulerService.cs" />
     <Compile Include="Scheduler\GenericJob.cs" />
     <Compile Include="Scheduler\JobSupervisor.cs" />
