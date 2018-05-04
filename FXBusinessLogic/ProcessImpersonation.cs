@@ -23,6 +23,7 @@ namespace FXBusinessLogic
         }
 
         #region DLL Imports
+
         internal const int SE_PRIVILEGE_ENABLED = 0x00000002;
         internal const int TOKEN_QUERY = 0x00000008;
         internal const int TOKEN_ADJUST_PRIVILEGES = 0x00000020;
@@ -147,6 +148,40 @@ namespace FXBusinessLogic
         [DllImport("userenv.dll", SetLastError = true)]
         static extern bool CreateEnvironmentBlock(out IntPtr lpEnvironment, IntPtr hToken, bool bInherit);
 
+        public enum WTS_INFO_CLASS
+        {
+            WTSInitialProgram,
+            WTSApplicationName,
+            WTSWorkingDirectory,
+            WTSOEMId,
+            WTSSessionId,
+            WTSUserName,
+            WTSWinStationName,
+            WTSDomainName,
+            WTSConnectState,
+            WTSClientBuildNumber,
+            WTSClientName,
+            WTSClientDirectory,
+            WTSClientProductId,
+            WTSClientHardwareId,
+            WTSClientAddress,
+            WTSClientDisplay,
+            WTSClientProtocolType,
+            WTSIdleTime,
+            WTSLogonTime,
+            WTSIncomingBytes,
+            WTSOutgoingBytes,
+            WTSIncomingFrames,
+            WTSOutgoingFrames,
+            WTSClientInfo,
+            WTSSessionInfo
+        }
+        internal static IntPtr WTS_CURRENT_SERVER_HANDLE = IntPtr.Zero;
+
+        [DllImport("Wtsapi32.dll")]
+        public static extern bool WTSQuerySessionInformation(
+            System.IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out System.IntPtr ppBuffer, out uint pBytesReturned);
+
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         static extern bool CreateProcessAsUser(
             IntPtr hToken,
@@ -212,26 +247,31 @@ namespace FXBusinessLogic
             }
 
             List<Process> explorerProcessList = new List<Process>();
-            string trayProcessName = AppName.Substring(AppName.LastIndexOf(@"\") + 1, AppName.Length - AppName.LastIndexOf(@"\") - 5);
+            string trayProcessName = Path.GetFileNameWithoutExtension(AppName); // AppName.Substring(AppName.LastIndexOf(@"\") + 1, AppName.Length - AppName.LastIndexOf(@"\") - 5);
+            string userName = "";
             foreach (Process explorerProcess in Process.GetProcessesByName("explorer"))
             {
-                bool IsProcessRunningForUser = false;
-                foreach (Process PHTrayProcess in Process.GetProcessesByName(trayProcessName))
-                {
-                    if (explorerProcess.SessionId == PHTrayProcess.SessionId)
-                    {
-                        if (log.IsDebugEnabled) log.Debug(trayProcessName + " is already running for user SessionId " + explorerProcess.SessionId);
-                        IsProcessRunningForUser = true;
-                        break;
-                    }
-                }
+                userName = GetProcessUser(explorerProcess);
+                bool IsProcessRunningForUser = userName.Equals(MainService.MTTerminalUserName, StringComparison.InvariantCultureIgnoreCase );
+                //foreach (Process PHTrayProcess in Process.GetProcessesByName(trayProcessName))
+                //{
+                //    if (explorerProcess.SessionId == PHTrayProcess.SessionId )
+                //    {
+                //        if (log.IsDebugEnabled)
+                //            log.Debug(trayProcessName + " is already running for user SessionId " + explorerProcess.SessionId);
+                //        IsProcessRunningForUser = true;
+                //        break;
+                //    }
+                //}
 
                 if (((Environment.OSVersion.Version.Major > 5 && explorerProcess.SessionId > 0)
                     || Environment.OSVersion.Version.Major == 5)
-                    && !IsProcessRunningForUser)
+                    && IsProcessRunningForUser)
                 {
-                    if (log.IsDebugEnabled) log.Debug(trayProcessName + " is not running for user SessionId " + explorerProcess.SessionId);
+                    if (MainService.thisGlobal.IsDebug())
+                        log.Info($"Desktop is running for user {userName} and SessionId " + explorerProcess.SessionId);
                     explorerProcessList.Add(explorerProcess);
+                    break;
                 }
             }
 
@@ -274,6 +314,8 @@ namespace FXBusinessLogic
                             }
                         }
 
+                        //if (MainService.thisGlobal.IsDebug())
+                        //    log.Info("Duplicated the token " + WindowsIdentity.GetCurrent().Name);
                         //WriteToLog("Duplicated the token " + WindowsIdentity.GetCurrent().Name);
 
                         SECURITY_ATTRIBUTES processAttributes = new SECURITY_ATTRIBUTES();
@@ -304,9 +346,10 @@ namespace FXBusinessLogic
                             }
                             return false;
                         }
-                        log.InfoFormat("Process {0} started successfully", AppName);
+                        log.InfoFormat("Process {0} started under user {1} successfully", AppName, userName);
                         Process trayApp = Process.GetProcessById(Convert.ToInt32(pi.dwProcessId));
                         trayApp.StartInfo.LoadUserProfile = true;
+                        break;
                     }
                     finally
                     {
@@ -324,14 +367,33 @@ namespace FXBusinessLogic
             return true;
         }
 
-        /// <summary>
-        /// Impersonate the user credentials. This would be required by 
-        /// the service applications to impersonate the logged in user
-        /// credentials to launch certain applications or applying the
-        /// power scheme.
-        /// </summary>
-        /// <returns>Returns true if the impersonation is successful.</returns>
-        public  bool ImpersonateUser()
+        public string GetProcessUser(Process process)
+        {
+            IntPtr AnswerBytes;
+            uint AnswerCount;
+            if (WTSQuerySessionInformation(WTS_CURRENT_SERVER_HANDLE,
+                                              process.SessionId,
+                                              WTS_INFO_CLASS.WTSUserName,
+                                              out AnswerBytes,
+                                              out AnswerCount))
+            {
+                string userName = Marshal.PtrToStringAnsi(AnswerBytes);
+                return userName;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+    /// <summary>
+    /// Impersonate the user credentials. This would be required by 
+    /// the service applications to impersonate the logged in user
+    /// credentials to launch certain applications or applying the
+    /// power scheme.
+    /// </summary>
+    /// <returns>Returns true if the impersonation is successful.</returns>
+    public  bool ImpersonateUser()
         {
             // For simplicity I'm using the PID of System here
             //if (log.IsDebugEnabled) log.Debug("GetaProcess for Explorer"); 

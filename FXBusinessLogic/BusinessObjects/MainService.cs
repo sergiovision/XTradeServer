@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using Autofac;
 using BusinessObjects;
 using DevExpress.Xpo;
@@ -72,7 +73,33 @@ namespace FXBusinessLogic.BusinessObjects
                 }
                 catch (Exception e)
                 {
-                    log.Error("ERROR FROM CONNECTION: " + e);
+                    log.Error("ERROR FROM RegistryInstallDir: " + e);
+                }
+                return result;
+            }
+        }
+
+        public static string MTTerminalUserName
+        {
+            get
+            {
+                string result = WindowsIdentity.GetCurrent().Name;
+                try
+                {
+                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(SETTINGS_APPREGKEY, false);
+                    if (rk == null)
+                    {
+                        rk = Registry.LocalMachine.CreateSubKey(SETTINGS_APPREGKEY, true, RegistryOptions.None);
+                        rk.SetValue("MTTerminalUserName", result);
+                    }
+                    else
+                    {
+                        result = rk.GetValue("RunMTTerminalUserName")?.ToString();
+                    }
+                }
+                catch (Exception e)
+                {
+                    log.Error("ERROR FROM RunMTTerminalUserName: " + e);
                 }
                 return result;
             }
