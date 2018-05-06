@@ -32,7 +32,7 @@ Code tested and works stable on the server so you can sleep calm when robot runs
 
 If you need help building and setting up robot write me to my email: sergewinner @ gmail com
 
-If robot help you earn money you can thank me using Donation of any amount on my PayPal account sergeiwinner @ gmail  com
+If robot help you earn money you can thank me using Donation of any amount on my PayPal account sergeiwinner @ gmail  com or donate to my BTC wallet: 1NZfLceM6fMd8iSeY5PdJv1Q4z65MaqBud
 
 Allowed to use in your programs and enhance your robots, just mention my name in your products.
 
