@@ -1,10 +1,10 @@
 //+------------------------------------------------------------------+
 //|                                                 ThriftClient.mqh |
 //|                                                 Sergei Zhuravlev |
-//|                        https://www.facebook.com/sergei.zhuravlev |
+//|                                   http://github.com/sergiovision |
 //+------------------------------------------------------------------+
 #property copyright "Sergei Zhuravlev"
-#property link      "https://www.facebook.com/sergei.zhuravlev"
+#property link      "http://github.com/sergiovision"
 #property strict
 
 struct THRIFT_CLIENT
@@ -18,7 +18,6 @@ struct THRIFT_CLIENT
    uchar ip3;
 };
 
-//#import "fxmindmql.dll"
 #import "ThriftMQL.dll"
 long ProcessStringData(string& inoutdata, string parameters, THRIFT_CLIENT &tc);
 long ProcessDoubleData(double &arr[], int arr_size, string parameters, string indata, THRIFT_CLIENT &tc);

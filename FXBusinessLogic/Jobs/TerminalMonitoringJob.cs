@@ -15,9 +15,7 @@ using FXBusinessLogic.BusinessObjects;
 
 namespace com.fxmind.manager.jobs
 {
-
-
-    // AdviserMonitoringJob starts and monitors terminals 
+    // TerminalMonitoringJob starts and monitors terminals 
     internal class TerminalMonitoringJob : IJob
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(TerminalMonitoringJob));
