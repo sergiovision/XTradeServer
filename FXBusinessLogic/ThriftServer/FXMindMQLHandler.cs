@@ -54,6 +54,30 @@ namespace FXBusinessLogic.ThriftServer
                         }
                     }
                         break;
+                    case "GetTodayNews":
+                        {
+                            DateTime date;
+                            DateTime.TryParseExact(paramsList["time"], fxmindConstants.MTDATETIMEFORMAT,
+                                CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.None, out date);
+
+                            string symbolStr = paramsList["symbol"];
+                            byte minImportance = byte.Parse(paramsList["importance"]);
+                            int i = 0;
+                            var news = fxmind.GetTodayNews(date, symbolStr, minImportance);
+                            foreach (var info in news)
+                            {
+                                list.Add(info.Currency);
+                                list.Add(info.Importance.ToString());
+                                list.Add(info.RaiseDateTime);
+
+                                if (i == (news.Count - 1))
+                                    list.Add(info.Name);
+                                else 
+                                    list.Add(info.Name + "~");  // Delimiter 
+                                i++;
+                            }
+                        }
+                        break;
                     case "Somefunc":
                     {
                     }

@@ -18,6 +18,74 @@ struct THRIFT_CLIENT
    uchar ip3;
 };
 
+class  NewsEventInfo
+{
+ public:
+  string Currency;
+  int     Importance;
+  datetime RaiseDateTime; // date returned in MTFormat
+  string Name;
+  
+  NewsEventInfo()
+  {
+      Name = "No news";
+      Currency = "UnDefined";
+      Importance = 0;
+  }
+    
+  void Clear()
+  {
+     Name = "No news";
+     Currency = "";
+     Importance =0;
+     RaiseDateTime = 0;
+  }
+  
+   void operator=(const NewsEventInfo &n) {
+      Currency = n.Currency;
+      Importance = n.Importance;
+      RaiseDateTime = n.RaiseDateTime;
+      Name = n.Name;
+   }
+      
+  bool operator==(const NewsEventInfo &n)
+  {
+     if (StringCompare(Name, n.Name)!=0)
+        return false;
+     if (RaiseDateTime != n.RaiseDateTime)
+        return false;
+     if (Importance != n.Importance)
+        return false;
+     if (StringCompare(Currency, n.Currency) !=0)
+        return false;
+     return true;
+  }
+  
+   bool operator!=(const NewsEventInfo &n)
+   {
+     if (StringCompare(Name, n.Name)!=0)
+        return true;
+     if (RaiseDateTime != n.RaiseDateTime)
+        return true;
+     if (Importance != n.Importance)
+        return true;
+     if (StringCompare(Currency, n.Currency) !=0)
+        return true;
+     return false;
+   }
+
+  
+  string ToString()
+  {
+     if (StringCompare("No news", Name)==0)
+        return "";
+     return Currency + " "+ IntegerToString(Importance) + " " + TimeToString(RaiseDateTime) + " " + Name;
+  }
+};
+
+#define MAX_NEWS_PER_DAY  5
+
+
 #import "ThriftMQL.dll"
 long ProcessStringData(string& inoutdata, string parameters, THRIFT_CLIENT &tc);
 long ProcessDoubleData(double &arr[], int arr_size, string parameters, string indata, THRIFT_CLIENT &tc);
@@ -34,8 +102,9 @@ class ThriftClient
 protected:
    THRIFT_CLIENT client;
    bool   IsActive;
-   ushort sep;   
 public:
+   ushort sep;   
+   ushort sepList;   
    ThriftClient(int accountNumber, ushort port, int magic)
    {
       client.Magic = magic;
@@ -52,6 +121,7 @@ public:
       client.ip3 = 1;
             
       sep = StringGetCharacter("|", 0);
+      sepList = StringGetCharacter("~", 0);
       IsActive = false;
       CheckActive();
    }
@@ -60,7 +130,6 @@ public:
    {
       storeEventTime = TimeCurrent();
       prevSenttime = storeEventTime;
-      storeEventMessage = "no event";
       return IsActive;
    }
 
@@ -73,48 +142,92 @@ public:
       return IsActive;
    }
    
-   string storeEventstr;
+   bool NewsFromString(string newsstring, NewsEventInfo& news)
+   {
+      //Print(newsstring);
+      string result[];
+      if (StringGetCharacter(newsstring, 0) == sep)
+         newsstring = StringSubstr(newsstring, 1);
+      int count = StringSplit(newsstring, sep, result);
+      if (count >= 4) 
+      {
+         news.Currency = result[0];
+         news.Importance = StrToInteger(result[1]);
+         news.RaiseDateTime = StringToTime(result[2]);
+         news.Name = result[3];
+         //Print(news.ToString());
+         return true;
+      }
+      return false;
+   }
+   
    datetime storeEventTime;
-   datetime storeRaiseTime;
-   string storeEventMessage;
-   int storeRes;
-   int GetNextNewsEvent(string symbol, ushort Importance, string& eventMessage, datetime& raiseDate)
+   NewsEventInfo storeEvent;
+   string storeParamstrEvent;
+   bool GetNextNewsEvent(string symbol, ushort Importance, NewsEventInfo& eventInfo)
    {
       //datetime curtime = iTime( NULL, PERIOD_M15, 0 );
       datetime curtime = Time[0];
-      raiseDate = storeRaiseTime;
-      eventMessage = storeEventMessage;
       if (storeEventTime != curtime)
          storeEventTime = curtime;
       else
-         return 0;
-   	string instr = "func=NextNewsEvent|symbol=" + symbol + "|importance=" + IntegerToString(Importance) + "|time=" + TimeToString(curtime);
-   	if ( StringCompare(storeEventstr, instr) == 0)
-         return 0;
-   	storeRes = 0;
-   	storeEventstr = instr;
+      { 
+         //storeEvent.AssignCopy(eventInfo);
+         eventInfo = storeEvent;
+         return true;
+      }
+      string instr = StringFormat("func=NextNewsEvent|symbol=%s|importance=%d|time=%s", symbol, Importance, TimeToString(curtime));
+   	if ( StringCompare(storeParamstrEvent, instr) == 0)
+      { 
+         //storeEvent.AssignCopy(eventInfo);
+         eventInfo = storeEvent;
+         return true;
+      }
+   	storeParamstrEvent = instr;
    	string rawMessage;
-   	StringInit(rawMessage, 256, 0);
+   	StringInit(rawMessage, 512, 0);
    	long retval = ProcessStringData(rawMessage, instr, client);
    	if ( retval > 0 )
    	{
-   	   //Print("rawMessage = " + rawMessage +" , retval = " + IntegerToString(retval));   	
-         //if (StringLen(rawMessage) > 0) {
-            //Print(rawMessage);
-            string result[];
-            int count = StringSplit(rawMessage, sep, result);
-            if (count >= 4) {
-               raiseDate = StringToTime(result[2]);
-               eventMessage = result[0] + ":" + result[1] + ":" + result[2] + ":" + result[3];
-               if (StringCompare(eventMessage, storeEventMessage) != 0) 
-               {
-                  storeRaiseTime = raiseDate;
-                  storeEventMessage = eventMessage;
-                  storeRes = StrToInteger(result[1]);
-               }
+   	   if (NewsFromString(rawMessage, eventInfo))
+   	   {
+   	      storeEvent = eventInfo;
+   	      //Print(eventInfo.ToString());
+   	      return true;
+   	   }
+   	}
+   	return false;
+   }
+   
+   string storeParamstr;
+   int GetTodayNews(string symbol, ushort Importance, NewsEventInfo &arr[])
+   {
+      datetime curtime = Time[0];
+   	string instr = "func=GetTodayNews|symbol=" + symbol + "|importance=" + IntegerToString(Importance) + "|time=" + TimeToString(curtime);
+   	if ( StringCompare(storeParamstr, instr) == 0)
+         return 0;
+   	storeParamstr = instr;
+   	int storeRes = 0;
+   	string rawMessage;
+   	StringInit(rawMessage, MAX_NEWS_PER_DAY*512, 0);
+   	long retval = ProcessStringData(rawMessage, instr, client);
+   	if ( retval > 0 )
+   	{
+   	   //Print(rawMessage);
+         string result[];
+         int count = StringSplit(rawMessage, sepList, result);
+         count = (int)MathMin(count, MAX_NEWS_PER_DAY);
+         if (count >= 1) {
+            for (int i=0; i<MAX_NEWS_PER_DAY;i++)
+            { 
+               arr[i].Clear();
             }
-   	   //} else 
-         //   res = 0;
+            storeRes = count;
+            for (int i=0; i<count;i++)
+            {                
+               NewsFromString(result[i], arr[i]);
+            }
+         }
    	}
    	return storeRes;
    }
@@ -191,7 +304,7 @@ public:
    virtual uint DeInit()
    {
       CloseClient(client);
-      Print("ThriftClient closed");
+      Print("Connection with Thrift service closed.");
       return 0;
    }
 

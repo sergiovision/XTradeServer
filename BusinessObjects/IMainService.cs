@@ -48,6 +48,8 @@ namespace BusinessObjects
 
         bool GetNextNewsEvent(DateTime date, string symbolStr, byte minImportance, ref NewsEventInfo eventInfo);
 
+        List<NewsEventInfo> GetTodayNews(DateTime date, string symbolStr, byte minImportance);
+
         bool IsDebug();
 
         List<Currency> GetCurrencies();

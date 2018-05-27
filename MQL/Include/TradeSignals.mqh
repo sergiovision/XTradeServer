@@ -17,6 +17,30 @@ enum ENUM_INDICATORS
     BandsIndicator
 };
 
+struct Signal 
+{
+    Signal()
+    {
+        RaiseTime = 0;
+        Handled = false;
+        Value = 0;
+    }
+
+    bool OnAlert()
+    {
+       return (!Handled) && (Value != 0);
+    }
+    datetime RaiseTime;
+    bool Handled;
+    int Value;
+    NewsEventInfo eventInfo;
+//    void operator=(const Signal &right) {
+//       RaiseTime = right.RaiseTime;
+//       Handled = right.Handled;
+//       Value = right.Value;
+//    }
+};
+
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
@@ -24,86 +48,76 @@ class TradeSignals
 {
 protected:
    ThriftClient* thrift;
-   int prevIndiSignal;
    ushort MinImportance;
    int currentImportance;
    int NewsPeriodMinutes;
    int RaiseSignalBeforeEventMinutes;
    datetime timeNewsPeriodStarted;
-   bool RevertNewsTrend;
    ENUM_TIMEFRAMES IndicatorTimeFrame;
 
 public:
-   bool EventRaiseSoon;
+   Signal Last;
    bool InNewsPeriod;
 
-      TradeSignals(ThriftClient* th, ushort minimp, int newsperiod, int raisebefore, bool revertnews, int timeframe) {
+      TradeSignals(ThriftClient* th, ushort minimp, int newsperiod, int raisebefore, int timeframe) {
          thrift = th;
-         prevIndiSignal = 0;
          MinImportance = minimp;
          currentImportance = minimp;
-         EventRaiseSoon = false;
          InNewsPeriod = false;
          NewsPeriodMinutes = newsperiod;
          timeNewsPeriodStarted = TimeCurrent();
          RaiseSignalBeforeEventMinutes = raisebefore;
-         RevertNewsTrend = revertnews;
          IndicatorTimeFrame = (ENUM_TIMEFRAMES) timeframe;
+         Last.Handled = true; // first signal is handled!
       }
       
       //~TradeSignals();
      
       //--------------------------------------------------------------------
-      int GetNewsSignal(int indiSignal, string& NewsString, string& NewsStatString, string& TrendString)
+      bool GetNewsSignal(Signal& signal, string& NewsStatString)
       {   
-         if (indiSignal != 0)
-            prevIndiSignal = indiSignal;
-         string message = "no event";
-         datetime raiseDateTime;
-         string raisedStr = "Upcoming in ";
-         int signal = thrift.GetNextNewsEvent(Symbol(), MinImportance, message, raiseDateTime);
-         if (signal > 0) {
-            EventRaiseSoon = true;
-            currentImportance = signal;
-         }
-         int minsRemained = MathRound((double)(raiseDateTime - TimeCurrent())/60);
+         datetime currentTime = TimeCurrent();
+                                       
+         int minsRemained = (int)MathRound((signal.eventInfo.RaiseDateTime - currentTime)/60);
+         //if ((!signal.Handled) && (minsRemained <= 0)) // prev signal not handled yet
+         //   return false;
                   
-         if (InNewsPeriod) {
-            int minsNewsPeriod = (TimeCurrent() - timeNewsPeriodStarted)/60;
-            if (minsNewsPeriod >=NewsPeriodMinutes)
+         if (InNewsPeriod) 
+         {
+            int minsNewsPeriod = (int)MathRound((currentTime - timeNewsPeriodStarted)/60);
+            if (minsNewsPeriod >= NewsPeriodMinutes)
                InNewsPeriod = false;
          }
-                  
-         //if (!IsTesting() || IsVisualMode())
-         //{
-         string trendString = "NEUTRAL";
-         if (prevIndiSignal < 0)
-            trendString = "SELL";
-         else if (prevIndiSignal > 0)
-                 trendString = "BUY";
-         TrendString = StringFormat("%s On %s", trendString, EnumToString(IndicatorTimeFrame));
          
+         string eventString = signal.eventInfo.ToString();
          if (minsRemained < 0)
-            raisedStr = " Passed " + IntegerToString(-1*minsRemained) + " min ago: ";
+            eventString = StringFormat("InNews=%s %s Passed %d min ago", (string)InNewsPeriod, eventString, -1*minsRemained);
          else
-            raisedStr += IntegerToString(minsRemained) + " min: ";
-           
-         NewsStatString = StringFormat("News Period(%s)", (string)InNewsPeriod);
-         NewsString = raisedStr + message;
-         //} 
+            eventString = StringFormat("InNews=%s %s Upcoming in %d min", (string)InNewsPeriod, eventString, minsRemained);
+         NewsStatString = eventString;
          
-         if (EventRaiseSoon && (minsRemained >= 0) && (minsRemained <= RaiseSignalBeforeEventMinutes))
+         Signal newsignal;
+         if (!thrift.GetNextNewsEvent(Symbol(), MinImportance, newsignal.eventInfo))
          {
-            //CreateTextLabel(message, currentImportance, raiseDateTime);
-            EventRaiseSoon = false;
-            int coef = 1;
-            if (RevertNewsTrend)
-               coef = -1;
-            InNewsPeriod = true;
-            timeNewsPeriodStarted = TimeCurrent();
-            return currentImportance * prevIndiSignal * coef;
+            return false;
          }
-         return 0;
+         
+         minsRemained = (int)MathRound((newsignal.eventInfo.RaiseDateTime - currentTime)/60);
+
+         if (signal.Handled && (newsignal.eventInfo != signal.eventInfo) && (minsRemained >= 0) && (minsRemained <= RaiseSignalBeforeEventMinutes))
+         {
+            InNewsPeriod = true;
+            timeNewsPeriodStarted = currentTime;
+            
+            signal.Value = newsignal.eventInfo.Importance + 1;
+            signal.Handled = false;
+            signal.RaiseTime = currentTime;
+            signal.eventInfo = newsignal.eventInfo;
+            if (!IsTesting())
+               Print(StringFormat("In %d mins News Alert %s", minsRemained, signal.eventInfo.ToString()));
+            return true;
+         }
+         return false;
       }
       
       //+------------------------------------------------------------------+
@@ -121,7 +135,7 @@ public:
       //+------------------------------------------------------------------+
       int GetZigZagTrend()
       {
-         int n, i;
+         int n = 0, i;
          double zag = 0, zig = 0;
          i = 0;
          while(n < 2)

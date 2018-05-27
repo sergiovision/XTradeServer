@@ -7,7 +7,6 @@ C:\Projects\FXMindLastNET6jul2014\WinClient\obj\Debug\WinClient.csproj.CoreCompi
 C:\Projects\GitHub\FXMindNET\bin\FXMind.WinClient.exe.config
 C:\Projects\GitHub\FXMindNET\bin\FXMind.WinClient.exe
 C:\Projects\GitHub\FXMindNET\bin\FXMind.WinClient.pdb
-C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\WinClient.csprojResolveAssemblyReference.cache
 C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\FXMind.WinClient.MainForm.resources
 C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\FXMind.WinClient.Properties.Resources.resources
 C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\WinClient.csproj.GenerateResource.cache
@@ -16,3 +15,4 @@ C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\WinClient.csproj.CoreCompileInp
 C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\WinClient.csproj.CopyComplete
 C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\FXMind.WinClient.exe
 C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\FXMind.WinClient.pdb
+C:\Projects\GitHub\FXMindNET\WinClient\obj\Debug\WinClient.csprojAssemblyReference.cache

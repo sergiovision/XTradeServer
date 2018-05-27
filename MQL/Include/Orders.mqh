@@ -36,6 +36,13 @@ enum ENUM_TRAILING
     TrailingKillLoss
 };
 
+enum ENUM_MARKETSTATE  
+{
+    FlatTrend, 
+    UpTrend, 
+    DownTrend
+};
+
 //+------------------------------------------------------------------+
 //| defines                                                          |
 //+------------------------------------------------------------------+
@@ -89,10 +96,10 @@ class Order : public CObject
       //Print(StringFormat("C-tor Order(%d) ", ticket)); 
    }
    
-   void ~Order()
-   {
-      Print(StringFormat("D-tor Order(%d) ", ticket)); 
-   }
+   //void ~Order()
+   //{
+      //Print(StringFormat("D-tor Order(%d) ", ticket)); 
+   //}
    
    int ticket;
    int type;

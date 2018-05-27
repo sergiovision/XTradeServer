@@ -442,6 +442,12 @@ namespace FXBusinessLogic.BusinessObjects
 
         public bool GetNextNewsEvent(DateTime date, string symbolStr, byte minImportance, ref NewsEventInfo eventInfo)
         {
+            List<NewsEventInfo> newsForToday = GetTodayNews(date, symbolStr, minImportance);
+            if (newsForToday.Count() == 0)
+                return false;
+            eventInfo = newsForToday.FirstOrDefault();
+            return newsForToday != null;
+            /*
             Session session = FXConnectionHelper.GetNewSession();
             bool result = false;
             try
@@ -468,7 +474,7 @@ namespace FXBusinessLogic.BusinessObjects
 
                 DateTime from = TimeZoneInfo.ConvertTimeToUtc(date, BrokerTimeZoneInfo);
                 // date.AddHours(-BrokerTimeZoneInfo.BaseUtcOffset.Hours);
-                DateTime to = from.AddDays(1); //.AddMinutes(beforeIntervalMinutes);
+                DateTime to = from.AddDays(1).AddSeconds(-1); //.AddMinutes(beforeIntervalMinutes);
                 //to = to.AddHours(-BrokerTimeZoneInfo.BaseUtcOffset.Hours);
 
                 string[] paramnames = {"c1", "c2", "fr_dt", "to_dt", "imp"};
@@ -511,7 +517,78 @@ namespace FXBusinessLogic.BusinessObjects
                 session.Disconnect();
                 session.Dispose();
             }
+            return result;
+            */
+        }
 
+        public List<NewsEventInfo> GetTodayNews(DateTime date, string symbolStr, byte minImportance)
+        {
+            // new session should be created for crossthread issues
+            Session session = FXConnectionHelper.GetNewSession();
+            List<NewsEventInfo> result = new List<NewsEventInfo>();
+            try
+            {
+                BrokerTimeZoneInfo = GetBrokerTimeZone();
+
+                const string queryStrInterval =
+                    @"SELECT C.Name 
+	                ,NE.HappenTime
+                    ,NE.Name
+                    ,NE.Raised
+                    ,NE.Importance
+                FROM NewsEvent NE
+                INNER JOIN Currency C ON NE.CurrencyId = C.ID
+                WHERE (C.Name=@c1 OR C.Name=@c2) AND (NE.HappenTime >= @fr_dt) AND (NE.HappenTime <= @to_dt) AND (NE.Importance >= @imp) ORDER BY NE.HappenTime ASC, NE.Importance DESC";
+
+                string C1 = symbolStr.Substring(0, 3);
+                string C2 = C1;
+                if (symbolStr.Length == 6)
+                    C2 = symbolStr.Substring(3, 3);
+
+                //from current time bar
+                DateTime from = TimeZoneInfo.ConvertTimeToUtc(date, BrokerTimeZoneInfo);
+                //until midnight
+                DateTime to = from.AddDays(1).AddSeconds(-1); 
+
+                string[] paramnames = { "c1", "c2", "fr_dt", "to_dt", "imp" };
+                object[] parameters =
+                {
+                    C1, C2, from.ToString(fxmindConstants.MYSQLDATETIMEFORMAT),
+                    to.ToString(fxmindConstants.MYSQLDATETIMEFORMAT), minImportance
+                };
+                SelectedData data = session.ExecuteQuery(queryStrInterval, paramnames, parameters);
+
+                int count = data.ResultSet[0].Rows.Count();
+                if (count <= 0)
+                {
+                    return result;
+                }
+
+                NewsEventInfo eventInfo = null;
+                foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
+                {
+                    eventInfo = new NewsEventInfo();
+                    eventInfo.Currency = (string)row.Values[0];
+                    DateTime raiseDT = (DateTime)row.Values[1];
+                    raiseDT = TimeZoneInfo.ConvertTimeFromUtc(raiseDT,
+                        BrokerTimeZoneInfo);
+                    eventInfo.RaiseDateTime = raiseDT.ToString(fxmindConstants.MTDATETIMEFORMAT);
+                    //eventInfo.RaiseDateTime.AddHours(BrokerTimeZoneInfo.BaseUtcOffset.Hours);
+                    eventInfo.Name = (string)row.Values[2];
+                    byte imp = (byte)row.Values[4];
+                    eventInfo.Importance = (sbyte)imp;
+                    result.Add(eventInfo);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
             return result;
         }
 

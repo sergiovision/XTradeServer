@@ -109,8 +109,13 @@ namespace ThriftMQL
             foreach (var val in list)
             {
                 str.Append(val);
-                if (i++ < (list.Count - 1))
+                if (i == (list.Count - 1))
+                { }
+                else
                     str.Append('|');
+                i++;
+                //if (i++ < (list.Count - 1))
+                //    str.Append('|');
             }
             return true;
         }
