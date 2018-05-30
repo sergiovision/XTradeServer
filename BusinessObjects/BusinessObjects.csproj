@@ -54,9 +54,13 @@
     <Compile Include="BusinessObjects\AppService.cs" />
     <Compile Include="BusinessObjects\Currency.cs" />
     <Compile Include="BusinessObjects\CurrencyStrengthSummary.cs" />
+    <Compile Include="BusinessObjects\EnumExpertValueScope.cs" />
+    <Compile Include="BusinessObjects\EnumExpertValueType.cs" />
+    <Compile Include="BusinessObjects\ExpertParameter.cs" />
     <Compile Include="BusinessObjects\fxmind.Constants.cs" />
     <Compile Include="BusinessObjects\FXMindMQL.cs" />
     <Compile Include="BusinessObjects\NewsEventInfo.cs" />
+    <Compile Include="BusinessObjects\Order.cs" />
     <Compile Include="BusinessObjects\ScheduledJob.cs" />
     <Compile Include="BusinessObjects\TechIndicator.cs" />
     <Compile Include="IMainService.cs" />

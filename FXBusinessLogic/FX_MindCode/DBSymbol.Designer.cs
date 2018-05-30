@@ -11,6 +11,7 @@ using DevExpress.Xpo;
 using DevExpress.Data.Filtering;
 using System.Collections.Generic;
 using System.ComponentModel;
+
 namespace FXBusinessLogic.fx_mind
 {
 
@@ -65,6 +66,8 @@ namespace FXBusinessLogic.fx_mind
             get { return fC2; }
             set { SetPropertyValue<string>("C2", ref fC2, value); }
         }
+        [Association(@"DBAdviserReferencesDBSymbol")]
+        public XPCollection<DBAdviser> Advisers { get { return GetCollection<DBAdviser>("Advisers"); } }
     }
 
 }

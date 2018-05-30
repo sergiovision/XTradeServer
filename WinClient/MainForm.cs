@@ -103,7 +103,7 @@ namespace FXMind.WinClient
             tz_col = new Dictionary<int, TimeZoneInfo>();
             using (AppServiceClient app = container.Resolve<AppServiceClient>())
             {
-                string gtimezone = app.client.GetGlobalProp("UserTimeZone");
+                string gtimezone = app.client.GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_USERTIMEZONE);
 
                 tz = TimeZoneInfo.GetSystemTimeZones();
                 int index = 0;
@@ -130,7 +130,7 @@ namespace FXMind.WinClient
                     }
 
                 // reset this valuse on start
-                app.client.SetGlobalProp("UseDateInterval", "false");
+                //app.client.SetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_USEDATEINTERVAL, "false");
             }
 
         }
@@ -342,7 +342,7 @@ namespace FXMind.WinClient
 
                 using (var app = container.Resolve<AppServiceClient>())
                 {
-                    app.client.SetGlobalProp("UserTimeZone", g_userTimeZone.StandardName);
+                    app.client.SetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_USERTIMEZONE, g_userTimeZone.StandardName);
 
                 }
             }

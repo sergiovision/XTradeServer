@@ -11,7 +11,6 @@ using DevExpress.Xpo;
 using DevExpress.Data.Filtering;
 using System.Collections.Generic;
 using System.ComponentModel;
-
 namespace FXBusinessLogic.fx_mind
 {
 
@@ -44,6 +43,13 @@ namespace FXBusinessLogic.fx_mind
         {
             get { return fFULLPATH; }
             set { SetPropertyValue<string>("FULLPATH", ref fFULLPATH, value); }
+        }
+        string fCODEBASE;
+        [Size(4096)]
+        public string CODEBASE
+        {
+            get { return fCODEBASE; }
+            set { SetPropertyValue<string>("CODEBASE", ref fCODEBASE, value); }
         }
         [Association(@"DBAdviserReferencesDBTerminal")]
         public XPCollection<DBAdviser> Advisers { get { return GetCollection<DBAdviser>("Advisers"); } }

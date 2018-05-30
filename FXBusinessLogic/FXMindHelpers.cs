@@ -41,6 +41,26 @@ namespace FXBusinessLogic
             return null;
         }
 
+        public static DBAdviser getAdviserID(Session session, int term_id, int sym_id, string tf, string ea)
+        {
+            var adviserQuery = new XPQuery<DBAdviser>(session);
+            IQueryable<DBAdviser> advisers = from c in adviserQuery
+                                             where (c.TERMINAL_ID.ID == term_id) && (c.SYMBOL_ID.ID == sym_id) && (c.NAME==ea) && (c.TIMEFRAME==tf) && (c.DISABLED==0)
+                                             select c;
+            if (advisers.Any()) return advisers.First();
+            return null;
+        }
+
+        public static DBAdviser getAdviserByMagicNumber(Session session, long magicNumber)
+        {
+            var adviserQuery = new XPQuery<DBAdviser>(session);
+            IQueryable<DBAdviser> advisers = from c in adviserQuery
+                                             where (c.ID == magicNumber)
+                                             select c;
+            if (advisers.Any()) return advisers.First();
+            return null;
+        }
+
         public static DBCurrency getCurrencyID(Session session, string currencyStr)
         {
             var qCurrency = new XPQuery<DBCurrency>(session);
@@ -48,6 +68,16 @@ namespace FXBusinessLogic
                 where c.Name == currencyStr
                 select c;
             if (varQCurrency.Any()) return varQCurrency.First();
+            return null;
+        }
+
+        public static DBTerminal getTerminalID(Session session, long AccountNumber)
+        {
+            var qTerm = new XPQuery<DBTerminal>(session);
+            IQueryable<DBTerminal> varQTerminal = from c in qTerm
+                                                  where c.ACCOUNTNUMBER == AccountNumber
+                                                  select c;
+            if (varQTerminal.Any()) return varQTerminal.First();
             return null;
         }
 

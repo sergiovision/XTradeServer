@@ -14,17 +14,18 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
     public class FXMindMQLClient : ThriftClient<FXMindMQL.Client> 
     {
 
-        public FXMindMQLClient(string host, ushort port)
+        public FXMindMQLClient(ushort port)
         {
             try
             {
-                Host = host;
+                Host = "127.0.0.1";
                 Port = port;
 
-                if (String.IsNullOrEmpty(ThriftCalls._FullFilePath))
-                    ThriftCalls.InitDLL(Host, Port);
-
                 InitBase();
+
+                if (String.IsNullOrEmpty(ThriftCalls._FullFilePath))
+                    ThriftCalls.InitDLL(this);
+
             }
             catch (TApplicationException x)
             {
@@ -43,130 +44,5 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
             return client;
         }
 
-/*
-        public List<string> ProcessStringData(Dictionary<string, string> paramsList, List<string> inputData)
-        {
-            List<string> list = new List<string>();
-            try
-            {
-                //lock (this)
-                {
-
-                    transport.Open();
-                    try
-                    {
-                        list = client.ProcessStringData(paramsList, inputData);
-                    }
-                    finally
-                    {
-                        transport.Close();
-                    }
-                }
-            }
-            catch (TApplicationException x)
-            {
-                Console.WriteLine(x.StackTrace);
-            }
-            catch (SocketException s)
-            {
-                Console.WriteLine(s.ToString());
-            }
-            return list;
-        }
-
-        public List<double> ProcessDoubleData(Dictionary<string, string> paramsList, List<string> inputData)
-        {
-            List<double> list = new List<double>();
-            try {
-                //lock (this)
-                {
-
-                    transport.Open();
-                    try
-                    {
-                        list = client.ProcessDoubleData(paramsList, inputData);
-                    }
-                    finally
-                    {
-                        transport.Close();
-                    }
-                }
-            }
-            catch (TApplicationException x)
-            {
-                Console.WriteLine(x.StackTrace);
-            }
-            catch (SocketException s)
-            {
-                Console.WriteLine(s.ToString());
-            }
-            return list;
-        }
-
-        public long IsServerActive(Dictionary<string, string> paramsList)
-        {
-            long retval = 0;
-            try
-            {
-                //lock (this)
-                {
-
-                    transport.Open();
-                    try
-                    {
-                        retval = client.IsServerActive(paramsList);
-                    }
-                    finally
-                    {
-                        transport.Close();
-                    }
-                }
-            }
-            catch (TApplicationException x)
-            {
-                Console.WriteLine(x.StackTrace);
-            }
-            catch (SocketException s)
-            {
-                Console.WriteLine(s.ToString());
-            }
-            return retval;
-        }
-
-        public void PostStatusMessage(Dictionary<string, string> paramsList)
-        {
-            try {
-                //lock (this)
-                {
-
-                    transport.Open();
-                    try
-                    {
-                        client.PostStatusMessage(paramsList);
-                    }
-                    finally
-                    {
-                        transport.Close();
-                    }
-                }
-            }
-            catch (TApplicationException x)
-            {
-                Console.WriteLine(x.StackTrace);
-            }
-            catch (SocketException s)
-            {
-                Console.WriteLine(s.ToString());
-            }
-        }
-
-        public void Dispose()
-        {
-            //lock (this)
-            {
-                client.Dispose();
-            }
-        }
-        */
     }
 }

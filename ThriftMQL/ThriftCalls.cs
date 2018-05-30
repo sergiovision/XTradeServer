@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using BusinessObjects;
 using FXBusinessLogic.BusinessObjects.Thrift;
 using Microsoft.Win32;
 using RGiesecke.DllExport;
@@ -24,18 +25,20 @@ namespace ThriftMQL
         }
 
 
-        public static string HostFromClient(THRIFT_CLIENT tc)
-        {
-            return string.Format("{0}.{1}.{2}.{3}", tc.ip0, tc.ip1, tc.ip2, tc.ip3);
-        }
+        //public static string HostFromClient(THRIFT_CLIENT tc)
+        //{
+        //    return string.Format("{0}.{1}.{2}.{3}", tc.ip0, tc.ip1, tc.ip2, tc.ip3);
+        //}
 
-        public const string SETTINGS_APPREGKEY = @"SOFTWARE\\FXMind";
+        //public const string SETTINGS_APPREGKEY = @"SOFTWARE\\FXMind";
+        //public const string  = "FXMind.InstallDir";
+
         public const string LOGFILENAME = @"FXMind.ThriftMQL.log";
         protected static string GlobalErrorMessage;
         public static string _FullFilePath = "";
 
 
-        public static string RegistryInstallDir
+      /*  public static string RegistryInstallDir
         {
             get
             {
@@ -52,25 +55,21 @@ namespace ThriftMQL
                 }
                 return result;
             }
-        }
+        }*/
 
         public static string logFilePath
         {
             get
             {
-                if (String.IsNullOrEmpty(_FullFilePath))
-                {
-                    _FullFilePath = RegistryInstallDir + "\\" + LOGFILENAME;
-                }
                 return _FullFilePath;
             }
         }
 
-        public static void LogWriteLine(string text)
+        public static void LogWriteLine(string text, ref THRIFT_CLIENT tc)
         {
             try
             {
-                File.AppendAllText(logFilePath, "ThriftMQL.dll: " + text + Environment.NewLine);
+                File.AppendAllText(logFilePath, $"{DateTime.Now.ToString()} ThriftMQL.dll({tc.Magic}): {text}\n");
 
             } catch (Exception e)
             {
@@ -78,15 +77,19 @@ namespace ThriftMQL
             }
         }
 
-        public static void InitDLL(string Host, int Port)
+        public static void InitDLL(FXMindMQLClient fx)
         {
             DateTime now = DateTime.Now;
 
+            if (String.IsNullOrEmpty(_FullFilePath) && (fx!=null))
+            {
+                _FullFilePath = fx.client.GetGlobalProperty(fxmindConstants.SETTINGS_PROPERTY_INSTALLDIR) + "\\" + LOGFILENAME;
+            }
             Process proc = Process.GetCurrentProcess();
             string path = "";
             if (proc != null)
                 path = proc.MainModule.FileName;
-            File.AppendAllText(ThriftCalls.logFilePath, $"\nInit ThriftMQL.dll at { now.ToString() } on App: {path} Host: {Host}:{Port}");
+            File.AppendAllText(ThriftCalls.logFilePath, $"\nInit ThriftMQL.dll at { now.ToString() } on App: {path} On Port:{fx.Port}\n");
         }
 
         protected static List<string> StringToList(string str)
@@ -147,7 +150,7 @@ namespace ThriftMQL
             List<double> resDblList = null;
             try
             {
-                using (var fx = new FXMindMQLClient(HostFromClient(tc), tc.port))
+                using (var fx = new FXMindMQLClient(tc.port))
                 {
                     Dictionary<string, string> paramsDic = new Dictionary<string, string>();
                     FillParams(ref tc, parameters, paramsDic);
@@ -162,7 +165,7 @@ namespace ThriftMQL
             catch (Exception e)
             {
                 GlobalErrorMessage = "ProcessDoubleData: " +e.ToString();
-                LogWriteLine(GlobalErrorMessage);
+                LogWriteLine(GlobalErrorMessage, ref tc);
                 resDblList = new List<double>();
                 resDblList.Add(-125);
                 return 1;
@@ -175,7 +178,7 @@ namespace ThriftMQL
         {
             try
             {
-                using (var fx = new FXMindMQLClient(HostFromClient(tc), tc.port))
+                using (var fx = new FXMindMQLClient(tc.port))
                 {
                     List<string> list = StringToList(str.ToString());
                     Dictionary<string, string> paramsDic = new Dictionary<string, string>();
@@ -191,7 +194,7 @@ namespace ThriftMQL
             catch (Exception e)
             {
                 GlobalErrorMessage = "ProcessStringData: " + e.ToString();
-                LogWriteLine(GlobalErrorMessage);
+                LogWriteLine(GlobalErrorMessage, ref tc);
                 //client = null;
                 str.Append("Error");
                 return 1;
@@ -205,7 +208,7 @@ namespace ThriftMQL
             try
             {
                 long ret = 0;
-                using (var fx = new FXMindMQLClient(HostFromClient(tc), tc.port))
+                using (var fx = new FXMindMQLClient(tc.port))
                 {
                     Dictionary<string, string> paramsDic = new Dictionary<string, string>();
                     paramsDic["magic"] = tc.Magic.ToString();
@@ -218,7 +221,7 @@ namespace ThriftMQL
             {
                 //client = null;
                 GlobalErrorMessage = "IsServerActive: " + e.ToString();
-                LogWriteLine(GlobalErrorMessage);
+                LogWriteLine(GlobalErrorMessage, ref tc);
                 return 0;
             }
         }
@@ -228,7 +231,7 @@ namespace ThriftMQL
         {
             try         
             {
-                using (var fx = new FXMindMQLClient(HostFromClient(tc), tc.port))
+                using (var fx = new FXMindMQLClient(tc.port))
                 {
                     Dictionary<string, string> paramsDic = new Dictionary<string, string>();
                     paramsDic["magic"] = tc.Magic.ToString();
@@ -242,7 +245,7 @@ namespace ThriftMQL
             {
                 //client = null;
                 GlobalErrorMessage = "PostStatusMessage: " + e.ToString();
-                LogWriteLine(GlobalErrorMessage);
+                LogWriteLine(GlobalErrorMessage, ref tc);
             }
         }
 
@@ -262,9 +265,84 @@ namespace ThriftMQL
             {
                 //client = null;
                 GlobalErrorMessage = "CloseClient: " + e.ToString();
-                LogWriteLine(GlobalErrorMessage);
-
+                LogWriteLine(GlobalErrorMessage, ref tc);
             }
         }
+
+        [DllExport("GetGlobalProperty", CallingConvention = CallingConvention.StdCall)]
+        public static long GetGlobalProperty([In, Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder RetValue, [MarshalAs(UnmanagedType.LPWStr)]string PropName, ref THRIFT_CLIENT tc)
+        {
+            try
+            {
+                using (var fx = new FXMindMQLClient(tc.port))
+                {
+                    RetValue.Append(fx.client.GetGlobalProperty(PropName));
+                }
+                return RetValue.Length;
+            }
+            catch (Exception e)
+            {
+                GlobalErrorMessage = "GetGlobalProperty: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage, ref tc);
+                return -1;
+            }
+        }
+
+        [DllExport("InitExpert", CallingConvention = CallingConvention.StdCall)]
+        public static long InitExpert([MarshalAs(UnmanagedType.LPWStr)]string ChartTimeFrame, [MarshalAs(UnmanagedType.LPWStr)]string Symbol,
+            [MarshalAs(UnmanagedType.LPWStr)]string EAName, ref THRIFT_CLIENT tc)
+        {
+            try
+            {
+                long res = 0;
+                using (var fx = new FXMindMQLClient(tc.port))
+                {
+                    res = fx.client.InitExpert(tc.accountNumber, ChartTimeFrame, Symbol, EAName);
+                }
+                return res;
+            }
+            catch (Exception e)
+            {
+                GlobalErrorMessage = "InitExpert: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage, ref tc);
+                return -1;
+            }
+        }
+
+        [DllExport("DeInitExpert", CallingConvention = CallingConvention.StdCall)]
+        public static void DeInitExpert([In, MarshalAs(UnmanagedType.I4)]int Reason, ref THRIFT_CLIENT tc)
+        {
+            try
+            {
+                using (var fx = new FXMindMQLClient(tc.port))
+                {
+                    fx.client.DeInitExpert(Reason, tc.Magic);
+                }
+            }
+            catch (Exception e)
+            {
+                GlobalErrorMessage = "DeInitExpert: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage, ref tc);
+            }
+        }
+
+        [DllExport("SaveExpert", CallingConvention = CallingConvention.StdCall)]
+        public static void SaveExpert(ref THRIFT_CLIENT tc)
+        {
+            try
+            {
+                using (var fx = new FXMindMQLClient(tc.port))
+                {
+                    fx.client.SaveExpert(tc.Magic);
+                }
+            }
+            catch (Exception e)
+            {
+                GlobalErrorMessage = "SaveExpert: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage, ref tc);
+            }
+        }
+
+
     }
 }

@@ -11,6 +11,7 @@ using DevExpress.Xpo;
 using DevExpress.Data.Filtering;
 using System.Collections.Generic;
 using System.ComponentModel;
+
 namespace FXBusinessLogic.fx_mind
 {
 
@@ -31,12 +32,6 @@ namespace FXBusinessLogic.fx_mind
             get { return fNAME; }
             set { SetPropertyValue<string>("NAME", ref fNAME, value); }
         }
-        int fMAGICNUMBER;
-        public int MAGICNUMBER
-        {
-            get { return fMAGICNUMBER; }
-            set { SetPropertyValue<int>("MAGICNUMBER", ref fMAGICNUMBER, value); }
-        }
         DBTerminal fTERMINAL_ID;
         [Association(@"DBAdviserReferencesDBTerminal")]
         public DBTerminal TERMINAL_ID
@@ -44,12 +39,19 @@ namespace FXBusinessLogic.fx_mind
             get { return fTERMINAL_ID; }
             set { SetPropertyValue<DBTerminal>("TERMINAL_ID", ref fTERMINAL_ID, value); }
         }
-        int fSYMBOL_ID;
-        [Indexed(Name = @"SYMBOL_ID")]
-        public int SYMBOL_ID
+        DBSymbol fSYMBOL_ID;
+        [Association(@"DBAdviserReferencesDBSymbol")]
+        public DBSymbol SYMBOL_ID
         {
             get { return fSYMBOL_ID; }
-            set { SetPropertyValue<int>("SYMBOL_ID", ref fSYMBOL_ID, value); }
+            set { SetPropertyValue<DBSymbol>("SYMBOL_ID", ref fSYMBOL_ID, value); }
+        }
+        string fTIMEFRAME;
+        [Size(64)]
+        public string TIMEFRAME
+        {
+            get { return fTIMEFRAME; }
+            set { SetPropertyValue<string>("TIMEFRAME", ref fTIMEFRAME, value); }
         }
         byte fRUNNING;
         public byte RUNNING
@@ -63,6 +65,26 @@ namespace FXBusinessLogic.fx_mind
             get { return fDISABLED; }
             set { SetPropertyValue<byte>("DISABLED", ref fDISABLED, value); }
         }
+        string fSTATE;
+        [Size(SizeAttribute.Unlimited)]
+        public string STATE
+        {
+            get { return fSTATE; }
+            set { SetPropertyValue<string>("STATE", ref fSTATE, value); }
+        }
+        DateTime fLASTUPDATE;
+        public DateTime LASTUPDATE
+        {
+            get { return fLASTUPDATE; }
+            set { SetPropertyValue<DateTime>("LASTUPDATE", ref fLASTUPDATE, value); }
+        }
+        int fCLOSE_REASON;
+        public int CLOSE_REASON
+        {
+            get { return fCLOSE_REASON; }
+            set { SetPropertyValue<int>("CLOSE_REASON", ref fCLOSE_REASON, value); }
+        }
+
     }
 
 }

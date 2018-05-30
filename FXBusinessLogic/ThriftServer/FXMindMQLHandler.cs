@@ -158,5 +158,56 @@ namespace FXBusinessLogic.ThriftServer
                 log.Info("server(" + GetHashCode() + ") PostStatusMessage ("
                      + paramsList["account"] + ", " + paramsList["magic"] + "): " + paramsList["message"]);
         }
+
+
+        public void SaveExpert(long MagicNumber)
+        {
+            try
+            {
+                fxmind.SaveExpert(MagicNumber);
+            }
+            catch (Exception e)
+            {
+                log.Error("SaveExpert Error:" + e);
+            }
+        }
+
+        public void DeInitExpert(int Reason, long MagicNumber)
+        {
+            try
+            {
+                fxmind.DeInitExpert(Reason, MagicNumber);
+            }
+            catch (Exception e)
+            {
+                log.Error("DeInitExpert Error:" + e);
+            }
+        }
+
+        public string GetGlobalProperty(string propName)
+        {
+            try
+            {
+                return fxmind.GetGlobalProp(propName);
+            }
+            catch (Exception e)
+            {
+                log.Error("GetGlobalProperty Error:" + e);
+                return "";
+            }
+        }
+
+        public long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName)
+        {
+            try
+            {
+                return fxmind.InitExpert(Account, ChartTimeFrame, Symbol, EAName);
+            }
+            catch (Exception e)
+            {
+                log.Error("InitExpert Error:" + e);
+            }
+            return 0;
+        }
     }
 }

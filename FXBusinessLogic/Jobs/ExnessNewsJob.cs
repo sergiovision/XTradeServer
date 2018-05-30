@@ -13,6 +13,7 @@ using Quartz;
 using ScrapySharp.Network;
 using HtmlAgilityPack;
 using FXBusinessLogic;
+using BusinessObjects;
 
 namespace com.fxmind.manager.jobs
 {
@@ -76,15 +77,15 @@ namespace com.fxmind.manager.jobs
                 var browser = new ScrapingBrowser();
                 WebPage homePage = null;
                 Session session = FXConnectionHelper.GetNewSession();
-                string strParseHistory = FXMindHelpers.GetGlobalVar(session, "NewsEvent.ParseHistory");
+                string strParseHistory = FXMindHelpers.GetGlobalVar(session, fxmindConstants.SETTINGS_PROPERTY_PARSEHISTORY );
 
                 bool parseAllHistory = false;
                 DateTime curDateTime = DateTime.UtcNow;
                 if (strParseHistory != null) parseAllHistory = bool.Parse(strParseHistory);
                 if (parseAllHistory)
                 {
-                    string strParseHistoryStartDate = FXMindHelpers.GetGlobalVar(session, "NewsEvent.StartHistoryDate");
-                    string strParseHistoryEndDate = FXMindHelpers.GetGlobalVar(session, "NewsEvent.EndHistoryDate");
+                    string strParseHistoryStartDate = FXMindHelpers.GetGlobalVar(session, fxmindConstants.SETTINGS_PROPERTY_STARTHISTORYDATE);
+                    string strParseHistoryEndDate = FXMindHelpers.GetGlobalVar(session, fxmindConstants.SETTINGS_PROPERTY_ENDHISTORYDATE);
 
                     if (strParseHistoryStartDate == null)
                         strParseHistoryStartDate = PARSEDATETIME.ToString(SHORTDATETIMEFORMAT);

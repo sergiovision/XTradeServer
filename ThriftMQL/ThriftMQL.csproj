@@ -124,6 +124,7 @@
     <Compile Include="ThriftCalls.cs" />
     <Compile Include="FXMindMQLClient.cs" />
     <Compile Include="ThriftClient.cs" />
+    <Compile Include="ThriftCode\fxmind.Constants.cs" />
     <Compile Include="ThriftCode\FXMindMQL.cs" />
     <Compile Include="TProcessor.cs" />
     <Compile Include="TProcessorFactory.cs" />

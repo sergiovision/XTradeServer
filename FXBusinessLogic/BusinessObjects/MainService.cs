@@ -14,27 +14,13 @@ using DevExpress.Xpo.DB;
 using FXBusinessLogic.fx_mind;
 using FXBusinessLogic.Scheduler;
 using log4net;
-using Microsoft.Win32;
 using Quartz;
+
 
 namespace FXBusinessLogic.BusinessObjects
 {
     public class MainService : IMainService
     {
-        //public const string MTDATETIMEFORMAT = "yyyy.MM.dd HH:mm";
-        public const string NEWSEVENT_HANLDER = "NewsEvent";
-        public const string SENTIMENTS_HANLDER = "Sentiments";
-
-        /// <summary>
-        /// Settings properties
-        /// </summary>
-        public const string SETTINGS_PROPERTY_THRIFTPORT = "FXMind.ThriftPort";
-        public const string SETTINGS_PROPERTY_NETSERVERPORT = "FXMind.NETServerPort";
-        public const string SETTINGS_APPREGKEY = @"SOFTWARE\\FXMind";
-        //public const string SETTINGS_TEMINAL_MONITOR_CRON = "0 */2 * ? * MON-FRI *"; // @"0 */2 * ? * *"; // run every 5 minutes.
-
-        //public const string MYSQLDATETIMEFORMAT = "yyyy-MM-dd HH:mm:ss";
-        public const int SENTIMENTS_FETCH_PERIOD = 100;
         private static readonly ILog log = LogManager.GetLogger(typeof(MainService));
         public static MainService thisGlobal;
         private static int isDebug = -1;
@@ -61,15 +47,16 @@ namespace FXBusinessLogic.BusinessObjects
                 string result = AssemblyDirectory;
                 try
                 {
-                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(SETTINGS_APPREGKEY, false);
-                    if (rk == null)
-                    {
-                        rk = Registry.LocalMachine.CreateSubKey(SETTINGS_APPREGKEY, true, RegistryOptions.None);
-                        rk.SetValue("InstallDir", result);
-                    } else
-                    {
-                        result = rk.GetValue("InstallDir")?.ToString();
-                    }
+                    result = thisGlobal.GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_INSTALLDIR);
+                    //RegistryKey rk = Registry.LocalMachine.OpenSubKey(fxmindConstants.SETTINGS_APPREGKEY, false);
+                    //if (rk == null)
+                    //{
+                    //    rk = Registry.LocalMachine.CreateSubKey(fxmindConstants.SETTINGS_APPREGKEY, true, RegistryOptions.None);
+                    //    rk.SetValue("InstallDir", result);
+                    //} else
+                    //{
+                    //    result = rk.GetValue("InstallDir")?.ToString();
+                    //}
                 }
                 catch (Exception e)
                 {
@@ -86,16 +73,17 @@ namespace FXBusinessLogic.BusinessObjects
                 string result = WindowsIdentity.GetCurrent().Name;
                 try
                 {
-                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(SETTINGS_APPREGKEY, false);
-                    if (rk == null)
-                    {
-                        rk = Registry.LocalMachine.CreateSubKey(SETTINGS_APPREGKEY, true, RegistryOptions.None);
-                        rk.SetValue("MTTerminalUserName", result);
-                    }
-                    else
-                    {
-                        result = rk.GetValue("RunMTTerminalUserName")?.ToString();
-                    }
+                    result = thisGlobal.GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_RUNTERMINALUSER);
+                    //RegistryKey rk = Registry.LocalMachine.OpenSubKey(fxmindConstants.SETTINGS_APPREGKEY, false);
+                    //if (rk == null)
+                    //{
+                    //    rk = Registry.LocalMachine.CreateSubKey(fxmindConstants.SETTINGS_APPREGKEY, true, RegistryOptions.None);
+                    //    rk.SetValue("MTTerminalUserName", result);
+                    //}
+                    //else
+                    //{
+                    //    result = rk.GetValue("RunMTTerminalUserName")?.ToString();
+                    //}
                 }
                 catch (Exception e)
                 {
@@ -205,9 +193,7 @@ namespace FXBusinessLogic.BusinessObjects
 
         protected void RegistryInit()
         {
-
             log.Info("Registry InstallDir: " + RegistryInstallDir);
-            // TODO: implement registry settings read/write
         }
 
         public void Init(INotificationUi ui)
@@ -239,7 +225,7 @@ namespace FXBusinessLogic.BusinessObjects
         {
             if (BrokerTimeZoneInfo == null)
             {
-                BrokerTimeZoneInfo = GetTimeZoneFromString("BrokerServerTimeZone");
+                BrokerTimeZoneInfo = GetTimeZoneFromString(fxmindConstants.SETTINGS_PROPERTY_BROKERSERVERTIMEZONE);
             }
             return BrokerTimeZoneInfo;
         }
@@ -608,7 +594,7 @@ namespace FXBusinessLogic.BusinessObjects
                     return;
 
                 DateTime to = TimeZoneInfo.ConvertTimeToUtc(date, BrokerTimeZoneInfo);
-                DateTime from = to.AddMinutes(-SENTIMENTS_FETCH_PERIOD);
+                DateTime from = to.AddMinutes(-fxmindConstants.SENTIMENTS_FETCH_PERIOD);
                 const string queryStrInterval = @"SELECT LongRatio, ShortRatio, SiteID FROM OpenPosRatio
                                                 WHERE (SymbolID=@symID) AND (ParseTime >= @fr_dt) AND (ParseTime <= @to_dt) 
                                                 ORDER BY ParseTime DESC";
@@ -874,6 +860,168 @@ namespace FXBusinessLogic.BusinessObjects
             SchedulerService.SetJobCronSchedule(group, name, cron);
         }
 
+        public long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName)
+        {
+            Session session = FXConnectionHelper.GetNewSession();
+
+            long resultMagic = 0;
+            try
+            {
+                DBTerminal terminal = FXMindHelpers.getTerminalID(session, Account);
+                if (terminal == null)
+                {
+                    log.Error("Unknow AccountNumber " + Account + " ERROR");
+                    return 0;
+                }
+                if (Symbol.Length == 6)
+                    Symbol = Symbol.Insert(3, "/");
+
+                string strSymbol = Symbol;
+                DBSymbol symbol = FXMindHelpers.getSymbolID(session, strSymbol);
+                if (symbol == null)
+                {
+                    log.Error("Unknow Symbol " + Symbol + " ERROR");
+                    return 0;
+                }
+
+                // from current time bar
+                DateTime initTime = DateTime.UtcNow;
+
+                DBAdviser adviser = FXMindHelpers.getAdviserID(session, terminal.ID, symbol.ID, ChartTimeFrame, EAName);
+                if (adviser == null)
+                {
+                    adviser = new DBAdviser(session);
+                    adviser.NAME = EAName;
+                    adviser.TIMEFRAME = ChartTimeFrame;
+                    adviser.DISABLED = 0;
+                    adviser.TERMINAL_ID = terminal;
+                    adviser.SYMBOL_ID = symbol;
+                    
+                }
+                adviser.RUNNING = 1;
+                adviser.LASTUPDATE = initTime;
+
+                session.Save(adviser);
+
+                log.Info($"Expert {EAName} Magic={adviser.ID} On TF={ChartTimeFrame} loaded successfully!");
+                return adviser.ID;
+            }
+            catch (Exception e)
+            {
+                log.Error("InitExpert: " + e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
+            return resultMagic;
+        }
+
+        public void SaveExpert(long MagicNumber)
+        {
+            Session session = FXConnectionHelper.GetNewSession();
+            try
+            {
+                DBAdviser adviser = FXMindHelpers.getAdviserByMagicNumber(session, MagicNumber);
+                if (adviser == null)
+                {
+                    log.Error("Expert with MagicNumber=" + MagicNumber + " doesn't exist");
+                }
+
+                adviser.RUNNING = 1;
+                adviser.LASTUPDATE = DateTime.UtcNow;
+                adviser.STATE = ReadFromFile(adviser);
+                session.Save(adviser);
+            }
+            catch (Exception e)
+            {
+                log.Error("SaveExpert: " + e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
+        }
+
+
+        protected string ReadFromFile(DBAdviser adviser)
+        {
+            string path = GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_MTCOMMONFILES);
+            string sym = adviser.SYMBOL_ID.Name;
+            if (sym.Length > 6)
+                sym = sym.Remove(3, 1);
+            string filePath = $"{path}\\{adviser.TERMINAL_ID.ACCOUNTNUMBER}_{sym}_{adviser.TIMEFRAME}_{adviser.ID}.set";
+            if (File.Exists(filePath))
+                return File.ReadAllText(filePath);
+            return "";
+        }
+
+        public void DeInitExpert(int Reason, long MagicNumber)
+        {
+            Session session = FXConnectionHelper.GetNewSession();
+            try
+            {
+                DBAdviser adviser = FXMindHelpers.getAdviserByMagicNumber(session, MagicNumber);
+                if (adviser == null)
+                {
+                    log.Error("Expert with MagicNumber=" + MagicNumber + " doesn't exist");
+                }
+
+                adviser.RUNNING = 0;
+                adviser.LASTUPDATE = DateTime.UtcNow;
+                adviser.CLOSE_REASON = Reason;
+
+                /* CLOSE_REASON Meaning:
+                 * Константа
+                    Значение
+                    Описание
+                    REASON_PROGRAM
+                    0
+                    Эксперт прекратил свою работу, вызвав функцию ExpertRemove()
+                    REASON_REMOVE
+                    1
+                    Программа удалена с графика
+                    REASON_RECOMPILE
+                    2
+                    Программа перекомпилирована
+                    REASON_CHARTCHANGE
+                    3
+                    Символ или период графика был изменен
+                    REASON_CHARTCLOSE
+                    4
+                    График закрыт
+                    REASON_PARAMETERS
+                    5
+                    Входные параметры были изменены пользователем
+                    REASON_ACCOUNT
+                    6
+                    Активирован другой счет либо произошло переподключение к торговому серверу вследствие изменения настроек счета
+                    REASON_TEMPLATE
+                    7
+                    Применен другой шаблон графика
+                    REASON_INITFAILED
+                    8
+                    Признак того, что обработчик OnInit() вернул ненулевое значение
+                    REASON_CLOSE
+                    9
+                    Терминал был закрыт
+                 */
+
+                session.Save(adviser);
+            }
+            catch (Exception e)
+            {
+                log.Error("SaveExpert: " + e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
+        }
+        
         #endregion
     }
 }

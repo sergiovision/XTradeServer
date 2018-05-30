@@ -219,8 +219,13 @@ class Order : public CObject
              //currentPrice = Bid;
           break;            
        }
-       string result = StringFormat("Order%s(%d) %s OP:%f SL:%f TP:%f", EnumToString(role), ticket, orderTypeString, openPrice, stopLoss, takeProfit);
+       string result = StringFormat("%s(%d) %s OP=%g SL=%g TP=%g", EnumToString(role), ticket, orderTypeString, openPrice, stopLoss, takeProfit);
        return result;
+   }
+   
+   string OrderSection()
+   {
+      return StringFormat("ORDER_%d", ticket);
    }
    
    bool IsWrong()
@@ -436,6 +441,7 @@ class OrderSelection //: public CList
       FOREACH_ORDER(this)
       {
          if (order.bDirty) {
+            
             DeleteCurrent();
          }
       }    

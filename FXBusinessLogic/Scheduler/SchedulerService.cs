@@ -60,31 +60,6 @@ namespace FXBusinessLogic.Scheduler
             properties["quartz.jobStore.class"] = "Quartz.Simpl.RAMJobStore, Quartz";
         }
 
-        /*
-        private static NameValueCollection FillPropertiesClustered(NameValueCollection properties, string address)
-        {
-            properties["quartz.scheduler.instanceName"] = "ServerScheduler";
-            properties["quartz.scheduler.proxy"] = "true";
-            properties["quartz.threadPool.threadCount"] = "0";
-            properties["quartz.scheduler.proxy.address"] = address;
-
-            //properties["quartz.jobStore.clustered"] = "true";
-            return properties;
-        }
-
-        public void InitClustered(NameValueCollection properties)
-        {
-            Session session = FXConnectionHelper.Session();
-            string strServersCount = FXMindHelpers.GetGlobalVar(session, "NumberQuartzServers");
-            if (strServersCount == null)
-                return;
-            int countServers = Int32.Parse(strServersCount);
-            if (countServers <= 0)
-                return;
-
-            string addressServer0 = FXMindHelpers.GetGlobalVar(session, "QuartzServer0");
-            FillPropertiesClustered(properties, addressServer0);
-        }*/
 
         public virtual bool Initialize()
         {

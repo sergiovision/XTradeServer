@@ -27,6 +27,10 @@ namespace BusinessObjects
       List<double> ProcessDoubleData(Dictionary<string, string> paramsList, List<string> inputData);
       long IsServerActive(Dictionary<string, string> paramsList);
       void PostStatusMessage(Dictionary<string, string> paramsList);
+      string GetGlobalProperty(string propName);
+      long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName);
+      void SaveExpert(long MagicNumber);
+      void DeInitExpert(int Reason, long MagicNumber);
     }
 
     /// <summary>
@@ -49,6 +53,22 @@ namespace BusinessObjects
       #if SILVERLIGHT
       IAsyncResult Begin_PostStatusMessage(AsyncCallback callback, object state, Dictionary<string, string> paramsList);
       void End_PostStatusMessage(IAsyncResult asyncResult);
+      #endif
+      #if SILVERLIGHT
+      IAsyncResult Begin_GetGlobalProperty(AsyncCallback callback, object state, string propName);
+      string End_GetGlobalProperty(IAsyncResult asyncResult);
+      #endif
+      #if SILVERLIGHT
+      IAsyncResult Begin_InitExpert(AsyncCallback callback, object state, long Account, string ChartTimeFrame, string Symbol, string EAName);
+      long End_InitExpert(IAsyncResult asyncResult);
+      #endif
+      #if SILVERLIGHT
+      IAsyncResult Begin_SaveExpert(AsyncCallback callback, object state, long MagicNumber);
+      void End_SaveExpert(IAsyncResult asyncResult);
+      #endif
+      #if SILVERLIGHT
+      IAsyncResult Begin_DeInitExpert(AsyncCallback callback, object state, int Reason, long MagicNumber);
+      void End_DeInitExpert(IAsyncResult asyncResult);
       #endif
     }
 
@@ -342,6 +362,218 @@ namespace BusinessObjects
         #endif
       }
 
+      
+      #if SILVERLIGHT
+      public IAsyncResult Begin_GetGlobalProperty(AsyncCallback callback, object state, string propName)
+      {
+        return send_GetGlobalProperty(callback, state, propName);
+      }
+
+      public string End_GetGlobalProperty(IAsyncResult asyncResult)
+      {
+        oprot_.Transport.EndFlush(asyncResult);
+        return recv_GetGlobalProperty();
+      }
+
+      #endif
+
+      public string GetGlobalProperty(string propName)
+      {
+        #if !SILVERLIGHT
+        send_GetGlobalProperty(propName);
+        return recv_GetGlobalProperty();
+
+        #else
+        var asyncResult = Begin_GetGlobalProperty(null, null, propName);
+        return End_GetGlobalProperty(asyncResult);
+
+        #endif
+      }
+      #if SILVERLIGHT
+      public IAsyncResult send_GetGlobalProperty(AsyncCallback callback, object state, string propName)
+      #else
+      public void send_GetGlobalProperty(string propName)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("GetGlobalProperty", TMessageType.Call, seqid_));
+        GetGlobalProperty_args args = new GetGlobalProperty_args();
+        args.PropName = propName;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
+        return oprot_.Transport.BeginFlush(callback, state);
+        #else
+        oprot_.Transport.Flush();
+        #endif
+      }
+
+      public string recv_GetGlobalProperty()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        GetGlobalProperty_result result = new GetGlobalProperty_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "GetGlobalProperty failed: unknown result");
+      }
+
+      
+      #if SILVERLIGHT
+      public IAsyncResult Begin_InitExpert(AsyncCallback callback, object state, long Account, string ChartTimeFrame, string Symbol, string EAName)
+      {
+        return send_InitExpert(callback, state, Account, ChartTimeFrame, Symbol, EAName);
+      }
+
+      public long End_InitExpert(IAsyncResult asyncResult)
+      {
+        oprot_.Transport.EndFlush(asyncResult);
+        return recv_InitExpert();
+      }
+
+      #endif
+
+      public long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName)
+      {
+        #if !SILVERLIGHT
+        send_InitExpert(Account, ChartTimeFrame, Symbol, EAName);
+        return recv_InitExpert();
+
+        #else
+        var asyncResult = Begin_InitExpert(null, null, Account, ChartTimeFrame, Symbol, EAName);
+        return End_InitExpert(asyncResult);
+
+        #endif
+      }
+      #if SILVERLIGHT
+      public IAsyncResult send_InitExpert(AsyncCallback callback, object state, long Account, string ChartTimeFrame, string Symbol, string EAName)
+      #else
+      public void send_InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("InitExpert", TMessageType.Call, seqid_));
+        InitExpert_args args = new InitExpert_args();
+        args.Account = Account;
+        args.ChartTimeFrame = ChartTimeFrame;
+        args.Symbol = Symbol;
+        args.EAName = EAName;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
+        return oprot_.Transport.BeginFlush(callback, state);
+        #else
+        oprot_.Transport.Flush();
+        #endif
+      }
+
+      public long recv_InitExpert()
+      {
+        TMessage msg = iprot_.ReadMessageBegin();
+        if (msg.Type == TMessageType.Exception) {
+          TApplicationException x = TApplicationException.Read(iprot_);
+          iprot_.ReadMessageEnd();
+          throw x;
+        }
+        InitExpert_result result = new InitExpert_result();
+        result.Read(iprot_);
+        iprot_.ReadMessageEnd();
+        if (result.__isset.success) {
+          return result.Success;
+        }
+        throw new TApplicationException(TApplicationException.ExceptionType.MissingResult, "InitExpert failed: unknown result");
+      }
+
+      
+      #if SILVERLIGHT
+      public IAsyncResult Begin_SaveExpert(AsyncCallback callback, object state, long MagicNumber)
+      {
+        return send_SaveExpert(callback, state, MagicNumber);
+      }
+
+      public void End_SaveExpert(IAsyncResult asyncResult)
+      {
+        oprot_.Transport.EndFlush(asyncResult);
+      }
+
+      #endif
+
+      public void SaveExpert(long MagicNumber)
+      {
+        #if !SILVERLIGHT
+        send_SaveExpert(MagicNumber);
+
+        #else
+        var asyncResult = Begin_SaveExpert(null, null, MagicNumber);
+
+        #endif
+      }
+      #if SILVERLIGHT
+      public IAsyncResult send_SaveExpert(AsyncCallback callback, object state, long MagicNumber)
+      #else
+      public void send_SaveExpert(long MagicNumber)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("SaveExpert", TMessageType.Oneway, seqid_));
+        SaveExpert_args args = new SaveExpert_args();
+        args.MagicNumber = MagicNumber;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
+        return oprot_.Transport.BeginFlush(callback, state);
+        #else
+        oprot_.Transport.Flush();
+        #endif
+      }
+
+      
+      #if SILVERLIGHT
+      public IAsyncResult Begin_DeInitExpert(AsyncCallback callback, object state, int Reason, long MagicNumber)
+      {
+        return send_DeInitExpert(callback, state, Reason, MagicNumber);
+      }
+
+      public void End_DeInitExpert(IAsyncResult asyncResult)
+      {
+        oprot_.Transport.EndFlush(asyncResult);
+      }
+
+      #endif
+
+      public void DeInitExpert(int Reason, long MagicNumber)
+      {
+        #if !SILVERLIGHT
+        send_DeInitExpert(Reason, MagicNumber);
+
+        #else
+        var asyncResult = Begin_DeInitExpert(null, null, Reason, MagicNumber);
+
+        #endif
+      }
+      #if SILVERLIGHT
+      public IAsyncResult send_DeInitExpert(AsyncCallback callback, object state, int Reason, long MagicNumber)
+      #else
+      public void send_DeInitExpert(int Reason, long MagicNumber)
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("DeInitExpert", TMessageType.Oneway, seqid_));
+        DeInitExpert_args args = new DeInitExpert_args();
+        args.Reason = Reason;
+        args.MagicNumber = MagicNumber;
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
+        return oprot_.Transport.BeginFlush(callback, state);
+        #else
+        oprot_.Transport.Flush();
+        #endif
+      }
+
     }
     public class Processor : TProcessor {
       public Processor(ISync iface)
@@ -351,6 +583,10 @@ namespace BusinessObjects
         processMap_["ProcessDoubleData"] = ProcessDoubleData_Process;
         processMap_["IsServerActive"] = IsServerActive_Process;
         processMap_["PostStatusMessage"] = PostStatusMessage_Process;
+        processMap_["GetGlobalProperty"] = GetGlobalProperty_Process;
+        processMap_["InitExpert"] = InitExpert_Process;
+        processMap_["SaveExpert"] = SaveExpert_Process;
+        processMap_["DeInitExpert"] = DeInitExpert_Process;
       }
 
       protected delegate void ProcessFunction(int seqid, TProtocol iprot, TProtocol oprot);
@@ -487,6 +723,102 @@ namespace BusinessObjects
         }
       }
 
+      public void GetGlobalProperty_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        GetGlobalProperty_args args = new GetGlobalProperty_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        GetGlobalProperty_result result = new GetGlobalProperty_result();
+        try
+        {
+          result.Success = iface_.GetGlobalProperty(args.PropName);
+          oprot.WriteMessageBegin(new TMessage("GetGlobalProperty", TMessageType.Reply, seqid)); 
+          result.Write(oprot);
+        }
+        catch (TTransportException)
+        {
+          throw;
+        }
+        catch (Exception ex)
+        {
+          Console.Error.WriteLine("Error occurred in processor:");
+          Console.Error.WriteLine(ex.ToString());
+          TApplicationException x = new TApplicationException        (TApplicationException.ExceptionType.InternalError," Internal error.");
+          oprot.WriteMessageBegin(new TMessage("GetGlobalProperty", TMessageType.Exception, seqid));
+          x.Write(oprot);
+        }
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void InitExpert_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        InitExpert_args args = new InitExpert_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        InitExpert_result result = new InitExpert_result();
+        try
+        {
+          result.Success = iface_.InitExpert(args.Account, args.ChartTimeFrame, args.Symbol, args.EAName);
+          oprot.WriteMessageBegin(new TMessage("InitExpert", TMessageType.Reply, seqid)); 
+          result.Write(oprot);
+        }
+        catch (TTransportException)
+        {
+          throw;
+        }
+        catch (Exception ex)
+        {
+          Console.Error.WriteLine("Error occurred in processor:");
+          Console.Error.WriteLine(ex.ToString());
+          TApplicationException x = new TApplicationException        (TApplicationException.ExceptionType.InternalError," Internal error.");
+          oprot.WriteMessageBegin(new TMessage("InitExpert", TMessageType.Exception, seqid));
+          x.Write(oprot);
+        }
+        oprot.WriteMessageEnd();
+        oprot.Transport.Flush();
+      }
+
+      public void SaveExpert_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        SaveExpert_args args = new SaveExpert_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        try
+        {
+          iface_.SaveExpert(args.MagicNumber);
+        }
+        catch (TTransportException)
+        {
+          throw;
+        }
+        catch (Exception ex)
+        {
+          Console.Error.WriteLine("Error occurred in processor:");
+          Console.Error.WriteLine(ex.ToString());
+        }
+      }
+
+      public void DeInitExpert_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        DeInitExpert_args args = new DeInitExpert_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        try
+        {
+          iface_.DeInitExpert(args.Reason, args.MagicNumber);
+        }
+        catch (TTransportException)
+        {
+          throw;
+        }
+        catch (Exception ex)
+        {
+          Console.Error.WriteLine("Error occurred in processor:");
+          Console.Error.WriteLine(ex.ToString());
+        }
+      }
+
     }
 
 
@@ -556,14 +888,14 @@ namespace BusinessObjects
                 if (field.Type == TType.Map) {
                   {
                     ParamsList = new Dictionary<string, string>();
-                    TMap _map0 = iprot.ReadMapBegin();
-                    for( int _i1 = 0; _i1 < _map0.Count; ++_i1)
+                    TMap _map4 = iprot.ReadMapBegin();
+                    for( int _i5 = 0; _i5 < _map4.Count; ++_i5)
                     {
-                      string _key2;
-                      string _val3;
-                      _key2 = iprot.ReadString();
-                      _val3 = iprot.ReadString();
-                      ParamsList[_key2] = _val3;
+                      string _key6;
+                      string _val7;
+                      _key6 = iprot.ReadString();
+                      _val7 = iprot.ReadString();
+                      ParamsList[_key6] = _val7;
                     }
                     iprot.ReadMapEnd();
                   }
@@ -575,12 +907,12 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     InputData = new List<string>();
-                    TList _list4 = iprot.ReadListBegin();
-                    for( int _i5 = 0; _i5 < _list4.Count; ++_i5)
+                    TList _list8 = iprot.ReadListBegin();
+                    for( int _i9 = 0; _i9 < _list8.Count; ++_i9)
                     {
-                      string _elem6;
-                      _elem6 = iprot.ReadString();
-                      InputData.Add(_elem6);
+                      string _elem10;
+                      _elem10 = iprot.ReadString();
+                      InputData.Add(_elem10);
                     }
                     iprot.ReadListEnd();
                   }
@@ -616,10 +948,10 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteMapBegin(new TMap(TType.String, TType.String, ParamsList.Count));
-              foreach (string _iter7 in ParamsList.Keys)
+              foreach (string _iter11 in ParamsList.Keys)
               {
-                oprot.WriteString(_iter7);
-                oprot.WriteString(ParamsList[_iter7]);
+                oprot.WriteString(_iter11);
+                oprot.WriteString(ParamsList[_iter11]);
               }
               oprot.WriteMapEnd();
             }
@@ -632,9 +964,9 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteListBegin(new TList(TType.String, InputData.Count));
-              foreach (string _iter8 in InputData)
+              foreach (string _iter12 in InputData)
               {
-                oprot.WriteString(_iter8);
+                oprot.WriteString(_iter12);
               }
               oprot.WriteListEnd();
             }
@@ -722,12 +1054,12 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     Success = new List<string>();
-                    TList _list9 = iprot.ReadListBegin();
-                    for( int _i10 = 0; _i10 < _list9.Count; ++_i10)
+                    TList _list13 = iprot.ReadListBegin();
+                    for( int _i14 = 0; _i14 < _list13.Count; ++_i14)
                     {
-                      string _elem11;
-                      _elem11 = iprot.ReadString();
-                      Success.Add(_elem11);
+                      string _elem15;
+                      _elem15 = iprot.ReadString();
+                      Success.Add(_elem15);
                     }
                     iprot.ReadListEnd();
                   }
@@ -765,9 +1097,9 @@ namespace BusinessObjects
               oprot.WriteFieldBegin(field);
               {
                 oprot.WriteListBegin(new TList(TType.String, Success.Count));
-                foreach (string _iter12 in Success)
+                foreach (string _iter16 in Success)
                 {
-                  oprot.WriteString(_iter12);
+                  oprot.WriteString(_iter16);
                 }
                 oprot.WriteListEnd();
               }
@@ -865,14 +1197,14 @@ namespace BusinessObjects
                 if (field.Type == TType.Map) {
                   {
                     ParamsList = new Dictionary<string, string>();
-                    TMap _map13 = iprot.ReadMapBegin();
-                    for( int _i14 = 0; _i14 < _map13.Count; ++_i14)
+                    TMap _map17 = iprot.ReadMapBegin();
+                    for( int _i18 = 0; _i18 < _map17.Count; ++_i18)
                     {
-                      string _key15;
-                      string _val16;
-                      _key15 = iprot.ReadString();
-                      _val16 = iprot.ReadString();
-                      ParamsList[_key15] = _val16;
+                      string _key19;
+                      string _val20;
+                      _key19 = iprot.ReadString();
+                      _val20 = iprot.ReadString();
+                      ParamsList[_key19] = _val20;
                     }
                     iprot.ReadMapEnd();
                   }
@@ -884,12 +1216,12 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     InputData = new List<string>();
-                    TList _list17 = iprot.ReadListBegin();
-                    for( int _i18 = 0; _i18 < _list17.Count; ++_i18)
+                    TList _list21 = iprot.ReadListBegin();
+                    for( int _i22 = 0; _i22 < _list21.Count; ++_i22)
                     {
-                      string _elem19;
-                      _elem19 = iprot.ReadString();
-                      InputData.Add(_elem19);
+                      string _elem23;
+                      _elem23 = iprot.ReadString();
+                      InputData.Add(_elem23);
                     }
                     iprot.ReadListEnd();
                   }
@@ -925,10 +1257,10 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteMapBegin(new TMap(TType.String, TType.String, ParamsList.Count));
-              foreach (string _iter20 in ParamsList.Keys)
+              foreach (string _iter24 in ParamsList.Keys)
               {
-                oprot.WriteString(_iter20);
-                oprot.WriteString(ParamsList[_iter20]);
+                oprot.WriteString(_iter24);
+                oprot.WriteString(ParamsList[_iter24]);
               }
               oprot.WriteMapEnd();
             }
@@ -941,9 +1273,9 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteListBegin(new TList(TType.String, InputData.Count));
-              foreach (string _iter21 in InputData)
+              foreach (string _iter25 in InputData)
               {
-                oprot.WriteString(_iter21);
+                oprot.WriteString(_iter25);
               }
               oprot.WriteListEnd();
             }
@@ -1031,12 +1363,12 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     Success = new List<double>();
-                    TList _list22 = iprot.ReadListBegin();
-                    for( int _i23 = 0; _i23 < _list22.Count; ++_i23)
+                    TList _list26 = iprot.ReadListBegin();
+                    for( int _i27 = 0; _i27 < _list26.Count; ++_i27)
                     {
-                      double _elem24;
-                      _elem24 = iprot.ReadDouble();
-                      Success.Add(_elem24);
+                      double _elem28;
+                      _elem28 = iprot.ReadDouble();
+                      Success.Add(_elem28);
                     }
                     iprot.ReadListEnd();
                   }
@@ -1074,9 +1406,9 @@ namespace BusinessObjects
               oprot.WriteFieldBegin(field);
               {
                 oprot.WriteListBegin(new TList(TType.Double, Success.Count));
-                foreach (double _iter25 in Success)
+                foreach (double _iter29 in Success)
                 {
-                  oprot.WriteDouble(_iter25);
+                  oprot.WriteDouble(_iter29);
                 }
                 oprot.WriteListEnd();
               }
@@ -1159,14 +1491,14 @@ namespace BusinessObjects
                 if (field.Type == TType.Map) {
                   {
                     ParamsList = new Dictionary<string, string>();
-                    TMap _map26 = iprot.ReadMapBegin();
-                    for( int _i27 = 0; _i27 < _map26.Count; ++_i27)
+                    TMap _map30 = iprot.ReadMapBegin();
+                    for( int _i31 = 0; _i31 < _map30.Count; ++_i31)
                     {
-                      string _key28;
-                      string _val29;
-                      _key28 = iprot.ReadString();
-                      _val29 = iprot.ReadString();
-                      ParamsList[_key28] = _val29;
+                      string _key32;
+                      string _val33;
+                      _key32 = iprot.ReadString();
+                      _val33 = iprot.ReadString();
+                      ParamsList[_key32] = _val33;
                     }
                     iprot.ReadMapEnd();
                   }
@@ -1202,10 +1534,10 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteMapBegin(new TMap(TType.String, TType.String, ParamsList.Count));
-              foreach (string _iter30 in ParamsList.Keys)
+              foreach (string _iter34 in ParamsList.Keys)
               {
-                oprot.WriteString(_iter30);
-                oprot.WriteString(ParamsList[_iter30]);
+                oprot.WriteString(_iter34);
+                oprot.WriteString(ParamsList[_iter34]);
               }
               oprot.WriteMapEnd();
             }
@@ -1396,14 +1728,14 @@ namespace BusinessObjects
                 if (field.Type == TType.Map) {
                   {
                     ParamsList = new Dictionary<string, string>();
-                    TMap _map31 = iprot.ReadMapBegin();
-                    for( int _i32 = 0; _i32 < _map31.Count; ++_i32)
+                    TMap _map35 = iprot.ReadMapBegin();
+                    for( int _i36 = 0; _i36 < _map35.Count; ++_i36)
                     {
-                      string _key33;
-                      string _val34;
-                      _key33 = iprot.ReadString();
-                      _val34 = iprot.ReadString();
-                      ParamsList[_key33] = _val34;
+                      string _key37;
+                      string _val38;
+                      _key37 = iprot.ReadString();
+                      _val38 = iprot.ReadString();
+                      ParamsList[_key37] = _val38;
                     }
                     iprot.ReadMapEnd();
                   }
@@ -1439,10 +1771,10 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteMapBegin(new TMap(TType.String, TType.String, ParamsList.Count));
-              foreach (string _iter35 in ParamsList.Keys)
+              foreach (string _iter39 in ParamsList.Keys)
               {
-                oprot.WriteString(_iter35);
-                oprot.WriteString(ParamsList[_iter35]);
+                oprot.WriteString(_iter39);
+                oprot.WriteString(ParamsList[_iter39]);
               }
               oprot.WriteMapEnd();
             }
@@ -1465,6 +1797,802 @@ namespace BusinessObjects
           __first = false;
           __sb.Append("ParamsList: ");
           __sb.Append(ParamsList);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetGlobalProperty_args : TBase
+    {
+      private string _propName;
+
+      public string PropName
+      {
+        get
+        {
+          return _propName;
+        }
+        set
+        {
+          __isset.propName = true;
+          this._propName = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool propName;
+      }
+
+      public GetGlobalProperty_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        iprot.IncrementRecursionDepth();
+        try
+        {
+          TField field;
+          iprot.ReadStructBegin();
+          while (true)
+          {
+            field = iprot.ReadFieldBegin();
+            if (field.Type == TType.Stop) { 
+              break;
+            }
+            switch (field.ID)
+            {
+              case 1:
+                if (field.Type == TType.String) {
+                  PropName = iprot.ReadString();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              default: 
+                TProtocolUtil.Skip(iprot, field.Type);
+                break;
+            }
+            iprot.ReadFieldEnd();
+          }
+          iprot.ReadStructEnd();
+        }
+        finally
+        {
+          iprot.DecrementRecursionDepth();
+        }
+      }
+
+      public void Write(TProtocol oprot) {
+        oprot.IncrementRecursionDepth();
+        try
+        {
+          TStruct struc = new TStruct("GetGlobalProperty_args");
+          oprot.WriteStructBegin(struc);
+          TField field = new TField();
+          if (PropName != null && __isset.propName) {
+            field.Name = "propName";
+            field.Type = TType.String;
+            field.ID = 1;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteString(PropName);
+            oprot.WriteFieldEnd();
+          }
+          oprot.WriteFieldStop();
+          oprot.WriteStructEnd();
+        }
+        finally
+        {
+          oprot.DecrementRecursionDepth();
+        }
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetGlobalProperty_args(");
+        bool __first = true;
+        if (PropName != null && __isset.propName) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("PropName: ");
+          __sb.Append(PropName);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class GetGlobalProperty_result : TBase
+    {
+      private string _success;
+
+      public string Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public GetGlobalProperty_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        iprot.IncrementRecursionDepth();
+        try
+        {
+          TField field;
+          iprot.ReadStructBegin();
+          while (true)
+          {
+            field = iprot.ReadFieldBegin();
+            if (field.Type == TType.Stop) { 
+              break;
+            }
+            switch (field.ID)
+            {
+              case 0:
+                if (field.Type == TType.String) {
+                  Success = iprot.ReadString();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              default: 
+                TProtocolUtil.Skip(iprot, field.Type);
+                break;
+            }
+            iprot.ReadFieldEnd();
+          }
+          iprot.ReadStructEnd();
+        }
+        finally
+        {
+          iprot.DecrementRecursionDepth();
+        }
+      }
+
+      public void Write(TProtocol oprot) {
+        oprot.IncrementRecursionDepth();
+        try
+        {
+          TStruct struc = new TStruct("GetGlobalProperty_result");
+          oprot.WriteStructBegin(struc);
+          TField field = new TField();
+
+          if (this.__isset.success) {
+            if (Success != null) {
+              field.Name = "Success";
+              field.Type = TType.String;
+              field.ID = 0;
+              oprot.WriteFieldBegin(field);
+              oprot.WriteString(Success);
+              oprot.WriteFieldEnd();
+            }
+          }
+          oprot.WriteFieldStop();
+          oprot.WriteStructEnd();
+        }
+        finally
+        {
+          oprot.DecrementRecursionDepth();
+        }
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("GetGlobalProperty_result(");
+        bool __first = true;
+        if (Success != null && __isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class InitExpert_args : TBase
+    {
+      private long _Account;
+      private string _ChartTimeFrame;
+      private string _Symbol;
+      private string _EAName;
+
+      public long Account
+      {
+        get
+        {
+          return _Account;
+        }
+        set
+        {
+          __isset.Account = true;
+          this._Account = value;
+        }
+      }
+
+      public string ChartTimeFrame
+      {
+        get
+        {
+          return _ChartTimeFrame;
+        }
+        set
+        {
+          __isset.ChartTimeFrame = true;
+          this._ChartTimeFrame = value;
+        }
+      }
+
+      public string Symbol
+      {
+        get
+        {
+          return _Symbol;
+        }
+        set
+        {
+          __isset.Symbol = true;
+          this._Symbol = value;
+        }
+      }
+
+      public string EAName
+      {
+        get
+        {
+          return _EAName;
+        }
+        set
+        {
+          __isset.EAName = true;
+          this._EAName = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool Account;
+        public bool ChartTimeFrame;
+        public bool Symbol;
+        public bool EAName;
+      }
+
+      public InitExpert_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        iprot.IncrementRecursionDepth();
+        try
+        {
+          TField field;
+          iprot.ReadStructBegin();
+          while (true)
+          {
+            field = iprot.ReadFieldBegin();
+            if (field.Type == TType.Stop) { 
+              break;
+            }
+            switch (field.ID)
+            {
+              case 1:
+                if (field.Type == TType.I64) {
+                  Account = iprot.ReadI64();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              case 2:
+                if (field.Type == TType.String) {
+                  ChartTimeFrame = iprot.ReadString();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              case 3:
+                if (field.Type == TType.String) {
+                  Symbol = iprot.ReadString();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              case 4:
+                if (field.Type == TType.String) {
+                  EAName = iprot.ReadString();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              default: 
+                TProtocolUtil.Skip(iprot, field.Type);
+                break;
+            }
+            iprot.ReadFieldEnd();
+          }
+          iprot.ReadStructEnd();
+        }
+        finally
+        {
+          iprot.DecrementRecursionDepth();
+        }
+      }
+
+      public void Write(TProtocol oprot) {
+        oprot.IncrementRecursionDepth();
+        try
+        {
+          TStruct struc = new TStruct("InitExpert_args");
+          oprot.WriteStructBegin(struc);
+          TField field = new TField();
+          if (__isset.Account) {
+            field.Name = "Account";
+            field.Type = TType.I64;
+            field.ID = 1;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteI64(Account);
+            oprot.WriteFieldEnd();
+          }
+          if (ChartTimeFrame != null && __isset.ChartTimeFrame) {
+            field.Name = "ChartTimeFrame";
+            field.Type = TType.String;
+            field.ID = 2;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteString(ChartTimeFrame);
+            oprot.WriteFieldEnd();
+          }
+          if (Symbol != null && __isset.Symbol) {
+            field.Name = "Symbol";
+            field.Type = TType.String;
+            field.ID = 3;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteString(Symbol);
+            oprot.WriteFieldEnd();
+          }
+          if (EAName != null && __isset.EAName) {
+            field.Name = "EAName";
+            field.Type = TType.String;
+            field.ID = 4;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteString(EAName);
+            oprot.WriteFieldEnd();
+          }
+          oprot.WriteFieldStop();
+          oprot.WriteStructEnd();
+        }
+        finally
+        {
+          oprot.DecrementRecursionDepth();
+        }
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("InitExpert_args(");
+        bool __first = true;
+        if (__isset.Account) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Account: ");
+          __sb.Append(Account);
+        }
+        if (ChartTimeFrame != null && __isset.ChartTimeFrame) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("ChartTimeFrame: ");
+          __sb.Append(ChartTimeFrame);
+        }
+        if (Symbol != null && __isset.Symbol) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Symbol: ");
+          __sb.Append(Symbol);
+        }
+        if (EAName != null && __isset.EAName) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("EAName: ");
+          __sb.Append(EAName);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class InitExpert_result : TBase
+    {
+      private long _success;
+
+      public long Success
+      {
+        get
+        {
+          return _success;
+        }
+        set
+        {
+          __isset.success = true;
+          this._success = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool success;
+      }
+
+      public InitExpert_result() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        iprot.IncrementRecursionDepth();
+        try
+        {
+          TField field;
+          iprot.ReadStructBegin();
+          while (true)
+          {
+            field = iprot.ReadFieldBegin();
+            if (field.Type == TType.Stop) { 
+              break;
+            }
+            switch (field.ID)
+            {
+              case 0:
+                if (field.Type == TType.I64) {
+                  Success = iprot.ReadI64();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              default: 
+                TProtocolUtil.Skip(iprot, field.Type);
+                break;
+            }
+            iprot.ReadFieldEnd();
+          }
+          iprot.ReadStructEnd();
+        }
+        finally
+        {
+          iprot.DecrementRecursionDepth();
+        }
+      }
+
+      public void Write(TProtocol oprot) {
+        oprot.IncrementRecursionDepth();
+        try
+        {
+          TStruct struc = new TStruct("InitExpert_result");
+          oprot.WriteStructBegin(struc);
+          TField field = new TField();
+
+          if (this.__isset.success) {
+            field.Name = "Success";
+            field.Type = TType.I64;
+            field.ID = 0;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteI64(Success);
+            oprot.WriteFieldEnd();
+          }
+          oprot.WriteFieldStop();
+          oprot.WriteStructEnd();
+        }
+        finally
+        {
+          oprot.DecrementRecursionDepth();
+        }
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("InitExpert_result(");
+        bool __first = true;
+        if (__isset.success) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Success: ");
+          __sb.Append(Success);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class SaveExpert_args : TBase
+    {
+      private long _MagicNumber;
+
+      public long MagicNumber
+      {
+        get
+        {
+          return _MagicNumber;
+        }
+        set
+        {
+          __isset.MagicNumber = true;
+          this._MagicNumber = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool MagicNumber;
+      }
+
+      public SaveExpert_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        iprot.IncrementRecursionDepth();
+        try
+        {
+          TField field;
+          iprot.ReadStructBegin();
+          while (true)
+          {
+            field = iprot.ReadFieldBegin();
+            if (field.Type == TType.Stop) { 
+              break;
+            }
+            switch (field.ID)
+            {
+              case 1:
+                if (field.Type == TType.I64) {
+                  MagicNumber = iprot.ReadI64();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              default: 
+                TProtocolUtil.Skip(iprot, field.Type);
+                break;
+            }
+            iprot.ReadFieldEnd();
+          }
+          iprot.ReadStructEnd();
+        }
+        finally
+        {
+          iprot.DecrementRecursionDepth();
+        }
+      }
+
+      public void Write(TProtocol oprot) {
+        oprot.IncrementRecursionDepth();
+        try
+        {
+          TStruct struc = new TStruct("SaveExpert_args");
+          oprot.WriteStructBegin(struc);
+          TField field = new TField();
+          if (__isset.MagicNumber) {
+            field.Name = "MagicNumber";
+            field.Type = TType.I64;
+            field.ID = 1;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteI64(MagicNumber);
+            oprot.WriteFieldEnd();
+          }
+          oprot.WriteFieldStop();
+          oprot.WriteStructEnd();
+        }
+        finally
+        {
+          oprot.DecrementRecursionDepth();
+        }
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("SaveExpert_args(");
+        bool __first = true;
+        if (__isset.MagicNumber) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("MagicNumber: ");
+          __sb.Append(MagicNumber);
+        }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class DeInitExpert_args : TBase
+    {
+      private int _Reason;
+      private long _MagicNumber;
+
+      public int Reason
+      {
+        get
+        {
+          return _Reason;
+        }
+        set
+        {
+          __isset.Reason = true;
+          this._Reason = value;
+        }
+      }
+
+      public long MagicNumber
+      {
+        get
+        {
+          return _MagicNumber;
+        }
+        set
+        {
+          __isset.MagicNumber = true;
+          this._MagicNumber = value;
+        }
+      }
+
+
+      public Isset __isset;
+      #if !SILVERLIGHT
+      [Serializable]
+      #endif
+      public struct Isset {
+        public bool Reason;
+        public bool MagicNumber;
+      }
+
+      public DeInitExpert_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        iprot.IncrementRecursionDepth();
+        try
+        {
+          TField field;
+          iprot.ReadStructBegin();
+          while (true)
+          {
+            field = iprot.ReadFieldBegin();
+            if (field.Type == TType.Stop) { 
+              break;
+            }
+            switch (field.ID)
+            {
+              case 1:
+                if (field.Type == TType.I32) {
+                  Reason = iprot.ReadI32();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              case 2:
+                if (field.Type == TType.I64) {
+                  MagicNumber = iprot.ReadI64();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              default: 
+                TProtocolUtil.Skip(iprot, field.Type);
+                break;
+            }
+            iprot.ReadFieldEnd();
+          }
+          iprot.ReadStructEnd();
+        }
+        finally
+        {
+          iprot.DecrementRecursionDepth();
+        }
+      }
+
+      public void Write(TProtocol oprot) {
+        oprot.IncrementRecursionDepth();
+        try
+        {
+          TStruct struc = new TStruct("DeInitExpert_args");
+          oprot.WriteStructBegin(struc);
+          TField field = new TField();
+          if (__isset.Reason) {
+            field.Name = "Reason";
+            field.Type = TType.I32;
+            field.ID = 1;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteI32(Reason);
+            oprot.WriteFieldEnd();
+          }
+          if (__isset.MagicNumber) {
+            field.Name = "MagicNumber";
+            field.Type = TType.I64;
+            field.ID = 2;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteI64(MagicNumber);
+            oprot.WriteFieldEnd();
+          }
+          oprot.WriteFieldStop();
+          oprot.WriteStructEnd();
+        }
+        finally
+        {
+          oprot.DecrementRecursionDepth();
+        }
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("DeInitExpert_args(");
+        bool __first = true;
+        if (__isset.Reason) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("Reason: ");
+          __sb.Append(Reason);
+        }
+        if (__isset.MagicNumber) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("MagicNumber: ");
+          __sb.Append(MagicNumber);
         }
         __sb.Append(")");
         return __sb.ToString();

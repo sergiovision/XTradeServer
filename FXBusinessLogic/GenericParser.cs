@@ -26,7 +26,7 @@ namespace FXBusinessLogic
             doHistoryParsing = parseHistory;
         }
 
-        public void setDatesInterval()
+        /*public void setDatesInterval()
         {
             if (IsUseDateInterval())
             {
@@ -63,7 +63,7 @@ namespace FXBusinessLogic
             }
 
             return bUseInterval.Value;
-        }
+        }*/
 
         public static async Task<string> GetDataRequest(string url, bool useAgent)
         {

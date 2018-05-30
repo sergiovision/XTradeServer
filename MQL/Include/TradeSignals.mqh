@@ -7,7 +7,7 @@
 #property link      "http://github.com/sergiovision"
 #property strict
 
-#include <ThriftClient.mqh>
+#include <FXMindClient.mqh>
 
 enum ENUM_INDICATORS  
 {
@@ -47,7 +47,7 @@ struct Signal
 class TradeSignals
 {
 protected:
-   ThriftClient* thrift;
+   FXMindClient* thrift;
    ushort MinImportance;
    int currentImportance;
    int NewsPeriodMinutes;
@@ -59,7 +59,7 @@ public:
    Signal Last;
    bool InNewsPeriod;
 
-      TradeSignals(ThriftClient* th, ushort minimp, int newsperiod, int raisebefore, int timeframe) {
+      TradeSignals(FXMindClient* th, ushort minimp, int newsperiod, int raisebefore, int timeframe) {
          thrift = th;
          MinImportance = minimp;
          currentImportance = minimp;

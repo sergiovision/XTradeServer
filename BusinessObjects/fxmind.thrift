@@ -17,7 +17,7 @@
  */
 
 // to compile:  ./thrift -r -out ../java --gen java fxmind.thrift
-
+// thrift -r -out . --gen csharp fxmind.thrift
 /**
  * Thrift files can namespace, package, or prefix their output in various
  * target languages.
@@ -45,6 +45,21 @@ const string JOBGROUP_THRIFT = "ThriftServer"
 
 const string CRON_MANUAL = "0 0 0 1 1 ? 2100"
 
+const string PARAMS_SEPARATOR = "|"
+const string LIST_SEPARATOR = "~"
+
+const string SETTINGS_PROPERTY_BROKERSERVERTIMEZONE = "BrokerServerTimeZone"
+const string SETTINGS_PROPERTY_PARSEHISTORY = "NewsEvent.ParseHistory"
+const string SETTINGS_PROPERTY_STARTHISTORYDATE = "NewsEvent.StartHistoryDate"
+const string SETTINGS_PROPERTY_USERTIMEZONE = "UserTimeZone"
+const string SETTINGS_PROPERTY_NETSERVERPORT = "FXMind.NETServerPort"
+const string SETTINGS_PROPERTY_ENDHISTORYDATE = "NewsEvent.EndHistoryDate"
+const string SETTINGS_PROPERTY_THRIFTPORT = "FXMind.ThriftPort"
+const string SETTINGS_PROPERTY_INSTALLDIR = "FXMind.InstallDir"
+const string SETTINGS_PROPERTY_RUNTERMINALUSER = "FXMind.TerminalUser"
+const string SETTINGS_PROPERTY_MTCOMMONFILES = "Metatrader.CommonFiles"
+//const string SETTINGS_APPREGKEY = "SOFTWARE\\FXMind"
+
 //const i32 INT32CONSTANT = 9853
 //const map<string,string> MAPCONSTANT = {'hello':'world', 'goodnight':'moon'}
 
@@ -52,12 +67,20 @@ const string CRON_MANUAL = "0 0 0 1 1 ? 2100"
  * You can define enums, which are just 32 bit integers. Values are optional
  * and start at 1 if not supplied, C style again.
  */
-//enum Operation {
-//  ADD = 1,
-//  SUBTRACT = 2,
-//  MULTIPLY = 3,
-//  DIVIDE = 4
-//}
+enum EnumExpertValueType {   
+    ValueUndefined = 0,
+    ValueInteger = 1,
+    ValueShort = 2
+    ValueDouble  = 3,
+    ValueString = 4,
+    ValueBool = 5
+}
+
+enum EnumExpertValueScope {   
+    GlobalScope = 0,
+    ExpertScope = 1,
+    OrderScope = 3 
+}
 
 /**
  * Structs are the basic complex data structures. They are comprised of fields
@@ -113,6 +136,35 @@ struct  NewsEventInfo
   4:string RaiseDateTime // date returned in MTFormat
 }
 
+struct ExpertParameter
+{
+   1:EnumExpertValueType ValueType,
+   2:EnumExpertValueScope Scope,
+   3:i64 ScopeID,
+   4:string Name
+}
+
+struct Order 
+{
+   1:i64 ticket,
+   2:i8  type,
+   3:i64 magic,
+   4:double   lots,
+   5:double   openPrice,
+   6:double   closePrice,
+   7:string openTime,
+   8:string closeTime,
+   9:double   profit,
+   10:double   swapValue,
+   11:double   commission,
+   12:double   stopLoss,
+   13:double   takeProfit,
+   14:string   expiration,
+   15:string   comment,
+   16:string   symbol,
+   17:list<ExpertParameter> parameters
+}   
+
 /**
  * Structs can also be exceptions, if they are nasty.
  */
@@ -133,8 +185,25 @@ service FXMindMQL {
 
    i64 IsServerActive(1:map<string,string> paramsList),
    
-   oneway void PostStatusMessage(1:map<string,string> paramsList)
-}
+   oneway void PostStatusMessage(1:map<string,string> paramsList),
+   
+   string GetGlobalProperty(1:string propName),
+
+   //returns MagicNumber
+   i64 InitExpert(1:i64 Account, 2:string ChartTimeFrame, 3:string Symbol, 4:string EAName),
+
+   oneway void SaveExpert(1:i64 MagicNumber),
+
+   oneway void DeInitExpert(1:i32 Reason, 2:i64 MagicNumber)
+
+   // Load Active Orders (if exist ) from DB. Should be called after InitExpert where AdviserDBID can be obtained from result parameters list
+//   map<string, Order> LoadOrders(1:i64 AdviserDBID),      
+
+   // To Store Expert Adviser State both methods StoreOrders and StoreExpertParameters should be called 
+  // oneway void StoreOrders(1:i64 AdviserDBID, 2:map<string, Order> orders),
+
+   //oneway void StoreExpertParameters(1:i64 AdviserDBID, 2:list<ExpertParameter> parameters)
+}  
 
 service AppService {
 

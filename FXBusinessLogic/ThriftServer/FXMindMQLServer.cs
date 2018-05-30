@@ -45,7 +45,7 @@ namespace FXBusinessLogic.Thrift
         {
             try
             {
-                var strPort = MainService.thisGlobal.GetGlobalProp(MainService.SETTINGS_PROPERTY_THRIFTPORT);
+                var strPort = MainService.thisGlobal.GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_THRIFTPORT);
                 Int16 tryPortValue = port;
                 if (Int16.TryParse(strPort, out tryPortValue))
                     port = tryPortValue;

@@ -59,5 +59,12 @@ namespace BusinessObjects
         void SaveCurrency(Currency c);
 
         void SaveIndicator(TechIndicator i);
+
+        long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName);
+
+        void SaveExpert(long Magic);
+
+        void DeInitExpert(int Reason, long MagicNumber);
+
     }
 }
