@@ -9,6 +9,17 @@
 
 #include <SettingsFile.mqh>
 
+struct THRIFT_CLIENT
+{
+   ushort port;
+   int Magic;
+   int accountNumber;
+   uchar ip0;
+   uchar ip1;
+   uchar ip2;
+   uchar ip3;
+};
+
 class Constants {
 public:
 
@@ -36,6 +47,8 @@ public:
   string SETTINGS_PROPERTY_RUNTERMINALUSER;
   string PARAMS_SEPARATOR;
   string LIST_SEPARATOR;
+  string GLOBAL_SECTION_NAME;
+
   
   Constants() 
   {
@@ -86,22 +99,14 @@ public:
   PARAMS_SEPARATOR = "|";
 
   LIST_SEPARATOR = "~";
+  
+  GLOBAL_SECTION_NAME = "Global";
 
 
 }
 
 };
 
-struct THRIFT_CLIENT
-{
-   ushort port;
-   int Magic;
-   int accountNumber;
-   uchar ip0;
-   uchar ip1;
-   uchar ip2;
-   uchar ip3;
-};
 
 class  NewsEventInfo
 {
@@ -181,7 +186,7 @@ long IsServerActive(THRIFT_CLIENT &tc);
 void PostStatusMessage(THRIFT_CLIENT &tc, string message);
 void GetGlobalProperty(string& RetValue, string PropName, THRIFT_CLIENT &tc); // returns length of the result value. -1 - on error
 long InitExpert(string ChartTimeFrame, string Symbol, string comment, THRIFT_CLIENT &tc); // Returns Magic Number, 0 or error
-void SaveExpert(THRIFT_CLIENT &tc);
+void SaveExpert(string ActiveOrdersList, THRIFT_CLIENT &tc);
 void DeInitExpert(int Reason, THRIFT_CLIENT &tc); // DeInit for Expert Advisers only
 void CloseClient(THRIFT_CLIENT &tc); // Free memory
 #import
@@ -228,7 +233,7 @@ public:
    
    virtual bool Init() // Should be called after MagicNumber obtained
    {
-      set = new SettingsFile("Global", fileName);
+      set = new SettingsFile(constant.GLOBAL_SECTION_NAME, fileName);
 
       storeEventTime = TimeCurrent();
       prevSenttime = storeEventTime;
@@ -402,9 +407,10 @@ public:
    }
    
    
-   void SaveAllSettings()
+   void SaveAllSettings(string ActiveOrdersList)
    {
-      SaveExpert(client);
+      
+      SaveExpert(ActiveOrdersList, client);
    }
    
 

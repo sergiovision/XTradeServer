@@ -47,6 +47,8 @@ const string CRON_MANUAL = "0 0 0 1 1 ? 2100"
 
 const string PARAMS_SEPARATOR = "|"
 const string LIST_SEPARATOR = "~"
+const string GLOBAL_SECTION_NAME = "Global"
+
 
 const string SETTINGS_PROPERTY_BROKERSERVERTIMEZONE = "BrokerServerTimeZone"
 const string SETTINGS_PROPERTY_PARSEHISTORY = "NewsEvent.ParseHistory"
@@ -192,7 +194,7 @@ service FXMindMQL {
    //returns MagicNumber
    i64 InitExpert(1:i64 Account, 2:string ChartTimeFrame, 3:string Symbol, 4:string EAName),
 
-   oneway void SaveExpert(1:i64 MagicNumber),
+   oneway void SaveExpert(1:i64 MagicNumber,2:string ActiveOrdersList),
 
    oneway void DeInitExpert(1:i32 Reason, 2:i64 MagicNumber)
 

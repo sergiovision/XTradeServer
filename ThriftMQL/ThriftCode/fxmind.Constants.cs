@@ -36,6 +36,7 @@ namespace BusinessObjects
     public const string CRON_MANUAL = "0 0 0 1 1 ? 2100";
     public const string PARAMS_SEPARATOR = "|";
     public const string LIST_SEPARATOR = "~";
+    public const string GLOBAL_SECTION_NAME = "Global";
     public const string SETTINGS_PROPERTY_BROKERSERVERTIMEZONE = "BrokerServerTimeZone";
     public const string SETTINGS_PROPERTY_PARSEHISTORY = "NewsEvent.ParseHistory";
     public const string SETTINGS_PROPERTY_STARTHISTORYDATE = "NewsEvent.StartHistoryDate";

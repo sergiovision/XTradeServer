@@ -29,7 +29,7 @@ namespace BusinessObjects
       void PostStatusMessage(Dictionary<string, string> paramsList);
       string GetGlobalProperty(string propName);
       long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName);
-      void SaveExpert(long MagicNumber);
+      void SaveExpert(long MagicNumber, string ActiveOrdersList);
       void DeInitExpert(int Reason, long MagicNumber);
     }
 
@@ -63,7 +63,7 @@ namespace BusinessObjects
       long End_InitExpert(IAsyncResult asyncResult);
       #endif
       #if SILVERLIGHT
-      IAsyncResult Begin_SaveExpert(AsyncCallback callback, object state, long MagicNumber);
+      IAsyncResult Begin_SaveExpert(AsyncCallback callback, object state, long MagicNumber, string ActiveOrdersList);
       void End_SaveExpert(IAsyncResult asyncResult);
       #endif
       #if SILVERLIGHT
@@ -491,9 +491,9 @@ namespace BusinessObjects
 
       
       #if SILVERLIGHT
-      public IAsyncResult Begin_SaveExpert(AsyncCallback callback, object state, long MagicNumber)
+      public IAsyncResult Begin_SaveExpert(AsyncCallback callback, object state, long MagicNumber, string ActiveOrdersList)
       {
-        return send_SaveExpert(callback, state, MagicNumber);
+        return send_SaveExpert(callback, state, MagicNumber, ActiveOrdersList);
       }
 
       public void End_SaveExpert(IAsyncResult asyncResult)
@@ -503,25 +503,26 @@ namespace BusinessObjects
 
       #endif
 
-      public void SaveExpert(long MagicNumber)
+      public void SaveExpert(long MagicNumber, string ActiveOrdersList)
       {
         #if !SILVERLIGHT
-        send_SaveExpert(MagicNumber);
+        send_SaveExpert(MagicNumber, ActiveOrdersList);
 
         #else
-        var asyncResult = Begin_SaveExpert(null, null, MagicNumber);
+        var asyncResult = Begin_SaveExpert(null, null, MagicNumber, ActiveOrdersList);
 
         #endif
       }
       #if SILVERLIGHT
-      public IAsyncResult send_SaveExpert(AsyncCallback callback, object state, long MagicNumber)
+      public IAsyncResult send_SaveExpert(AsyncCallback callback, object state, long MagicNumber, string ActiveOrdersList)
       #else
-      public void send_SaveExpert(long MagicNumber)
+      public void send_SaveExpert(long MagicNumber, string ActiveOrdersList)
       #endif
       {
         oprot_.WriteMessageBegin(new TMessage("SaveExpert", TMessageType.Oneway, seqid_));
         SaveExpert_args args = new SaveExpert_args();
         args.MagicNumber = MagicNumber;
+        args.ActiveOrdersList = ActiveOrdersList;
         args.Write(oprot_);
         oprot_.WriteMessageEnd();
         #if SILVERLIGHT
@@ -786,7 +787,7 @@ namespace BusinessObjects
         iprot.ReadMessageEnd();
         try
         {
-          iface_.SaveExpert(args.MagicNumber);
+          iface_.SaveExpert(args.MagicNumber, args.ActiveOrdersList);
         }
         catch (TTransportException)
         {
@@ -2355,6 +2356,7 @@ namespace BusinessObjects
     public partial class SaveExpert_args : TBase
     {
       private long _MagicNumber;
+      private string _ActiveOrdersList;
 
       public long MagicNumber
       {
@@ -2369,6 +2371,19 @@ namespace BusinessObjects
         }
       }
 
+      public string ActiveOrdersList
+      {
+        get
+        {
+          return _ActiveOrdersList;
+        }
+        set
+        {
+          __isset.ActiveOrdersList = true;
+          this._ActiveOrdersList = value;
+        }
+      }
+
 
       public Isset __isset;
       #if !SILVERLIGHT
@@ -2376,6 +2391,7 @@ namespace BusinessObjects
       #endif
       public struct Isset {
         public bool MagicNumber;
+        public bool ActiveOrdersList;
       }
 
       public SaveExpert_args() {
@@ -2399,6 +2415,13 @@ namespace BusinessObjects
               case 1:
                 if (field.Type == TType.I64) {
                   MagicNumber = iprot.ReadI64();
+                } else { 
+                  TProtocolUtil.Skip(iprot, field.Type);
+                }
+                break;
+              case 2:
+                if (field.Type == TType.String) {
+                  ActiveOrdersList = iprot.ReadString();
                 } else { 
                   TProtocolUtil.Skip(iprot, field.Type);
                 }
@@ -2432,6 +2455,14 @@ namespace BusinessObjects
             oprot.WriteI64(MagicNumber);
             oprot.WriteFieldEnd();
           }
+          if (ActiveOrdersList != null && __isset.ActiveOrdersList) {
+            field.Name = "ActiveOrdersList";
+            field.Type = TType.String;
+            field.ID = 2;
+            oprot.WriteFieldBegin(field);
+            oprot.WriteString(ActiveOrdersList);
+            oprot.WriteFieldEnd();
+          }
           oprot.WriteFieldStop();
           oprot.WriteStructEnd();
         }
@@ -2449,6 +2480,12 @@ namespace BusinessObjects
           __first = false;
           __sb.Append("MagicNumber: ");
           __sb.Append(MagicNumber);
+        }
+        if (ActiveOrdersList != null && __isset.ActiveOrdersList) {
+          if(!__first) { __sb.Append(", "); }
+          __first = false;
+          __sb.Append("ActiveOrdersList: ");
+          __sb.Append(ActiveOrdersList);
         }
         __sb.Append(")");
         return __sb.ToString();

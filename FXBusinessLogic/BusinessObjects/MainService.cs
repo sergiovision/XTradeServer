@@ -6,7 +6,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Text;
 using Autofac;
 using BusinessObjects;
 using DevExpress.Xpo;
@@ -28,6 +30,8 @@ namespace FXBusinessLogic.BusinessObjects
         private INotificationUi _ui;
         protected TimeZoneInfo BrokerTimeZoneInfo;
         private bool Initialized;
+        public static char[] ParamsSeparator = fxmindConstants.PARAMS_SEPARATOR.ToCharArray();
+
 
         public static string AssemblyDirectory
         {
@@ -860,6 +864,51 @@ namespace FXBusinessLogic.BusinessObjects
             SchedulerService.SetJobCronSchedule(group, name, cron);
         }
 
+        [DllImport("kernel32.dll")]
+        static extern int GetPrivateProfileString(int Section, string Key,
+              string Value, [MarshalAs(UnmanagedType.LPArray)] byte[] Result,
+              int Size, string FileName);
+
+        [DllImport("kernel32.dll", EntryPoint = "WritePrivateProfileStringW", CharSet = CharSet.Unicode)]
+        static extern int WritePrivateProfileStringW(string lpApplicationName, int lpKeyName, int lpString,string lpFileName);
+
+        // The Function called to obtain the SectionHeaders,
+        // and returns them in an Dynamic Array.
+        public string[] GetSectionNames(string path)
+        {
+            try
+            {
+                //    Sets the maxsize buffer to 500, if the more
+                //    is required then doubles the size each time.
+                for (int maxsize = 500; true; maxsize *= 2)
+                {
+                    //    Obtains the information in bytes and stores
+                    //    them in the maxsize buffer (Bytes array)
+                    byte[] bytes = new byte[maxsize];
+                    int size = GetPrivateProfileString(0, "", "", bytes, maxsize, path);
+
+                    // Check the information obtained is not bigger
+                    // than the allocated maxsize buffer - 2 bytes.
+                    // if it is, then skip over the next section
+                    // so that the maxsize buffer can be doubled.
+                    if (size < maxsize - 2)
+                    {
+                        // Converts the bytes value into an ASCII char. This is one long string.
+                        string Selected = Encoding.ASCII.GetString(bytes, 0,
+                                                   size - (size > 0 ? 1 : 0));
+                        // Splits the Long string into an array based on the "\0"
+                        // or null (Newline) value and returns the value(s) in an array
+                        return Selected.Split(new char[] { '\0' });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Failed to get Section Names from file: " + path + ". Error: " + e.ToString());
+            }
+            return new string[] { "" };
+        }
+
         public long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName)
         {
             Session session = FXConnectionHelper.GetNewSession();
@@ -870,7 +919,7 @@ namespace FXBusinessLogic.BusinessObjects
                 DBTerminal terminal = FXMindHelpers.getTerminalID(session, Account);
                 if (terminal == null)
                 {
-                    log.Error("Unknow AccountNumber " + Account + " ERROR");
+                    log.Error("Unknown AccountNumber " + Account + " ERROR");
                     return 0;
                 }
                 if (Symbol.Length == 6)
@@ -880,7 +929,7 @@ namespace FXBusinessLogic.BusinessObjects
                 DBSymbol symbol = FXMindHelpers.getSymbolID(session, strSymbol);
                 if (symbol == null)
                 {
-                    log.Error("Unknow Symbol " + Symbol + " ERROR");
+                    log.Error("Unknown Symbol " + Symbol + " ERROR");
                     return 0;
                 }
 
@@ -918,7 +967,7 @@ namespace FXBusinessLogic.BusinessObjects
             return resultMagic;
         }
 
-        public void SaveExpert(long MagicNumber)
+        public void SaveExpert(long MagicNumber, string ActiveOrdersList)
         {
             Session session = FXConnectionHelper.GetNewSession();
             try
@@ -931,8 +980,27 @@ namespace FXBusinessLogic.BusinessObjects
 
                 adviser.RUNNING = 1;
                 adviser.LASTUPDATE = DateTime.UtcNow;
-                adviser.STATE = ReadFromFile(adviser);
+
+                string filePath = GetAdviserFilePath(adviser);
+                string[] sections = GetSectionNames(filePath);
+                if (sections.Length > 0)
+                {
+                    List<string> sectionsList = sections.ToList();
+                    var activeOrdersList = ActiveOrdersList.Split(ParamsSeparator);
+                    var ordersToDelete = sectionsList.Except(activeOrdersList);
+                    if ((ordersToDelete != null) && (ordersToDelete.Count() > 0))
+                    {
+                        foreach (var order in ordersToDelete)
+                        {
+                            if (!order.Equals(fxmindConstants.GLOBAL_SECTION_NAME))
+                                WritePrivateProfileStringW(order, 0, 0, filePath);
+                        }
+                    }
+                }
+
+                adviser.STATE = ReadFromFile(filePath, adviser);
                 session.Save(adviser);
+
             }
             catch (Exception e)
             {
@@ -945,17 +1013,19 @@ namespace FXBusinessLogic.BusinessObjects
             }
         }
 
-
-        protected string ReadFromFile(DBAdviser adviser)
+        string GetAdviserFilePath(DBAdviser adviser)
         {
             string path = GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_MTCOMMONFILES);
             string sym = adviser.SYMBOL_ID.Name;
             if (sym.Length > 6)
                 sym = sym.Remove(3, 1);
             string filePath = $"{path}\\{adviser.TERMINAL_ID.ACCOUNTNUMBER}_{sym}_{adviser.TIMEFRAME}_{adviser.ID}.set";
-            if (File.Exists(filePath))
-                return File.ReadAllText(filePath);
-            return "";
+            return filePath;
+        }
+        
+        protected string ReadFromFile(string filePath, DBAdviser adviser)
+        {
+            return File.ReadAllText(filePath);
         }
 
         public void DeInitExpert(int Reason, long MagicNumber)

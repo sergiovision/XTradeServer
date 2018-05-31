@@ -37,27 +37,28 @@ namespace ThriftMQL
         protected static string GlobalErrorMessage;
         public static string _FullFilePath = "";
 
+        public static char[] ParamsSeparator = fxmindConstants.PARAMS_SEPARATOR.ToCharArray();
 
-      /*  public static string RegistryInstallDir
-        {
-            get
-            {
-                string result = @"C:\Projects\GitHub\FXMindNET\bin";
-                try
-                {
-                    RegistryKey rk = Registry.LocalMachine.OpenSubKey(SETTINGS_APPREGKEY, false);
-                    if (rk != null)
-                        result = rk.GetValue("InstallDir")?.ToString();
-                }
-                catch (Exception e)
-                {
-                    GlobalErrorMessage = e.ToString();
-                }
-                return result;
-            }
-        }*/
+    /*  public static string RegistryInstallDir
+      {
+          get
+          {
+              string result = @"C:\Projects\GitHub\FXMindNET\bin";
+              try
+              {
+                  RegistryKey rk = Registry.LocalMachine.OpenSubKey(SETTINGS_APPREGKEY, false);
+                  if (rk != null)
+                      result = rk.GetValue("InstallDir")?.ToString();
+              }
+              catch (Exception e)
+              {
+                  GlobalErrorMessage = e.ToString();
+              }
+              return result;
+          }
+      }*/
 
-        public static string logFilePath
+    public static string logFilePath
         {
             get
             {
@@ -99,7 +100,7 @@ namespace ThriftMQL
                 return list;
             if (str.Length > 0)
             {
-                string[] arr = str.Split(new[] { '|' });
+                string[] arr = str.Split(ParamsSeparator);
                 list = new List<string>(arr);
             }
             return list;
@@ -114,11 +115,11 @@ namespace ThriftMQL
                 str.Append(val);
                 if (i == (list.Count - 1))
                 { }
-                else
-                    str.Append('|');
+                else 
+                    str.Append(ParamsSeparator);
                 i++;
                 //if (i++ < (list.Count - 1))
-                //    str.Append('|');
+                //    str.Append();
             }
             return true;
         }
@@ -126,7 +127,7 @@ namespace ThriftMQL
         {
             if (parameters.Length > 0)
             {
-                string[] paramValues = parameters.Split(new[] { '|' });
+                string[] paramValues = parameters.Split(ParamsSeparator);
                 if (paramValues.Length > 1)
                 {
                     foreach (var paramValue in paramValues)
@@ -327,13 +328,13 @@ namespace ThriftMQL
         }
 
         [DllExport("SaveExpert", CallingConvention = CallingConvention.StdCall)]
-        public static void SaveExpert(ref THRIFT_CLIENT tc)
+        public static void SaveExpert([MarshalAs(UnmanagedType.LPWStr)]string ActiveOrdersList, ref THRIFT_CLIENT tc)
         {
             try
             {
                 using (var fx = new FXMindMQLClient(tc.port))
                 {
-                    fx.client.SaveExpert(tc.Magic);
+                    fx.client.SaveExpert(tc.Magic, ActiveOrdersList);
                 }
             }
             catch (Exception e)

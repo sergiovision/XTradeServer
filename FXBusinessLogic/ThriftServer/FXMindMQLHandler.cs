@@ -160,11 +160,11 @@ namespace FXBusinessLogic.ThriftServer
         }
 
 
-        public void SaveExpert(long MagicNumber)
+        public void SaveExpert(long MagicNumber, string ActiveOrdersList)
         {
             try
             {
-                fxmind.SaveExpert(MagicNumber);
+                fxmind.SaveExpert(MagicNumber, ActiveOrdersList);
             }
             catch (Exception e)
             {
@@ -209,5 +209,6 @@ namespace FXBusinessLogic.ThriftServer
             }
             return 0;
         }
+
     }
 }

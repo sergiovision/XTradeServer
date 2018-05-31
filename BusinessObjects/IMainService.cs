@@ -62,7 +62,7 @@ namespace BusinessObjects
 
         long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName);
 
-        void SaveExpert(long Magic);
+        void SaveExpert(long Magic, string ActiveOrdersList);
 
         void DeInitExpert(int Reason, long MagicNumber);
 
