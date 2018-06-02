@@ -67,7 +67,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\Users\sergei.zhuravlev\AppData\Roaming\MetaQuotes\Terminal\287469DEA9630EA94D0715D755974F1B\MQL4\Libraries\</OutputPath>
+    <OutputPath>..\..\..\..\Users\sergei.zhuravlev\AppData\Roaming\MetaQuotes\Terminal\Common\Libraries\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -124,6 +124,7 @@
     <Compile Include="ThriftCalls.cs" />
     <Compile Include="FXMindMQLClient.cs" />
     <Compile Include="ThriftClient.cs" />
+    <Compile Include="ThriftCode\ExpertInfo.cs" />
     <Compile Include="ThriftCode\fxmind.Constants.cs" />
     <Compile Include="ThriftCode\FXMindMQL.cs" />
     <Compile Include="TProcessor.cs" />

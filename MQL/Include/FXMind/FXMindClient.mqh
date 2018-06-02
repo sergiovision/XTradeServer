@@ -7,7 +7,7 @@
 #property link      "http://github.com/sergiovision"
 #property strict
 
-#include <SettingsFile.mqh>
+#include <FXMind\SettingsFile.mqh>
 
 struct THRIFT_CLIENT
 {
@@ -179,13 +179,13 @@ class  NewsEventInfo
 
 #define MAX_NEWS_PER_DAY  5
 
-#import "ThriftMQL.dll"
+#import "../../../Common/Libraries/ThriftMQL.dll"
 long ProcessStringData(string& inoutdata, string parameters, THRIFT_CLIENT &tc);
 long ProcessDoubleData(double &arr[], int arr_size, string parameters, string indata, THRIFT_CLIENT &tc);
 long IsServerActive(THRIFT_CLIENT &tc);
 void PostStatusMessage(THRIFT_CLIENT &tc, string message);
 void GetGlobalProperty(string& RetValue, string PropName, THRIFT_CLIENT &tc); // returns length of the result value. -1 - on error
-long InitExpert(string ChartTimeFrame, string Symbol, string comment, THRIFT_CLIENT &tc); // Returns Magic Number, 0 or error
+long InitExpert(string& OrdersListToLoad, string ChartTimeFrame, string Symbol, string comment, THRIFT_CLIENT &tc); // Returns Magic Number, 0 or error
 void SaveExpert(string ActiveOrdersList, THRIFT_CLIENT &tc);
 void DeInitExpert(int Reason, THRIFT_CLIENT &tc); // DeInit for Expert Advisers only
 void CloseClient(THRIFT_CLIENT &tc); // Free memory
@@ -219,7 +219,11 @@ public:
       client.accountNumber = AccountNumber();
       string periodStr = EnumToString((ENUM_TIMEFRAMES)Period());
       string sym = Symbol();
-      long Magic = InitExpert(periodStr, sym, EAName, client);
+
+   	string rawOrdersList;
+   	StringInit(rawOrdersList, BUFF_SIZE, 0);
+            
+      long Magic = InitExpert(rawOrdersList, periodStr, sym, EAName, client);
       if (Magic <= 0)
          Print(StringFormat("InitExpert(%d, %s, %s) FAILED!!!", client.accountNumber, periodStr, sym));
       client.Magic = (int)Magic;
@@ -229,12 +233,13 @@ public:
       
       IsActive = false;
       CheckActive();
+      
+      set = new SettingsFile(constant.GLOBAL_SECTION_NAME, fileName);
+      set.SetOrdersStringList(rawOrdersList, sep);
    }
    
    virtual bool Init() // Should be called after MagicNumber obtained
    {
-      set = new SettingsFile(constant.GLOBAL_SECTION_NAME, fileName);
-
       storeEventTime = TimeCurrent();
       prevSenttime = storeEventTime;
       return IsActive;
@@ -290,7 +295,7 @@ public:
       }
    	storeParamstrEvent = instr;
    	string rawMessage;
-   	StringInit(rawMessage, 512, 0);
+   	StringInit(rawMessage, BUFF_SIZE, 0);
    	long retval = ProcessStringData(rawMessage, instr, client);
    	if ( retval > 0 )
    	{
@@ -314,7 +319,7 @@ public:
    	storeParamstr = instr;
    	int storeRes = 0;
    	string rawMessage;
-   	StringInit(rawMessage, MAX_NEWS_PER_DAY*512, 0);
+   	StringInit(rawMessage, MAX_NEWS_PER_DAY*BUFF_SIZE, 0);
    	long retval = ProcessStringData(rawMessage, instr, client);
    	if ( retval > 0 )
    	{

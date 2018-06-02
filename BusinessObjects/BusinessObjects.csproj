@@ -56,6 +56,8 @@
     <Compile Include="BusinessObjects\CurrencyStrengthSummary.cs" />
     <Compile Include="BusinessObjects\EnumExpertValueScope.cs" />
     <Compile Include="BusinessObjects\EnumExpertValueType.cs" />
+    <Compile Include="BusinessObjects\ENUM_ORDERROLE.cs" />
+    <Compile Include="BusinessObjects\ExpertInfo.cs" />
     <Compile Include="BusinessObjects\ExpertParameter.cs" />
     <Compile Include="BusinessObjects\fxmind.Constants.cs" />
     <Compile Include="BusinessObjects\FXMindMQL.cs" />

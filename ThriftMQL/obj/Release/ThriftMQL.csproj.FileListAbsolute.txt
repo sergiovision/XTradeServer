@@ -5,3 +5,4 @@ C:\Users\sergei.zhuravlev\AppData\Roaming\MetaQuotes\Terminal\287469DEA9630EA94D
 C:\Projects\GitHub\FXMindNET\ThriftMQL\obj\Release\ThriftMQL.csproj.CoreCompileInputs.cache
 C:\Projects\GitHub\FXMindNET\ThriftMQL\obj\Release\ThriftMQL.dll
 C:\Projects\GitHub\FXMindNET\ThriftMQL\obj\Release\ThriftMQL.csprojAssemblyReference.cache
+C:\Users\sergei.zhuravlev\AppData\Roaming\MetaQuotes\Terminal\Common\Libraries\ThriftMQL.dll

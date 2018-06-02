@@ -2964,13 +2964,13 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     Success = new List<ScheduledJob>();
-                    TList _list40 = iprot.ReadListBegin();
-                    for( int _i41 = 0; _i41 < _list40.Count; ++_i41)
+                    TList _list44 = iprot.ReadListBegin();
+                    for( int _i45 = 0; _i45 < _list44.Count; ++_i45)
                     {
-                      ScheduledJob _elem42;
-                      _elem42 = new ScheduledJob();
-                      _elem42.Read(iprot);
-                      Success.Add(_elem42);
+                      ScheduledJob _elem46;
+                      _elem46 = new ScheduledJob();
+                      _elem46.Read(iprot);
+                      Success.Add(_elem46);
                     }
                     iprot.ReadListEnd();
                   }
@@ -3008,9 +3008,9 @@ namespace BusinessObjects
               oprot.WriteFieldBegin(field);
               {
                 oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
-                foreach (ScheduledJob _iter43 in Success)
+                foreach (ScheduledJob _iter47 in Success)
                 {
-                  _iter43.Write(oprot);
+                  _iter47.Write(oprot);
                 }
                 oprot.WriteListEnd();
               }
@@ -3155,15 +3155,15 @@ namespace BusinessObjects
                 if (field.Type == TType.Map) {
                   {
                     Success = new Dictionary<string, ScheduledJob>();
-                    TMap _map44 = iprot.ReadMapBegin();
-                    for( int _i45 = 0; _i45 < _map44.Count; ++_i45)
+                    TMap _map48 = iprot.ReadMapBegin();
+                    for( int _i49 = 0; _i49 < _map48.Count; ++_i49)
                     {
-                      string _key46;
-                      ScheduledJob _val47;
-                      _key46 = iprot.ReadString();
-                      _val47 = new ScheduledJob();
-                      _val47.Read(iprot);
-                      Success[_key46] = _val47;
+                      string _key50;
+                      ScheduledJob _val51;
+                      _key50 = iprot.ReadString();
+                      _val51 = new ScheduledJob();
+                      _val51.Read(iprot);
+                      Success[_key50] = _val51;
                     }
                     iprot.ReadMapEnd();
                   }
@@ -3201,10 +3201,10 @@ namespace BusinessObjects
               oprot.WriteFieldBegin(field);
               {
                 oprot.WriteMapBegin(new TMap(TType.String, TType.Struct, Success.Count));
-                foreach (string _iter48 in Success.Keys)
+                foreach (string _iter52 in Success.Keys)
                 {
-                  oprot.WriteString(_iter48);
-                  Success[_iter48].Write(oprot);
+                  oprot.WriteString(_iter52);
+                  Success[_iter52].Write(oprot);
                 }
                 oprot.WriteMapEnd();
               }
@@ -4133,13 +4133,13 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     Success = new List<CurrencyStrengthSummary>();
-                    TList _list49 = iprot.ReadListBegin();
-                    for( int _i50 = 0; _i50 < _list49.Count; ++_i50)
+                    TList _list53 = iprot.ReadListBegin();
+                    for( int _i54 = 0; _i54 < _list53.Count; ++_i54)
                     {
-                      CurrencyStrengthSummary _elem51;
-                      _elem51 = new CurrencyStrengthSummary();
-                      _elem51.Read(iprot);
-                      Success.Add(_elem51);
+                      CurrencyStrengthSummary _elem55;
+                      _elem55 = new CurrencyStrengthSummary();
+                      _elem55.Read(iprot);
+                      Success.Add(_elem55);
                     }
                     iprot.ReadListEnd();
                   }
@@ -4177,9 +4177,9 @@ namespace BusinessObjects
               oprot.WriteFieldBegin(field);
               {
                 oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
-                foreach (CurrencyStrengthSummary _iter52 in Success)
+                foreach (CurrencyStrengthSummary _iter56 in Success)
                 {
-                  _iter52.Write(oprot);
+                  _iter56.Write(oprot);
                 }
                 oprot.WriteListEnd();
               }
@@ -4324,13 +4324,13 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     Success = new List<Currency>();
-                    TList _list53 = iprot.ReadListBegin();
-                    for( int _i54 = 0; _i54 < _list53.Count; ++_i54)
+                    TList _list57 = iprot.ReadListBegin();
+                    for( int _i58 = 0; _i58 < _list57.Count; ++_i58)
                     {
-                      Currency _elem55;
-                      _elem55 = new Currency();
-                      _elem55.Read(iprot);
-                      Success.Add(_elem55);
+                      Currency _elem59;
+                      _elem59 = new Currency();
+                      _elem59.Read(iprot);
+                      Success.Add(_elem59);
                     }
                     iprot.ReadListEnd();
                   }
@@ -4368,9 +4368,9 @@ namespace BusinessObjects
               oprot.WriteFieldBegin(field);
               {
                 oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
-                foreach (Currency _iter56 in Success)
+                foreach (Currency _iter60 in Success)
                 {
-                  _iter56.Write(oprot);
+                  _iter60.Write(oprot);
                 }
                 oprot.WriteListEnd();
               }
@@ -4515,13 +4515,13 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     Success = new List<TechIndicator>();
-                    TList _list57 = iprot.ReadListBegin();
-                    for( int _i58 = 0; _i58 < _list57.Count; ++_i58)
+                    TList _list61 = iprot.ReadListBegin();
+                    for( int _i62 = 0; _i62 < _list61.Count; ++_i62)
                     {
-                      TechIndicator _elem59;
-                      _elem59 = new TechIndicator();
-                      _elem59.Read(iprot);
-                      Success.Add(_elem59);
+                      TechIndicator _elem63;
+                      _elem63 = new TechIndicator();
+                      _elem63.Read(iprot);
+                      Success.Add(_elem63);
                     }
                     iprot.ReadListEnd();
                   }
@@ -4559,9 +4559,9 @@ namespace BusinessObjects
               oprot.WriteFieldBegin(field);
               {
                 oprot.WriteListBegin(new TList(TType.Struct, Success.Count));
-                foreach (TechIndicator _iter60 in Success)
+                foreach (TechIndicator _iter64 in Success)
                 {
-                  _iter60.Write(oprot);
+                  _iter64.Write(oprot);
                 }
                 oprot.WriteListEnd();
               }

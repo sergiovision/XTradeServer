@@ -17,8 +17,12 @@ enum ENUM_ORDERROLE
     RegularTrail, 
     GridHead, 
     GridTail,
-    ShouldBeClosed
+    ShouldBeClosed,
+    History
 };
+
+#define ROLES_COUNT  5
+
 
 enum ENUM_TRAILING  
 {
@@ -35,6 +39,8 @@ enum ENUM_TRAILING
     TrailingFiftyFifty,
     TrailingKillLoss
 };
+
+#define TRAILS_COUNT  12
 
 enum ENUM_MARKETSTATE  
 {
@@ -85,6 +91,7 @@ class Order : public CObject
       ENUM_ORDERROLE role;
 
    public:
+   
    void Order(int Ticket) 
    {    
       ticket = Ticket;
@@ -141,6 +148,11 @@ class Order : public CObject
    double RealProfit() 
    {
       return OrderCommission() + OrderSwap() + OrderProfit();
+   }
+   
+   double Profit() 
+   {
+      return this.commission + swap + profit;
    }
    
    bool isGridOrder()

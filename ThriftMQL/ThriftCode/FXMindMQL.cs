@@ -28,7 +28,7 @@ namespace BusinessObjects
       long IsServerActive(Dictionary<string, string> paramsList);
       void PostStatusMessage(Dictionary<string, string> paramsList);
       string GetGlobalProperty(string propName);
-      long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName);
+      ExpertInfo InitExpert(ExpertInfo expert);
       void SaveExpert(long MagicNumber, string ActiveOrdersList);
       void DeInitExpert(int Reason, long MagicNumber);
     }
@@ -59,8 +59,8 @@ namespace BusinessObjects
       string End_GetGlobalProperty(IAsyncResult asyncResult);
       #endif
       #if SILVERLIGHT
-      IAsyncResult Begin_InitExpert(AsyncCallback callback, object state, long Account, string ChartTimeFrame, string Symbol, string EAName);
-      long End_InitExpert(IAsyncResult asyncResult);
+      IAsyncResult Begin_InitExpert(AsyncCallback callback, object state, ExpertInfo expert);
+      ExpertInfo End_InitExpert(IAsyncResult asyncResult);
       #endif
       #if SILVERLIGHT
       IAsyncResult Begin_SaveExpert(AsyncCallback callback, object state, long MagicNumber, string ActiveOrdersList);
@@ -426,12 +426,12 @@ namespace BusinessObjects
 
       
       #if SILVERLIGHT
-      public IAsyncResult Begin_InitExpert(AsyncCallback callback, object state, long Account, string ChartTimeFrame, string Symbol, string EAName)
+      public IAsyncResult Begin_InitExpert(AsyncCallback callback, object state, ExpertInfo expert)
       {
-        return send_InitExpert(callback, state, Account, ChartTimeFrame, Symbol, EAName);
+        return send_InitExpert(callback, state, expert);
       }
 
-      public long End_InitExpert(IAsyncResult asyncResult)
+      public ExpertInfo End_InitExpert(IAsyncResult asyncResult)
       {
         oprot_.Transport.EndFlush(asyncResult);
         return recv_InitExpert();
@@ -439,30 +439,27 @@ namespace BusinessObjects
 
       #endif
 
-      public long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName)
+      public ExpertInfo InitExpert(ExpertInfo expert)
       {
         #if !SILVERLIGHT
-        send_InitExpert(Account, ChartTimeFrame, Symbol, EAName);
+        send_InitExpert(expert);
         return recv_InitExpert();
 
         #else
-        var asyncResult = Begin_InitExpert(null, null, Account, ChartTimeFrame, Symbol, EAName);
+        var asyncResult = Begin_InitExpert(null, null, expert);
         return End_InitExpert(asyncResult);
 
         #endif
       }
       #if SILVERLIGHT
-      public IAsyncResult send_InitExpert(AsyncCallback callback, object state, long Account, string ChartTimeFrame, string Symbol, string EAName)
+      public IAsyncResult send_InitExpert(AsyncCallback callback, object state, ExpertInfo expert)
       #else
-      public void send_InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName)
+      public void send_InitExpert(ExpertInfo expert)
       #endif
       {
         oprot_.WriteMessageBegin(new TMessage("InitExpert", TMessageType.Call, seqid_));
         InitExpert_args args = new InitExpert_args();
-        args.Account = Account;
-        args.ChartTimeFrame = ChartTimeFrame;
-        args.Symbol = Symbol;
-        args.EAName = EAName;
+        args.Expert = expert;
         args.Write(oprot_);
         oprot_.WriteMessageEnd();
         #if SILVERLIGHT
@@ -472,7 +469,7 @@ namespace BusinessObjects
         #endif
       }
 
-      public long recv_InitExpert()
+      public ExpertInfo recv_InitExpert()
       {
         TMessage msg = iprot_.ReadMessageBegin();
         if (msg.Type == TMessageType.Exception) {
@@ -760,7 +757,7 @@ namespace BusinessObjects
         InitExpert_result result = new InitExpert_result();
         try
         {
-          result.Success = iface_.InitExpert(args.Account, args.ChartTimeFrame, args.Symbol, args.EAName);
+          result.Success = iface_.InitExpert(args.Expert);
           oprot.WriteMessageBegin(new TMessage("InitExpert", TMessageType.Reply, seqid)); 
           result.Write(oprot);
         }
@@ -889,14 +886,14 @@ namespace BusinessObjects
                 if (field.Type == TType.Map) {
                   {
                     ParamsList = new Dictionary<string, string>();
-                    TMap _map4 = iprot.ReadMapBegin();
-                    for( int _i5 = 0; _i5 < _map4.Count; ++_i5)
+                    TMap _map8 = iprot.ReadMapBegin();
+                    for( int _i9 = 0; _i9 < _map8.Count; ++_i9)
                     {
-                      string _key6;
-                      string _val7;
-                      _key6 = iprot.ReadString();
-                      _val7 = iprot.ReadString();
-                      ParamsList[_key6] = _val7;
+                      string _key10;
+                      string _val11;
+                      _key10 = iprot.ReadString();
+                      _val11 = iprot.ReadString();
+                      ParamsList[_key10] = _val11;
                     }
                     iprot.ReadMapEnd();
                   }
@@ -908,12 +905,12 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     InputData = new List<string>();
-                    TList _list8 = iprot.ReadListBegin();
-                    for( int _i9 = 0; _i9 < _list8.Count; ++_i9)
+                    TList _list12 = iprot.ReadListBegin();
+                    for( int _i13 = 0; _i13 < _list12.Count; ++_i13)
                     {
-                      string _elem10;
-                      _elem10 = iprot.ReadString();
-                      InputData.Add(_elem10);
+                      string _elem14;
+                      _elem14 = iprot.ReadString();
+                      InputData.Add(_elem14);
                     }
                     iprot.ReadListEnd();
                   }
@@ -949,10 +946,10 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteMapBegin(new TMap(TType.String, TType.String, ParamsList.Count));
-              foreach (string _iter11 in ParamsList.Keys)
+              foreach (string _iter15 in ParamsList.Keys)
               {
-                oprot.WriteString(_iter11);
-                oprot.WriteString(ParamsList[_iter11]);
+                oprot.WriteString(_iter15);
+                oprot.WriteString(ParamsList[_iter15]);
               }
               oprot.WriteMapEnd();
             }
@@ -965,9 +962,9 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteListBegin(new TList(TType.String, InputData.Count));
-              foreach (string _iter12 in InputData)
+              foreach (string _iter16 in InputData)
               {
-                oprot.WriteString(_iter12);
+                oprot.WriteString(_iter16);
               }
               oprot.WriteListEnd();
             }
@@ -1055,12 +1052,12 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     Success = new List<string>();
-                    TList _list13 = iprot.ReadListBegin();
-                    for( int _i14 = 0; _i14 < _list13.Count; ++_i14)
+                    TList _list17 = iprot.ReadListBegin();
+                    for( int _i18 = 0; _i18 < _list17.Count; ++_i18)
                     {
-                      string _elem15;
-                      _elem15 = iprot.ReadString();
-                      Success.Add(_elem15);
+                      string _elem19;
+                      _elem19 = iprot.ReadString();
+                      Success.Add(_elem19);
                     }
                     iprot.ReadListEnd();
                   }
@@ -1098,9 +1095,9 @@ namespace BusinessObjects
               oprot.WriteFieldBegin(field);
               {
                 oprot.WriteListBegin(new TList(TType.String, Success.Count));
-                foreach (string _iter16 in Success)
+                foreach (string _iter20 in Success)
                 {
-                  oprot.WriteString(_iter16);
+                  oprot.WriteString(_iter20);
                 }
                 oprot.WriteListEnd();
               }
@@ -1198,14 +1195,14 @@ namespace BusinessObjects
                 if (field.Type == TType.Map) {
                   {
                     ParamsList = new Dictionary<string, string>();
-                    TMap _map17 = iprot.ReadMapBegin();
-                    for( int _i18 = 0; _i18 < _map17.Count; ++_i18)
+                    TMap _map21 = iprot.ReadMapBegin();
+                    for( int _i22 = 0; _i22 < _map21.Count; ++_i22)
                     {
-                      string _key19;
-                      string _val20;
-                      _key19 = iprot.ReadString();
-                      _val20 = iprot.ReadString();
-                      ParamsList[_key19] = _val20;
+                      string _key23;
+                      string _val24;
+                      _key23 = iprot.ReadString();
+                      _val24 = iprot.ReadString();
+                      ParamsList[_key23] = _val24;
                     }
                     iprot.ReadMapEnd();
                   }
@@ -1217,12 +1214,12 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     InputData = new List<string>();
-                    TList _list21 = iprot.ReadListBegin();
-                    for( int _i22 = 0; _i22 < _list21.Count; ++_i22)
+                    TList _list25 = iprot.ReadListBegin();
+                    for( int _i26 = 0; _i26 < _list25.Count; ++_i26)
                     {
-                      string _elem23;
-                      _elem23 = iprot.ReadString();
-                      InputData.Add(_elem23);
+                      string _elem27;
+                      _elem27 = iprot.ReadString();
+                      InputData.Add(_elem27);
                     }
                     iprot.ReadListEnd();
                   }
@@ -1258,10 +1255,10 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteMapBegin(new TMap(TType.String, TType.String, ParamsList.Count));
-              foreach (string _iter24 in ParamsList.Keys)
+              foreach (string _iter28 in ParamsList.Keys)
               {
-                oprot.WriteString(_iter24);
-                oprot.WriteString(ParamsList[_iter24]);
+                oprot.WriteString(_iter28);
+                oprot.WriteString(ParamsList[_iter28]);
               }
               oprot.WriteMapEnd();
             }
@@ -1274,9 +1271,9 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteListBegin(new TList(TType.String, InputData.Count));
-              foreach (string _iter25 in InputData)
+              foreach (string _iter29 in InputData)
               {
-                oprot.WriteString(_iter25);
+                oprot.WriteString(_iter29);
               }
               oprot.WriteListEnd();
             }
@@ -1364,12 +1361,12 @@ namespace BusinessObjects
                 if (field.Type == TType.List) {
                   {
                     Success = new List<double>();
-                    TList _list26 = iprot.ReadListBegin();
-                    for( int _i27 = 0; _i27 < _list26.Count; ++_i27)
+                    TList _list30 = iprot.ReadListBegin();
+                    for( int _i31 = 0; _i31 < _list30.Count; ++_i31)
                     {
-                      double _elem28;
-                      _elem28 = iprot.ReadDouble();
-                      Success.Add(_elem28);
+                      double _elem32;
+                      _elem32 = iprot.ReadDouble();
+                      Success.Add(_elem32);
                     }
                     iprot.ReadListEnd();
                   }
@@ -1407,9 +1404,9 @@ namespace BusinessObjects
               oprot.WriteFieldBegin(field);
               {
                 oprot.WriteListBegin(new TList(TType.Double, Success.Count));
-                foreach (double _iter29 in Success)
+                foreach (double _iter33 in Success)
                 {
-                  oprot.WriteDouble(_iter29);
+                  oprot.WriteDouble(_iter33);
                 }
                 oprot.WriteListEnd();
               }
@@ -1492,14 +1489,14 @@ namespace BusinessObjects
                 if (field.Type == TType.Map) {
                   {
                     ParamsList = new Dictionary<string, string>();
-                    TMap _map30 = iprot.ReadMapBegin();
-                    for( int _i31 = 0; _i31 < _map30.Count; ++_i31)
+                    TMap _map34 = iprot.ReadMapBegin();
+                    for( int _i35 = 0; _i35 < _map34.Count; ++_i35)
                     {
-                      string _key32;
-                      string _val33;
-                      _key32 = iprot.ReadString();
-                      _val33 = iprot.ReadString();
-                      ParamsList[_key32] = _val33;
+                      string _key36;
+                      string _val37;
+                      _key36 = iprot.ReadString();
+                      _val37 = iprot.ReadString();
+                      ParamsList[_key36] = _val37;
                     }
                     iprot.ReadMapEnd();
                   }
@@ -1535,10 +1532,10 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteMapBegin(new TMap(TType.String, TType.String, ParamsList.Count));
-              foreach (string _iter34 in ParamsList.Keys)
+              foreach (string _iter38 in ParamsList.Keys)
               {
-                oprot.WriteString(_iter34);
-                oprot.WriteString(ParamsList[_iter34]);
+                oprot.WriteString(_iter38);
+                oprot.WriteString(ParamsList[_iter38]);
               }
               oprot.WriteMapEnd();
             }
@@ -1729,14 +1726,14 @@ namespace BusinessObjects
                 if (field.Type == TType.Map) {
                   {
                     ParamsList = new Dictionary<string, string>();
-                    TMap _map35 = iprot.ReadMapBegin();
-                    for( int _i36 = 0; _i36 < _map35.Count; ++_i36)
+                    TMap _map39 = iprot.ReadMapBegin();
+                    for( int _i40 = 0; _i40 < _map39.Count; ++_i40)
                     {
-                      string _key37;
-                      string _val38;
-                      _key37 = iprot.ReadString();
-                      _val38 = iprot.ReadString();
-                      ParamsList[_key37] = _val38;
+                      string _key41;
+                      string _val42;
+                      _key41 = iprot.ReadString();
+                      _val42 = iprot.ReadString();
+                      ParamsList[_key41] = _val42;
                     }
                     iprot.ReadMapEnd();
                   }
@@ -1772,10 +1769,10 @@ namespace BusinessObjects
             oprot.WriteFieldBegin(field);
             {
               oprot.WriteMapBegin(new TMap(TType.String, TType.String, ParamsList.Count));
-              foreach (string _iter39 in ParamsList.Keys)
+              foreach (string _iter43 in ParamsList.Keys)
               {
-                oprot.WriteString(_iter39);
-                oprot.WriteString(ParamsList[_iter39]);
+                oprot.WriteString(_iter43);
+                oprot.WriteString(ParamsList[_iter43]);
               }
               oprot.WriteMapEnd();
             }
@@ -2030,60 +2027,18 @@ namespace BusinessObjects
     #endif
     public partial class InitExpert_args : TBase
     {
-      private long _Account;
-      private string _ChartTimeFrame;
-      private string _Symbol;
-      private string _EAName;
+      private ExpertInfo _expert;
 
-      public long Account
+      public ExpertInfo Expert
       {
         get
         {
-          return _Account;
+          return _expert;
         }
         set
         {
-          __isset.Account = true;
-          this._Account = value;
-        }
-      }
-
-      public string ChartTimeFrame
-      {
-        get
-        {
-          return _ChartTimeFrame;
-        }
-        set
-        {
-          __isset.ChartTimeFrame = true;
-          this._ChartTimeFrame = value;
-        }
-      }
-
-      public string Symbol
-      {
-        get
-        {
-          return _Symbol;
-        }
-        set
-        {
-          __isset.Symbol = true;
-          this._Symbol = value;
-        }
-      }
-
-      public string EAName
-      {
-        get
-        {
-          return _EAName;
-        }
-        set
-        {
-          __isset.EAName = true;
-          this._EAName = value;
+          __isset.expert = true;
+          this._expert = value;
         }
       }
 
@@ -2093,10 +2048,7 @@ namespace BusinessObjects
       [Serializable]
       #endif
       public struct Isset {
-        public bool Account;
-        public bool ChartTimeFrame;
-        public bool Symbol;
-        public bool EAName;
+        public bool expert;
       }
 
       public InitExpert_args() {
@@ -2118,29 +2070,9 @@ namespace BusinessObjects
             switch (field.ID)
             {
               case 1:
-                if (field.Type == TType.I64) {
-                  Account = iprot.ReadI64();
-                } else { 
-                  TProtocolUtil.Skip(iprot, field.Type);
-                }
-                break;
-              case 2:
-                if (field.Type == TType.String) {
-                  ChartTimeFrame = iprot.ReadString();
-                } else { 
-                  TProtocolUtil.Skip(iprot, field.Type);
-                }
-                break;
-              case 3:
-                if (field.Type == TType.String) {
-                  Symbol = iprot.ReadString();
-                } else { 
-                  TProtocolUtil.Skip(iprot, field.Type);
-                }
-                break;
-              case 4:
-                if (field.Type == TType.String) {
-                  EAName = iprot.ReadString();
+                if (field.Type == TType.Struct) {
+                  Expert = new ExpertInfo();
+                  Expert.Read(iprot);
                 } else { 
                   TProtocolUtil.Skip(iprot, field.Type);
                 }
@@ -2166,36 +2098,12 @@ namespace BusinessObjects
           TStruct struc = new TStruct("InitExpert_args");
           oprot.WriteStructBegin(struc);
           TField field = new TField();
-          if (__isset.Account) {
-            field.Name = "Account";
-            field.Type = TType.I64;
+          if (Expert != null && __isset.expert) {
+            field.Name = "expert";
+            field.Type = TType.Struct;
             field.ID = 1;
             oprot.WriteFieldBegin(field);
-            oprot.WriteI64(Account);
-            oprot.WriteFieldEnd();
-          }
-          if (ChartTimeFrame != null && __isset.ChartTimeFrame) {
-            field.Name = "ChartTimeFrame";
-            field.Type = TType.String;
-            field.ID = 2;
-            oprot.WriteFieldBegin(field);
-            oprot.WriteString(ChartTimeFrame);
-            oprot.WriteFieldEnd();
-          }
-          if (Symbol != null && __isset.Symbol) {
-            field.Name = "Symbol";
-            field.Type = TType.String;
-            field.ID = 3;
-            oprot.WriteFieldBegin(field);
-            oprot.WriteString(Symbol);
-            oprot.WriteFieldEnd();
-          }
-          if (EAName != null && __isset.EAName) {
-            field.Name = "EAName";
-            field.Type = TType.String;
-            field.ID = 4;
-            oprot.WriteFieldBegin(field);
-            oprot.WriteString(EAName);
+            Expert.Write(oprot);
             oprot.WriteFieldEnd();
           }
           oprot.WriteFieldStop();
@@ -2210,29 +2118,11 @@ namespace BusinessObjects
       public override string ToString() {
         StringBuilder __sb = new StringBuilder("InitExpert_args(");
         bool __first = true;
-        if (__isset.Account) {
+        if (Expert != null && __isset.expert) {
           if(!__first) { __sb.Append(", "); }
           __first = false;
-          __sb.Append("Account: ");
-          __sb.Append(Account);
-        }
-        if (ChartTimeFrame != null && __isset.ChartTimeFrame) {
-          if(!__first) { __sb.Append(", "); }
-          __first = false;
-          __sb.Append("ChartTimeFrame: ");
-          __sb.Append(ChartTimeFrame);
-        }
-        if (Symbol != null && __isset.Symbol) {
-          if(!__first) { __sb.Append(", "); }
-          __first = false;
-          __sb.Append("Symbol: ");
-          __sb.Append(Symbol);
-        }
-        if (EAName != null && __isset.EAName) {
-          if(!__first) { __sb.Append(", "); }
-          __first = false;
-          __sb.Append("EAName: ");
-          __sb.Append(EAName);
+          __sb.Append("Expert: ");
+          __sb.Append(Expert== null ? "<null>" : Expert.ToString());
         }
         __sb.Append(")");
         return __sb.ToString();
@@ -2246,9 +2136,9 @@ namespace BusinessObjects
     #endif
     public partial class InitExpert_result : TBase
     {
-      private long _success;
+      private ExpertInfo _success;
 
-      public long Success
+      public ExpertInfo Success
       {
         get
         {
@@ -2289,8 +2179,9 @@ namespace BusinessObjects
             switch (field.ID)
             {
               case 0:
-                if (field.Type == TType.I64) {
-                  Success = iprot.ReadI64();
+                if (field.Type == TType.Struct) {
+                  Success = new ExpertInfo();
+                  Success.Read(iprot);
                 } else { 
                   TProtocolUtil.Skip(iprot, field.Type);
                 }
@@ -2318,12 +2209,14 @@ namespace BusinessObjects
           TField field = new TField();
 
           if (this.__isset.success) {
-            field.Name = "Success";
-            field.Type = TType.I64;
-            field.ID = 0;
-            oprot.WriteFieldBegin(field);
-            oprot.WriteI64(Success);
-            oprot.WriteFieldEnd();
+            if (Success != null) {
+              field.Name = "Success";
+              field.Type = TType.Struct;
+              field.ID = 0;
+              oprot.WriteFieldBegin(field);
+              Success.Write(oprot);
+              oprot.WriteFieldEnd();
+            }
           }
           oprot.WriteFieldStop();
           oprot.WriteStructEnd();
@@ -2337,11 +2230,11 @@ namespace BusinessObjects
       public override string ToString() {
         StringBuilder __sb = new StringBuilder("InitExpert_result(");
         bool __first = true;
-        if (__isset.success) {
+        if (Success != null && __isset.success) {
           if(!__first) { __sb.Append(", "); }
           __first = false;
           __sb.Append("Success: ");
-          __sb.Append(Success);
+          __sb.Append(Success== null ? "<null>" : Success.ToString());
         }
         __sb.Append(")");
         return __sb.ToString();

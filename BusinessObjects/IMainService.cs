@@ -60,11 +60,12 @@ namespace BusinessObjects
 
         void SaveIndicator(TechIndicator i);
 
-        long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName);
+        ExpertInfo InitExpert(ExpertInfo expert);
 
         void SaveExpert(long Magic, string ActiveOrdersList);
 
         void DeInitExpert(int Reason, long MagicNumber);
 
+        int DeleteHistoryOrders(string filePath);
     }
 }

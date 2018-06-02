@@ -7,7 +7,7 @@
 #property link      "http://github.com/sergiovision"
 #property strict
 
-#include <FXMindClient.mqh>
+#include <FXMind\FXMindClient.mqh>
 
 enum ENUM_INDICATORS  
 {

@@ -39,6 +39,7 @@ namespace com.fxmind.manager.jobs
 
         public  async Task Execute(IJobExecutionContext context)
         {
+
             Session session = FXConnectionHelper.GetNewSession();
             try
             {
@@ -72,7 +73,7 @@ namespace com.fxmind.manager.jobs
             }
             catch (Exception ex)
             {
-                log.InfoFormat("{0}***{0}Failed: {1}{0}***{0}", Environment.NewLine, ex.Message);
+                log.Error($"TerminalMonitoringJob Failed: {ex.ToString()}");
             }
             finally
             {

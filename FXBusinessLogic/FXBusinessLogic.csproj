@@ -148,6 +148,7 @@
     </Compile>
     <Compile Include="GenericParser.cs" />
     <Compile Include="IJSONObject.cs" />
+    <Compile Include="Jobs\ClearExpertsHistoryJob.cs" />
     <Compile Include="JSON.cs" />
     <Compile Include="JSONParserProvider.cs" />
     <Compile Include="eToro\OperationType.cs" />

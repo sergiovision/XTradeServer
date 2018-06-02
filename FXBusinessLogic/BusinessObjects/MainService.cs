@@ -31,7 +31,7 @@ namespace FXBusinessLogic.BusinessObjects
         protected TimeZoneInfo BrokerTimeZoneInfo;
         private bool Initialized;
         public static char[] ParamsSeparator = fxmindConstants.PARAMS_SEPARATOR.ToCharArray();
-
+        public  const int CHAR_BUFF_SIZE = 512;
 
         public static string AssemblyDirectory
         {
@@ -869,8 +869,15 @@ namespace FXBusinessLogic.BusinessObjects
               string Value, [MarshalAs(UnmanagedType.LPArray)] byte[] Result,
               int Size, string FileName);
 
+        [DllImport("kernel32.dll", EntryPoint = "GetPrivateProfileStringW", SetLastError = true, CharSet = CharSet.Unicode)]
+        static extern int GetPrivateProfileStringW(string lpApplicationName, string lpKeyName, string lpDefault,
+                                                   [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] char[] lpReturnedString, int nSize, string Filename);
+
         [DllImport("kernel32.dll", EntryPoint = "WritePrivateProfileStringW", CharSet = CharSet.Unicode)]
         static extern int WritePrivateProfileStringW(string lpApplicationName, int lpKeyName, int lpString,string lpFileName);
+
+        [DllImport("kernel32.dll", EntryPoint = "WritePrivateProfileStringW", CharSet = CharSet.Unicode)]
+        static extern int WritePrivateProfileStringW2(string lpApplicationName, string lpKeyName, string lpString, string lpFileName);
 
         // The Function called to obtain the SectionHeaders,
         // and returns them in an Dynamic Array.
@@ -880,7 +887,7 @@ namespace FXBusinessLogic.BusinessObjects
             {
                 //    Sets the maxsize buffer to 500, if the more
                 //    is required then doubles the size each time.
-                for (int maxsize = 500; true; maxsize *= 2)
+                for (int maxsize = CHAR_BUFF_SIZE; true; maxsize *= 2)
                 {
                     //    Obtains the information in bytes and stores
                     //    them in the maxsize buffer (Bytes array)
@@ -909,39 +916,78 @@ namespace FXBusinessLogic.BusinessObjects
             return new string[] { "" };
         }
 
-        public long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName)
+        public static string GetPrivateProfileString(string fileName, string sectionName, string keyName)
+        {
+            char[] ret = new char[CHAR_BUFF_SIZE];
+
+            while (true)
+            {
+                int length = GetPrivateProfileStringW(sectionName, keyName, null, ret, ret.Length, fileName);
+                if (length == 0)
+                    Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+
+                // This function behaves differently if both sectionName and keyName are null
+                if (sectionName != null && keyName != null)
+                {
+                    if (length == ret.Length - 1)
+                    {
+                        // Double the buffer size and call again
+                        ret = new char[ret.Length * 2];
+                    }
+                    else
+                    {
+                        // Return simple string
+                        return new string(ret, 0, length);
+                    }
+                }
+                else
+                {
+                    if (length == ret.Length - 2)
+                    {
+                        // Double the buffer size and call again
+                        ret = new char[ret.Length * 2];
+                    }
+                    else
+                    {
+                        // Return multistring
+                        return new string(ret, 0, length - 1);
+                    }
+                }
+            }
+        }
+
+        public ExpertInfo InitExpert(ExpertInfo expert) 
         {
             Session session = FXConnectionHelper.GetNewSession();
-
-            long resultMagic = 0;
             try
             {
-                DBTerminal terminal = FXMindHelpers.getTerminalID(session, Account);
+                DBTerminal terminal = FXMindHelpers.getTerminalID(session, expert.Account);
                 if (terminal == null)
                 {
-                    log.Error("Unknown AccountNumber " + Account + " ERROR");
-                    return 0;
+                    log.Error("Unknown AccountNumber " + expert.Account + " ERROR");
+                    expert.MagicNumber = 0;
+                    return expert;
                 }
-                if (Symbol.Length == 6)
-                    Symbol = Symbol.Insert(3, "/");
+                string strSymbol = expert.Symbol;
+                if (strSymbol.Length == 6)
+                    strSymbol = strSymbol.Insert(3, "/");
 
-                string strSymbol = Symbol;
                 DBSymbol symbol = FXMindHelpers.getSymbolID(session, strSymbol);
                 if (symbol == null)
                 {
-                    log.Error("Unknown Symbol " + Symbol + " ERROR");
-                    return 0;
+                    log.Error("Unknown Symbol " + strSymbol + " ERROR");
+                    return expert;
                 }
 
                 // from current time bar
                 DateTime initTime = DateTime.UtcNow;
 
-                DBAdviser adviser = FXMindHelpers.getAdviserID(session, terminal.ID, symbol.ID, ChartTimeFrame, EAName);
+                DBAdviser adviser = FXMindHelpers.getAdviserID(session, terminal.ID, symbol.ID, expert.ChartTimeFrame, expert.EAName);
                 if (adviser == null)
                 {
                     adviser = new DBAdviser(session);
-                    adviser.NAME = EAName;
-                    adviser.TIMEFRAME = ChartTimeFrame;
+                    adviser.NAME = expert.EAName;
+                    adviser.TIMEFRAME = expert.ChartTimeFrame;
                     adviser.DISABLED = 0;
                     adviser.TERMINAL_ID = terminal;
                     adviser.SYMBOL_ID = symbol;
@@ -952,19 +998,59 @@ namespace FXBusinessLogic.BusinessObjects
 
                 session.Save(adviser);
 
-                log.Info($"Expert {EAName} Magic={adviser.ID} On TF={ChartTimeFrame} loaded successfully!");
-                return adviser.ID;
+                GetOrdersListToLoad(adviser, ref expert);
+
+                expert.MagicNumber = adviser.ID;
+                log.Info($"Expert {expert.EAName} Magic={adviser.ID} On TF={expert.ChartTimeFrame} loaded successfully!");
+                return expert;
             }
             catch (Exception e)
             {
-                log.Error("InitExpert: " + e.ToString());
+                log.Error("Error: InitExpert: " + e.ToString());
+                expert.MagicNumber = 0;
             }
             finally
             {
                 session.Disconnect();
                 session.Dispose();
             }
-            return resultMagic;
+            return expert;
+        }
+
+        bool GetOrdersListToLoad(DBAdviser adviser, ref ExpertInfo expert)
+        {
+            if (expert.OrderTicketsToLoad == null)
+                expert.OrderTicketsToLoad = new List<string>();
+            string filePath = GetAdviserFilePath(adviser);
+            if (!File.Exists(filePath))
+                return false;
+            string[] sections = GetSectionNames(filePath);
+            if (sections.Length > 0)
+            {
+                List<string> sectionsList = sections.ToList();
+                if ((sectionsList != null) && (sectionsList.Count() > 0))
+                {
+                    foreach (var order in sectionsList)
+                    {
+                        if (order.Equals(fxmindConstants.GLOBAL_SECTION_NAME) )
+                            continue;
+                        string roleString = GetPrivateProfileString(filePath, order, "role");
+                        if (!String.IsNullOrEmpty(roleString))
+                        {
+                            ENUM_ORDERROLE role = (ENUM_ORDERROLE)Int32.Parse(roleString);
+                            if (role != ENUM_ORDERROLE.History)
+                            {
+                                //string ticketString = GetPrivateProfileString(filePath, order, "ticket");
+                                expert.OrderTicketsToLoad.Add(order);
+                            }
+                        }
+                        //DeleteSection(order, filePath);
+                        //if (!order.Equals(fxmindConstants.GLOBAL_SECTION_NAME))
+                        //    WritePrivateProfileStringW(order, 0, 0, filePath);
+                    }
+                }
+            }
+            return true;
         }
 
         public void SaveExpert(long MagicNumber, string ActiveOrdersList)
@@ -992,8 +1078,12 @@ namespace FXBusinessLogic.BusinessObjects
                     {
                         foreach (var order in ordersToDelete)
                         {
-                            if (!order.Equals(fxmindConstants.GLOBAL_SECTION_NAME))
-                                WritePrivateProfileStringW(order, 0, 0, filePath);
+                            int histVal = (int)ENUM_ORDERROLE.History;
+                            WritePrivateProfileStringW2(order, "role", histVal.ToString(), filePath);
+
+                            //DeleteSection(order, filePath);
+                            //if (!order.Equals(fxmindConstants.GLOBAL_SECTION_NAME))
+                            //    WritePrivateProfileStringW(order, 0, 0, filePath);
                         }
                     }
                 }
@@ -1013,7 +1103,38 @@ namespace FXBusinessLogic.BusinessObjects
             }
         }
 
-        string GetAdviserFilePath(DBAdviser adviser)
+        public int DeleteHistoryOrders(string filePath)
+        {
+            int result = 0;
+            string[] sections = GetSectionNames(filePath);
+            if (sections.Length > 0)
+            {
+                List<string> sectionsList = sections.ToList();
+                if ((sectionsList != null) && (sectionsList.Count() > 0))
+                {
+                    foreach (var sectionName in sectionsList)
+                    {
+                        if (sectionName.Equals(fxmindConstants.GLOBAL_SECTION_NAME))
+                            continue;
+
+                        string roleString = GetPrivateProfileString(filePath, sectionName, "role");
+                        if (!String.IsNullOrEmpty(roleString))
+                        {
+                            ENUM_ORDERROLE role = (ENUM_ORDERROLE)Int32.Parse(roleString);
+                            if (role.Equals(ENUM_ORDERROLE.History))
+                            {
+                                // Deletes section!!!
+                                WritePrivateProfileStringW(sectionName, 0, 0, filePath);
+                                result++;
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        protected string GetAdviserFilePath(DBAdviser adviser)
         {
             string path = GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_MTCOMMONFILES);
             string sym = adviser.SYMBOL_ID.Name;

@@ -197,7 +197,7 @@ namespace com.fxmind.manager.jobs
                     continue;
                 }
             }
-            SetMessage("ForexFactoryEvents for End Date: " + curDateTime + " done. Added " + eventsAdded + " events.");
+            SetMessage("ForexFactoryEvents for End Date: " + curDateTime + " done. Added " + eventsAdded + " events");
             return true;
         }
     }

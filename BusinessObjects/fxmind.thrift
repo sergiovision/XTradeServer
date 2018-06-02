@@ -60,7 +60,6 @@ const string SETTINGS_PROPERTY_THRIFTPORT = "FXMind.ThriftPort"
 const string SETTINGS_PROPERTY_INSTALLDIR = "FXMind.InstallDir"
 const string SETTINGS_PROPERTY_RUNTERMINALUSER = "FXMind.TerminalUser"
 const string SETTINGS_PROPERTY_MTCOMMONFILES = "Metatrader.CommonFiles"
-//const string SETTINGS_APPREGKEY = "SOFTWARE\\FXMind"
 
 //const i32 INT32CONSTANT = 9853
 //const map<string,string> MAPCONSTANT = {'hello':'world', 'goodnight':'moon'}
@@ -165,7 +164,26 @@ struct Order
    15:string   comment,
    16:string   symbol,
    17:list<ExpertParameter> parameters
+}
+
+struct ExpertInfo 
+{
+   1:i64 Account,
+   2:i64 MagicNumber,
+   3:string ChartTimeFrame,
+   4:string Symbol,
+   5:string EAName,
+   6:list<string> orderTicketsToLoad
 }   
+
+enum ENUM_ORDERROLE  
+{
+    RegularTrail = 0, 
+    GridHead, 
+    GridTail,
+    ShouldBeClosed,
+    History
+}
 
 /**
  * Structs can also be exceptions, if they are nasty.
@@ -192,7 +210,7 @@ service FXMindMQL {
    string GetGlobalProperty(1:string propName),
 
    //returns MagicNumber
-   i64 InitExpert(1:i64 Account, 2:string ChartTimeFrame, 3:string Symbol, 4:string EAName),
+   ExpertInfo InitExpert(1:ExpertInfo expert),
 
    oneway void SaveExpert(1:i64 MagicNumber,2:string ActiveOrdersList),
 

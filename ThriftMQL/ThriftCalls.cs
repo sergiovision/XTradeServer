@@ -290,7 +290,7 @@ namespace ThriftMQL
         }
 
         [DllExport("InitExpert", CallingConvention = CallingConvention.StdCall)]
-        public static long InitExpert([MarshalAs(UnmanagedType.LPWStr)]string ChartTimeFrame, [MarshalAs(UnmanagedType.LPWStr)]string Symbol,
+        public static long InitExpert([In, Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder OrdersListToLoad, [MarshalAs(UnmanagedType.LPWStr)]string ChartTimeFrame, [MarshalAs(UnmanagedType.LPWStr)]string Symbol,
             [MarshalAs(UnmanagedType.LPWStr)]string EAName, ref THRIFT_CLIENT tc)
         {
             try
@@ -298,7 +298,17 @@ namespace ThriftMQL
                 long res = 0;
                 using (var fx = new FXMindMQLClient(tc.port))
                 {
-                    res = fx.client.InitExpert(tc.accountNumber, ChartTimeFrame, Symbol, EAName);
+                    ExpertInfo expert = new ExpertInfo();
+                    expert.Account = tc.accountNumber;
+                    expert.ChartTimeFrame = ChartTimeFrame;
+                    expert.Symbol = Symbol;
+                    expert.EAName = EAName;
+                    expert = fx.client.InitExpert(expert);
+                    res = expert.MagicNumber;
+                    if (expert.OrderTicketsToLoad?.Count > 0)
+                    {
+                        ListToString(ref OrdersListToLoad, expert.OrderTicketsToLoad);
+                    }
                 }
                 return res;
             }

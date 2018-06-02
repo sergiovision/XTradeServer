@@ -197,17 +197,17 @@ namespace FXBusinessLogic.ThriftServer
             }
         }
 
-        public long InitExpert(long Account, string ChartTimeFrame, string Symbol, string EAName)
+        public ExpertInfo InitExpert(ExpertInfo expert)
         {
             try
             {
-                return fxmind.InitExpert(Account, ChartTimeFrame, Symbol, EAName);
+                return fxmind.InitExpert(expert);
             }
             catch (Exception e)
             {
                 log.Error("InitExpert Error:" + e);
             }
-            return 0;
+            return expert;
         }
 
     }
