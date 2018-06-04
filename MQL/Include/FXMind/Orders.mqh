@@ -155,6 +155,24 @@ class Order : public CObject
       return this.commission + swap + profit;
    }
    
+   
+   double PriceDistanceInPoint()
+   {
+      double CheckPrice = 0;
+      if (type == OP_BUY) 
+      {
+         CheckPrice = Ask;
+         return  (openPrice - CheckPrice)/Point;
+      }
+      else 
+      {
+         CheckPrice = Bid;
+         return (CheckPrice - openPrice)/Point;
+      }
+      return 0;
+   }
+
+   
    bool isGridOrder()
    {
        return (role == GridHead) || (role == GridTail);
@@ -231,7 +249,7 @@ class Order : public CObject
              //currentPrice = Bid;
           break;            
        }
-       string result = StringFormat("%s(%d) %s OP=%g SL=%g TP=%g", EnumToString(role), ticket, orderTypeString, openPrice, stopLoss, takeProfit);
+       string result = StringFormat("%s(%d) %s %g OP=%g SL=%g TP=%g", EnumToString(role), ticket, orderTypeString, lots, openPrice, stopLoss, takeProfit);
        return result;
    }
    
@@ -432,9 +450,14 @@ class OrderSelection //: public CList
                j++;
            }
        }
-       for(i = 0; i < m_capacity;i++)
-          m_array[i] = newarray[i];
+       // reinit all m_array with NULL;
+       for(i = 0; i < m_capacity; i++)
+       {
+          m_array[i] = NULL;
+       }
        m_size = j;
+       for(i = 0; i < m_size;i++)
+          m_array[i] = newarray[i];
        iterator = 0;
    }
    

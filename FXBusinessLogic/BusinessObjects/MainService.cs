@@ -1088,7 +1088,6 @@ namespace FXBusinessLogic.BusinessObjects
                     }
                 }
 
-                adviser.STATE = ReadFromFile(filePath, adviser);
                 session.Save(adviser);
 
             }
@@ -1143,11 +1142,78 @@ namespace FXBusinessLogic.BusinessObjects
             string filePath = $"{path}\\{adviser.TERMINAL_ID.ACCOUNTNUMBER}_{sym}_{adviser.TIMEFRAME}_{adviser.ID}.set";
             return filePath;
         }
-        
-        protected string ReadFromFile(string filePath, DBAdviser adviser)
+
+        public  bool FileLocked(string FileName)
         {
-            return File.ReadAllText(filePath);
+            FileStream fs = null;
+
+            try
+            {
+                // NOTE: This doesn't handle situations where file is opened for writing by another process but put into write shared mode, it will not throw an exception and won't show it as write locked
+                fs = File.Open(FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None); // If we can't open file for reading and writing then it's locked by another process for writing
+            }
+            catch (UnauthorizedAccessException) // https://msdn.microsoft.com/en-us/library/y973b725(v=vs.110).aspx
+            {
+                // This is because the file is Read-Only and we tried to open in ReadWrite mode, now try to open in Read only mode
+                try
+                {
+                    fs = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.None);
+                }
+                catch (Exception)
+                {
+                    return true; // This file has been locked, we can't even open it to read
+                }
+            }
+            catch (Exception)
+            {
+                return true; // This file has been locked
+            }
+            finally
+            {
+                if (fs != null)
+                    fs.Close();
+            }
+            return false;
         }
+
+        protected bool SaveState(string filePath, DBAdviser adviser)
+        {
+
+            if (FileLocked(filePath))
+
+                return false;
+            adviser.STATE = File.ReadAllText(filePath);
+            return true;
+        }
+
+        string ReasonToString(int Reason)
+        {
+            switch (Reason)
+            {
+                case 0: //0
+                    return "0 REASON_PROGRAM - Эксперт прекратил свою работу, вызвав функцию ExpertRemove()";
+                case 1: //1
+                    return "1 REASON_REMOVE Программа удалена с графика";
+                case 2: // 2
+                    return "2 REASON_RECOMPILE Программа перекомпилирована";
+                case 3: //3
+                    return "3 REASON_CHARTCHANGE Символ или период графика был изменен";
+                case 4:
+                    return "4 REASON_CHARTCLOSE График закрыт";
+                case 5:
+                    return "5 REASON_PARAMETERS Входные параметры были изменены пользователем";
+                case 6:
+                    return "6 Активирован другой счет либо произошло переподключение к торговому серверу вследствие изменения настроек счета";
+                case 7:
+                    return "7 REASON_TEMPLATE Применен другой шаблон графика";
+                case 8:
+                    return "8 REASON_INITFAILED Признак того, что обработчик OnInit() вернул ненулевое значение";
+                case 9:
+                    return "9 REASON_CLOSE Терминал был закрыт";
+            }
+            return $"Unknown reason: {Reason}";
+        }
+
 
         public void DeInitExpert(int Reason, long MagicNumber)
         {
@@ -1163,44 +1229,13 @@ namespace FXBusinessLogic.BusinessObjects
                 adviser.RUNNING = 0;
                 adviser.LASTUPDATE = DateTime.UtcNow;
                 adviser.CLOSE_REASON = Reason;
+                string filePath = GetAdviserFilePath(adviser);
+                SaveState(filePath, adviser);
 
-                /* CLOSE_REASON Meaning:
-                 * Константа
-                    Значение
-                    Описание
-                    REASON_PROGRAM
-                    0
-                    Эксперт прекратил свою работу, вызвав функцию ExpertRemove()
-                    REASON_REMOVE
-                    1
-                    Программа удалена с графика
-                    REASON_RECOMPILE
-                    2
-                    Программа перекомпилирована
-                    REASON_CHARTCHANGE
-                    3
-                    Символ или период графика был изменен
-                    REASON_CHARTCLOSE
-                    4
-                    График закрыт
-                    REASON_PARAMETERS
-                    5
-                    Входные параметры были изменены пользователем
-                    REASON_ACCOUNT
-                    6
-                    Активирован другой счет либо произошло переподключение к торговому серверу вследствие изменения настроек счета
-                    REASON_TEMPLATE
-                    7
-                    Применен другой шаблон графика
-                    REASON_INITFAILED
-                    8
-                    Признак того, что обработчик OnInit() вернул ненулевое значение
-                    REASON_CLOSE
-                    9
-                    Терминал был закрыт
-                 */
 
                 session.Save(adviser);
+
+                log.Info($"Expert MagicNumber: {MagicNumber} closed with reason {ReasonToString(Reason)}.");
             }
             catch (Exception e)
             {
