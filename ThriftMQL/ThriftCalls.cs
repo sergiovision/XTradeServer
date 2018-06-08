@@ -12,16 +12,17 @@ namespace ThriftMQL
 {
     public class ThriftCalls
     {
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, Pack = 0)]
         public struct THRIFT_CLIENT
         {
-            public UInt16 port;
-            public Int32 Magic;
-            public Int32 accountNumber;
-            public byte ip0;
-            public byte ip1;
-            public byte ip2;
-            public byte ip3;
+            public int port;
+            public int Magic;
+            public int accountNumber;
+            public int Reserved;
+            //public byte ip0;
+            //public byte ip1;
+            //public byte ip2;
+            //public byte ip3;
         }
 
 

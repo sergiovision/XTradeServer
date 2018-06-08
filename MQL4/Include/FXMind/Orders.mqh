@@ -8,46 +8,18 @@
 #property strict
 
 #include <Arrays/List.mqh>
+#include <FXMind/InputTypes.mqh>
+#include <FXMind/IUtils.mqh>
 
 #define FOREACH_LIST(list) for(CObject* node = (list).GetFirstNode(); node != NULL; node = (list).GetNextNode())
 #define FOREACH_ORDER(list) for(Order* order = (list).GetFirstNode(); order != NULL; order = (list).GetNextNode())
 
-enum ENUM_ORDERROLE  
-{
-    RegularTrail, 
-    GridHead, 
-    GridTail,
-    ShouldBeClosed,
-    History
-};
-
 #define ROLES_COUNT  5
 
 
-enum ENUM_TRAILING  
-{
-    TrailingDefault,
-    TrailingByFractals,
-    TrailingByShadows,
-    TrailingRatchetB,
-    TrailingStairs,
-    TrailingByATR,
-    TrailingByMA,
-    TrailingUdavka,
-    TrailingByTime,
-    TrailingByPriceChannel,
-    TrailingFiftyFifty,
-    TrailingKillLoss
-};
 
 #define TRAILS_COUNT  12
 
-enum ENUM_MARKETSTATE  
-{
-    FlatTrend, 
-    UpTrend, 
-    DownTrend
-};
 
 //+------------------------------------------------------------------+
 //| defines                                                          |
@@ -115,7 +87,7 @@ class Order : public CObject
    double   openPrice;
    double   closePrice;
    datetime openTime;
-   datetime closeTime;
+   //datetime closeTime;
    double   profit;
    double   swap;
    double   commission;
@@ -147,7 +119,7 @@ class Order : public CObject
    
    double RealProfit() 
    {
-      return OrderCommission() + OrderSwap() + OrderProfit();
+      return Utils.OrderSwap() + Utils.OrderCommission() + Utils.OrderProfit();
    }
    
    double Profit() 
@@ -162,12 +134,12 @@ class Order : public CObject
       if (type == OP_BUY) 
       {
          CheckPrice = Ask;
-         return  (openPrice - CheckPrice)/Point;
+         return  (openPrice - CheckPrice)/Point();
       }
       else 
       {
          CheckPrice = Bid;
-         return (CheckPrice - openPrice)/Point;
+         return (CheckPrice - openPrice)/Point();
       }
       return 0;
    }
@@ -204,7 +176,7 @@ class Order : public CObject
    
    bool Select()
    {
-      return OrderSelect(ticket,SELECT_BY_TICKET);
+      return Utils.SelectOrder(ticket);// OrderSelect(ticket,SELECT_BY_TICKET);
    }
    
    bool NeedChanges(double sl, double tp, datetime expe)
@@ -390,21 +362,21 @@ class OrderSelection //: public CList
    void Fill(Order &order)
    {
       //order.ticket = OrderTicket();
-      order.type = OrderType();
-      order.magic = OrderMagicNumber();
-      order.lots = OrderLots();
-      order.openPrice = OrderOpenPrice();
-      order.closePrice = OrderClosePrice();
-      order.openTime = OrderOpenTime();
-      order.closeTime = OrderCloseTime();
-      order.profit = OrderProfit();
-      order.swap = OrderSwap();
-      order.commission = OrderCommission();
-      order.stopLoss = OrderStopLoss();
-      order.takeProfit = OrderTakeProfit();
-      order.expiration = OrderExpiration();
-      order.comment = OrderComment();
-      order.symbol = OrderSymbol();
+      order.type = Utils.OrderType();
+      order.magic = Utils.OrderMagicNumber();
+      order.lots = Utils.OrderLots();
+      order.openPrice = Utils.OrderOpenPrice();
+      //order.closePrice = Utils.OrderClosePrice();
+      order.openTime = Utils.OrderOpenTime();
+      //order.closeTime = Utils.OrderCloseTime();
+      order.profit = Utils.OrderProfit();
+      order.swap = Utils.OrderSwap();
+      order.commission = Utils.OrderCommission();
+      order.stopLoss = Utils.OrderStopLoss();
+      order.takeProfit = Utils.OrderTakeProfit();
+      order.expiration = Utils.OrderExpiration();
+      order.comment = Utils.OrderComment();
+      order.symbol = Utils.OrderSymbol();
       order.bDirty = false;
    }
     

@@ -7,15 +7,8 @@
 #property link      "http://github.com/sergiovision"
 #property strict
 
+#include <FXMind\InputTypes.mqh>
 #include <FXMind\FXMindClient.mqh>
-
-enum ENUM_INDICATORS  
-{
-    EMAWMAIndicator,
-    BillWilliamsIndicator,
-    ZigZagIndicator,
-    BandsIndicator
-};
 
 struct Signal 
 {
@@ -44,31 +37,25 @@ struct Signal
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-class TradeSignals
+class TradeSignals 
 {
 protected:
    FXMindClient* thrift;
-   ushort MinImportance;
    int currentImportance;
-   int NewsPeriodMinutes;
-   int RaiseSignalBeforeEventMinutes;
    datetime timeNewsPeriodStarted;
-   ENUM_TIMEFRAMES IndicatorTimeFrame;
+   string Symbol;
 
 public:
    Signal Last;
    bool InNewsPeriod;
 
-      TradeSignals(FXMindClient* th, ushort minimp, int newsperiod, int raisebefore, int timeframe) {
+      TradeSignals(FXMindClient* th) {
          thrift = th;
-         MinImportance = minimp;
-         currentImportance = minimp;
+         currentImportance = MinImportance;
          InNewsPeriod = false;
-         NewsPeriodMinutes = newsperiod;
          timeNewsPeriodStarted = TimeCurrent();
-         RaiseSignalBeforeEventMinutes = raisebefore;
-         IndicatorTimeFrame = (ENUM_TIMEFRAMES) timeframe;
          Last.Handled = true; // first signal is handled!
+         Symbol = Symbol();
       }
       
       //~TradeSignals();
@@ -97,7 +84,7 @@ public:
          NewsStatString = eventString;
          
          Signal newsignal;
-         if (!thrift.GetNextNewsEvent(Symbol(), MinImportance, newsignal.eventInfo))
+         if (!thrift.GetNextNewsEvent(Symbol(), (ushort)MinImportance, newsignal.eventInfo))
          {
             return false;
          }
@@ -113,7 +100,7 @@ public:
             signal.Handled = false;
             signal.RaiseTime = currentTime;
             signal.eventInfo = newsignal.eventInfo;
-            if (!IsTesting())
+            if (!Utils.IsTesting())
                Print(StringFormat("In %d mins News Alert %s", minsRemained, signal.eventInfo.ToString()));
             return true;
          }
@@ -124,11 +111,11 @@ public:
       int GetBWTrend()
       {
          int signal = 0;
-         double isBuy = iCustom(NULL,IndicatorTimeFrame,"BillWilliams_ATZ",   0,0);
-         if (isBuy!=0)
+         double isBuy = Utils.iCustom(IndicatorTimeFrame,"BillWilliams_ATZ",   0,0);
+         if (isBuy != 0)
             return ++signal;
-         double isSell = iCustom(NULL,IndicatorTimeFrame,"BillWilliams_ATZ",   1,0);
-         if (isSell!=0)
+         double isSell = Utils.iCustom(IndicatorTimeFrame,"BillWilliams_ATZ",   1,0);
+         if (isSell != 0)
             return --signal;
          return (signal);   
       }
@@ -142,7 +129,7 @@ public:
          {
             if(zig>0)
              zag=zig;
-            zig = iCustom(NULL, IndicatorTimeFrame, "ZigZag", 0, i);
+            zig = Utils.iCustom(IndicatorTimeFrame, "ZigZag", 0, i);
             if(zig>0) n+=1;
             i++;
          }
@@ -163,11 +150,11 @@ public:
          int     period_WMA           = 8;
          int     period_RSI           = 14;
                      
-         double EMA0 = iMA(NULL,IndicatorTimeFrame,period_EMA,0,MODE_EMA, PRICE_OPEN,0);
-         double WMA0 = iMA(NULL,IndicatorTimeFrame,period_WMA,0,MODE_LWMA,PRICE_OPEN,0);
-         double EMA1 = iMA(NULL,IndicatorTimeFrame,period_EMA,0,MODE_EMA, PRICE_OPEN,1);
-         double WMA1 = iMA(NULL,IndicatorTimeFrame,period_WMA,0,MODE_LWMA,PRICE_OPEN,1);
-         double RSI  = iRSI(NULL,IndicatorTimeFrame,period_RSI,PRICE_OPEN,0);
+         double EMA0 = Utils.iMA(IndicatorTimeFrame,period_EMA,0,MODE_EMA, PRICE_OPEN,0);
+         double WMA0 = Utils.iMA(IndicatorTimeFrame,period_WMA,0,MODE_LWMA,PRICE_OPEN,0);
+         double EMA1 = Utils.iMA(IndicatorTimeFrame,period_EMA,0,MODE_EMA, PRICE_OPEN,1);
+         double WMA1 = Utils.iMA(IndicatorTimeFrame,period_WMA,0,MODE_LWMA,PRICE_OPEN,1);
+         double RSI  = Utils.iRSI(IndicatorTimeFrame,period_RSI,PRICE_OPEN,0);
          //double MFI  = iMFI(NULL,PERIOD_H1,period_RSI,0);
          
          if (EMA0 < WMA0 && EMA1 > WMA1 && RSI >= 50)
@@ -184,11 +171,11 @@ public:
       {
          int signal = 0;
       
-         double isBuy = iBands(NULL, IndicatorTimeFrame, 20, 2, 0, PRICE_LOW, MODE_LOWER, 0); 
+         double isBuy = Utils.iBands(IndicatorTimeFrame, 20, 2, 0, PRICE_LOW, MODE_LOWER, 0); 
          if (isBuy > Ask)
             return ++signal;
             
-         double isSell = iBands(NULL, IndicatorTimeFrame, 20, 2, 0, PRICE_HIGH, MODE_UPPER, 0); 
+         double isSell = Utils.iBands(IndicatorTimeFrame, 20, 2, 0, PRICE_HIGH, MODE_UPPER, 0); 
          if (isSell < Bid)
             return --signal;
          return (signal);   
@@ -211,6 +198,7 @@ public:
           }
          return 0;
       }
+      
 
 };
 

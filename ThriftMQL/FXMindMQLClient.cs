@@ -14,7 +14,7 @@ namespace FXBusinessLogic.BusinessObjects.Thrift
     public class FXMindMQLClient : ThriftClient<FXMindMQL.Client> 
     {
 
-        public FXMindMQLClient(ushort port)
+        public FXMindMQLClient(long port)
         {
             try
             {

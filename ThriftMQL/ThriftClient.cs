@@ -12,7 +12,7 @@ namespace Thrift
     {
         public string Host { get; set; }
 
-        public int Port { get; set; }
+        public long Port { get; set; }
 
         public T client { get; set; }
 
@@ -21,7 +21,7 @@ namespace Thrift
 
         protected void InitBase()
         {
-            transport = new TSocket(Host, Port);
+            transport = new TSocket(Host, (int)Port);
             protocol = new TBinaryProtocol(transport);
             client = CreateClient(protocol);
             transport.Open();
