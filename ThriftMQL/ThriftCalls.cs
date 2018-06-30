@@ -19,20 +19,7 @@ namespace ThriftMQL
             public int Magic;
             public int accountNumber;
             public int Reserved;
-            //public byte ip0;
-            //public byte ip1;
-            //public byte ip2;
-            //public byte ip3;
         }
-
-
-        //public static string HostFromClient(THRIFT_CLIENT tc)
-        //{
-        //    return string.Format("{0}.{1}.{2}.{3}", tc.ip0, tc.ip1, tc.ip2, tc.ip3);
-        //}
-
-        //public const string SETTINGS_APPREGKEY = @"SOFTWARE\\FXMind";
-        //public const string  = "FXMind.InstallDir";
 
         public const string LOGFILENAME = @"FXMind.ThriftMQL.log";
         protected static string GlobalErrorMessage;
@@ -78,6 +65,19 @@ namespace ThriftMQL
                 GlobalErrorMessage = e.ToString();
             }
         }
+
+        public static void LogWriteLine(string text)
+        {
+            try
+            {
+                File.AppendAllText(logFilePath, $"{DateTime.Now.ToString()} ThriftMQL.dll: {text}\n");
+            }
+            catch (Exception e)
+            {
+                GlobalErrorMessage = e.ToString();
+            }
+        }
+
 
         public static void InitDLL(FXMindMQLClient fx)
         {
@@ -353,6 +353,39 @@ namespace ThriftMQL
                 GlobalErrorMessage = "SaveExpert: " + e.ToString();
                 LogWriteLine(GlobalErrorMessage, ref tc);
             }
+        }
+
+        [DllExport("GetProfileString", CallingConvention = CallingConvention.StdCall)]
+        public static long GetProfileString([In, Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder str, 
+            [MarshalAs(UnmanagedType.LPWStr)]string Section, [MarshalAs(UnmanagedType.LPWStr)]string Key, [MarshalAs(UnmanagedType.LPWStr)]string fileName)
+        {
+            try
+            {
+                str.Append(ProfileFunctions.GetPrivateProfileString(fileName, Section, Key));
+                return str.Length;
+            }
+            catch (Exception e)
+            {
+                GlobalErrorMessage = "GetProfileString: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage);
+            }
+            return -1;
+        }
+
+        [DllExport("WriteProfileString", CallingConvention = CallingConvention.StdCall)]
+        public static long WriteProfileString([MarshalAs(UnmanagedType.LPWStr)]string Section, [MarshalAs(UnmanagedType.LPWStr)]string Key, 
+            [MarshalAs(UnmanagedType.LPWStr)]string Value, [MarshalAs(UnmanagedType.LPWStr)]string filePath)
+        {
+            try
+            {
+                return ProfileFunctions.WritePrivateProfileStringW2(Section, Key, Value, filePath);
+            }
+            catch (Exception e)
+            {
+                GlobalErrorMessage = "GetProfileString: " + e.ToString();
+                LogWriteLine(GlobalErrorMessage);
+            }
+            return -1;
         }
 
 

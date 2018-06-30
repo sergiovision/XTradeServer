@@ -147,8 +147,14 @@ namespace FXBusinessLogic.ThriftServer
 
         public long IsServerActive(Dictionary<string, string> paramsList)
         {
-            if (fxmind.IsDebug())
-                log.Info("server(" + GetHashCode() + ") IsServerActive");
+            try
+            {
+                if (fxmind.IsDebug())
+                    log.Info("server(" + GetHashCode() + ") IsServerActive");
+            }
+            catch (Exception )
+            {
+            }
             return 1;
         }
 
