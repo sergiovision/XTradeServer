@@ -15,25 +15,9 @@ namespace BusinessObjects
 
         public FXMindMQLClient(long port)
         {
-            try
-            {
-                Host = "127.0.0.1";
-                Port = (int)port;
-
-                InitBase();
-
-                //if (String.IsNullOrEmpty(ThriftCalls._FullFilePath))
-                //    ThriftCalls.InitDLL(this);
-
-            }
-            catch (TApplicationException x)
-            {
-                Console.WriteLine(x.StackTrace);
-            }
-            catch (SocketException s)
-            {
-                Console.WriteLine(s.ToString());
-            }
+            Host = "127.0.0.1";
+            Port = (int)port;
+            InitBase();
         }
 
 

@@ -27,10 +27,14 @@ namespace com.fxmind.manager.jobs
         public TerminalMonitoringJob()
         {
             log.Debug("TerminalMonitoringJob c-tor");
+            //mCheckQuery = @"SELECT DISTINCT term.*
+            //                    FROM terminal term
+            //                    INNER JOIN adviser adv ON term.ID = adv.TERMINAL_ID
+            //                WHERE adv.DISABLED = false "; //AND adv.RUNNING = true
+
             mCheckQuery = @"SELECT DISTINCT term.*
                                 FROM terminal term
-                                INNER JOIN adviser adv ON term.ID = adv.TERMINAL_ID
-                            WHERE adv.DISABLED = false "; //AND adv.RUNNING = true
+                                WHERE term.DISABLED = false "; 
 
             procUtil = new ProcessImpersonation(log);
         }

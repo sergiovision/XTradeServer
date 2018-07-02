@@ -11,15 +11,9 @@ namespace BusinessObjects
         private static readonly ILog log = LogManager.GetLogger(typeof(AppServiceClient));
         public AppServiceClient(string host, short port)
         { 
-            try
-            {
-                Host = host;
-                Port = port;
-                InitBase();
-            } catch (Exception e)
-            {
-                log.Error("AppServiceClient:" + e.ToString());
-            }
+            Host = host;
+            Port = port;
+            InitBase();
         }
 
         public override AppService.Client CreateClient(TProtocol p)

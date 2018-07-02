@@ -5,7 +5,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using BusinessObjects;
-using FXBusinessLogic.BusinessObjects.Thrift;
 using Microsoft.Win32;
 using RGiesecke.DllExport;
 namespace ThriftMQL

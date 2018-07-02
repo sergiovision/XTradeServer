@@ -51,6 +51,12 @@ namespace FXBusinessLogic.fx_mind
             get { return fCODEBASE; }
             set { SetPropertyValue<string>("CODEBASE", ref fCODEBASE, value); }
         }
+        byte fDISABLED;
+        public byte DISABLED
+        {
+            get { return fDISABLED; }
+            set { SetPropertyValue<byte>("DISABLED", ref fDISABLED, value); }
+        }
         [Association(@"DBAdviserReferencesDBTerminal")]
         public XPCollection<DBAdviser> Advisers { get { return GetCollection<DBAdviser>("Advisers"); } }
     }

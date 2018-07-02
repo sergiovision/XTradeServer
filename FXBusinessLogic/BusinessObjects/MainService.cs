@@ -1239,7 +1239,7 @@ namespace FXBusinessLogic.BusinessObjects
             }
             catch (Exception e)
             {
-                log.Error("SaveExpert: " + e.ToString());
+                log.Error("DeInitExpert: " + e.ToString());
             }
             finally
             {
