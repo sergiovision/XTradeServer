@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObjects", "Business
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThriftMQL", "ThriftMQL\ThriftMQL.csproj", "{499EB63C-D74C-47E8-AE48-A2FC94538E9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thrift.45", "ThriftMQL\Thrift.45.csproj", "{EBCE35DA-CF6A-42BC-A357-A9C09B534299}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Thrift.46", "ThriftMQL\Thrift.46.csproj", "{EBCE35DA-CF6A-42BC-A357-A9C09B534299}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

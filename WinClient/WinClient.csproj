@@ -163,9 +163,9 @@
       <Project>{b9151e6c-e756-43c2-a70f-c6fb46621809}</Project>
       <Name>BusinessObjects</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ThriftMQL\Thrift.45.csproj">
+    <ProjectReference Include="..\ThriftMQL\Thrift.46.csproj">
       <Project>{ebce35da-cf6a-42bc-a357-a9c09b534299}</Project>
-      <Name>Thrift.45</Name>
+      <Name>Thrift.46</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
