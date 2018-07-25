@@ -1259,7 +1259,8 @@ namespace FXBusinessLogic.BusinessObjects
                 foreach ( var terminal in varQTerminal )
                 {
                     DirectoryInfo sourceDir = new DirectoryInfo(sourceFolder);
-                    StreamWriter SW = new StreamWriter("deploy.bat");
+                    string fileName = string.Format(@"deployto_{0}.bat", terminal.ACCOUNTNUMBER);
+                    StreamWriter SW = new StreamWriter(fileName);
                     SW.Write(ProcessFolder("", terminal, sourceFolder, CopyFile));
                     SW.Write(ProcessFolder("", terminal, sourceFolder, CompileFile));
                     SW.Flush();
