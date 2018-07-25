@@ -107,5 +107,12 @@ namespace FXBusinessLogic.ThriftServer
         {
             fxmind.SaveIndicator(i);
         }
+
+        public void Deploy()
+        {
+            string sourceFolder = fxmind.GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_MQLSOURCEFOLDER);
+            fxmind.DeployToTerminals(sourceFolder);
+
+        }
     }
 }

@@ -20,7 +20,6 @@ namespace BusinessObjects
             InitBase();
         }
 
-
         public override FXMindMQL.Client CreateClient(TProtocol p)
         {
             client = new FXMindMQL.Client(p);

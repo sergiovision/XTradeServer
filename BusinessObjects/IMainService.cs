@@ -67,5 +67,8 @@ namespace BusinessObjects
         void DeInitExpert(int Reason, long MagicNumber);
 
         int DeleteHistoryOrders(string filePath);
+
+        void DeployToTerminals(string sourceFolder);
+
     }
 }

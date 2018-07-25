@@ -32,3 +32,6 @@
 /BusinessObjects/gen-nodejs
 /.vs/FXMind/DesignTimeBuild
 /MQL5
+/ConsoleClient/bin/Debug
+/ConsoleClient/obj/Debug
+/ConsoleClient

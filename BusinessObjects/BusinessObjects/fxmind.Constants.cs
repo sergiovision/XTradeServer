@@ -47,5 +47,6 @@ namespace BusinessObjects
     public const string SETTINGS_PROPERTY_INSTALLDIR = "FXMind.InstallDir";
     public const string SETTINGS_PROPERTY_RUNTERMINALUSER = "FXMind.TerminalUser";
     public const string SETTINGS_PROPERTY_MTCOMMONFILES = "Metatrader.CommonFiles";
+    public const string SETTINGS_PROPERTY_MQLSOURCEFOLDER = "MQL.Sources";
   }
 }

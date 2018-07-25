@@ -37,40 +37,20 @@ namespace FXMind.WinClient
             DevExpress.Utils.ToolTipTitleItem toolTipTitleItem2 = new DevExpress.Utils.ToolTipTitleItem();
             DevExpress.Utils.SuperToolTip superToolTip3 = new DevExpress.Utils.SuperToolTip();
             DevExpress.Utils.ToolTipTitleItem toolTipTitleItem3 = new DevExpress.Utils.ToolTipTitleItem();
-            DevExpress.Utils.SuperToolTip superToolTip4 = new DevExpress.Utils.SuperToolTip();
-            DevExpress.Utils.ToolTipTitleItem toolTipTitleItem4 = new DevExpress.Utils.ToolTipTitleItem();
             DevExpress.XtraGrid.GridLevelNode gridLevelNode1 = new DevExpress.XtraGrid.GridLevelNode();
             DevExpress.XtraEditors.Controls.EditorButtonImageOptions editorButtonImageOptions1 = new DevExpress.XtraEditors.Controls.EditorButtonImageOptions();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject1 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject2 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject3 = new DevExpress.Utils.SerializableAppearanceObject();
+            DevExpress.Utils.SerializableAppearanceObject serializableAppearanceObject4 = new DevExpress.Utils.SerializableAppearanceObject();
             this.barAdviserSymbol = new DevExpress.XtraBars.BarEditItem();
             this.gridView8 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.MainBarManager = new DevExpress.XtraBars.BarManager(this.components);
-            this.currencyStrengthBar = new DevExpress.XtraBars.Bar();
-            this.barCurrencyList = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryGridLookCurrency1 = new DevExpress.XtraEditors.Repository.RepositoryItemGridLookUpEdit();
-            this.gridView5 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.barIndiList = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryGridLookIndi1 = new DevExpress.XtraEditors.Repository.RepositoryItemGridLookUpEdit();
-            this.repositoryItemGridLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.barCSSStart = new DevExpress.XtraBars.BarStaticItem();
-            this.barCSStart = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryItemCSStart = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
-            this.barCSStartTime = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryItemCSStartTime = new DevExpress.XtraEditors.Repository.RepositoryItemTimeEdit();
-            this.barCSSSend = new DevExpress.XtraBars.BarStaticItem();
-            this.barCSEnd = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryItemCSEnd = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
-            this.barCSEndTime = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryItemCSEndTime = new DevExpress.XtraEditors.Repository.RepositoryItemTimeEdit();
-            this.barCSUseInterval = new DevExpress.XtraBars.BarCheckItem();
-            this.barCalcCurrStr = new DevExpress.XtraBars.BarButtonItem();
-            this.BarDockCurrencyStrength = new DevExpress.XtraBars.StandaloneBarDockControl();
-            this.bar1 = new DevExpress.XtraBars.Bar();
-            this.barButtonTestClient = new DevExpress.XtraBars.BarButtonItem();
-            this.BarDockAuto = new DevExpress.XtraBars.StandaloneBarDockControl();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.BarDockAuto = new DevExpress.XtraBars.StandaloneBarDockControl();
             this.barEditItem1 = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemComboBox1 = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.barListItem1 = new DevExpress.XtraBars.BarListItem();
@@ -91,8 +71,6 @@ namespace FXMind.WinClient
             this.barTimeZone2 = new DevExpress.XtraBars.BarListItem();
             this.barEditItem3 = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemCheckedComboBoxEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckedComboBoxEdit();
-            this.barEditCurrency = new DevExpress.XtraBars.BarEditItem();
-            this.repositoryItemCheckedComboBoxEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckedComboBoxEdit();
             this.barEditItem4 = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemTextEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.barIndiCheckList = new DevExpress.XtraBars.BarEditItem();
@@ -101,6 +79,10 @@ namespace FXMind.WinClient
             this.barEditItem5 = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemTextEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
             this.barStaticItem3 = new DevExpress.XtraBars.BarStaticItem();
+            this.barIndiList = new DevExpress.XtraBars.BarEditItem();
+            this.repositoryGridLookIndi1 = new DevExpress.XtraEditors.Repository.RepositoryItemGridLookUpEdit();
+            this.repositoryItemGridLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.barCalcCurrStr = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
             this.barStaticItem4 = new DevExpress.XtraBars.BarStaticItem();
             this.barLargeButtonItem1 = new DevExpress.XtraBars.BarLargeButtonItem();
@@ -109,14 +91,33 @@ namespace FXMind.WinClient
             this.repositoryItemDateEdit5 = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.barTSEndTime = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemTimeEdit3 = new DevExpress.XtraEditors.Repository.RepositoryItemTimeEdit();
+            this.barCSSStart = new DevExpress.XtraBars.BarStaticItem();
+            this.barCSStart = new DevExpress.XtraBars.BarEditItem();
+            this.repositoryItemCSStart = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
+            this.barCSStartTime = new DevExpress.XtraBars.BarEditItem();
+            this.repositoryItemCSStartTime = new DevExpress.XtraEditors.Repository.RepositoryItemTimeEdit();
+            this.barCSSSend = new DevExpress.XtraBars.BarStaticItem();
+            this.barCSEnd = new DevExpress.XtraBars.BarEditItem();
+            this.repositoryItemCSEnd = new DevExpress.XtraEditors.Repository.RepositoryItemDateEdit();
             this.barEditItem11 = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemTextEdit3 = new DevExpress.XtraEditors.Repository.RepositoryItemTextEdit();
+            this.barCSEndTime = new DevExpress.XtraBars.BarEditItem();
+            this.repositoryItemCSEndTime = new DevExpress.XtraEditors.Repository.RepositoryItemTimeEdit();
+            this.barCSUseInterval = new DevExpress.XtraBars.BarCheckItem();
             this.barButtonItem6 = new DevExpress.XtraBars.BarButtonItem();
             this.barConnectTerminal = new DevExpress.XtraBars.BarLargeButtonItem();
             this.barSelectTerminal = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemAccountNumber = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
             this.barEASymbol = new DevExpress.XtraBars.BarEditItem();
             this.repositoryItemEAComboSymbol = new DevExpress.XtraEditors.Repository.RepositoryItemComboBox();
+            this.barButtonTestClient = new DevExpress.XtraBars.BarButtonItem();
+            this.repositoryItemCheckedComboBoxEdit2 = new DevExpress.XtraEditors.Repository.RepositoryItemCheckedComboBoxEdit();
+            this.currencyStrengthBar = new DevExpress.XtraBars.Bar();
+            this.barCurrencyList = new DevExpress.XtraBars.BarEditItem();
+            this.repositoryGridLookCurrency1 = new DevExpress.XtraEditors.Repository.RepositoryItemGridLookUpEdit();
+            this.gridView5 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.bar1 = new DevExpress.XtraBars.Bar();
+            this.barEditCurrency = new DevExpress.XtraBars.BarEditItem();
             this.searchLookUpEdit1View = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
             this.jobsPage = new DevExpress.XtraTab.XtraTabPage();
@@ -131,18 +132,6 @@ namespace FXMind.WinClient
             this.colNextTime = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colRunNow = new DevExpress.XtraGrid.Columns.GridColumn();
             this.repositoryRunNowButtonEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit();
-            this.strengthPage = new DevExpress.XtraTab.XtraTabPage();
-            this.strengthGrid = new DevExpress.XtraGrid.GridControl();
-            this.gridView4 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.colCurrency = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colMinute = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.col5Min = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.col15Min = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.col30Min = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.col1Hour = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.col5Hour = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.col1Day = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.col1Month = new DevExpress.XtraGrid.Columns.GridColumn();
             this.autoPage = new DevExpress.XtraTab.XtraTabPage();
             this.splitContainerAuto = new DevExpress.XtraEditors.SplitContainerControl();
             this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
@@ -171,6 +160,8 @@ namespace FXMind.WinClient
             this.barManager3 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar5 = new DevExpress.XtraBars.Bar();
             this.barStaticItem6 = new DevExpress.XtraBars.BarStaticItem();
+            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem7 = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControl5 = new DevExpress.XtraBars.BarDockControl();
             this.barDockControl6 = new DevExpress.XtraBars.BarDockControl();
             this.barDockControl7 = new DevExpress.XtraBars.BarDockControl();
@@ -190,30 +181,30 @@ namespace FXMind.WinClient
             this.barDockControl12 = new DevExpress.XtraBars.BarDockControl();
             ((System.ComponentModel.ISupportInitialize)(this.gridView8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBarManager)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryGridLookCurrency1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMarqueeProgressBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemProgressBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryGridLookIndi1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemGridLookUpEdit1View)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit5.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTimeEdit3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSStart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSStart.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSStartTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSEnd.CalendarTimeProperties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSEndTime)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMarqueeProgressBar1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemProgressBar1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit5.CalendarTimeProperties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTimeEdit3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSEndTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemAccountNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemEAComboSymbol)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryGridLookCurrency1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
             this.xtraTabControl1.SuspendLayout();
@@ -222,9 +213,6 @@ namespace FXMind.WinClient
             ((System.ComponentModel.ISupportInitialize)(this.gridView3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCronExpressions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryRunNowButtonEdit1)).BeginInit();
-            this.strengthPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.strengthGrid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView4)).BeginInit();
             this.autoPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerAuto)).BeginInit();
             this.splitContainerAuto.SuspendLayout();
@@ -254,14 +242,10 @@ namespace FXMind.WinClient
             // 
             // MainBarManager
             // 
-            this.MainBarManager.Bars.AddRange(new DevExpress.XtraBars.Bar[] {
-            this.currencyStrengthBar,
-            this.bar1});
             this.MainBarManager.DockControls.Add(this.barDockControlTop);
             this.MainBarManager.DockControls.Add(this.barDockControlBottom);
             this.MainBarManager.DockControls.Add(this.barDockControlLeft);
             this.MainBarManager.DockControls.Add(this.barDockControlRight);
-            this.MainBarManager.DockControls.Add(this.BarDockCurrencyStrength);
             this.MainBarManager.DockControls.Add(this.BarDockAuto);
             this.MainBarManager.Form = this;
             this.MainBarManager.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
@@ -281,14 +265,12 @@ namespace FXMind.WinClient
             this.bbiRefreshRates,
             this.barTimeZone2,
             this.barEditItem3,
-            this.barEditCurrency,
             this.barEditItem4,
             this.barIndiCheckList,
             this.barStaticItem2,
             this.barEditItem5,
             this.barStaticItem3,
             this.barIndiList,
-            this.barCurrencyList,
             this.barCalcCurrStr,
             this.barButtonItem4,
             this.barStaticItem4,
@@ -321,7 +303,6 @@ namespace FXMind.WinClient
             this.repositoryItemCheckedComboBoxEdit3,
             this.repositoryItemTextEdit2,
             this.repositoryGridLookIndi1,
-            this.repositoryGridLookCurrency1,
             this.repositoryItemDateEdit5,
             this.repositoryItemTimeEdit3,
             this.repositoryItemCSStart,
@@ -331,230 +312,6 @@ namespace FXMind.WinClient
             this.repositoryItemCSEndTime,
             this.repositoryItemAccountNumber,
             this.repositoryItemEAComboSymbol});
-            // 
-            // currencyStrengthBar
-            // 
-            this.currencyStrengthBar.BarName = "Currency Strength";
-            this.currencyStrengthBar.DockCol = 0;
-            this.currencyStrengthBar.DockRow = 0;
-            this.currencyStrengthBar.DockStyle = DevExpress.XtraBars.BarDockStyle.Standalone;
-            this.currencyStrengthBar.FloatLocation = new System.Drawing.Point(81, 206);
-            this.currencyStrengthBar.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barCurrencyList),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barIndiList),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barCSSStart),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barCSStart),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barCSStartTime),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barCSSSend),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barCSEnd),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barCSEndTime),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barCSUseInterval),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barCalcCurrStr)});
-            this.currencyStrengthBar.OptionsBar.AllowRename = true;
-            this.currencyStrengthBar.OptionsBar.UseWholeRow = true;
-            this.currencyStrengthBar.StandaloneBarDockControl = this.BarDockCurrencyStrength;
-            this.currencyStrengthBar.Text = "Currency Strength";
-            // 
-            // barCurrencyList
-            // 
-            this.barCurrencyList.AutoHideEdit = false;
-            this.barCurrencyList.Caption = "Currencies List";
-            this.barCurrencyList.Edit = this.repositoryGridLookCurrency1;
-            this.barCurrencyList.EditWidth = 120;
-            this.barCurrencyList.Id = 33;
-            this.barCurrencyList.Name = "barCurrencyList";
-            toolTipTitleItem1.Text = "Currencies List";
-            superToolTip1.Items.Add(toolTipTitleItem1);
-            this.barCurrencyList.SuperTip = superToolTip1;
-            // 
-            // repositoryGridLookCurrency1
-            // 
-            this.repositoryGridLookCurrency1.AutoComplete = false;
-            this.repositoryGridLookCurrency1.AutoHeight = false;
-            this.repositoryGridLookCurrency1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryGridLookCurrency1.DisplayMember = "This;ID;Name;Enabled";
-            this.repositoryGridLookCurrency1.Name = "repositoryGridLookCurrency1";
-            this.repositoryGridLookCurrency1.NullText = "Select Currencies";
-            this.repositoryGridLookCurrency1.ValueMember = "Name";
-            this.repositoryGridLookCurrency1.View = this.gridView5;
-            // 
-            // gridView5
-            // 
-            this.gridView5.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.gridView5.Name = "gridView5";
-            this.gridView5.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.True;
-            this.gridView5.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.True;
-            this.gridView5.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.gridView5.OptionsSelection.MultiSelect = true;
-            this.gridView5.OptionsView.ShowGroupPanel = false;
-            this.gridView5.RowCellClick += new DevExpress.XtraGrid.Views.Grid.RowCellClickEventHandler(this.gridView5_RowCellClick);
-            // 
-            // barIndiList
-            // 
-            this.barIndiList.AutoHideEdit = false;
-            this.barIndiList.Caption = "Indicators List";
-            this.barIndiList.Edit = this.repositoryGridLookIndi1;
-            this.barIndiList.EditWidth = 319;
-            this.barIndiList.Id = 32;
-            this.barIndiList.Name = "barIndiList";
-            toolTipTitleItem2.Text = "Indicators list\r\n";
-            superToolTip2.Items.Add(toolTipTitleItem2);
-            this.barIndiList.SuperTip = superToolTip2;
-            // 
-            // repositoryGridLookIndi1
-            // 
-            this.repositoryGridLookIndi1.AutoComplete = false;
-            this.repositoryGridLookIndi1.AutoHeight = false;
-            this.repositoryGridLookIndi1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryGridLookIndi1.Name = "repositoryGridLookIndi1";
-            this.repositoryGridLookIndi1.NullText = "Select Indicators";
-            this.repositoryGridLookIndi1.ValueMember = "IndicatorName";
-            this.repositoryGridLookIndi1.View = this.repositoryItemGridLookUpEdit1View;
-            // 
-            // repositoryItemGridLookUpEdit1View
-            // 
-            this.repositoryItemGridLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.repositoryItemGridLookUpEdit1View.Name = "repositoryItemGridLookUpEdit1View";
-            this.repositoryItemGridLookUpEdit1View.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemGridLookUpEdit1View.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemGridLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.repositoryItemGridLookUpEdit1View.OptionsSelection.MultiSelect = true;
-            this.repositoryItemGridLookUpEdit1View.OptionsView.ShowGroupPanel = false;
-            this.repositoryItemGridLookUpEdit1View.RowCellClick += new DevExpress.XtraGrid.Views.Grid.RowCellClickEventHandler(this.repositoryItemGridLookUpEdit1View_RowCellClick);
-            // 
-            // barCSSStart
-            // 
-            this.barCSSStart.Caption = "Start";
-            this.barCSSStart.Id = 47;
-            this.barCSSStart.Name = "barCSSStart";
-            // 
-            // barCSStart
-            // 
-            this.barCSStart.Caption = "barCSStartDate";
-            this.barCSStart.Edit = this.repositoryItemCSStart;
-            this.barCSStart.EditWidth = 100;
-            this.barCSStart.Id = 48;
-            this.barCSStart.Name = "barCSStart";
-            // 
-            // repositoryItemCSStart
-            // 
-            this.repositoryItemCSStart.AutoHeight = false;
-            this.repositoryItemCSStart.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemCSStart.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemCSStart.Name = "repositoryItemCSStart";
-            // 
-            // barCSStartTime
-            // 
-            this.barCSStartTime.Caption = "barCSStartTime";
-            this.barCSStartTime.Edit = this.repositoryItemCSStartTime;
-            this.barCSStartTime.EditWidth = 90;
-            this.barCSStartTime.Id = 49;
-            this.barCSStartTime.Name = "barCSStartTime";
-            // 
-            // repositoryItemCSStartTime
-            // 
-            this.repositoryItemCSStartTime.AutoHeight = false;
-            this.repositoryItemCSStartTime.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemCSStartTime.Name = "repositoryItemCSStartTime";
-            // 
-            // barCSSSend
-            // 
-            this.barCSSSend.Caption = "End";
-            this.barCSSSend.Id = 50;
-            this.barCSSSend.Name = "barCSSSend";
-            // 
-            // barCSEnd
-            // 
-            this.barCSEnd.Caption = "barCSEndDate";
-            this.barCSEnd.Edit = this.repositoryItemCSEnd;
-            this.barCSEnd.EditWidth = 100;
-            this.barCSEnd.Id = 51;
-            this.barCSEnd.Name = "barCSEnd";
-            // 
-            // repositoryItemCSEnd
-            // 
-            this.repositoryItemCSEnd.AutoHeight = false;
-            this.repositoryItemCSEnd.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemCSEnd.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemCSEnd.Name = "repositoryItemCSEnd";
-            // 
-            // barCSEndTime
-            // 
-            this.barCSEndTime.Caption = "barCSEndTime";
-            this.barCSEndTime.Edit = this.repositoryItemCSEndTime;
-            this.barCSEndTime.EditWidth = 90;
-            this.barCSEndTime.Id = 53;
-            this.barCSEndTime.Name = "barCSEndTime";
-            // 
-            // repositoryItemCSEndTime
-            // 
-            this.repositoryItemCSEndTime.AutoHeight = false;
-            this.repositoryItemCSEndTime.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemCSEndTime.Name = "repositoryItemCSEndTime";
-            // 
-            // barCSUseInterval
-            // 
-            this.barCSUseInterval.Caption = "Use Interval";
-            this.barCSUseInterval.Id = 54;
-            this.barCSUseInterval.Name = "barCSUseInterval";
-            // 
-            // barCalcCurrStr
-            // 
-            this.barCalcCurrStr.Caption = "Calculate";
-            this.barCalcCurrStr.Id = 34;
-            this.barCalcCurrStr.Name = "barCalcCurrStr";
-            this.barCalcCurrStr.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barCalcCurrStr_ItemClick);
-            // 
-            // BarDockCurrencyStrength
-            // 
-            this.BarDockCurrencyStrength.AutoSize = true;
-            this.BarDockCurrencyStrength.CausesValidation = false;
-            this.BarDockCurrencyStrength.Dock = System.Windows.Forms.DockStyle.Top;
-            this.BarDockCurrencyStrength.Location = new System.Drawing.Point(0, 0);
-            this.BarDockCurrencyStrength.Manager = this.MainBarManager;
-            this.BarDockCurrencyStrength.Margin = new System.Windows.Forms.Padding(6);
-            this.BarDockCurrencyStrength.Name = "BarDockCurrencyStrength";
-            this.BarDockCurrencyStrength.Size = new System.Drawing.Size(2396, 59);
-            this.BarDockCurrencyStrength.Text = "standaloneBarDockControl2";
-            // 
-            // bar1
-            // 
-            this.bar1.BarName = "Custom 4";
-            this.bar1.DockCol = 0;
-            this.bar1.DockRow = 0;
-            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Standalone;
-            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonTestClient)});
-            this.bar1.Offset = 2;
-            this.bar1.StandaloneBarDockControl = this.BarDockAuto;
-            this.bar1.Text = "Custom 4";
-            // 
-            // barButtonTestClient
-            // 
-            this.barButtonTestClient.Caption = "TestClient";
-            this.barButtonTestClient.Id = 65;
-            this.barButtonTestClient.Name = "barButtonTestClient";
-            this.barButtonTestClient.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonTestClient_ItemClick);
-            // 
-            // BarDockAuto
-            // 
-            this.BarDockAuto.AutoSize = true;
-            this.BarDockAuto.CausesValidation = false;
-            this.BarDockAuto.Dock = System.Windows.Forms.DockStyle.Top;
-            this.BarDockAuto.Location = new System.Drawing.Point(0, 0);
-            this.BarDockAuto.Manager = this.MainBarManager;
-            this.BarDockAuto.Margin = new System.Windows.Forms.Padding(6);
-            this.BarDockAuto.Name = "BarDockAuto";
-            this.BarDockAuto.Size = new System.Drawing.Size(2396, 59);
-            this.BarDockAuto.Text = "standaloneBarDockControl1";
             // 
             // barDockControlTop
             // 
@@ -591,6 +348,18 @@ namespace FXMind.WinClient
             this.barDockControlRight.Manager = this.MainBarManager;
             this.barDockControlRight.Margin = new System.Windows.Forms.Padding(6);
             this.barDockControlRight.Size = new System.Drawing.Size(0, 1176);
+            // 
+            // BarDockAuto
+            // 
+            this.BarDockAuto.AutoSize = true;
+            this.BarDockAuto.CausesValidation = false;
+            this.BarDockAuto.Dock = System.Windows.Forms.DockStyle.Top;
+            this.BarDockAuto.Location = new System.Drawing.Point(0, 0);
+            this.BarDockAuto.Manager = this.MainBarManager;
+            this.BarDockAuto.Margin = new System.Windows.Forms.Padding(6);
+            this.BarDockAuto.Name = "BarDockAuto";
+            this.BarDockAuto.Size = new System.Drawing.Size(2396, 0);
+            this.BarDockAuto.Text = "standaloneBarDockControl1";
             // 
             // barEditItem1
             // 
@@ -727,32 +496,6 @@ namespace FXMind.WinClient
             new DevExpress.XtraEditors.Controls.CheckedListBoxItem(null, "CAD")});
             this.repositoryItemCheckedComboBoxEdit1.Name = "repositoryItemCheckedComboBoxEdit1";
             // 
-            // barEditCurrency
-            // 
-            this.barEditCurrency.Caption = "Currencies";
-            this.barEditCurrency.Edit = this.repositoryItemCheckedComboBoxEdit2;
-            this.barEditCurrency.Id = 26;
-            this.barEditCurrency.Name = "barEditCurrency";
-            toolTipTitleItem3.Text = "Currencies List";
-            superToolTip3.Items.Add(toolTipTitleItem3);
-            this.barEditCurrency.SuperTip = superToolTip3;
-            // 
-            // repositoryItemCheckedComboBoxEdit2
-            // 
-            this.repositoryItemCheckedComboBoxEdit2.AutoHeight = false;
-            this.repositoryItemCheckedComboBoxEdit2.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.repositoryItemCheckedComboBoxEdit2.Items.AddRange(new DevExpress.XtraEditors.Controls.CheckedListBoxItem[] {
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("USD", "USD", System.Windows.Forms.CheckState.Checked),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("EUR", "EUR", System.Windows.Forms.CheckState.Checked),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("GBP", "GBP"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("CHF", "CHF"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("AUD", "AUD", System.Windows.Forms.CheckState.Checked),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("CAD", "CAD"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("NZD", "NZD"),
-            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("JPY", "JPY")});
-            this.repositoryItemCheckedComboBoxEdit2.Name = "repositoryItemCheckedComboBoxEdit2";
-            // 
             // barEditItem4
             // 
             this.barEditItem4.Caption = "barEditItem4";
@@ -803,6 +546,47 @@ namespace FXMind.WinClient
             this.barStaticItem3.Id = 31;
             this.barStaticItem3.Name = "barStaticItem3";
             // 
+            // barIndiList
+            // 
+            this.barIndiList.AutoHideEdit = false;
+            this.barIndiList.Caption = "Indicators List";
+            this.barIndiList.Edit = this.repositoryGridLookIndi1;
+            this.barIndiList.EditWidth = 319;
+            this.barIndiList.Id = 32;
+            this.barIndiList.Name = "barIndiList";
+            toolTipTitleItem1.Text = "Indicators list\r\n";
+            superToolTip1.Items.Add(toolTipTitleItem1);
+            this.barIndiList.SuperTip = superToolTip1;
+            // 
+            // repositoryGridLookIndi1
+            // 
+            this.repositoryGridLookIndi1.AutoComplete = false;
+            this.repositoryGridLookIndi1.AutoHeight = false;
+            this.repositoryGridLookIndi1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryGridLookIndi1.Name = "repositoryGridLookIndi1";
+            this.repositoryGridLookIndi1.NullText = "Select Indicators";
+            this.repositoryGridLookIndi1.PopupView = this.repositoryItemGridLookUpEdit1View;
+            this.repositoryGridLookIndi1.ValueMember = "IndicatorName";
+            // 
+            // repositoryItemGridLookUpEdit1View
+            // 
+            this.repositoryItemGridLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.repositoryItemGridLookUpEdit1View.Name = "repositoryItemGridLookUpEdit1View";
+            this.repositoryItemGridLookUpEdit1View.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.True;
+            this.repositoryItemGridLookUpEdit1View.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.True;
+            this.repositoryItemGridLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.repositoryItemGridLookUpEdit1View.OptionsSelection.MultiSelect = true;
+            this.repositoryItemGridLookUpEdit1View.OptionsView.ShowGroupPanel = false;
+            this.repositoryItemGridLookUpEdit1View.RowCellClick += new DevExpress.XtraGrid.Views.Grid.RowCellClickEventHandler(this.repositoryItemGridLookUpEdit1View_RowCellClick);
+            // 
+            // barCalcCurrStr
+            // 
+            this.barCalcCurrStr.Caption = "Calculate";
+            this.barCalcCurrStr.Id = 34;
+            this.barCalcCurrStr.Name = "barCalcCurrStr";
+            this.barCalcCurrStr.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barCalcCurrStr_ItemClick);
+            // 
             // barButtonItem4
             // 
             this.barButtonItem4.Caption = "barButtonItem4";
@@ -834,9 +618,9 @@ namespace FXMind.WinClient
             this.barTSEndDate.EditWidth = 100;
             this.barTSEndDate.Id = 44;
             this.barTSEndDate.Name = "barTSEndDate";
-            toolTipTitleItem4.Text = "End Date for TechSummary";
-            superToolTip4.Items.Add(toolTipTitleItem4);
-            this.barTSEndDate.SuperTip = superToolTip4;
+            toolTipTitleItem2.Text = "End Date for TechSummary";
+            superToolTip2.Items.Add(toolTipTitleItem2);
+            this.barTSEndDate.SuperTip = superToolTip2;
             // 
             // repositoryItemDateEdit5
             // 
@@ -862,6 +646,67 @@ namespace FXMind.WinClient
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.repositoryItemTimeEdit3.Name = "repositoryItemTimeEdit3";
             // 
+            // barCSSStart
+            // 
+            this.barCSSStart.Caption = "Start";
+            this.barCSSStart.Id = 47;
+            this.barCSSStart.Name = "barCSSStart";
+            // 
+            // barCSStart
+            // 
+            this.barCSStart.Caption = "barCSStartDate";
+            this.barCSStart.Edit = this.repositoryItemCSStart;
+            this.barCSStart.EditWidth = 100;
+            this.barCSStart.Id = 48;
+            this.barCSStart.Name = "barCSStart";
+            // 
+            // repositoryItemCSStart
+            // 
+            this.repositoryItemCSStart.AutoHeight = false;
+            this.repositoryItemCSStart.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemCSStart.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemCSStart.Name = "repositoryItemCSStart";
+            // 
+            // barCSStartTime
+            // 
+            this.barCSStartTime.Caption = "barCSStartTime";
+            this.barCSStartTime.Edit = this.repositoryItemCSStartTime;
+            this.barCSStartTime.EditWidth = 90;
+            this.barCSStartTime.Id = 49;
+            this.barCSStartTime.Name = "barCSStartTime";
+            // 
+            // repositoryItemCSStartTime
+            // 
+            this.repositoryItemCSStartTime.AutoHeight = false;
+            this.repositoryItemCSStartTime.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemCSStartTime.Name = "repositoryItemCSStartTime";
+            // 
+            // barCSSSend
+            // 
+            this.barCSSSend.Caption = "End";
+            this.barCSSSend.Id = 50;
+            this.barCSSSend.Name = "barCSSSend";
+            // 
+            // barCSEnd
+            // 
+            this.barCSEnd.Caption = "barCSEndDate";
+            this.barCSEnd.Edit = this.repositoryItemCSEnd;
+            this.barCSEnd.EditWidth = 100;
+            this.barCSEnd.Id = 51;
+            this.barCSEnd.Name = "barCSEnd";
+            // 
+            // repositoryItemCSEnd
+            // 
+            this.repositoryItemCSEnd.AutoHeight = false;
+            this.repositoryItemCSEnd.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemCSEnd.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemCSEnd.Name = "repositoryItemCSEnd";
+            // 
             // barEditItem11
             // 
             this.barEditItem11.Caption = "barEditItem11";
@@ -873,6 +718,27 @@ namespace FXMind.WinClient
             // 
             this.repositoryItemTextEdit3.AutoHeight = false;
             this.repositoryItemTextEdit3.Name = "repositoryItemTextEdit3";
+            // 
+            // barCSEndTime
+            // 
+            this.barCSEndTime.Caption = "barCSEndTime";
+            this.barCSEndTime.Edit = this.repositoryItemCSEndTime;
+            this.barCSEndTime.EditWidth = 90;
+            this.barCSEndTime.Id = 53;
+            this.barCSEndTime.Name = "barCSEndTime";
+            // 
+            // repositoryItemCSEndTime
+            // 
+            this.repositoryItemCSEndTime.AutoHeight = false;
+            this.repositoryItemCSEndTime.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemCSEndTime.Name = "repositoryItemCSEndTime";
+            // 
+            // barCSUseInterval
+            // 
+            this.barCSUseInterval.Caption = "Use Interval";
+            this.barCSUseInterval.Id = 54;
+            this.barCSUseInterval.Name = "barCSUseInterval";
             // 
             // barButtonItem6
             // 
@@ -922,6 +788,76 @@ namespace FXMind.WinClient
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.repositoryItemEAComboSymbol.Name = "repositoryItemEAComboSymbol";
             // 
+            // barButtonTestClient
+            // 
+            this.barButtonTestClient.Caption = "TestClient";
+            this.barButtonTestClient.Id = 65;
+            this.barButtonTestClient.Name = "barButtonTestClient";
+            this.barButtonTestClient.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonTestClient_ItemClick);
+            // 
+            // repositoryItemCheckedComboBoxEdit2
+            // 
+            this.repositoryItemCheckedComboBoxEdit2.AutoHeight = false;
+            this.repositoryItemCheckedComboBoxEdit2.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.repositoryItemCheckedComboBoxEdit2.Items.AddRange(new DevExpress.XtraEditors.Controls.CheckedListBoxItem[] {
+            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("USD", "USD", System.Windows.Forms.CheckState.Checked),
+            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("EUR", "EUR", System.Windows.Forms.CheckState.Checked),
+            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("GBP", "GBP"),
+            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("CHF", "CHF"),
+            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("AUD", "AUD", System.Windows.Forms.CheckState.Checked),
+            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("CAD", "CAD"),
+            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("NZD", "NZD"),
+            new DevExpress.XtraEditors.Controls.CheckedListBoxItem("JPY", "JPY")});
+            this.repositoryItemCheckedComboBoxEdit2.Name = "repositoryItemCheckedComboBoxEdit2";
+            // 
+            // currencyStrengthBar
+            // 
+            this.currencyStrengthBar.DockCol = 0;
+            // 
+            // barCurrencyList
+            // 
+            this.barCurrencyList.Edit = null;
+            this.barCurrencyList.Id = -1;
+            this.barCurrencyList.Name = "barCurrencyList";
+            // 
+            // repositoryGridLookCurrency1
+            // 
+            this.repositoryGridLookCurrency1.Name = "repositoryGridLookCurrency1";
+            // 
+            // gridView5
+            // 
+            this.gridView5.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
+            this.gridView5.Name = "gridView5";
+            this.gridView5.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.True;
+            this.gridView5.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.True;
+            this.gridView5.OptionsSelection.EnableAppearanceFocusedCell = false;
+            this.gridView5.OptionsSelection.MultiSelect = true;
+            this.gridView5.OptionsView.ShowGroupPanel = false;
+            this.gridView5.RowCellClick += new DevExpress.XtraGrid.Views.Grid.RowCellClickEventHandler(this.gridView5_RowCellClick);
+            // 
+            // bar1
+            // 
+            this.bar1.BarName = "Custom 4";
+            this.bar1.DockCol = 0;
+            this.bar1.DockRow = 0;
+            this.bar1.DockStyle = DevExpress.XtraBars.BarDockStyle.Standalone;
+            this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonTestClient)});
+            this.bar1.Offset = 2;
+            this.bar1.StandaloneBarDockControl = this.BarDockAuto;
+            this.bar1.Text = "Custom 4";
+            // 
+            // barEditCurrency
+            // 
+            this.barEditCurrency.Caption = "Currencies";
+            this.barEditCurrency.Edit = this.repositoryItemCheckedComboBoxEdit2;
+            this.barEditCurrency.Id = 26;
+            this.barEditCurrency.Name = "barEditCurrency";
+            toolTipTitleItem3.Text = "Currencies List";
+            superToolTip3.Items.Add(toolTipTitleItem3);
+            this.barEditCurrency.SuperTip = superToolTip3;
+            // 
             // searchLookUpEdit1View
             // 
             this.searchLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
@@ -940,7 +876,6 @@ namespace FXMind.WinClient
             this.xtraTabControl1.TabIndex = 10;
             this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.jobsPage,
-            this.strengthPage,
             this.autoPage});
             this.xtraTabControl1.SelectedPageChanged += new DevExpress.XtraTab.TabPageChangedEventHandler(this.xtraTabControl1_SelectedPageChanged);
             // 
@@ -1086,139 +1021,10 @@ namespace FXMind.WinClient
             // 
             this.repositoryRunNowButtonEdit1.AutoHeight = false;
             this.repositoryRunNowButtonEdit1.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "Run Now", -1, true, true, false, editorButtonImageOptions1, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), "Run Job Now")});
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "Run Now", -1, true, true, false, editorButtonImageOptions1, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject1, serializableAppearanceObject2, serializableAppearanceObject3, serializableAppearanceObject4, "Run Job Now", null, null, DevExpress.Utils.ToolTipAnchor.Default)});
             this.repositoryRunNowButtonEdit1.Name = "repositoryRunNowButtonEdit1";
             this.repositoryRunNowButtonEdit1.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
             this.repositoryRunNowButtonEdit1.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.repositoryRunNowButtonEdit1_ButtonClick);
-            // 
-            // strengthPage
-            // 
-            this.strengthPage.Controls.Add(this.BarDockCurrencyStrength);
-            this.strengthPage.Controls.Add(this.strengthGrid);
-            this.strengthPage.Margin = new System.Windows.Forms.Padding(6);
-            this.strengthPage.Name = "strengthPage";
-            this.strengthPage.Size = new System.Drawing.Size(2396, 1123);
-            this.strengthPage.Text = "Currencies Strength";
-            // 
-            // strengthGrid
-            // 
-            this.strengthGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.strengthGrid.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(6);
-            this.strengthGrid.Location = new System.Drawing.Point(0, 0);
-            this.strengthGrid.MainView = this.gridView4;
-            this.strengthGrid.Margin = new System.Windows.Forms.Padding(6);
-            this.strengthGrid.MenuManager = this.MainBarManager;
-            this.strengthGrid.Name = "strengthGrid";
-            this.strengthGrid.Size = new System.Drawing.Size(2396, 1123);
-            this.strengthGrid.TabIndex = 0;
-            this.strengthGrid.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView4});
-            // 
-            // gridView4
-            // 
-            this.gridView4.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.colCurrency,
-            this.colMinute,
-            this.col5Min,
-            this.col15Min,
-            this.col30Min,
-            this.col1Hour,
-            this.col5Hour,
-            this.col1Day,
-            this.col1Month});
-            this.gridView4.GridControl = this.strengthGrid;
-            this.gridView4.Name = "gridView4";
-            this.gridView4.OptionsBehavior.Editable = false;
-            this.gridView4.OptionsBehavior.ReadOnly = true;
-            this.gridView4.RowCellStyle += new DevExpress.XtraGrid.Views.Grid.RowCellStyleEventHandler(this.gridView4_RowCellStyle);
-            // 
-            // colCurrency
-            // 
-            this.colCurrency.Caption = "Currency";
-            this.colCurrency.FieldName = "Currency";
-            this.colCurrency.Name = "colCurrency";
-            this.colCurrency.Visible = true;
-            this.colCurrency.VisibleIndex = 0;
-            // 
-            // colMinute
-            // 
-            this.colMinute.Caption = "1Minute";
-            this.colMinute.DisplayFormat.FormatString = "N1";
-            this.colMinute.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.colMinute.FieldName = "Min1";
-            this.colMinute.Name = "colMinute";
-            this.colMinute.Visible = true;
-            this.colMinute.VisibleIndex = 1;
-            // 
-            // col5Min
-            // 
-            this.col5Min.Caption = "5Minute";
-            this.col5Min.DisplayFormat.FormatString = "N1";
-            this.col5Min.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.col5Min.FieldName = "Min5";
-            this.col5Min.Name = "col5Min";
-            this.col5Min.Visible = true;
-            this.col5Min.VisibleIndex = 2;
-            // 
-            // col15Min
-            // 
-            this.col15Min.Caption = "col15Min";
-            this.col15Min.DisplayFormat.FormatString = "N1";
-            this.col15Min.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.col15Min.FieldName = "Min15";
-            this.col15Min.Name = "col15Min";
-            this.col15Min.Visible = true;
-            this.col15Min.VisibleIndex = 3;
-            // 
-            // col30Min
-            // 
-            this.col30Min.Caption = "30Min";
-            this.col30Min.DisplayFormat.FormatString = "N1";
-            this.col30Min.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.col30Min.FieldName = "Min30";
-            this.col30Min.Name = "col30Min";
-            this.col30Min.Visible = true;
-            this.col30Min.VisibleIndex = 4;
-            // 
-            // col1Hour
-            // 
-            this.col1Hour.Caption = "1Hour";
-            this.col1Hour.DisplayFormat.FormatString = "N1";
-            this.col1Hour.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.col1Hour.FieldName = "Hourly";
-            this.col1Hour.Name = "col1Hour";
-            this.col1Hour.Visible = true;
-            this.col1Hour.VisibleIndex = 5;
-            // 
-            // col5Hour
-            // 
-            this.col5Hour.Caption = "5Hour";
-            this.col5Hour.DisplayFormat.FormatString = "N1";
-            this.col5Hour.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.col5Hour.FieldName = "Hourly5";
-            this.col5Hour.Name = "col5Hour";
-            this.col5Hour.Visible = true;
-            this.col5Hour.VisibleIndex = 6;
-            // 
-            // col1Day
-            // 
-            this.col1Day.Caption = "1Day";
-            this.col1Day.DisplayFormat.FormatString = "N1";
-            this.col1Day.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.col1Day.FieldName = "Daily";
-            this.col1Day.Name = "col1Day";
-            this.col1Day.Visible = true;
-            this.col1Day.VisibleIndex = 7;
-            // 
-            // col1Month
-            // 
-            this.col1Month.Caption = "1Month";
-            this.col1Month.DisplayFormat.FormatString = "N1";
-            this.col1Month.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.col1Month.FieldName = "Monthly";
-            this.col1Month.Name = "col1Month";
-            this.col1Month.Visible = true;
-            this.col1Month.VisibleIndex = 8;
             // 
             // autoPage
             // 
@@ -1372,6 +1178,7 @@ namespace FXMind.WinClient
             // 
             // propertyGridControl1
             // 
+            this.propertyGridControl1.Cursor = System.Windows.Forms.Cursors.SizeNS;
             this.propertyGridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGridControl1.Location = new System.Drawing.Point(0, 0);
             this.propertyGridControl1.Margin = new System.Windows.Forms.Padding(6);
@@ -1387,12 +1194,13 @@ namespace FXMind.WinClient
             // 
             // rowMagicNumber
             // 
-            this.rowMagicNumber.Height = 17;
+            this.rowMagicNumber.Height = 41;
             this.rowMagicNumber.Name = "rowMagicNumber";
             this.rowMagicNumber.Properties.Caption = "MagicNumber";
             // 
             // rowLot
             // 
+            this.rowLot.Height = 48;
             this.rowLot.Name = "rowLot";
             this.rowLot.Properties.Caption = "Lot Size";
             this.rowLot.Properties.UnboundType = DevExpress.Data.UnboundColumnType.Integer;
@@ -1406,6 +1214,7 @@ namespace FXMind.WinClient
             // 
             // rowComment
             // 
+            this.rowComment.Height = 46;
             this.rowComment.Name = "rowComment";
             this.rowComment.Properties.Caption = "Comment";
             this.rowComment.Properties.UnboundType = DevExpress.Data.UnboundColumnType.String;
@@ -1482,8 +1291,10 @@ namespace FXMind.WinClient
             this.barTSStartDate,
             this.barTSUseInterval,
             this.barTSStart,
-            this.barStaticItem6});
-            this.barManager3.MaxItemId = 6;
+            this.barStaticItem6,
+            this.barButtonItem1,
+            this.barButtonItem7});
+            this.barManager3.MaxItemId = 8;
             this.barManager3.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] {
             this.repositoryItemTimeEdit2,
             this.repositoryItemDateEdit4});
@@ -1497,7 +1308,9 @@ namespace FXMind.WinClient
             this.bar5.DockRow = 0;
             this.bar5.DockStyle = DevExpress.XtraBars.BarDockStyle.Bottom;
             this.bar5.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barStaticItem6)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.barStaticItem6),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem1),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem7)});
             this.bar5.OptionsBar.AllowQuickCustomization = false;
             this.bar5.OptionsBar.DrawDragBorder = false;
             this.bar5.OptionsBar.UseWholeRow = true;
@@ -1508,6 +1321,20 @@ namespace FXMind.WinClient
             this.barStaticItem6.Caption = "Status Bar";
             this.barStaticItem6.Id = 5;
             this.barStaticItem6.Name = "barStaticItem6";
+            // 
+            // barButtonItem1
+            // 
+            this.barButtonItem1.Caption = "Deploy";
+            this.barButtonItem1.Id = 6;
+            this.barButtonItem1.Name = "barButtonItem1";
+            this.barButtonItem1.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem1_ItemClick);
+            // 
+            // barButtonItem7
+            // 
+            this.barButtonItem7.Caption = "Test";
+            this.barButtonItem7.Id = 7;
+            this.barButtonItem7.Name = "barButtonItem7";
+            this.barButtonItem7.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem7_ItemClick);
             // 
             // barDockControl5
             // 
@@ -1674,30 +1501,30 @@ namespace FXMind.WinClient
             this.Load += new System.EventHandler(this.TradersParserFrom_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gridView8)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MainBarManager)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryGridLookCurrency1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMarqueeProgressBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemProgressBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryGridLookIndi1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemGridLookUpEdit1View)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit5.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTimeEdit3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSStart.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSStart)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSStartTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSEnd.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSEnd)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSEndTime)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemComboBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemMarqueeProgressBar1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemProgressBar1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit5.CalendarTimeProperties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemDateEdit5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTimeEdit3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemTextEdit3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCSEndTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemAccountNumber)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemEAComboSymbol)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCheckedComboBoxEdit2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.repositoryGridLookCurrency1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEdit1View)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).EndInit();
             this.xtraTabControl1.ResumeLayout(false);
@@ -1706,10 +1533,6 @@ namespace FXMind.WinClient
             ((System.ComponentModel.ISupportInitialize)(this.gridView3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryItemCronExpressions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.repositoryRunNowButtonEdit1)).EndInit();
-            this.strengthPage.ResumeLayout(false);
-            this.strengthPage.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.strengthGrid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView4)).EndInit();
             this.autoPage.ResumeLayout(false);
             this.autoPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerAuto)).EndInit();
@@ -1792,18 +1615,6 @@ namespace FXMind.WinClient
         private DevExpress.XtraGrid.Columns.GridColumn colNextTime;
         private DevExpress.XtraGrid.Columns.GridColumn colRunNow;
         private DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit repositoryRunNowButtonEdit1;
-        private DevExpress.XtraTab.XtraTabPage strengthPage;
-        private DevExpress.XtraGrid.GridControl strengthGrid;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridView4;
-        private DevExpress.XtraGrid.Columns.GridColumn colCurrency;
-        private DevExpress.XtraGrid.Columns.GridColumn colMinute;
-        private DevExpress.XtraGrid.Columns.GridColumn col5Min;
-        private DevExpress.XtraGrid.Columns.GridColumn col15Min;
-        private DevExpress.XtraGrid.Columns.GridColumn col30Min;
-        private DevExpress.XtraGrid.Columns.GridColumn col1Hour;
-        private DevExpress.XtraGrid.Columns.GridColumn col5Hour;
-        private DevExpress.XtraGrid.Columns.GridColumn col1Day;
-        private DevExpress.XtraGrid.Columns.GridColumn col1Month;
         private DevExpress.XtraBars.BarDockControl barDockControl3;
         private DevExpress.XtraBars.BarDockControl barDockControl4;
         private DevExpress.XtraBars.BarDockControl barDockControl2;
@@ -1812,7 +1623,6 @@ namespace FXMind.WinClient
         private DevExpress.XtraBars.BarStaticItem barStaticItem4;
         private DevExpress.XtraBars.BarManager barManager2;
         private DevExpress.XtraBars.BarStaticItem barStaticItem5;
-        private DevExpress.XtraBars.StandaloneBarDockControl BarDockCurrencyStrength;
         private DevExpress.XtraBars.BarDockControl barDockControl7;
         private DevExpress.XtraBars.BarDockControl barDockControl8;
         private DevExpress.XtraBars.BarDockControl barDockControl6;
@@ -1882,5 +1692,7 @@ namespace FXMind.WinClient
         private System.Windows.Forms.RadioButton radioEnable;
         private System.Windows.Forms.RadioButton radioStop;
         private System.Windows.Forms.RadioButton radioStart;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
+        private DevExpress.XtraBars.BarButtonItem barButtonItem7;
     }
 }

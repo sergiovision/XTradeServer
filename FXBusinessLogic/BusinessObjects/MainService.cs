@@ -1232,7 +1232,7 @@ namespace FXBusinessLogic.BusinessObjects
                 string filePath = GetAdviserFilePath(adviser);
                 SaveState(filePath, adviser);
 
-
+                
                 session.Save(adviser);
 
                 log.Info($"Expert MagicNumber: {MagicNumber} closed with reason {ReasonToString(Reason)}.");
@@ -1247,7 +1247,77 @@ namespace FXBusinessLogic.BusinessObjects
                 session.Dispose();
             }
         }
-        
+
+        public void DeployToTerminals(string sourceFolder)
+        {
+            Session session = FXConnectionHelper.GetNewSession();
+            try
+            {
+                var qTerm = new XPQuery<DBTerminal>(session);
+                IQueryable<DBTerminal> varQTerminal = from c in qTerm
+                                                      where c.DISABLED == 0
+                                                      select c;
+                foreach ( var terminal in varQTerminal )
+                {
+                    DirectoryInfo sourceDir = new DirectoryInfo(sourceFolder);
+                    StreamWriter SW = new StreamWriter("deploy.bat");
+                    SW.Write(ProcessFolder("", terminal, sourceFolder));
+                    SW.Flush();
+                    SW.Close();
+                    SW.Dispose();
+                    SW = null;
+                    //Process.Start("deploy.bat");
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: InitExpert: " + e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
+        }
+
+        string ProcessFolder(string folder, DBTerminal terminal, string sourceFolder)
+        {
+            string result = "";
+
+            string currentSourceFolder = sourceFolder;
+            if (folder.Length > 0)
+                currentSourceFolder +=  folder;
+            if (!Directory.Exists(currentSourceFolder))
+                return result;
+            try
+            {
+                var folders = Directory.EnumerateDirectories(currentSourceFolder);
+                foreach (var file in folders)
+                {
+                    if (Directory.Exists(file.ToString()))
+                    {
+                        string subF = folder + "\\" + Path.GetFileName(file);
+                        result += ProcessFolder(subF, terminal, sourceFolder);
+                    }
+                }
+
+                var files = Directory.EnumerateFiles(currentSourceFolder);
+                foreach (var file in files)
+                {
+                    if (File.Exists(file))
+                    {
+                        string targetFolder = terminal.CODEBASE + folder;
+                        // process file
+                        result += string.Format(@"xcopy /y {0} {1}{2}", file, targetFolder, Environment.NewLine);
+                    }
+                }
+            } catch (Exception e )
+            {
+
+            }
+            return result;
+        }
+
         #endregion
     }
 }

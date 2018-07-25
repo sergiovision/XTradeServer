@@ -60,6 +60,7 @@ const string SETTINGS_PROPERTY_THRIFTPORT = "FXMind.ThriftPort"
 const string SETTINGS_PROPERTY_INSTALLDIR = "FXMind.InstallDir"
 const string SETTINGS_PROPERTY_RUNTERMINALUSER = "FXMind.TerminalUser"
 const string SETTINGS_PROPERTY_MTCOMMONFILES = "Metatrader.CommonFiles"
+const string SETTINGS_PROPERTY_MQLSOURCEFOLDER = "MQL.Sources"
 
 //const i32 INT32CONSTANT = 9853
 //const map<string,string> MAPCONSTANT = {'hello':'world', 'goodnight':'moon'}
@@ -261,7 +262,9 @@ service AppService {
 
    oneway void SaveCurrency(1:Currency c),
 
-   oneway void SaveIndicator(1:TechIndicator i)
+   oneway void SaveIndicator(1:TechIndicator i),
+
+   oneway void Deploy()
 	
 }
 

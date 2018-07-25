@@ -37,6 +37,7 @@ namespace BusinessObjects
       bool IsDebug();
       void SaveCurrency(Currency c);
       void SaveIndicator(TechIndicator i);
+      void Deploy();
     }
 
     public interface Iface : ISync {
@@ -111,6 +112,10 @@ namespace BusinessObjects
       #if SILVERLIGHT
       IAsyncResult Begin_SaveIndicator(AsyncCallback callback, object state, TechIndicator i);
       void End_SaveIndicator(IAsyncResult asyncResult);
+      #endif
+      #if SILVERLIGHT
+      IAsyncResult Begin_Deploy(AsyncCallback callback, object state);
+      void End_Deploy(IAsyncResult asyncResult);
       #endif
     }
 
@@ -1150,6 +1155,47 @@ namespace BusinessObjects
         #endif
       }
 
+      
+      #if SILVERLIGHT
+      public IAsyncResult Begin_Deploy(AsyncCallback callback, object state)
+      {
+        return send_Deploy(callback, state);
+      }
+
+      public void End_Deploy(IAsyncResult asyncResult)
+      {
+        oprot_.Transport.EndFlush(asyncResult);
+      }
+
+      #endif
+
+      public void Deploy()
+      {
+        #if !SILVERLIGHT
+        send_Deploy();
+
+        #else
+        var asyncResult = Begin_Deploy(null, null);
+
+        #endif
+      }
+      #if SILVERLIGHT
+      public IAsyncResult send_Deploy(AsyncCallback callback, object state)
+      #else
+      public void send_Deploy()
+      #endif
+      {
+        oprot_.WriteMessageBegin(new TMessage("Deploy", TMessageType.Oneway, seqid_));
+        Deploy_args args = new Deploy_args();
+        args.Write(oprot_);
+        oprot_.WriteMessageEnd();
+        #if SILVERLIGHT
+        return oprot_.Transport.BeginFlush(callback, state);
+        #else
+        oprot_.Transport.Flush();
+        #endif
+      }
+
     }
     public class Processor : TProcessor {
       public Processor(ISync iface)
@@ -1173,6 +1219,7 @@ namespace BusinessObjects
         processMap_["IsDebug"] = IsDebug_Process;
         processMap_["SaveCurrency"] = SaveCurrency_Process;
         processMap_["SaveIndicator"] = SaveIndicator_Process;
+        processMap_["Deploy"] = Deploy_Process;
       }
 
       protected delegate void ProcessFunction(int seqid, TProtocol iprot, TProtocol oprot);
@@ -1641,6 +1688,26 @@ namespace BusinessObjects
         try
         {
           iface_.SaveIndicator(args.I);
+        }
+        catch (TTransportException)
+        {
+          throw;
+        }
+        catch (Exception ex)
+        {
+          Console.Error.WriteLine("Error occurred in processor:");
+          Console.Error.WriteLine(ex.ToString());
+        }
+      }
+
+      public void Deploy_Process(int seqid, TProtocol iprot, TProtocol oprot)
+      {
+        Deploy_args args = new Deploy_args();
+        args.Read(iprot);
+        iprot.ReadMessageEnd();
+        try
+        {
+          iface_.Deploy();
         }
         catch (TTransportException)
         {
@@ -4975,6 +5042,68 @@ namespace BusinessObjects
           __sb.Append("I: ");
           __sb.Append(I== null ? "<null>" : I.ToString());
         }
+        __sb.Append(")");
+        return __sb.ToString();
+      }
+
+    }
+
+
+    #if !SILVERLIGHT
+    [Serializable]
+    #endif
+    public partial class Deploy_args : TBase
+    {
+
+      public Deploy_args() {
+      }
+
+      public void Read (TProtocol iprot)
+      {
+        iprot.IncrementRecursionDepth();
+        try
+        {
+          TField field;
+          iprot.ReadStructBegin();
+          while (true)
+          {
+            field = iprot.ReadFieldBegin();
+            if (field.Type == TType.Stop) { 
+              break;
+            }
+            switch (field.ID)
+            {
+              default: 
+                TProtocolUtil.Skip(iprot, field.Type);
+                break;
+            }
+            iprot.ReadFieldEnd();
+          }
+          iprot.ReadStructEnd();
+        }
+        finally
+        {
+          iprot.DecrementRecursionDepth();
+        }
+      }
+
+      public void Write(TProtocol oprot) {
+        oprot.IncrementRecursionDepth();
+        try
+        {
+          TStruct struc = new TStruct("Deploy_args");
+          oprot.WriteStructBegin(struc);
+          oprot.WriteFieldStop();
+          oprot.WriteStructEnd();
+        }
+        finally
+        {
+          oprot.DecrementRecursionDepth();
+        }
+      }
+
+      public override string ToString() {
+        StringBuilder __sb = new StringBuilder("Deploy_args(");
         __sb.Append(")");
         return __sb.ToString();
       }

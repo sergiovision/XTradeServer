@@ -202,68 +202,8 @@ namespace FXMind.WinClient
             }
         }
 
-        private void RefreshCurrencyStrength(bool recalc)
-        {
-            if (xtraTabControl1.SelectedTabPageIndex == 2)
-            {
-                long dt_from = 0;
-                if (barCSStart.EditValue != null)
-                {
-                    var from = (DateTime) barCSStart.EditValue;
-                    string resDT = from.ToString(DATEFORMAT);
-                    if (barCSStartTime.EditValue != null)
-                    {
-                        var dTimeStart = (DateTime) barCSStartTime.EditValue;
-                        string resT = dTimeStart.ToString(TIMEFORMAT);
-                        resDT += "," + resT;
-                        DateTime.TryParseExact(resDT, DATETIMEFORMAT, CultureInfo.InvariantCulture.DateTimeFormat,
-                            DateTimeStyles.AdjustToUniversal, out from);
-                    }
-                    else
-                    {
-                        DateTime.TryParseExact(resDT, DATEFORMAT, CultureInfo.InvariantCulture.DateTimeFormat,
-                            DateTimeStyles.AdjustToUniversal, out from);
-                    }
-
-                    dt_from = TimeZoneInfo.ConvertTimeToUtc(from, g_userTimeZone).ToBinary();
-                }
-
-                long dt_to = 0;
-                if (barCSEnd.EditValue != null)
-                {
-                    var to = (DateTime) barCSEnd.EditValue;
-                    string resDT = to.ToString(DATEFORMAT);
-                    if (barCSEndTime.EditValue != null)
-                    {
-                        var dTimeEnd = (DateTime) barCSEndTime.EditValue;
-                        string resT = dTimeEnd.ToString(TIMEFORMAT);
-                        resDT += "," + resT;
-                        DateTime.TryParseExact(resDT, DATETIMEFORMAT, CultureInfo.InvariantCulture.DateTimeFormat,
-                            DateTimeStyles.AdjustToUniversal, out to);
-                    }
-                    else
-                    {
-                        DateTime.TryParseExact(resDT, DATEFORMAT, CultureInfo.InvariantCulture.DateTimeFormat,
-                            DateTimeStyles.AdjustToUniversal, out to);
-                    }
-
-                    dt_to = TimeZoneInfo.ConvertTimeToUtc(to, g_userTimeZone).ToBinary();
-                }
-
-                using (var app = container.Resolve<AppServiceClient>())
-                {
-                    strengthGrid.DataSource = app.client.GetCurrencyStrengthSummary(recalc, !barCSUseInterval.Checked,
-                    dt_from,
-                    dt_to);
-                }
-
-                strengthGrid.RefreshDataSource();
-            }
-        }
-
         private void barCalcCurrStr_ItemClick(object sender, ItemClickEventArgs e)
         {
-            RefreshCurrencyStrength(true);
         }
 
         // Events region
@@ -327,8 +267,8 @@ namespace FXMind.WinClient
         {
             if (xtraTabControl1.SelectedTabPageIndex == 0)
                 RefreshJobsGrid();
-            if (xtraTabControl1.SelectedTabPageIndex == 1)
-                RefreshCurrencyStrength(false);
+//            if (xtraTabControl1.SelectedTabPageIndex == 1)
+//                RefreshCurrencyStrength(false);
             if (xtraTabControl1.SelectedTabPageIndex == 2)
                 RefreshServicePage();
         }
@@ -695,7 +635,6 @@ namespace FXMind.WinClient
                 Min = min;
                 Max = max;
             }
-
             public int Min { get; internal set; }
             public int Max { get; internal set; }
         }
@@ -819,5 +758,19 @@ namespace FXMind.WinClient
         }
 
         #endregion
+
+        private void barButtonItem1_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            // Deploy button
+            using (AppServiceClient app = container.Resolve<AppServiceClient>())
+            {
+                app.client.Deploy();
+            }
+        }
+
+        private void barButtonItem7_ItemClick(object sender, ItemClickEventArgs e)
+        {
+
+        }
     }
 }
