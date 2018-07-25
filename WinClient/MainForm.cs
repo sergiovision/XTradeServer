@@ -291,7 +291,7 @@ namespace FXMind.WinClient
         private void gridView3_CustomUnboundColumnData(object sender, CustomColumnDataEventArgs e)
         {
             // this event fills Jobs Grid data
-            object row = e.Row;
+          /*  object row = e.Row;
             if (row == null)
                 return;
             if (e.IsGetData)
@@ -328,7 +328,7 @@ namespace FXMind.WinClient
                         }
                     }
                 }
-            }
+            }*/
         }
 
         public static DateTime ConvertToLocalDateTime(long datelong)
@@ -410,9 +410,6 @@ namespace FXMind.WinClient
         {
             switch (e.Page.Name)
             {
-                case "strengthPage":
-                    LoadCurrStrengthControls();
-                    break;
                 case "jobsPage":
                     LoadCronExpressionsList();
                     break;
@@ -462,23 +459,6 @@ namespace FXMind.WinClient
             }
         }*/
 
-        protected void LoadCurrStrengthControls()
-        {
-            using (var app = container.Resolve<AppServiceClient>())
-            {
-                List<Currency> currenciesDb = app.client.GetCurrencies();
-                // load currencies list
-                repositoryGridLookCurrency1.DataSource = currenciesDb;
-                repositoryGridLookCurrency1.View.OptionsSelection.MultiSelect = true;
-                repositoryGridLookCurrency1.PopulateViewColumns();
-
-                List<TechIndicator> techIndiDb = app.client.GetIndicators();
-                repositoryGridLookIndi1.DataSource = techIndiDb;
-                repositoryGridLookIndi1.View.OptionsSelection.MultiSelect = true;
-                repositoryGridLookIndi1.PopulateViewColumns();
-            }
-        }
-
         private void gridView5_RowCellClick(object sender, RowCellClickEventArgs e)
         {
             if (e.Column.Name.Equals("colEnabled"))
@@ -514,26 +494,6 @@ namespace FXMind.WinClient
             }
         }
 
-        private void repositoryItemGridLookUpEdit1View_RowCellClick(object sender, RowCellClickEventArgs e)
-        {
-            if (e.Column.Name.Equals("colEnabled"))
-            {
-                var gridview = (GridView) sender;
-                var val = (bool) e.CellValue;
-                val = !val;
-                var row = (TechIndicator) gridview.GetRow(e.RowHandle);
-                if (row != null && gridview.IsRowLoaded(e.RowHandle))
-                {
-                    row.Enabled = val;
-                    using (var app = container.Resolve<AppServiceClient>())
-                    {
-
-                        app.client.SaveIndicator(row);
-                    }
-                }
-            }
-        }
-
         private void repositoryItemCronExpressions_ParseEditValue(object sender, ConvertEditValueEventArgs e)
         {
             object oVal = e.Value;
@@ -559,6 +519,12 @@ namespace FXMind.WinClient
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            if (container != null)
+            {
+                container.Dispose();
+                container = null;
+            }
+            
             //if (appclient != null)
             //{
             //    appclient.Dispose();
@@ -731,41 +697,15 @@ namespace FXMind.WinClient
 
         #endregion
 
-        #region CalculateTradersCount
-
-        public static SortedSet<string> tradersCount;
-
-        public static void initTradersCount()
-        {
-            tradersCount = new SortedSet<string>();
-        }
-
-        public static void AddTrader(string strTrader)
-        {
-            if (tradersCount != null) tradersCount.Add(strTrader);
-        }
-
-        public static int GetTradersCountValue()
-        {
-            if (tradersCount != null) return tradersCount.Count();
-            return 0;
-        }
-
-        public static void CleanTradersCount()
-        {
-            tradersCount.Clear();
-            tradersCount = null;
-        }
-
-        #endregion
-
         private void barButtonItem1_ItemClick(object sender, ItemClickEventArgs e)
         {
             // Deploy button
             using (AppServiceClient app = container.Resolve<AppServiceClient>())
             {
                 app.client.Deploy();
+               
             }
+            
         }
 
         private void barButtonItem7_ItemClick(object sender, ItemClickEventArgs e)

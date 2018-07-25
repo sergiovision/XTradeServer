@@ -18,7 +18,6 @@ using FXBusinessLogic.Scheduler;
 using log4net;
 using Quartz;
 
-
 namespace FXBusinessLogic.BusinessObjects
 {
     public class MainService : IMainService
@@ -1261,7 +1260,8 @@ namespace FXBusinessLogic.BusinessObjects
                 {
                     DirectoryInfo sourceDir = new DirectoryInfo(sourceFolder);
                     StreamWriter SW = new StreamWriter("deploy.bat");
-                    SW.Write(ProcessFolder("", terminal, sourceFolder));
+                    SW.Write(ProcessFolder("", terminal, sourceFolder, CopyFile));
+                    SW.Write(ProcessFolder("", terminal, sourceFolder, CompileFile));
                     SW.Flush();
                     SW.Close();
                     SW.Dispose();
@@ -1280,10 +1280,42 @@ namespace FXBusinessLogic.BusinessObjects
             }
         }
 
-        string ProcessFolder(string folder, DBTerminal terminal, string sourceFolder)
+        public delegate string DeployFunc(string folder, DBTerminal terminal, string file, string targetFolder);
+
+        public string CopyFile(string folder, DBTerminal terminal, string file, string targetFolder)
+        {
+            return string.Format(@"xcopy /y {0} {1}{2}", file, targetFolder, Environment.NewLine);
+        }
+
+        public bool IsMQL5(string path)
+        {
+            return path.Contains("MQL5");
+        }
+
+        public string CompileFile(string folder, DBTerminal terminal, string file, string targetFolder)
+        {
+            string ext = Path.GetExtension(file);
+            if (ext.Contains("mq5") || ext.Contains("mq4"))
+            {
+                string compilerApp = "\\metaeditor";
+                if (IsMQL5(targetFolder))
+                {
+                    compilerApp += "64.exe";
+                }
+                else
+                    compilerApp += ".exe";
+
+                string compilerPath = Path.GetDirectoryName(terminal.FULLPATH) + compilerApp;
+                string targetFile = terminal.CODEBASE + folder + "\\" + Path.GetFileName(file);
+                return string.Format(@"""{0}"" /compile:""{1}"" {2}", compilerPath, targetFile, Environment.NewLine);
+            }
+            else
+                return "";
+        }
+
+        string ProcessFolder(string folder, DBTerminal terminal, string sourceFolder, DeployFunc func)
         {
             string result = "";
-
             string currentSourceFolder = sourceFolder;
             if (folder.Length > 0)
                 currentSourceFolder +=  folder;
@@ -1297,7 +1329,7 @@ namespace FXBusinessLogic.BusinessObjects
                     if (Directory.Exists(file.ToString()))
                     {
                         string subF = folder + "\\" + Path.GetFileName(file);
-                        result += ProcessFolder(subF, terminal, sourceFolder);
+                        result += ProcessFolder(subF, terminal, sourceFolder, func);
                     }
                 }
 
@@ -1308,12 +1340,13 @@ namespace FXBusinessLogic.BusinessObjects
                     {
                         string targetFolder = terminal.CODEBASE + folder;
                         // process file
-                        result += string.Format(@"xcopy /y {0} {1}{2}", file, targetFolder, Environment.NewLine);
+                        result += func(folder, terminal, file, targetFolder);
+                        // result += string.Format(@"xcopy /y {0} {1}{2}", file, targetFolder, Environment.NewLine);
                     }
                 }
             } catch (Exception e )
             {
-
+                log.Info(e.ToString());
             }
             return result;
         }

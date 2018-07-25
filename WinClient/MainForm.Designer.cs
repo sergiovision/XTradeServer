@@ -573,12 +573,8 @@ namespace FXMind.WinClient
             // 
             this.repositoryItemGridLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
             this.repositoryItemGridLookUpEdit1View.Name = "repositoryItemGridLookUpEdit1View";
-            this.repositoryItemGridLookUpEdit1View.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.True;
-            this.repositoryItemGridLookUpEdit1View.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.True;
             this.repositoryItemGridLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.repositoryItemGridLookUpEdit1View.OptionsSelection.MultiSelect = true;
             this.repositoryItemGridLookUpEdit1View.OptionsView.ShowGroupPanel = false;
-            this.repositoryItemGridLookUpEdit1View.RowCellClick += new DevExpress.XtraGrid.Views.Grid.RowCellClickEventHandler(this.repositoryItemGridLookUpEdit1View_RowCellClick);
             // 
             // barCalcCurrStr
             // 
