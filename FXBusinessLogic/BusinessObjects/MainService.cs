@@ -1272,7 +1272,7 @@ namespace FXBusinessLogic.BusinessObjects
             }
             catch (Exception e)
             {
-                log.Error("Error: InitExpert: " + e.ToString());
+                log.Error("Error: Generate Deploy Scripts: " + e.ToString());
             }
             finally
             {

@@ -1320,7 +1320,7 @@ namespace FXMind.WinClient
             // 
             // barButtonItem1
             // 
-            this.barButtonItem1.Caption = "Deploy";
+            this.barButtonItem1.Caption = "Gen Deploy Scripts";
             this.barButtonItem1.Id = 6;
             this.barButtonItem1.Name = "barButtonItem1";
             this.barButtonItem1.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem1_ItemClick);
