@@ -35,3 +35,6 @@
 /ConsoleClient/bin/Debug
 /ConsoleClient/obj/Debug
 /ConsoleClient
+/lib/DevExtreme
+/.vs
+/WebTradeAdmin

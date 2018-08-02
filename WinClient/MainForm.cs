@@ -28,7 +28,7 @@ namespace FXMind.WinClient
         public static string DATETIMEFORMAT = "yyyy,M,d,H,m,s";
 
         public static BarStaticItem statusBar;
-        public static TimeZoneInfo g_userTimeZone;
+        public static TimeZoneInfo  g_userTimeZone;
 
         private Dictionary<string, ScheduledJob> RunningJobs = new Dictionary<string, ScheduledJob>();
         private Dictionary<int, TimeZoneInfo> tz_col;
@@ -291,7 +291,8 @@ namespace FXMind.WinClient
         private void gridView3_CustomUnboundColumnData(object sender, CustomColumnDataEventArgs e)
         {
             // this event fills Jobs Grid data
-          /*  object row = e.Row;
+            /*  
+            object row = e.Row;
             if (row == null)
                 return;
             if (e.IsGetData)
@@ -328,7 +329,8 @@ namespace FXMind.WinClient
                         }
                     }
                 }
-            }*/
+            }
+            */
         }
 
         public static DateTime ConvertToLocalDateTime(long datelong)

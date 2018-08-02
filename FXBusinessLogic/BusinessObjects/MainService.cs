@@ -223,7 +223,6 @@ namespace FXBusinessLogic.BusinessObjects
             return _gSchedulerService.Initialize();
         }
 
-
         public TimeZoneInfo GetBrokerTimeZone()
         {
             if (BrokerTimeZoneInfo == null)

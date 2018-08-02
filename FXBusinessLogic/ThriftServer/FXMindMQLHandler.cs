@@ -59,7 +59,6 @@ namespace FXBusinessLogic.ThriftServer
                             DateTime date;
                             DateTime.TryParseExact(paramsList["time"], fxmindConstants.MTDATETIMEFORMAT,
                                 CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.None, out date);
-
                             string symbolStr = paramsList["symbol"];
                             byte minImportance = byte.Parse(paramsList["importance"]);
                             int i = 0;
