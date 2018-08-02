@@ -967,6 +967,8 @@ namespace FXBusinessLogic.BusinessObjects
                     return expert;
                 }
                 string strSymbol = expert.Symbol;
+                if (strSymbol.Contains("_i"))
+                    strSymbol = strSymbol.Substring(0, strSymbol.Length - 2); 
                 if (strSymbol.Length == 6)
                     strSymbol = strSymbol.Insert(3, "/");
 
