@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppServiceClient.cs" />
+    <Compile Include="BusinessObjects\Adviser.cs" />
+    <Compile Include="BusinessObjects\Account.cs" />
     <Compile Include="BusinessObjects\AppService.cs" />
     <Compile Include="BusinessObjects\Currency.cs" />
     <Compile Include="BusinessObjects\CurrencyStrengthSummary.cs" />
@@ -64,7 +66,9 @@
     <Compile Include="BusinessObjects\NewsEventInfo.cs" />
     <Compile Include="BusinessObjects\Order.cs" />
     <Compile Include="BusinessObjects\ScheduledJob.cs" />
+    <Compile Include="BusinessObjects\ScheduledJobView.cs" />
     <Compile Include="BusinessObjects\TechIndicator.cs" />
+    <Compile Include="BusinessObjects\WalletBalance.cs" />
     <Compile Include="FXMindMQLClient.cs" />
     <Compile Include="IMainService.cs" />
     <Compile Include="INotificationUI.cs" />

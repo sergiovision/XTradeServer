@@ -12,6 +12,8 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Security;
 using FXBusinessLogic.BusinessObjects;
+using Quartz;
+using System.Threading;
 
 namespace FXBusinessLogic
 {
@@ -337,7 +339,7 @@ namespace FXBusinessLogic
 
                         string WorkingDir = Path.GetDirectoryName(AppName);
 
-                        if (!CreateProcessAsUser(DuplicateToken, AppName, "", ref processAttributes, ref threadAttributes, true, dwCreationFlags, UserEnvironment, WorkingDir, ref si, out pi))
+                        if (!CreateProcessAsUser(DuplicateToken, AppName, CmdLineArgs, ref processAttributes, ref threadAttributes, true, dwCreationFlags, UserEnvironment, WorkingDir, ref si, out pi))
                         {
                             WriteToLog("Unable to create process " + Marshal.GetLastWin32Error());
                             if (Marshal.GetLastWin32Error() == 740)
@@ -476,5 +478,74 @@ namespace FXBusinessLogic
             if (dupeTokenHandle != IntPtr.Zero) CloseHandle(dupeTokenHandle);
             return;
         }
+
+        public void StartProcessInNewThread(string fileName, string logFile, string appname)
+        {
+            log.Info($"Starting deploy script {fileName}");
+            var runTime = SystemTime.UtcNow();
+            Thread newThread = new Thread(Func => {
+                CloseTerminal(appname);
+
+                ProcessStartInfo process = new ProcessStartInfo();
+                process.FileName = fileName;
+                process.Arguments = $" > {logFile}";
+                process.CreateNoWindow = true;
+                process.ErrorDialog = false;
+                process.RedirectStandardError = true;
+                process.RedirectStandardInput = true;
+                process.RedirectStandardOutput = true;
+                process.UseShellExecute = false;
+                process.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+
+
+                Process p = Process.Start(process);
+
+                p.WaitForExit();
+                DateTimeOffset now = SystemTime.UtcNow();
+                TimeSpan duration = now - runTime;
+                log.Info($"Deploying finished for script {fileName} for {duration.Seconds} seconds.");
+            });
+            newThread.Start();
+        }
+
+        public  void CloseTerminal(string AppName)
+        {
+            System.Diagnostics.Process[] processlist = null;
+            try
+            {
+                string trayProcessName = Path.GetFileNameWithoutExtension(AppName);
+                processlist = Process.GetProcessesByName(trayProcessName);
+                var processL = processlist.Where(d => d.MainModule.FileName.Equals(AppName, StringComparison.InvariantCultureIgnoreCase));
+                if ((processL != null) && (processL.Count() > 0))
+                {
+                    var process = processL.FirstOrDefault();
+                    if ( !process.HasExited )
+                    {
+                        bool result = process.CloseMainWindow();
+                        Thread.Sleep(2000);
+                        if (!process.HasExited)
+                            process.Kill();
+                    }
+                    process.WaitForExit();
+                    log.Info($"Terminal closed for deployment {AppName}");
+                }
+            }
+            catch (Exception e)
+            {
+                log.Info("Error in CloseTerminal: " + e.ToString());
+            }
+            finally
+            {
+                if (processlist != null)
+                {
+                    foreach (Process p in processlist)
+                    {
+                        p.Dispose();
+                    }
+                }
+            }
+        }
+
+
     }
 }

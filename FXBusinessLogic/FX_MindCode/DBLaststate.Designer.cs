@@ -11,7 +11,7 @@ using DevExpress.Xpo;
 using DevExpress.Data.Filtering;
 using System.Collections.Generic;
 using System.ComponentModel;
-namespace Solution1.Module.BusinessObjects.fx_mind
+namespace FXBusinessLogic.fx_mind
 {
 
     [NonPersistent]

@@ -70,5 +70,14 @@ namespace BusinessObjects
 
         void DeployToTerminals(string sourceFolder);
 
+        void DeployToAccount(int id);
+
+        List<WalletBalance> GetWalletBalance();
+
+        List<Account> GetAccounts();
+
+        List<Adviser> GetExperts();
+
+        bool UpdateWallet(WalletBalance wb);
     }
 }

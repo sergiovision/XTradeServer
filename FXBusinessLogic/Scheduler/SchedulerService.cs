@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 using Autofac;
@@ -290,7 +291,6 @@ namespace FXBusinessLogic.Scheduler
         {
             if (!bInitialized)
                 return;
-
             if (!(sched.CheckExists(key).Result))
                 return;
             sched.TriggerJob(key);
@@ -302,6 +302,7 @@ namespace FXBusinessLogic.Scheduler
             if (!bInitialized)
                 return list;
             var jobGroups = sched.GetJobGroupNames().Result;
+            var runninglist = GetRunningJobs();
             foreach (string group in jobGroups)
             {
                 var keys = sched.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(group));
@@ -313,6 +314,8 @@ namespace FXBusinessLogic.Scheduler
                     var jobview = new ScheduledJob();
                     jobview.Name = detail.Key.Name;
                     jobview.Group = detail.Key.Group;
+                    if (runninglist.ContainsKey(jobview.Group + jobview.Name))
+                        jobview.IsRunning = true;
                     string strMessage = detail.JobDataMap.GetString("log");
                     jobview.Log = strMessage;
                     var trigs = sched.GetTriggersOfJob(detail.Key).Result;
@@ -342,6 +345,7 @@ namespace FXBusinessLogic.Scheduler
             if (!bInitialized)
                 return list;
             var ilist = sched.GetCurrentlyExecutingJobs();
+            Task.WaitAll(ilist);
             foreach (IJobExecutionContext ic in ilist.Result)
             {
                 var view = new ScheduledJob();

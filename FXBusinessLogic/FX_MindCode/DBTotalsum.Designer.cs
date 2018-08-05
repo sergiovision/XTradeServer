@@ -11,10 +11,12 @@ using DevExpress.Xpo;
 using DevExpress.Data.Filtering;
 using System.Collections.Generic;
 using System.ComponentModel;
-namespace Solution1.Module.BusinessObjects.fx_mind
+namespace FXBusinessLogic.fx_mind
 {
 
     [NonPersistent]
+    //[Persistent(@"totalsum")]
+
     public partial class DBTotalsum : XPLiteObject
     {
         decimal fSUM_BALANCE_;

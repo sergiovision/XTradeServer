@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 namespace FXBusinessLogic.fx_mind
 {
-
     public partial class DBTerminal
     {
         public DBTerminal(Session session) : base(session) { }

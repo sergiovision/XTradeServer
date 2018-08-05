@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using Autofac;
 using BusinessObjects;
 using DevExpress.Xpo;
@@ -102,6 +103,7 @@ namespace FXBusinessLogic.BusinessObjects
             RegisterContainer();
             Initialized = false;
             thisGlobal = this;
+            isDeploying = false;
         }
 
         public List<Currency> GetCurrencies()
@@ -845,6 +847,136 @@ namespace FXBusinessLogic.BusinessObjects
             return -1;
         }
 
+        List<WalletBalance> IMainService.GetWalletBalance()
+        {
+            List<WalletBalance> result = new List<WalletBalance>();
+            Session session = FXConnectionHelper.GetNewSession();
+            try
+            {
+                
+                var qLS = session.GetObjectsFromQuery<DBLaststate>("select * from laststate"); // new XPQuery<DBLaststate>(session);
+                //qLS.All
+                //IQueryable<DBLaststate> varQLS = from c in qLS
+                //                                      select c;
+                foreach (var ls in qLS)
+                {
+                    WalletBalance wb = new WalletBalance();
+                    wb.WALLET_ID = ls.WALLET_ID;
+                    wb.NAME = ls.NAME;
+                    wb.BALANCE = ls.BALANCE;
+                    wb.DATE = ls.DATE;
+                    result.Add(wb);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: GetWalletBalance: " + e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
+            return result;
+        }
+
+        List<Account> IMainService.GetAccounts()
+        {
+            List<Account> result = new List<Account>();
+            Session session = FXConnectionHelper.GetNewSession();
+            try
+            {
+                var qTerm = new XPQuery<DBTerminal>(session);
+                IQueryable<DBTerminal> varQTerminal = from c in qTerm
+                                                      // where c.DISABLED == 0
+                                                      select c;
+                foreach (var term in varQTerminal)
+                {
+                    Account acc = new Account();
+                    acc.AccountNumber = term.ACCOUNTNUMBER;
+                    acc.Broker = term.BROKER;
+                    acc.CodeBase = term.CODEBASE;
+                    acc.Disabled = (term.DISABLED > 0)?true:false;
+                    acc.FullPath = term.FULLPATH;
+                    acc.ID = term.ID;
+                    result.Add(acc);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: GetAccounts: " + e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
+            return result;
+        }
+
+        List<Adviser> IMainService.GetExperts()
+        {
+            List<Adviser> result = new List<Adviser>();
+            Session session = FXConnectionHelper.GetNewSession();
+            try
+            {
+                var qTerm = new XPQuery<DBAdviser>(session);
+                IQueryable<DBAdviser> varQAdv = from c in qTerm
+                                                      select c;
+                foreach (var expert in varQAdv)
+                {
+                    Adviser adv = new Adviser();
+                    adv.ID = expert.ID;
+                    adv.Name = expert.NAME;
+                    adv.Running = (expert.RUNNING > 0)?true:false;
+                    adv.Disabled = (expert.DISABLED > 0) ? true : false;
+                    adv.SYMBOL_ID = expert.SYMBOL_ID.ID;
+                    adv.TERMINAL_ID = expert.TERMINAL_ID.ID;
+                    adv.Symbol = expert.SYMBOL_ID.Name;
+                    adv.Timeframe = expert.TIMEFRAME;
+                    adv.LastUpdate = expert.LASTUPDATE;
+                    adv.CloseReason = expert.CLOSE_REASON;
+                    result.Add(adv);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: GetExperts: " + e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
+            return result;
+        }
+
+        public bool UpdateWallet(WalletBalance newbalance)
+        {
+            bool result = false;
+            Session session = FXConnectionHelper.GetNewSession();
+            try
+            {
+                var newws = new DBWalletstate(session);
+                newws.BALANCE = newbalance.BALANCE;
+                newws.DATE = DateTime.UtcNow;
+                newws.WALLET_ID = newbalance.WALLET_ID;
+                newws.formula = newbalance.BALANCE.ToString();
+                session.Save(newws);
+                return true;
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: UpdateWallet: " + e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
+            return result;
+        }
+
         #region Jobs
 
         public void RunJobNow(string group, string name)
@@ -1277,6 +1409,49 @@ namespace FXBusinessLogic.BusinessObjects
             }
             finally
             {
+                session.Disconnect();
+                session.Dispose();
+            }
+        }
+
+        protected bool isDeploying;
+        public void DeployToAccount(int id)
+        {
+            if (isDeploying)
+            {
+                log.Error("Application already deploying: Skip...");
+                return;
+            }
+            Session session = FXConnectionHelper.GetNewSession();
+            try
+            {
+                isDeploying = true;
+                var qTerm = new XPQuery<DBTerminal>(session);
+                IQueryable<DBTerminal> varQTerminal = from c in qTerm
+                                                      where (c.DISABLED == 0) && (c.ID == id)
+                                                      select c;
+                if (varQTerminal.Any())
+                {
+                    var terminal = varQTerminal.FirstOrDefault();
+                    if (terminal != null)
+                    {
+                        ProcessImpersonation pi = new ProcessImpersonation(log);
+                        string fileName = string.Format(@"deployto_{0}.bat", terminal.ACCOUNTNUMBER);
+                        string logFile = string.Format(@"deployto_{0}.log", terminal.ACCOUNTNUMBER);
+                        pi.StartProcessInNewThread(fileName, logFile, terminal.FULLPATH);
+                    }
+                } else
+                {
+                    log.Error($"Terminal {id} doesn't exist or disabled for deployment. Exiting...");
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: DeployToAccount: " + e.ToString());
+            }
+            finally
+            {
+                isDeploying = false;
                 session.Disconnect();
                 session.Dispose();
             }

@@ -11,14 +11,15 @@ using DevExpress.Xpo;
 using DevExpress.Data.Filtering;
 using System.Collections.Generic;
 using System.ComponentModel;
-namespace Solution1.Module.BusinessObjects.fx_mind
+
+namespace FXBusinessLogic.fx_mind
 {
 
     [Persistent(@"walletstate")]
     public partial class DBWalletstate : XPLiteObject
     {
         int fID;
-        [Key]
+        [Key(true)]
         public int ID
         {
             get { return fID; }

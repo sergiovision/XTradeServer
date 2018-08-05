@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 namespace FXBusinessLogic.fx_mind
 {
-
     [Persistent(@"terminal")]
     public partial class DBTerminal : XPLiteObject
     {

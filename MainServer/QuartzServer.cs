@@ -2,6 +2,7 @@ using System;
 using Autofac;
 using BusinessObjects;
 using log4net;
+using Microsoft.Owin.Hosting;
 using Topshelf;
 
 namespace FXMind.MainServer
@@ -14,6 +15,7 @@ namespace FXMind.MainServer
         //public static QuartzServer quartz;
         private static readonly ILog Log = LogManager.GetLogger(typeof(QuartzServer));
         private IMainService fxmindServer;
+        private IDisposable webapi;
 
         public QuartzServer()
         {
@@ -42,9 +44,11 @@ namespace FXMind.MainServer
         {
             try
             {
+                const short WEBAPIPORT = 2013;
                 // scheduler.Start();
                 var gui = Program.Container.Resolve<INotificationUi>();
                 fxmindServer.Init(gui);
+                webapi = WebApp.Start<Startup>($"http://localhost:{WEBAPIPORT}");
             }
             catch (Exception ex)
             {
@@ -62,7 +66,11 @@ namespace FXMind.MainServer
         {
             try
             {
-                fxmindServer.Dispose();
+                if (fxmindServer != null)
+                    fxmindServer.Dispose();
+                if (webapi != null)
+                    webapi.Dispose();
+
             }
             catch (Exception ex)
             {
