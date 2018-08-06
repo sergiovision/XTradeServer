@@ -1,0 +1,49 @@
+@using BusinessObjects
+
+@{
+    ViewBag.Title = "Jobs";
+}
+
+<h2>Jobs</h2>
+
+<script>
+    function onClickRunJob(e) {
+        //alert(e.columnIndex);
+        if (e.columnIndex != 7)
+            return;
+        //var str = JSON.stringify(e.data);
+        var url = '@Url.Action("RunJob","Jobs")';
+        url += "?Group=" + e.data.Group + "&Name=" + e.data.Name;
+        console.log(url);
+        window.location = url;
+    }
+</script>
+
+<div></div>
+
+@(Html.DevExtreme().DataGrid<ScheduledJobView>()
+        .DataSource(d => d.WebApi().Controller("JobsApi").Key("ID"))
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .HoverStateEnabled(true)
+        .Columns(columns =>
+        {
+                columns.AddFor(m => m.IsRunning).GroupIndex(0);
+                columns.AddFor(m => m.Group);
+                columns.AddFor(m => m.Name);
+                columns.AddFor(m => m.Schedule);
+                columns.AddFor(m => m.Log);
+                columns.AddFor(m => m.PrevDate).Format(Format.ShortDateShortTime);
+                columns.AddFor(m => m.NextDate).Format(Format.ShortDateShortTime);
+                columns.Add().Width(160).Caption("Commands").Alignment(HorizontalAlignment.Center)
+                .CellTemplate(@<text>
+                    @Html.DevExtreme().Button().Text("Run Now")
+                </text>);
+        })
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .Paging(p => p.Enabled(false))
+        .RemoteOperations(true)
+        .ShowBorders(true)
+        .ShowColumnLines(false)
+        .ShowRowLines(true)
+        .OnCellClick("onClickRunJob")
+)

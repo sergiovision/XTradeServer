@@ -1,0 +1,63 @@
+@using BusinessObjects
+
+@{
+    ViewBag.Title = "Wallet";
+}
+
+<h2>Wallet</h2>
+
+@(Html.DevExtreme().DataGrid<WalletBalance>()
+                                    .DataSource(d => d.WebApi().Controller("WalletApi").Key("WALLET_ID").UpdateAction(true))
+                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                    .HoverStateEnabled(true)
+                                    .Columns(columns =>
+                                    {
+                                        columns.AddFor(m => m.NAME).Width(180).AllowEditing(false);
+                                        columns.AddFor(m => m.DATE).Format(Format.ShortDateShortTime).Width(200).AllowEditing(false);
+                                        columns.AddFor(m => m.BALANCE).Alignment(HorizontalAlignment.Right).Format(Format.Currency).Width(120).AllowEditing(true);
+                                        columns.AddFor(m => m.formula).Visible(false);
+                                    })
+                                    .Editing(e =>
+                                    {
+                                        e.AllowAdding(false);
+                                    })
+                                    .Paging(p => p.Enabled(false))
+                                    .Editing(editing =>
+                                    {
+                                        editing.Mode(GridEditMode.Form);
+                                        editing.AllowUpdating(true);
+
+                                        editing.Form(c => {
+                                            c.Items(i => {
+                                                i.AddSimpleFor(m => m.BALANCE);
+                                                i.AddSimpleFor(m => m.formula);
+                                            });
+                                        });
+                                    })
+                                    .RemoteOperations(false)
+                                    .ShowBorders(true)
+                                    .ShowColumnLines(false)
+                                    .ShowRowLines(true)
+                                    .Summary(s => s.TotalItems(items =>
+                                    {
+                                        items.AddFor(m => m.BALANCE)
+                                        .SummaryType(SummaryType.Sum)
+                                        .ValueFormat(Format.Currency);
+                                    })
+
+                                )
+
+    //.OnRowPrepared("onRowPrepared")
+)
+
+@*
+    @(Html.DevExtreme().Popup().ID("customPopup").Title("Update Balance").Visible(false)
+                .ContentTemplate(@<text>
+                    @Html.Label("New Balance")
+                    @Html.DevExtreme().TextBox().ID("textBox")
+                    @Html.DevExtreme().Button().Text("Save").OnClick("function (e) { saveButtonClick() }")
+                    @Html.DevExtreme().Button().Text("Cancel").OnClick("function (e) { canselButtonClick() }")
+                </text>))
+
+
+*@

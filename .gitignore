@@ -37,4 +37,5 @@
 /ConsoleClient
 /lib/DevExtreme
 /.vs
-/WebTradeAdmin
+/WebTradeAdmin/bin
+/WebTradeAdmin/obj
