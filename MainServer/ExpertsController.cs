@@ -17,9 +17,15 @@ namespace FXMind.MainServer
         [AcceptVerbs("GET")]
         public IEnumerable<Adviser> Get()
         {
-            var MainService = Program.Container.Resolve<IMainService>();
-            if (MainService != null)
-                return MainService.GetExperts();
+            try
+            {
+                var MainService = Program.Container.Resolve<IMainService>();
+                if (MainService != null)
+                    return MainService.GetExperts();
+            } catch (Exception e)
+            {
+                log.Error(e.ToString());
+            }
             return null;
         }
 
@@ -43,11 +49,17 @@ namespace FXMind.MainServer
         [AcceptVerbs("GET")]
         public IEnumerable<Adviser> GetByAccount(int id)
         {
-            var MainService = Program.Container.Resolve<IMainService>();
-            if (MainService != null)
+            try
             {
-                var wb = MainService.GetExperts();
-                return wb.Where(d => d.TERMINAL_ID == id);
+                var MainService = Program.Container.Resolve<IMainService>();
+                if (MainService != null)
+                {
+                    var wb = MainService.GetExperts();
+                    return wb.Where(d => d.TERMINAL_ID == id);
+                }
+            } catch (Exception e)
+            {
+                log.Error(e.ToString());
             }
             return null;
         }
@@ -56,9 +68,15 @@ namespace FXMind.MainServer
         [AcceptVerbs("GET")]
         public IEnumerable<Account> GetAccounts()
         {
-            var MainService = Program.Container.Resolve<IMainService>();
-            if (MainService != null)
-                return MainService.GetAccounts();
+            try
+            {
+                var MainService = Program.Container.Resolve<IMainService>();
+                if (MainService != null)
+                    return MainService.GetAccounts();
+            } catch (Exception e)
+            {
+                log.Error(e.ToString());
+            }
             return null;
         }
 
@@ -66,29 +84,41 @@ namespace FXMind.MainServer
         [AcceptVerbs("GET")]
         public string GenerateDeployScripts()
         {
-            var MainService = Program.Container.Resolve<IMainService>();
-            if (MainService != null)
+            try
+            { 
+                var MainService = Program.Container.Resolve<IMainService>();
+                if (MainService != null)
+                {
+                    string sourceFolder = MainService.GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_MQLSOURCEFOLDER);
+                    MainService.DeployToTerminals(sourceFolder);
+                    return "OK";
+                }
+            } catch (Exception e)
             {
-                string sourceFolder = MainService.GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_MQLSOURCEFOLDER);
-                MainService.DeployToTerminals(sourceFolder);
-                return "OK";
+                log.Error(e.ToString());
             }
             return "FAILED";
         }
 
         [HttpGet]
         [AcceptVerbs("GET")]
-        public string DeployScript(int id)
+        public string DeployScript(int ID)
         {
-            var MainService = Program.Container.Resolve<IMainService>();
-            if (MainService != null)
+            try
             {
-                MainService.DeployToAccount(id);
-                return "OK";
+                var MainService = Program.Container.Resolve<IMainService>();
+                if (MainService != null)
+                {
+                    MainService.DeployToAccount(ID);
+                    return "OK";
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.ToString());
             }
             return "FAILED";
         }
-
-
     }
 }
+

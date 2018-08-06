@@ -29,7 +29,7 @@ namespace FXMind.MainServer
             }
             catch (Exception e)
             {
-                log.Info(e.ToString());
+                log.Error(e.ToString());
             }
             return null;
         }
@@ -49,7 +49,7 @@ namespace FXMind.MainServer
             }
             catch (Exception e)
             {
-                log.Info(e.ToString());
+                log.Error(e.ToString());
             }
             return null;
         }
@@ -84,7 +84,7 @@ namespace FXMind.MainServer
             }
             catch (Exception e)
             {
-                log.Info(e.ToString());
+                log.Error(e.ToString());
                 return Request.CreateErrorResponse(HttpStatusCode.NotFound, e.ToString());
             }
         }

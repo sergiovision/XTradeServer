@@ -484,26 +484,30 @@ namespace FXBusinessLogic
             log.Info($"Starting deploy script {fileName}");
             var runTime = SystemTime.UtcNow();
             Thread newThread = new Thread(Func => {
-                CloseTerminal(appname);
+                try
+                {
+                    CloseTerminal(appname);
 
-                ProcessStartInfo process = new ProcessStartInfo();
-                process.FileName = fileName;
-                process.Arguments = $" > {logFile}";
-                process.CreateNoWindow = true;
-                process.ErrorDialog = false;
-                process.RedirectStandardError = true;
-                process.RedirectStandardInput = true;
-                process.RedirectStandardOutput = true;
-                process.UseShellExecute = false;
-                process.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-
-
-                Process p = Process.Start(process);
-
-                p.WaitForExit();
-                DateTimeOffset now = SystemTime.UtcNow();
-                TimeSpan duration = now - runTime;
-                log.Info($"Deploying finished for script {fileName} for {duration.Seconds} seconds.");
+                    ProcessStartInfo process = new ProcessStartInfo();
+                    process.FileName = fileName;
+                    process.Arguments = $" > {logFile}";
+                    process.CreateNoWindow = true;
+                    process.ErrorDialog = false;
+                    process.RedirectStandardError = true;
+                    process.RedirectStandardInput = true;
+                    process.RedirectStandardOutput = true;
+                    process.UseShellExecute = false;
+                    process.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    Process p = Process.Start(process);
+                    p.WaitForExit();
+                    DateTimeOffset now = SystemTime.UtcNow();
+                    TimeSpan duration = now - runTime;
+                    log.Info($"Deploying finished for script {fileName} for {duration.Seconds} seconds.");
+                }
+                catch (Exception e)
+                {
+                    log.Error("Thread run Process Error: " + e.ToString());
+                }
             });
             newThread.Start();
         }
@@ -521,12 +525,15 @@ namespace FXBusinessLogic
                     var process = processL.FirstOrDefault();
                     if ( !process.HasExited )
                     {
-                        bool result = process.CloseMainWindow();
-                        Thread.Sleep(2000);
-                        if (!process.HasExited)
-                            process.Kill();
+                        // process.CloseMainWindow();
+                        process.Kill();
+                        //Thread.Sleep(2000);
+                        //if (process != null)
+                        //    if (!process.HasExited)
+                        //        process.Kill();
                     }
-                    process.WaitForExit();
+                    if (!process.HasExited)
+                        process.WaitForExit();
                     log.Info($"Terminal closed for deployment {AppName}");
                 }
             }
