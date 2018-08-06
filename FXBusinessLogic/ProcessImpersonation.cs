@@ -213,7 +213,7 @@ namespace FXBusinessLogic
         /// logged in users desktop.
         /// </summary>
         /// <returns>Returns true if the application was successfully started in the user's desktop.</returns>
-        public bool ExecuteAppAsLoggedOnUser(string AppName, string CmdLineArgs)
+        public Process ExecuteAppAsLoggedOnUser(string AppName, string CmdLineArgs)
         {
             //WriteToLog("In ExecuteAppAsLoggedOnUser for all users.");
             IntPtr LoggedInUserToken = IntPtr.Zero;
@@ -225,7 +225,7 @@ namespace FXBusinessLogic
             if (!result)
             {
                 WriteToLog("OpenProcessToken failed: " + Marshal.GetLastWin32Error());
-                return false;
+                return null;
             }
             else
             {
@@ -236,14 +236,14 @@ namespace FXBusinessLogic
                 if (!LookupPrivilegeValue(null, SE_INCREASE_QUOTA_NAME, ref tp.Luid))
                 {
                     WriteToLog("LookupPrivilegeValue failed: " + Marshal.GetLastWin32Error());
-                    return false;
+                    return null;
                 }
 
                 tp.Attr = SE_PRIVILEGE_ENABLED;
                 if (!AdjustTokenPrivileges(LoggedInUserToken, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero))
                 {
                     WriteToLog("OpenProcessToken failed: " + Marshal.GetLastWin32Error());
-                    return false;
+                    return null;
                 }
                 CloseHandle(LoggedInUserToken);
             }
@@ -290,7 +290,7 @@ namespace FXBusinessLogic
                         if (!OpenProcessToken(ShellProcess.Handle, tokenRights, ref ShellProcessToken))
                         {
                             WriteToLog("Unable to OpenProcessToken " + Marshal.GetLastWin32Error());
-                            return false;
+                            return null;
                         }
 
                         SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
@@ -303,7 +303,7 @@ namespace FXBusinessLogic
                             if (!DuplicateTokenEx(hToken, GENERIC_ALL_ACCESS, ref sa, 1, 1, ref DuplicateToken))
                             {
                                 WriteToLog("Unable to duplicate token " + Marshal.GetLastWin32Error());
-                                return false;
+                                return null;
                             }
 
                         }
@@ -312,10 +312,9 @@ namespace FXBusinessLogic
                             if (!DuplicateTokenEx(ShellProcessToken, tokenRights, ref sa, 2, 1, ref DuplicateToken))
                             {
                                 WriteToLog("Unable to duplicate token " + Marshal.GetLastWin32Error());
-                                return false;
+                                return null;
                             }
                         }
-
                         //if (MainService.thisGlobal.IsDebug())
                         //    log.Info("Duplicated the token " + WindowsIdentity.GetCurrent().Name);
                         //WriteToLog("Duplicated the token " + WindowsIdentity.GetCurrent().Name);
@@ -346,12 +345,13 @@ namespace FXBusinessLogic
                             {
                                 WriteToLog("Please check the installation as some elevated permissions is required to execute the binaries");
                             }
-                            return false;
+                            return null;
                         }
                         log.InfoFormat("Process {0} started under user {1} successfully", AppName, userName);
                         Process trayApp = Process.GetProcessById(Convert.ToInt32(pi.dwProcessId));
                         trayApp.StartInfo.LoadUserProfile = true;
-                        break;
+                        return trayApp;
+                        //break;
                     }
                     finally
                     {
@@ -363,10 +363,9 @@ namespace FXBusinessLogic
             else
             {
                 WriteToLog("No user has been identified to have logged into the system.");
-                return false;
             }
             //WriteToLog("Finished ExecuteAppAsLoggedOnUser for all users.");
-            return true;
+            return null;
         }
 
         public string GetProcessUser(Process process)
@@ -487,22 +486,30 @@ namespace FXBusinessLogic
                 try
                 {
                     CloseTerminal(appname);
+                    string CmdLineArgs = $" > {logFile}";
 
-                    ProcessStartInfo process = new ProcessStartInfo();
-                    process.FileName = fileName;
-                    process.Arguments = $" > {logFile}";
-                    process.CreateNoWindow = true;
-                    process.ErrorDialog = false;
-                    process.RedirectStandardError = true;
-                    process.RedirectStandardInput = true;
-                    process.RedirectStandardOutput = true;
-                    process.UseShellExecute = false;
-                    process.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                    Process p = Process.Start(process);
-                    p.WaitForExit();
-                    DateTimeOffset now = SystemTime.UtcNow();
-                    TimeSpan duration = now - runTime;
-                    log.Info($"Deploying finished for script {fileName} for {duration.Seconds} seconds.");
+                    var p = ExecuteAppAsLoggedOnUser(fileName, "");
+                    if (p != null)
+                    {
+                        p.WaitForExit();
+                        DateTimeOffset now = SystemTime.UtcNow();
+                        TimeSpan duration = now - runTime;
+                        log.Info($"Deploying finished for script {fileName} for {duration.Seconds} seconds.");
+                    }
+                    /*
+                        ProcessStartInfo process = new ProcessStartInfo();
+                        process.FileName = fileName;
+                        process.Arguments = $" > {logFile}";
+                        process.CreateNoWindow = true;
+                        process.ErrorDialog = false;
+                        process.RedirectStandardError = true;
+                        process.RedirectStandardInput = true;
+                        process.RedirectStandardOutput = true;
+                        process.UseShellExecute = false;
+                        process.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                        Process p = Process.Start(process);
+                        p.WaitForExit();
+                    */
                 }
                 catch (Exception e)
                 {

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -961,7 +962,7 @@ namespace FXBusinessLogic.BusinessObjects
                 newws.BALANCE = newbalance.BALANCE;
                 newws.DATE = DateTime.UtcNow;
                 newws.WALLET_ID = newbalance.WALLET_ID;
-                newws.formula = newbalance.BALANCE.ToString();
+                newws.formula = newbalance.formula;
                 session.Save(newws);
                 return true;
             }
@@ -1269,8 +1270,8 @@ namespace FXBusinessLogic.BusinessObjects
         {
             string path = GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_MTCOMMONFILES);
             string sym = adviser.SYMBOL_ID.Name;
-            if (sym.Length > 6)
-                sym = sym.Remove(3, 1);
+            //if (sym.Length > 6)
+            //    sym = sym.Remove(3, 1);
             string filePath = $"{path}\\{adviser.TERMINAL_ID.ACCOUNTNUMBER}_{sym}_{adviser.TIMEFRAME}_{adviser.ID}.set";
             return filePath;
         }
@@ -1435,9 +1436,10 @@ namespace FXBusinessLogic.BusinessObjects
                     var terminal = varQTerminal.FirstOrDefault();
                     if (terminal != null)
                     {
+                        string installDir = GetGlobalProp(fxmindConstants.SETTINGS_PROPERTY_INSTALLDIR);
                         ProcessImpersonation pi = new ProcessImpersonation(log);
-                        string fileName = string.Format(@"deployto_{0}.bat", terminal.ACCOUNTNUMBER);
-                        string logFile = string.Format(@"deployto_{0}.log", terminal.ACCOUNTNUMBER);
+                        string fileName = string.Format(@"{0}\deployto_{1}.bat", installDir, terminal.ACCOUNTNUMBER);
+                        string logFile = string.Format(@"{0}\deployto_{1}.log", installDir, terminal.ACCOUNTNUMBER);
                         pi.StartProcessInNewThread(fileName, logFile, terminal.FULLPATH);
                     }
                 } else

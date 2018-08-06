@@ -23,6 +23,13 @@ namespace BusinessObjects
             get;
             set;
         }
+
+        public string formula
+        {
+            get;
+            set;
+        }
+
         public DateTime DATE
         {
             get;
