@@ -17,18 +17,18 @@ BusinessObjects - definition of C# entities
 FXBusinessLoigic - main business logic of C# part of the robot. Fetching/storing Financial data in DB 
 MainServer - Windows Service code. C# part of the robots runs as a background Windows service.
 
-MQL - MQL part of the robot - most interesting algorithms that may earn you money and good for developing/modifying Forex robots.
+MQL - MQL part of the robot - most interesting algorithms that may earn you money and good for developing/modifying Forex robots. Both MQL 4 and MQL5 supported. But MQL5 is preferred.
 
 ThriftMQL - bridge between MQL and C# using Apache Thrift C# library.
 
 WinClient - Winforms client written using Devexpress to configure robot and see financial data. Written using Winforms and Devexpress. Devexpress 17 or later needed to be installed with license.
-
+WebTradeAdmin - ASP.NET MVC 5 application to manage FXMind Windows service through WebAPI interface and Apache Thrift.
 
 Project developed completely by me - Sergei Zhuravlev - Experienced Software Developer - as my hobby project. Because I worked for one of the forex brokers 
 and for private trader and got engough experience to write this robot myself.
-For learning forex trading, robots and perform automated trading.
+For learning forex/metals/indexes/futures trading, robots and perform automated trading.
 
-Code tested and works stable on the server so you can sleep calm when robot runs. But you still have to properly configure Forex robot algorithm and sure that your server has permanent internet connection and forex dealer is reliable. Robot better works with fixed spreads.
+Code tested and works stable on the server so you can sleep calm when robot runs. But you still have to properly configure Forex robot algorithm and sure that your server has permanent internet connection and forex dealer is reliable. 
 
 If you need help building and setting up robot write me to my email: sergewinner @ gmail com
 
