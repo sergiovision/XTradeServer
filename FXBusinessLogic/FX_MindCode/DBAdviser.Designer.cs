@@ -78,6 +78,7 @@ namespace FXBusinessLogic.fx_mind
             get { return fLASTUPDATE; }
             set { SetPropertyValue<DateTime>("LASTUPDATE", ref fLASTUPDATE, value); }
         }
+
         int fCLOSE_REASON;
         public int CLOSE_REASON
         {

@@ -74,6 +74,8 @@ namespace BusinessObjects
 
         List<WalletBalance> GetWalletBalance();
 
+        List<WalletBalance> GetWalletBalanceRange(int WALLET_ID, DateTime from, DateTime to);
+
         List<Account> GetAccounts();
 
         List<Adviser> GetExperts();

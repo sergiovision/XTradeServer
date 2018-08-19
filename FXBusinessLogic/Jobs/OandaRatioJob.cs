@@ -58,6 +58,10 @@ namespace com.fxmind.manager.jobs
                     posRatio.SiteID = 5;
                     posRatio.ParseTime = DateTime.UtcNow;
                     string symbolname = symnode.Attributes["name"].Value;
+                    if (symbolname.Contains("/"))
+                    {
+                        symbolname = symbolname.Replace("/", string.Empty);
+                    }
                     DBSymbol dbsym = FXMindHelpers.getSymbolID(session, symbolname);
                     if (dbsym != null)
                         posRatio.SymbolID = dbsym.ID;

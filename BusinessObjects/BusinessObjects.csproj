@@ -67,6 +67,7 @@
     <Compile Include="BusinessObjects\Order.cs" />
     <Compile Include="BusinessObjects\ScheduledJob.cs" />
     <Compile Include="BusinessObjects\ScheduledJobView.cs" />
+    <Compile Include="BusinessObjects\SymbolType.cs" />
     <Compile Include="BusinessObjects\TechIndicator.cs" />
     <Compile Include="BusinessObjects\WalletBalance.cs" />
     <Compile Include="FXMindMQLClient.cs" />

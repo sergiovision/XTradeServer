@@ -58,8 +58,8 @@ namespace com.fxmind.manager.jobs
                         string strSymbol = "";
                         if (nodeSymbol != null)
                             strSymbol = nodeSymbol.InnerText;
-                        if (strSymbol.Length == 6)
-                            strSymbol = strSymbol.Insert(3, "/");
+                        //if (strSymbol.Length == 6)
+                        //    strSymbol = strSymbol.Insert(3, "/");
                         DBSymbol dbsym = FXMindHelpers.getSymbolID(session, strSymbol);
                         if (dbsym != null)
                         {

@@ -34,7 +34,6 @@ namespace FXMind.MainServer
             return null;
         }
 
-        // GET api/demo/5 
         [HttpGet]
         [AcceptVerbs("GET")]
         public WalletBalance Get(int id)
@@ -53,6 +52,27 @@ namespace FXMind.MainServer
             }
             return null;
         }
+
+        [HttpGet]
+        [AcceptVerbs("GET")]
+        public List<WalletBalance> GetRange(int id, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                var MainService = Program.Container.Resolve<IMainService>();
+                if (MainService != null)
+                {
+                    var wb = MainService.GetWalletBalanceRange(id, fromDate, toDate);
+                    return wb;
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e.ToString());
+            }
+            return null;
+        }
+
 
         [HttpPut]
         [AcceptVerbs("PUT")]
@@ -89,7 +109,7 @@ namespace FXMind.MainServer
             }
         }
 
-        // POST api/demo 
+        // POST api/demo
         [AcceptVerbs("POST")]
         [HttpPost]
         public void Post([FromBody]string value)

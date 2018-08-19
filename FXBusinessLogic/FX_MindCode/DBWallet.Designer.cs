@@ -45,6 +45,14 @@ namespace FXBusinessLogic.fx_mind
             get { return fLINK; }
             set { SetPropertyValue<string>(nameof(LINK), ref fLINK, value); }
         }
+
+        byte fRETIRED;
+        public byte RETIRED
+        {
+            get { return fRETIRED; }
+            set { SetPropertyValue<byte>("RETIRED", ref fRETIRED, value); }
+        }
+
     }
 
 }

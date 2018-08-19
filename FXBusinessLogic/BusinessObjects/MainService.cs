@@ -249,8 +249,6 @@ namespace FXBusinessLogic.BusinessObjects
             FXMindHelpers.SetGlobalVar(session, name, value);
             session.Disconnect();
         }
-
-
         public List<double> iCurrencyStrengthAll(string currencyStr, List<string> brokerDates, int iTimeframe)
         {
             var resultDoubles = new List<double>();
@@ -592,8 +590,8 @@ namespace FXBusinessLogic.BusinessObjects
             try
             {
                 BrokerTimeZoneInfo = GetBrokerTimeZone();
-                if (symbolName.Length == 6)
-                    symbolName = symbolName.Insert(3, "/");
+                //if (symbolName.Length == 6)
+                //    symbolName = symbolName.Insert(3, "/");
                 DBSymbol dbsym = FXMindHelpers.getSymbolID(session, symbolName);
                 if (dbsym == null)
                     return;
@@ -672,8 +670,8 @@ namespace FXBusinessLogic.BusinessObjects
             Session session = FXConnectionHelper.GetNewSession();
             try
             {
-                if (symbolName.Length == 6)
-                    symbolName = symbolName.Insert(3, "/");
+                //if (symbolName.Length == 6)
+                //    symbolName = symbolName.Insert(3, "/");
                 DBSymbol dbsym = FXMindHelpers.getSymbolID(session, symbolName);
                 if (dbsym == null)
                     return resList;
@@ -854,7 +852,6 @@ namespace FXBusinessLogic.BusinessObjects
             Session session = FXConnectionHelper.GetNewSession();
             try
             {
-                
                 var qLS = session.GetObjectsFromQuery<DBLaststate>("select * from laststate"); // new XPQuery<DBLaststate>(session);
                 //qLS.All
                 //IQueryable<DBLaststate> varQLS = from c in qLS
@@ -872,6 +869,120 @@ namespace FXBusinessLogic.BusinessObjects
             catch (Exception e)
             {
                 log.Error("Error: GetWalletBalance: " + e.ToString());
+            }
+            finally
+            {
+                session.Disconnect();
+                session.Dispose();
+            }
+            return result;
+        }
+
+        protected WalletBalance CalculateBalance(Session session, string query, DateTime dt)
+        {
+            string dtStr = dt.ToString(fxmindConstants.MYSQLDATETIMEFORMAT);
+            string resultQuery = string.Format(query, dtStr);
+            SelectedData data = session.ExecuteQuery(resultQuery);
+            int count = data.ResultSet[0].Rows.Count();
+            if (count > 0)
+            {
+                foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
+                {
+                    var balance = (decimal)row.Values[0];
+
+                    WalletBalance wb = new WalletBalance();
+                    wb.WALLET_ID = 0;
+                    wb.BALANCE = balance;
+                    wb.DATE = dt;
+                    wb.formula = "";
+                    return wb;
+                }
+            }
+            return null;
+        }
+
+        List<WalletBalance> IMainService.GetWalletBalanceRange(int WID, DateTime fromDate, DateTime toDate)
+        {
+            List<WalletBalance> result = new List<WalletBalance>();
+            Session session = FXConnectionHelper.GetNewSession();
+            try
+            {
+                if (WID == 0)
+                {
+                    DateTime dt = fromDate;
+                    int dateIteration = 3;
+                    DateTime to = toDate;
+                    string query = @"select sum(`laststate`.`BALANCE`) AS `SUM(BALANCE)` from
+                        (select distinct `walletstate`.`WALLET_ID` AS `WALLET_ID`,`wallet`.`NAME` AS `NAME`,`walletstate`.`BALANCE` AS `BALANCE`,`walletstate`.`DATE` AS `DATE` 
+                        from (`walletstate` join `wallet`) where (`walletstate`.`WALLET_ID`,`wallet`.`NAME`,`walletstate`.`DATE`)  
+                        in (select `walletstate`.`WALLET_ID`,`wallet`.`NAME` AS `NAME`, max(`walletstate`.`DATE`) AS `date` 
+                        from (`walletstate` join `wallet` on((`wallet`.`ID` = `walletstate`.`WALLET_ID`)) ) where (`wallet`.`RETIRED` = 0) AND (`date` <= '{0}')
+                        group by `walletstate`.`WALLET_ID`)) AS `laststate`";
+                    while (dt <= to)
+                    {
+                        /*
+                        string dtStr = dt.ToString(fxmindConstants.MYSQLDATETIMEFORMAT);
+                        string resultQuery = string.Format(query, dtStr);
+                        SelectedData data = session.ExecuteQuery(resultQuery);
+                        int count = data.ResultSet[0].Rows.Count();
+                        if (count > 0)
+                        {
+                            foreach (SelectStatementResultRow row in data.ResultSet[0].Rows)
+                            {
+                                var balance = (decimal)row.Values[0];
+
+                                WalletBalance wb = new WalletBalance();
+                                wb.WALLET_ID = 0;
+                                wb.BALANCE = balance;
+                                wb.DATE = dt;
+                                wb.formula = "";
+                                result.Add(wb);
+                                break;
+                            }
+                        }
+                        */
+                        var res = CalculateBalance(session, query, dt);
+                        result.Add(res);
+                        dt = dt.AddDays(dateIteration);
+                    }
+                    result.Add(CalculateBalance(session, query, to));
+                }
+                else
+                {
+                    // Sample string
+                    // http://localhost:2013/api/wallet/GetRange?id=2&fromDate=2017-11-01T00:00:00&toDate=2018-01-01T00:00:00
+
+                    var qWS = new XPQuery<DBWalletstate>(session);
+                    IQueryable<DBWalletstate> varQWS = null;
+                    if (WID < 0)
+                    {
+                        varQWS = from c in qWS
+                                 where ((c.DATE >= fromDate) && (c.DATE <= toDate))
+                                 select c;
+                    }
+                    else
+                    {
+                        varQWS = from c in qWS
+                                 where ((c.WALLET_ID == WID) && (c.DATE >= fromDate) && (c.DATE <= toDate))
+                                 select c;
+
+                    }
+
+                    foreach (var ls in varQWS)
+                    {
+                        WalletBalance wb = new WalletBalance();
+                        wb.WALLET_ID = ls.WALLET_ID;
+                        //wb.NAME = ls.NAME;
+                        wb.BALANCE = ls.BALANCE;
+                        wb.DATE = ls.DATE;
+                        wb.formula = ls.formula;
+                        result.Add(wb);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: GetWalletBalanceRange: " + e.ToString());
             }
             finally
             {
@@ -1102,8 +1213,8 @@ namespace FXBusinessLogic.BusinessObjects
                 string strSymbol = expert.Symbol;
                 if (strSymbol.Contains("_i"))
                     strSymbol = strSymbol.Substring(0, strSymbol.Length - 2); 
-                if (strSymbol.Length == 6)
-                    strSymbol = strSymbol.Insert(3, "/");
+                //if (strSymbol.Length == 6)
+                //    strSymbol = strSymbol.Insert(3, "/");
 
                 DBSymbol symbol = FXMindHelpers.getSymbolID(session, strSymbol);
                 if (symbol == null)
@@ -1124,8 +1235,8 @@ namespace FXBusinessLogic.BusinessObjects
                     adviser.DISABLED = 0;
                     adviser.TERMINAL_ID = terminal;
                     adviser.SYMBOL_ID = symbol;
-                    
                 }
+
                 adviser.RUNNING = 1;
                 adviser.LASTUPDATE = initTime;
 
@@ -1346,7 +1457,6 @@ namespace FXBusinessLogic.BusinessObjects
             }
             return $"Unknown reason: {Reason}";
         }
-
 
         public void DeInitExpert(int Reason, long MagicNumber)
         {

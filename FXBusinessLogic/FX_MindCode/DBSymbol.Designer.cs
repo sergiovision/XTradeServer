@@ -52,6 +52,7 @@ namespace FXBusinessLogic.fx_mind
             get { return fUse4Tech; }
             set { SetPropertyValue<bool>("Use4Tech", ref fUse4Tech, value); }
         }
+
         string fC1;
         [Size(10)]
         public string C1
@@ -66,6 +67,14 @@ namespace FXBusinessLogic.fx_mind
             get { return fC2; }
             set { SetPropertyValue<string>("C2", ref fC2, value); }
         }
+    
+        short fTYP;
+        public short TYP
+        {
+            get { return fTYP; }
+            set { SetPropertyValue<short>("Typ", ref fTYP, value); }
+        }
+
         [Association(@"DBAdviserReferencesDBSymbol")]
         public XPCollection<DBAdviser> Advisers { get { return GetCollection<DBAdviser>("Advisers"); } }
     }
