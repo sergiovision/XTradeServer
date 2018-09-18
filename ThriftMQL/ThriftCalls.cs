@@ -5,8 +5,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using BusinessObjects;
-using Microsoft.Win32;
-using RGiesecke.DllExport;
+//using Microsoft.Win32;
+using Thrift;
+//using RGiesecke.DllExport;
 namespace ThriftMQL
 {
     public class ThriftCalls
@@ -144,6 +145,7 @@ namespace ThriftMQL
             paramsDic["account"] = tc.accountNumber.ToString();
         }
 
+           
         [DllExport("ProcessDoubleData", CallingConvention = CallingConvention.StdCall)]
         public static long ProcessDoubleData([In, Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)]double[] arr, int arr_size,
             [MarshalAs(UnmanagedType.LPWStr)]string parameters, [MarshalAs(UnmanagedType.LPWStr)]string dataStr, ref THRIFT_CLIENT tc)
@@ -358,14 +360,15 @@ namespace ThriftMQL
         public static long GetProfileString([In, Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder str, 
             [MarshalAs(UnmanagedType.LPWStr)]string Section, [MarshalAs(UnmanagedType.LPWStr)]string Key, [MarshalAs(UnmanagedType.LPWStr)]string fileName)
         {
+            String f = fileName;
             try
             {
-                str.Append(ProfileFunctions.GetPrivateProfileString(fileName, Section, Key));
+                str.Append(ProfileFunctions.GetPrivateProfileString(f, Section, Key));
                 return str.Length;
             }
             catch (Exception e)
             {
-                GlobalErrorMessage = "GetProfileString: " + e.ToString();
+                GlobalErrorMessage = String.Format("GetProfileString({0}, {1}, {2})\n{3}", f , Section, Key, e.ToString());
                 LogWriteLine(GlobalErrorMessage);
             }
             return -1;

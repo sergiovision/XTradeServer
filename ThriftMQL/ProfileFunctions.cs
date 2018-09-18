@@ -26,7 +26,10 @@ namespace ThriftMQL
             {
                 int length = GetPrivateProfileStringW(sectionName, keyName, null, ret, ret.Length, fileName);
                 if (length == 0)
-                    Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+                {
+                    return "";
+                }
+                //    Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
 
                 // This function behaves differently if both sectionName and keyName are null
                 if (sectionName != null && keyName != null)
