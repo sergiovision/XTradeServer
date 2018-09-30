@@ -11,6 +11,8 @@ using ThriftMQL;
 namespace BusinessObjects
 {
 
+
+
     public class FXMindMQLClient : ThriftClient<FXMindMQL.Client> 
     {
 

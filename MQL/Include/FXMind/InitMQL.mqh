@@ -7,18 +7,30 @@
 #property link      "http://github.com/sergiovision"
 
 
-#define _ObjectDelete(name)   ObjectDelete(0, name)
-
-#define _ObjectFind(name)   ObjectFind(0, name)
-
 #ifdef __MQL4__
 
 #define ERR_TRADE_SEND_FAILED  4756
+
+#define UPPER_BAND  MODE_UPPER
+#define LOWER_BAND  MODE_LOWER
+
+#import "user32.dll"
+   int  RegisterWindowMessageW(string MessageName);
+   int  PostMessageW(int hwnd,int msg,int wparam,uchar &Name[]);
+   int  FindWindowW(string lpszClass,string lpszWindow);
+#import
+
+#define VK_RETURN 13 //ENTER key
 
 #endif
 
 
 #ifdef __MQL5__
+
+int WindowFirstVisibleBar()
+{
+   return (int)ChartGetInteger(0,CHART_FIRST_VISIBLE_BAR,0);
+}
 
 
 #define OP_BUY 0           //Buy 
@@ -176,7 +188,7 @@
 #define ERR_SOME_OBJECT_ERROR                      4207
 
  
- 
+/* 
 ENUM_TIMEFRAMES TFMigrate(int tf)
 {
    switch(tf)
@@ -212,186 +224,18 @@ ENUM_TIMEFRAMES TFMigrate(int tf)
       default: return(PERIOD_CURRENT);
    }
 }
+*/
 
-//mt4 compatible timeseries functions (it accepts timeframe as int or ENUM_TIMEFRAMES. in other words ,compatible with mt4 and mt5)
-double iOpen(string symbol,int tf,int index)
-{   
-   if(index < 0) return(-1);
-   double Arr[];
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   if(CopyOpen(symbol,timeframe, index, 1, Arr)>0) return(Arr[0]);
-   else return(-1);
-}
-double iLow(string symbol,int tf,int index)
+
+int IndicatorCounted(int prev_calculated)
 {
-   if(index < 0) return(-1);
-   double Arr[];
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   if(CopyLow(symbol,timeframe, index, 1, Arr)>0) return(Arr[0]);
-   else return(-1);
-}
-double iHigh(string symbol,int tf,int index)
-{
-   if(index < 0) return(-1);
-   double Arr[];
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   if(CopyHigh(symbol,timeframe, index, 1, Arr)>0) return(Arr[0]);
-   else return(-1);
+   if(prev_calculated > 0)
+      return(prev_calculated-1);
+   if(prev_calculated==0) 
+      return(0);
+   return(0);
 }
 
-double iClose(string symbol,int tf,int index)
-{
-   if(index < 0) return(-1);
-   double Arr[];
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   if(CopyClose(symbol,timeframe, index, 1, Arr)>0) return(Arr[0]);
-   else return(-1);
-}
-
-datetime iTime(string symbol,int tf,int index)
-{
-   if(index < 0) return(-1);
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   datetime Arr[];
-   if(CopyTime(symbol, timeframe, index, 1, Arr)>0) return(Arr[0]);
-   else return(-1);
-}
-
-int iVolume(string symbol,int tf,int index)
-{
-   if(index < 0) return(-1);
-   long Arr[];
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   if(CopyTickVolume(symbol, timeframe, index, 1, Arr)>0) 
-      return((int)Arr[0]);
-   else return(-1);
-}
-
-long iVolumeReal(string symbol,int tf,int index)
-{
-   if(index < 0) return(-1);
-   long Arr[];
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   if(CopyRealVolume(symbol, timeframe, index, 1, Arr)>0) return(Arr[0]);
-   else return(-1);
-}
-int iHighest(string symbol, int tf, int type=MODE_HIGH, int count=WHOLE_ARRAY, int start=0)
-{
-   if(start <0) return(-1);
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-
-   if(count==0) count=Bars(symbol,timeframe);
-   
-   if(type==MODE_HIGH)
-   {
-      double Arr[];
-      if(CopyHigh(symbol,timeframe,start,count,Arr)>0)  return((count-ArrayMaximum(Arr)-1)+start);
-      else return(-1);
-   } 
-   else if(type==MODE_LOW)
-   {   
-      double Arr[];
-      if(CopyLow(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMaximum(Arr)-1)+start);
-      else return(-1);
-   }
-   else if(type==MODE_OPEN)
-   {   
-      double Arr[];
-      if(CopyOpen(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMaximum(Arr)-1)+start);
-      else return(-1);
-   }  
-   else if(type==MODE_CLOSE)
-   {
-      double Arr[];
-      if(CopyClose(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMaximum(Arr)-1)+start);
-      else return(-1);
-   }      
-   else if(type==MODE_VOLUME)
-   {
-      long Arr[];
-      if(CopyTickVolume(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMaximum(Arr)-1)+start);
-      else return(-1);
-   }      
-   else if(type==MODE_REAL_VOLUME)
-   {
-      long Arr[];
-      if(CopyRealVolume(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMaximum(Arr)-1)+start);
-      else return(-1);
-   }            
-   else return(-1);
-}
-
-int iLowest(string symbol, int tf, int type=MODE_LOW, int count=WHOLE_ARRAY, int start=0)
-{
-   if(start <0) return(-1);
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   
-   if(count==0) count=Bars(symbol,timeframe);   
-   
-   if(type==MODE_LOW)
-   {         
-      double Arr[];
-      if(CopyLow(symbol,timeframe,start,count,Arr)>0)  return((count-ArrayMinimum(Arr)-1)+start);
-      else return(-1);
-   }
-   else if(type==MODE_HIGH)
-   {
-      double Arr[];
-      if(CopyHigh(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMinimum(Arr)-1)+start);
-      else return(-1);
-   }
-   if(type==MODE_OPEN)
-   {   
-      double Arr[];
-      if(CopyOpen(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMinimum(Arr)-1)+start);
-      else return(-1);
-   }
-   else if(type==MODE_CLOSE)
-   {
-      double Arr[];
-      if(CopyClose(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMinimum(Arr)-1)+start);
-      else return(-1);
-   }   
-   else if(type==MODE_VOLUME)
-   {
-      long Arr[];
-      if(CopyTickVolume(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMinimum(Arr)-1)+start);
-      else return(-1);
-   }      
-   else if(type==MODE_REAL_VOLUME)
-   {
-      long Arr[];
-      if(CopyRealVolume(symbol,timeframe,start,count,Arr)>0) return((count-ArrayMinimum(Arr)-1)+start);
-      else return(-1);
-   }         
-   else return(-1);
-}
-
-int iBarShift(string symbol, int tf, datetime time, bool exact=true)
-{
-   if(time<0) return(-1);
-   //sorry, exact will always =true in this code of mines. no exact=false yet.
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   datetime Arr[];  
-   if(CopyTime(symbol, timeframe,iTime(symbol,timeframe,0), time, Arr)>0) return(ArraySize(Arr)-1);
-   else return(-1);
-}
-
-int iBars(string symbol, int tf)
-{
-   ENUM_TIMEFRAMES timeframe=TFMigrate(tf);
-   return(Bars(symbol,timeframe));
-}
-
-bool ObjectCreate( string name, ENUM_OBJECT type, int window, datetime time1, double price1, datetime time2=0, double price2=0, datetime time3=0, double price3=0) 
-{
-   return(ObjectCreate(0, name, type, window, time1, price1, time2, price2,time3, price3));   
-}
-
-bool ObjectSet( string name, ENUM_OBJECT_PROPERTY_INTEGER index, int value) 
-{
-   return(ObjectSetInteger(0, name, index, value));
-}
 
 #define MODE_MAIN 0
 #define MODE_UPPER 1

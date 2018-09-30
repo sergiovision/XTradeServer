@@ -1,8 +1,8 @@
-C:\Projects\GitHub\FXMindNET\bin\FXBusinessLogic.dll.config
-C:\Projects\GitHub\FXMindNET\bin\FXBusinessLogic.dll
-C:\Projects\GitHub\FXMindNET\bin\FXBusinessLogic.pdb
-C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.csprojAssemblyReference.cache
-C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.csproj.CoreCompileInputs.cache
-C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.csproj.CopyComplete
-C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.dll
-C:\Projects\GitHub\FXMindNET\FXBusinessLogic\obj\Debug\FXBusinessLogic.pdb
+C:\Projects\Git\TradeApp\bin\FXBusinessLogic.dll.config
+C:\Projects\Git\TradeApp\bin\FXBusinessLogic.dll
+C:\Projects\Git\TradeApp\bin\FXBusinessLogic.pdb
+C:\Projects\Git\TradeApp\FXBusinessLogic\obj\Debug\FXBusinessLogic.csprojAssemblyReference.cache
+C:\Projects\Git\TradeApp\FXBusinessLogic\obj\Debug\FXBusinessLogic.csproj.CoreCompileInputs.cache
+C:\Projects\Git\TradeApp\FXBusinessLogic\obj\Debug\FXBusinessLogic.csproj.CopyComplete
+C:\Projects\Git\TradeApp\FXBusinessLogic\obj\Debug\FXBusinessLogic.dll
+C:\Projects\Git\TradeApp\FXBusinessLogic\obj\Debug\FXBusinessLogic.pdb

@@ -1,0 +1,2 @@
+nuget restore
+msbuild
