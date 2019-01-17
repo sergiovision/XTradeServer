@@ -46,5 +46,8 @@ XTrade Server folders structure:
 /UnitTests - Tests of server WebAPI
 
 
+***Warning***
+It is a free version of application. Application works and can be used on real trading accounts. Although it is a free alfa version so it may contain bugs. You can base your trading software solutions on this app. If you need help with application installation/run/clarification on your trade server you can write me, but consultation is not free.
+
 XTrade Web app repository and build instructions here https://github.com/sergiovision/XTradeWeb
 
