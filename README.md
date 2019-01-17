@@ -35,16 +35,16 @@ XTrade Server folders structure:
 
 /BusinessLogic - main app logic
 
-/BusinessObjects - business objects
+/BusinessObjects - shared business objects
 
-/MainServer - main server
+/MainServer - main server self host and WebAPI controllers
 
 /MQL - MQL sources of trading robot.
 
-/QUIKConnector - connector to QUIK terminal using StockSharp libraries.
+/QUIKConnector - connector library to QUIK terminal using StockSharp libraries.
 
 /UnitTests - Tests of server WebAPI
 
 
-XTrade Web app repository and build instructions is here https://github.com/sergiovision/XTradeWeb
+XTrade Web app repository and build instructions here https://github.com/sergiovision/XTradeWeb
 
