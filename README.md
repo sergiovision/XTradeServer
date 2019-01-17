@@ -30,13 +30,21 @@ Config /bin/XTrade.config file to point to your MySQL server db.
 XTrade Server folders structure:
 
 /bin - binary folder where server binaries stored.
+
 /dist - location of XTeade WebApp production build files.
+
 /BusinessLogic - main app logic
+
 /BusinessObjects - business objects
+
 /MainServer - main server
+
 /MQL - MQL sources of trading robot.
+
 /QUIKConnector - connector to QUIK terminal using StockSharp libraries.
+
 /UnitTests - Tests of server WebAPI
+
 
 XTrade Web app repository and build instructions is here https://github.com/sergiovision/XTradeWeb
 
