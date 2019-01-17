@@ -45,6 +45,17 @@ XTrade Server folders structure:
 
 /UnitTests - Tests of server WebAPI
 
+To run application MySQL database should be created from DB folder.
+/bin/XTrade.config should point to proper MySQL server.
+
+run: XTrade.MainServer.exe install 
+
+to install windows service.
+
+Go to services.msc 
+and run XTrade Main Server.
+
+
 
 ***Warning***:
 It is a free version of application. Application works and can be used on real trading accounts. This repository contains free alfa version so it may contain bugs. You can base your trading software solutions on this app. If you need help with application installation/run/clarification on your trade server you can write me, but consultation is not free. Also better version of this application available which can be purchased or modified to your needs for money, contact me if you like application idea and ready to invest money/time to adapt this application to your trading goals.
