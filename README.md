@@ -18,9 +18,13 @@ MySQL database script located in /DB folder. Create database and name it “xtra
 Open Settings table and set the following variables
 
 XTrade.TerminalUser - should be set to windows user login name where trading terminals will be running
+
 XTrade.InstallDir - XTrade installation folder.
+
 Metatrader.CommonFiles - path to MT5 common files folder
+
 MQL.Sources - path to MQL folder where your MQL robots stored
+
 Config /bin/XTrade.config file to point to your MySQL server db.
 
 XTrade Server folders structure:
