@@ -55,6 +55,7 @@ to install windows service.
 Go to services.msc 
 and run XTrade Main Server.
 
+If you have problems running check XTrade.MainServer.log to see errors.
 
 
 ***Warning***:
