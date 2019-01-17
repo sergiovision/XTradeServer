@@ -1,0 +1,25 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+#*.ex5
+*.ex4
+
+#/bin
+/dist
+/packages
+/ThriftMQL/obj/
+/UpgradeLog.htm
+/BusinessObjects/obj
+/MainServer/obj
+/XTradeConnector/obj
+/UnitTests/obj
+/bin.rar
+/MQL.rar
+/BusinessObjects/gen-nodejs
+/MQL5
+/.vs
+/BusinessLogic/obj/Debug
+/BusinessLogic/obj/Release
+/QUIKConnector/obj/Debug
+/QUIKConnector/obj/Release
+/UnitTests/bin/Release

@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>StockSharp.Configuration</name>
+  </assembly>
+  <members>
+    <member name="T:StockSharp.Configuration.CandleElement">
+      <summary>Секция свечи.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.CandleElement.Type">
+      <summary>Дополнительная свеча.</summary>
+    </member>
+    <member name="T:StockSharp.Configuration.CandleElementCollection">
+      <summary>Секция свечей в конфигурационном файле.</summary>
+    </member>
+    <member name="M:StockSharp.Configuration.CandleElementCollection.CreateNewElement">
+      <summary>В перегруженном методе создает <see cref="T:System.Configuration.ConfigurationElement" />.</summary>
+      <returns>Созданный <see cref="T:System.Configuration.ConfigurationElement" />.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.CandleElementCollection.GetElementKey(System.Configuration.ConfigurationElement)">
+      <summary>Получить ключ элемента для секции.</summary>
+      <returns>
+        <see cref="T:System.Object" /> для переданного ключа <see cref="T:System.Configuration.ConfigurationElement" />.</returns>
+      <param name="element">Секция <see cref="T:System.Configuration.ConfigurationElement" /> для получения ключа.</param>
+    </member>
+    <member name="T:StockSharp.Configuration.ConnectionElement">
+      <summary>Секция адаптера сообщений.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.ConnectionElement.Type">
+      <summary>Дополнительный адаптер сообщений.</summary>
+    </member>
+    <member name="T:StockSharp.Configuration.ConnectionElementCollection">
+      <summary>Секция адаптеров сообщений в конфигурационном файле.</summary>
+    </member>
+    <member name="M:StockSharp.Configuration.ConnectionElementCollection.CreateNewElement">
+      <summary>В перегруженном методе создает <see cref="T:System.Configuration.ConfigurationElement" />.</summary>
+      <returns>Созданный <see cref="T:System.Configuration.ConfigurationElement" />.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.ConnectionElementCollection.GetElementKey(System.Configuration.ConfigurationElement)">
+      <summary>Получить ключ элемента для секции.</summary>
+      <returns>
+        <see cref="T:System.Object" /> для переданного ключа <see cref="T:System.Configuration.ConfigurationElement" />.</returns>
+      <param name="element">Секция <see cref="T:System.Configuration.ConfigurationElement" /> для получения ключа.</param>
+    </member>
+    <member name="T:StockSharp.Configuration.DiagramElement">
+      <summary>Секция элемента диаграммы.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.DiagramElement.Type">
+      <summary>Дополнительный элемент диаграммы.</summary>
+    </member>
+    <member name="T:StockSharp.Configuration.DiagramElementCollection">
+      <summary>Секция элементов диаграммы в конфигурационном файле.</summary>
+    </member>
+    <member name="M:StockSharp.Configuration.DiagramElementCollection.CreateNewElement">
+      <summary>В перегруженном методе создает <see cref="T:System.Configuration.ConfigurationElement" />.</summary>
+      <returns>Созданный <see cref="T:System.Configuration.ConfigurationElement" />.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.DiagramElementCollection.GetElementKey(System.Configuration.ConfigurationElement)">
+      <summary>Получить ключ элемента для секции.</summary>
+      <returns>
+        <see cref="T:System.Object" /> для переданного ключа <see cref="T:System.Configuration.ConfigurationElement" />.</returns>
+      <param name="element">Секция <see cref="T:System.Configuration.ConfigurationElement" /> для получения ключа.</param>
+    </member>
+    <member name="T:StockSharp.Configuration.Extensions">
+      <summary>Вспомогательный класс.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.Extensions.RootSection">
+      <summary>Объект корневой секции <see cref="T:StockSharp.Configuration.StockSharpSection" />.</summary>
+    </member>
+    <member name="M:StockSharp.Configuration.Extensions.Configure(StockSharp.Algo.Connector,System.Windows.Window)">
+      <summary>Настроить подключение, используя <see cref="T:StockSharp.Xaml.ConnectorWindow" />.</summary>
+      <param name="connector">Подключение.</param>
+      <param name="owner">Владелец графического потока.</param>
+      <returns>
+        <see langword="true" /> если подключение было настроено, иначе, <see langword="false" />.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.Extensions.Configure(StockSharp.Algo.BasketMessageAdapter,System.Windows.Window)">
+      <summary>Настроить подключение, используя <see cref="T:StockSharp.Xaml.ConnectorWindow" />.</summary>
+      <param name="adapter">Подключение.</param>
+      <param name="owner">Владелец графического потока.</param>
+      <returns>
+        <see langword="true" /> если подключение было настроено, иначе, <see langword="false" />.</returns>
+    </member>
+    <member name="P:StockSharp.Configuration.Extensions.Adapters">
+      <summary>Все доступные адаптеры.</summary>
+    </member>
+    <member name="M:StockSharp.Configuration.Extensions.Configure(StockSharp.Algo.BasketMessageAdapter,System.Windows.Window,System.Boolean@,Ecng.Serialization.SettingsStorage@)">
+      <summary>Настроить подключение, используя <see cref="T:StockSharp.Xaml.ConnectorWindow" />.</summary>
+      <param name="adapter">Подключение.</param>
+      <param name="owner">Владелец графического потока.</param>
+      <param name="autoConnect">Авто-подключение.</param>
+      <param name="windowSettings">Настройки <see cref="T:StockSharp.Xaml.ConnectorWindow" />.</param>
+      <returns>
+        <see langword="true" /> если подключение было настроено, иначе, <see langword="false" />.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.Extensions.GetIndicatorTypes">
+      <summary>Получить все индикаторы.</summary>
+      <returns>Все индикаторы.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.Extensions.FillIndicators(StockSharp.Xaml.Charting.IChart)">
+      <summary>Заполнить <see cref="P:StockSharp.Xaml.Charting.IChart.IndicatorTypes" />, используя <see cref="M:StockSharp.Configuration.Extensions.GetIndicatorTypes" />.</summary>
+      <param name="chart">График.</param>
+    </member>
+    <member name="M:StockSharp.Configuration.Extensions.GetDiagramElements">
+      <summary>Получить все элементы диаграммы.</summary>
+      <returns>Все элементы диаграммы.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.Extensions.GetCandles">
+      <summary>Получить все свечи.</summary>
+      <returns>Все свечи.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.Extensions.FirstTimeInit(StockSharp.Algo.Storages.IEntityRegistry,System.Byte[],System.Action{Ecng.Data.Database})">
+      <summary>Инициализировать файл базы данных.</summary>
+      <param name="entityRegistry">Хранилище торговых объектов.</param>
+      <param name="databaseRaw">Файл базы данных.</param>
+      <param name="init">Колбэк инициализации.</param>
+      <returns>Путь к файлу базы данных.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.Extensions.FirstTimeInit(Ecng.Data.Database,System.Byte[],System.Action{Ecng.Data.Database})">
+      <summary>Инициализировать файл базы данных.</summary>
+      <param name="database">База данных.</param>
+      <param name="databaseRaw">Файл базы данных.</param>
+      <param name="init">Колбэк инициализации.</param>
+      <returns>Путь к файлу базы данных.</returns>
+    </member>
+    <member name="T:StockSharp.Configuration.IndicatorElement">
+      <summary>Секция индикатора.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.IndicatorElement.Type">
+      <summary>Дополнительный индикатор.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.IndicatorElement.Painter">
+      <summary>Дополнительный отрисовщик индикатора.</summary>
+    </member>
+    <member name="T:StockSharp.Configuration.IndicatorElementCollection">
+      <summary>Секция индикаторов в конфигурационном файле.</summary>
+    </member>
+    <member name="M:StockSharp.Configuration.IndicatorElementCollection.CreateNewElement">
+      <summary>В перегруженном методе создает <see cref="T:System.Configuration.ConfigurationElement" />.</summary>
+      <returns>Созданный <see cref="T:System.Configuration.ConfigurationElement" />.</returns>
+    </member>
+    <member name="M:StockSharp.Configuration.IndicatorElementCollection.GetElementKey(System.Configuration.ConfigurationElement)">
+      <summary>Получить ключ элемента для секции.</summary>
+      <returns>
+        <see cref="T:System.Object" /> для переданного ключа <see cref="T:System.Configuration.ConfigurationElement" />.</returns>
+      <param name="element">Секция <see cref="T:System.Configuration.ConfigurationElement" /> для получения ключа.</param>
+    </member>
+    <member name="T:StockSharp.Configuration.InMemoryConfigurationMessageAdapterProvider">
+      <summary>Провайдер конфигурации адаптеров в памяти.</summary>
+    </member>
+    <member name="M:StockSharp.Configuration.InMemoryConfigurationMessageAdapterProvider.#ctor">
+      <summary>Инициализировать <see cref="T:StockSharp.Configuration.InMemoryConfigurationMessageAdapterProvider" />.</summary>
+    </member>
+    <member name="T:StockSharp.Configuration.StockSharpSection">
+      <summary>Корневая секция StockSharp в конфигурационном файле.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.StockSharpSection.CustomConnections">
+      <summary>Дополнительные адаптеры сообщений.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.StockSharpSection.CustomCandles">
+      <summary>Дополнительные свечи.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.StockSharpSection.CustomIndicators">
+      <summary>Дополнительные индикаторы.</summary>
+    </member>
+    <member name="P:StockSharp.Configuration.StockSharpSection.CustomDiagramElements">
+      <summary>Дополнительные элементы диаграммы.</summary>
+    </member>
+  </members>
+</doc>
