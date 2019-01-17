@@ -6,15 +6,19 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects
 {
-    public class Account
+    public class Account 
     {
-        public int ID { get; set; }
-        public long AccountNumber { get; set; }
-
-        public string Broker { get; set; }
-
-        public string FullPath { get; set; }
-        public string CodeBase { get; set; }
-        public bool Disabled { get; set; }
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public decimal Balance { get; set; }
+        public decimal Equity { get; set; }
+        public int CurrencyId { get; set; }
+        public string CurrencyStr { get; set; }
+        public int WalletId { get; set; }
+        public int TerminalId { get; set; }
+        public int PersonId { get; set; }
+        public long Number { get; set; }
+        public DateTime? Lastupdate { get; set; }
+        public virtual bool Retired { get; set; }
     }
 }

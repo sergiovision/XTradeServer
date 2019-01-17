@@ -4,31 +4,27 @@ using Autofac;
 
 namespace BusinessObjects
 {
-    public interface IMainService
+    public interface IMainService : IDataService
     {
         IContainer Container { get; }
 
-        void Init(INotificationUi ui);
-
-        INotificationUi GetUi();
+        void Init(IContainer container);
 
         void Dispose();
-
-        string GetGlobalProp(string name);
-
-        void SetGlobalProp(string name, string value);
 
         bool InitScheduler(bool bServerMode);
 
         void RunJobNow(string group, string name);
 
+        void StopJobNow(string group, string name);
+
         string GetJobProp(string group, string name, string prop);
 
         void SetJobCronSchedule(string group, string name, string cron);
 
-        List<ScheduledJob> GetAllJobsList();
+        List<ScheduledJobInfo> GetAllJobsList();
 
-        Dictionary<string, ScheduledJob> GetRunningJobs();
+        Dictionary<string, ScheduledJobInfo> GetRunningJobs();
 
         DateTime? GetJobNextTime(string group, string name);
 
@@ -38,48 +34,40 @@ namespace BusinessObjects
 
         void ResumeScheduler();
 
-        List<double> iCurrencyStrengthAll(string currency, List<string> brokerDates, int iTimeframe);
-
-        List<double> iGlobalSentimentsArray(string symbolName, List<string> brokerDates, int siteId);
-
         TimeZoneInfo GetBrokerTimeZone();
-
-        void GetAverageLastGlobalSentiments(DateTime date, string symbolStr, out double longPos, out double shortPos);
 
         bool GetNextNewsEvent(DateTime date, string symbolStr, byte minImportance, ref NewsEventInfo eventInfo);
 
-        List<NewsEventInfo> GetTodayNews(DateTime date, string symbolStr, byte minImportance);
+        List<NewsEventInfo> GetTodayNews(DateTime date, string symbolStr, byte minImportance, int tzoffset = 0);
 
         bool IsDebug();
 
-        List<Currency> GetCurrencies();
-
-        List<TechIndicator> GetIndicators();
-
-        void SaveCurrency(Currency c);
-
-        void SaveIndicator(TechIndicator i);
-
         ExpertInfo InitExpert(ExpertInfo expert);
 
-        void SaveExpert(long Magic, string ActiveOrdersList);
 
-        void DeInitExpert(int Reason, long MagicNumber);
+        void SaveExpert(ExpertInfo expert);
+
+        void DeInitExpert(ExpertInfo expert);
 
         int DeleteHistoryOrders(string filePath);
 
         void DeployToTerminals(string sourceFolder);
 
-        void DeployToAccount(int id);
+        string DeployToAccount(int id);
 
-        List<WalletBalance> GetWalletBalance();
+        List<Wallet> GetWalletBalanceRange(int WalletId, DateTime from, DateTime to);
 
-        List<WalletBalance> GetWalletBalanceRange(int WALLET_ID, DateTime from, DateTime to);
+        bool UpdateAccountState(AccountState accState);
 
-        List<Account> GetAccounts();
+        SignalInfo ListenSignal(long ReciverObj, long flags);
 
-        List<Adviser> GetExperts();
+        void PostSignalTo(SignalInfo signal);
 
-        bool UpdateWallet(WalletBalance wb);
+        SignalInfo SendSignal(SignalInfo expert);
+
+        void SubscribeToSignals(long objectId);
+
+        SignalInfo CreateSignal(SignalFlags flags, long ObjectId, EnumSignals Id);
+
     }
 }

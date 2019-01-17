@@ -5,7 +5,7 @@ using log4net;
 using Microsoft.Owin.Hosting;
 using Topshelf;
 
-namespace FXMind.MainServer
+namespace XTrade.MainServer
 {
     /// <summary>
     ///     The main server logic.
@@ -14,21 +14,23 @@ namespace FXMind.MainServer
     {
         //public static QuartzServer quartz;
         private static readonly ILog Log = LogManager.GetLogger(typeof(QuartzServer));
-        private IMainService fxmindServer;
+        private IMainService xtradeServer;
         private IDisposable webapi;
+        private short webport;
 
         public QuartzServer()
         {
-            Initialize();
+            Initialize(xtradeConstants.WebBackend_PORT);
         }
         /// <summary>
         ///     Initializes the instance of the <see cref="QuartzServer" /> class.
         /// </summary>
-        public virtual void Initialize()
+        public virtual void Initialize(short WEBAPIPORT)
         {
             try
             {
-                fxmindServer = Program.Container.Resolve<IMainService>();
+                webport = WEBAPIPORT;
+                xtradeServer = Program.Container.Resolve<IMainService>();
             }
             catch (Exception e)
             {
@@ -44,11 +46,11 @@ namespace FXMind.MainServer
         {
             try
             {
-                const short WEBAPIPORT = 2013;
                 // scheduler.Start();
-                var gui = Program.Container.Resolve<INotificationUi>();
-                fxmindServer.Init(gui);
-                webapi = WebApp.Start<Startup>($"http://localhost:{WEBAPIPORT}");
+                xtradeServer.Init(Program.Container);
+                if (webport <= 0)
+                    throw new Exception("Port should be set for WEBAPI!!!");
+                webapi = WebApp.Start<Startup>($"http://*:{webport}");
             }
             catch (Exception ex)
             {
@@ -66,8 +68,8 @@ namespace FXMind.MainServer
         {
             try
             {
-                if (fxmindServer != null)
-                    fxmindServer.Dispose();
+                if (xtradeServer != null)
+                    xtradeServer.Dispose();
                 if (webapi != null)
                     webapi.Dispose();
 
@@ -86,7 +88,7 @@ namespace FXMind.MainServer
         /// </summary>
         public virtual void Pause()
         {
-            fxmindServer.PauseScheduler();
+            xtradeServer.PauseScheduler();
         }
 
         /// <summary>
@@ -94,7 +96,7 @@ namespace FXMind.MainServer
         /// </summary>
         public void Resume()
         {
-            fxmindServer.ResumeScheduler();
+            xtradeServer.ResumeScheduler();
         }
 
         /// <summary>
@@ -121,7 +123,7 @@ namespace FXMind.MainServer
         /// </summary>
         public virtual void Dispose()
         {
-            fxmindServer.Dispose(); // no-op for now
+            xtradeServer.Dispose(); // no-op for now
         }
 
         /// <summary>

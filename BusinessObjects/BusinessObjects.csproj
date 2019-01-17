@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BusinessObjects</RootNamespace>
     <AssemblyName>BusinessObjects</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -50,40 +50,40 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppServiceClient.cs" />
+    <Compile Include="BusinessObjects\AccountState.cs" />
+    <Compile Include="BusinessObjects\CurrencyInfo.cs" />
+    <Compile Include="BusinessObjects\DealInfo.cs" />
+    <Compile Include="BusinessObjects\EnumSignals.cs" />
+    <Compile Include="BusinessObjects\ExpertsCluster.cs" />
+    <Compile Include="BusinessObjects\PositionInfo.cs" />
+    <Compile Include="BusinessObjects\ScheduledJobInfo.cs" />
+    <Compile Include="BusinessObjects\SignalFlags.cs" />
+    <Compile Include="BusinessObjects\SignalInfo.cs" />
+    <Compile Include="BusinessObjects\MetaSymbolStat.cs" />
+    <Compile Include="BusinessObjects\Wallet.cs" />
+    <Compile Include="BusinessObjects\Person.cs" />
     <Compile Include="BusinessObjects\Adviser.cs" />
-    <Compile Include="BusinessObjects\Account.cs" />
-    <Compile Include="BusinessObjects\AppService.cs" />
-    <Compile Include="BusinessObjects\Currency.cs" />
-    <Compile Include="BusinessObjects\CurrencyStrengthSummary.cs" />
+    <Compile Include="BusinessObjects\Terminal.cs" />
     <Compile Include="BusinessObjects\EnumExpertValueScope.cs" />
     <Compile Include="BusinessObjects\EnumExpertValueType.cs" />
     <Compile Include="BusinessObjects\ENUM_ORDERROLE.cs" />
     <Compile Include="BusinessObjects\ExpertInfo.cs" />
-    <Compile Include="BusinessObjects\ExpertParameter.cs" />
-    <Compile Include="BusinessObjects\fxmind.Constants.cs" />
-    <Compile Include="BusinessObjects\FXMindMQL.cs" />
     <Compile Include="BusinessObjects\NewsEventInfo.cs" />
-    <Compile Include="BusinessObjects\Order.cs" />
-    <Compile Include="BusinessObjects\ScheduledJob.cs" />
     <Compile Include="BusinessObjects\ScheduledJobView.cs" />
     <Compile Include="BusinessObjects\SymbolType.cs" />
-    <Compile Include="BusinessObjects\TechIndicator.cs" />
-    <Compile Include="BusinessObjects\WalletBalance.cs" />
-    <Compile Include="FXMindMQLClient.cs" />
+    <Compile Include="BusinessObjects\Account.cs" />
+    <Compile Include="BusinessObjects\xtrade.Constants.cs" />
+    <Compile Include="IExpert.cs" />
+    <Compile Include="ISignalHandler.cs" />
+    <Compile Include="ITerminalConnector.cs" />
+    <Compile Include="ITerminalEvents.cs" />
+    <Compile Include="IDataService.cs" />
     <Compile Include="IMainService.cs" />
-    <Compile Include="INotificationUI.cs" />
+    <Compile Include="IWebLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ThriftClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ThriftMQL\Thrift.46.csproj">
-      <Project>{ebce35da-cf6a-42bc-a357-a9c09b534299}</Project>
-      <Name>Thrift.46</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

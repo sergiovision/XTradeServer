@@ -1,22 +1,22 @@
 using System;
 using log4net;
 
-namespace FXMind.MainServer
+namespace XTrade.MainServer
 {
     /// <summary>
     ///     Configuration for the Quartz server.
     /// </summary>
     public class Configuration
     {
-        private const string PrefixServerConfiguration = "FXMind.MainServer";
+        private const string PrefixServerConfiguration = "XTrade.MainServer";
         private const string KeyServiceName = PrefixServerConfiguration + ".serviceName";
         private const string KeyServiceDisplayName = PrefixServerConfiguration + ".serviceDisplayName";
         private const string KeyServiceDescription = PrefixServerConfiguration + ".serviceDescription";
         private const string KeyServerImplementationType = PrefixServerConfiguration + ".type";
 
-        private const string DefaultServiceName = "FXMindMainServer";
-        private const string DefaultServiceDisplayName = "FXMind Main Server";
-        private const string DefaultServiceDescription = "FXMind Main Tasks Running Service";
+        private const string DefaultServiceName = "XTradeMainServer";
+        private const string DefaultServiceDisplayName = "XTrade Main Server";
+        private const string DefaultServiceDescription = "XTrade Main Tasks Running Service";
         private static readonly ILog log = LogManager.GetLogger(typeof(Configuration));
         private static readonly string DefaultServerImplementationType = typeof(QuartzServer).AssemblyQualifiedName;
 
@@ -25,20 +25,6 @@ namespace FXMind.MainServer
         /// </summary>
         static Configuration()
         {
-            try
-            {
-                //configuration = (NameValueCollection)InitProperties(); 
-                //configuration = (NameValueCollection) ConfigurationManager.GetSection("quartz");
-                //var finalProps = new NameValueCollection(configuration);
-                // string DS = ConfigurationManager.ConnectionStrings["FXMind.ConnectionString"].ConnectionString;
-                //finalProps["quartz.dataSource.default.connectionString"] = DS;
-                // configuration = finalProps;
-            }
-            catch (Exception e)
-            {
-                log.Error("Fail to initialize Quartz!!!!!!!!!");
-                log.Error(e.ToString());
-            }
         }
 
         /*

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="FXBusinessLogic.Repo" namespace="FXBusinessLogic.Repo" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="Openposratio" table="openposratio" lazy="true" >
+    <id name="Id" column="Id" />
+    <property name="Parsetime">
+      <column name="Parsetime" sql-type="datetime" not-null="true" />
+    </property>
+    <property name="Symbolid">
+      <column name="SymbolId" sql-type="int(11)" not-null="false" />
+    </property>
+    <property name="Longratio">
+      <column name="Longratio" sql-type="double" not-null="false" />
+    </property>
+    <property name="Shortratio">
+      <column name="Shortratio" sql-type="double" not-null="false" />
+    </property>
+    <property name="Siteid">
+      <column name="SiteId" sql-type="int(11)" not-null="false" />
+    </property>
+  </class>
+</hibernate-mapping>

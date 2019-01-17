@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="FXBusinessLogic.Repo" namespace="FXBusinessLogic.Repo" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="Statsdate" table="statsdate" lazy="true" >
+    <id name="Id" column="Id" />
+    <property name="Typ">
+      <column name="Typ" sql-type="int(10)" not-null="true" />
+    </property>
+    <property name="Dailyvalue">
+      <column name="DailyValue" sql-type="decimal(11,2)" not-null="false" />
+    </property>
+    <property name="Weeklyvalue">
+      <column name="WeeklyValue" sql-type="decimal(11,2)" not-null="false" />
+    </property>
+    <property name="Lastupdate">
+      <column name="Lastupdate" sql-type="datetime" not-null="false" />
+    </property>
+    <property name="Monthly">
+      <column name="Monthly" sql-type="decimal(11,2)" not-null="false" />
+    </property>
+  </class>
+</hibernate-mapping>

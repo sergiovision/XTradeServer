@@ -1,15 +1,14 @@
 ﻿using Autofac;
 using BusinessObjects;
-using FXBusinessLogic.BusinessObjects;
 using log4net;
 using log4net.Config;
 using Topshelf;
 using System.Management;
 using System;
 using System.ServiceProcess;
-using System.Reflection;
+using Microsoft.AspNet.SignalR;
 
-namespace FXMind.MainServer
+namespace XTrade.MainServer
 {
     /// <summary>
     ///     The server's main entry point.
@@ -20,34 +19,16 @@ namespace FXMind.MainServer
 
         public static IContainer Container { get; set; }
 
-        private static void RegisterContainer()
+        public static void RegisterContainer()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<MainService>().As<IMainService>().SingleInstance();
-            builder.RegisterType<QuartzServer>().AsSelf().SingleInstance();
-            builder.RegisterType<BackgroundNotifyLog>().As<INotificationUi>().SingleInstance();
+
+            builder.RegisterModule(new BusinessLogic.BusinessLogicModule());
+            builder.RegisterModule(new QUIK.QUIKConnectorModule());
+            builder.RegisterModule(new MainServerModule());
+
             Container = builder.Build();
         }
-
-        //public static void AlloWDesktopInteraction()
-        //{
-        //    var service = new System.Management.ManagementObject(string.Format("WIN32_Service.Name='{0}'", Configuration.ServiceName));
-        //    try
-        //    {
-        //        var paramList = new object[11];
-        //        paramList[5] = true;//We only need to set DesktopInteract parameter
-        //        var output = (int)service.InvokeMethod("Change", paramList);
-        //        //if zero is returned then it means change is done.
-        //        if (output != 0)
-        //            throw new Exception(string.Format("FAILED with code {0}", output));
-
-        //    }
-        //    finally
-        //    {
-        //        service.Dispose();
-        //    }
-
-        //}
 
         /// <summary>
         ///     Main.
@@ -83,13 +64,11 @@ namespace FXMind.MainServer
                     x.Service(factory =>
                     {
                         var server = Container.Resolve<QuartzServer>();
-                        //server.Initialize();
+                        server.Initialize(xtradeConstants.WebBackend_PORT);
                         //server.Start();
                         return server;
                     });
                 //}
-
-
             });
             var exitCode = (int)Convert.ChangeType(rc, rc.GetTypeCode());
             Environment.ExitCode = exitCode;

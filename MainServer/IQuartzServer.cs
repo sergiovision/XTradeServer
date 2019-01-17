@@ -1,4 +1,4 @@
-namespace FXMind.MainServer
+namespace XTrade.MainServer
 {
     /// <summary>
     ///     Service interface for core Quartz.NET server.
@@ -9,7 +9,7 @@ namespace FXMind.MainServer
         ///     Initializes the instance of <see cref="IQuartzServer" />.
         ///     Initialization will only be called once in server's lifetime.
         /// </summary>
-        void Initialize();
+        //void Initialize();
 
         /// <summary>
         ///     Starts this instance.

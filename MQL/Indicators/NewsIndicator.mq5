@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                                 ThriftClient.mqh |
+//|                                                 NewsIndicator.mqh|
 //|                                                 Sergei Zhuravlev |
 //|                                   http://github.com/sergiovision |
 //+------------------------------------------------------------------+
@@ -7,10 +7,10 @@
 #property link      "http://github.com/sergiovision"
 #property strict
 
-#define THRIFT 1
 
-#include <FXMind\FXMindClient.mqh>
-#include <FXMind\NewsPanel.mqh>
+#include <XTrade\IUtils.mqh>
+#include <XTrade\TradeConnector.mqh>
+#include <XTrade\NewsPanel.mqh>
 
 #ifdef __MQL5__
 #property indicator_applied_price PRICE_CLOSE
@@ -24,7 +24,7 @@
 #property indicator_plots     1
 
 //--- input parameters
-input int      Magic = 1000000;
+input int      Magic = FAKE_MAGICNUMBER;
 input int      ThriftPort = 2010;
 input int      NewsImportance = 1;
 input ENUM_TRADE_PANEL_SIZE   PanelSize = PanelNormal;
@@ -34,7 +34,7 @@ ENUM_TIMEFRAMES PeriodTF = PERIOD_CURRENT;
 
 double ExtSentBuffer[];
 
-IFXMindService* thrift = NULL;
+ITradeService* thrift = NULL;
 NewsPanel* newsPanel = NULL;
 
 //+------------------------------------------------------------------+

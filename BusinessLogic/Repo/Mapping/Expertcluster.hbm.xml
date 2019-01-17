@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="FXBusinessLogic.Repo" namespace="FXBusinessLogic.Repo" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="Expertcluster" table="expertcluster" lazy="true" >
+    <id name="Id" column="Id" />
+    <many-to-one name="Metasymbol">
+      <column name="MetasymbolId" sql-type="int(11)" not-null="true" />
+    </many-to-one>
+    <many-to-one name="Adviser">
+      <column name="AdviserId" sql-type="int(11)" not-null="true" />
+    </many-to-one>
+    <property name="Name">
+      <column name="Name" sql-type="varchar(50)" not-null="true" />
+    </property>
+    <property name="Description">
+      <column name="Description" sql-type="varchar(500)" not-null="false" />
+    </property>
+    <property name="Typ">
+      <column name="Typ" sql-type="smallint(6)" not-null="false" />
+    </property>
+    <property name="Retired">
+      <column name="Retired" sql-type="bit(1)" not-null="false" />
+    </property>
+  </class>
+</hibernate-mapping>

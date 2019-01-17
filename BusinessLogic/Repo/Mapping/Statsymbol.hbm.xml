@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="FXBusinessLogic.Repo" namespace="FXBusinessLogic.Repo" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="Statsymbol" table="statsymbol" lazy="true" >
+    <id name="Id" column="Id" />
+    <many-to-one name="Metasymbol">
+      <column name="MetasymbolId" sql-type="int(11)" not-null="true" />
+    </many-to-one>
+    <property name="Averagevalue">
+      <column name="AverageValue" sql-type="decimal(11,2)" not-null="false" />
+    </property>
+    <property name="Lastupdate">
+      <column name="Lastupdate" sql-type="datetime" not-null="false" />
+    </property>
+  </class>
+</hibernate-mapping>

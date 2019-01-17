@@ -1,9 +1,0 @@
-C:\Projects\Git\TradeApp\bin\App.config
-C:\Projects\Git\TradeApp\bin\FXMind.MainServer.exe.config
-C:\Projects\Git\TradeApp\bin\FXMind.MainServer.exe
-C:\Projects\Git\TradeApp\bin\FXMind.MainServer.pdb
-C:\Projects\Git\TradeApp\MainServer\obj\Debug\MainServer.csprojAssemblyReference.cache
-C:\Projects\Git\TradeApp\MainServer\obj\Debug\MainServer.csproj.CoreCompileInputs.cache
-C:\Projects\Git\TradeApp\MainServer\obj\Debug\MainServer.csproj.CopyComplete
-C:\Projects\Git\TradeApp\MainServer\obj\Debug\FXMind.MainServer.exe
-C:\Projects\Git\TradeApp\MainServer\obj\Debug\FXMind.MainServer.pdb

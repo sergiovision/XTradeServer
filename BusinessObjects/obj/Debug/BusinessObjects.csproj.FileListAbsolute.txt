@@ -1,7 +1,0 @@
-C:\Projects\Git\TradeApp\bin\BusinessObjects.dll
-C:\Projects\Git\TradeApp\bin\BusinessObjects.pdb
-C:\Projects\Git\TradeApp\BusinessObjects\obj\Debug\BusinessObjects.csprojAssemblyReference.cache
-C:\Projects\Git\TradeApp\BusinessObjects\obj\Debug\BusinessObjects.csproj.CoreCompileInputs.cache
-C:\Projects\Git\TradeApp\BusinessObjects\obj\Debug\BusinessObjects.csproj.CopyComplete
-C:\Projects\Git\TradeApp\BusinessObjects\obj\Debug\BusinessObjects.dll
-C:\Projects\Git\TradeApp\BusinessObjects\obj\Debug\BusinessObjects.pdb

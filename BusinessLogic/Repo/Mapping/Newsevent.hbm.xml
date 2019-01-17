@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping assembly="FXBusinessLogic.Repo" namespace="FXBusinessLogic.Repo" xmlns="urn:nhibernate-mapping-2.2">
+  <class name="Newsevent" table="newsevent" lazy="true" >
+    <id name="Id" column="ID" />
+    <many-to-one name="Currency">
+      <column name="CurrencyId" sql-type="int(6)" not-null="true" />
+    </many-to-one>
+    <property name="Happentime">
+      <column name="HappenTime" sql-type="datetime" not-null="true" />
+    </property>
+    <property name="Name">
+      <column name="Name" sql-type="varchar(500)" not-null="true" />
+    </property>
+    <property name="Importance">
+      <column name="Importance" sql-type="tinyint(3) unsigned" not-null="true" />
+    </property>
+    <property name="Actualval">
+      <column name="ActualVal" sql-type="varchar(127)" not-null="false" />
+    </property>
+    <property name="Forecastval">
+      <column name="ForecastVal" sql-type="varchar(127)" not-null="false" />
+    </property>
+    <property name="Previousval">
+      <column name="PreviousVal" sql-type="varchar(127)" not-null="false" />
+    </property>
+    <property name="Parsetime">
+      <column name="ParseTime" sql-type="datetime" not-null="true" />
+    </property>
+    <property name="Raised">
+      <column name="Raised" sql-type="tinyint(1)" not-null="false" />
+    </property>
+  </class>
+</hibernate-mapping>
