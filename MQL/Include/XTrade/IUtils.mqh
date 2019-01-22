@@ -48,7 +48,6 @@ public:
    virtual double OrderLots() {return 0;}
    virtual double OrderOpenPrice() {return 0;}
    virtual datetime OrderOpenTime() {return 0;}
-   //datetime OrderCloseTime();
    virtual double OrderStopLoss() {return 0;}
    virtual double OrderTakeProfit() {return 0;}
    virtual datetime OrderExpiration() {return 0;}
@@ -125,11 +124,7 @@ public:
      this.Info("GetIndicatorData not implemented");
      return -1;
    }
-    
-   //virtual void AddToChart(int Handle, string IndicatorName, long chartID, int subWin)
-   //{
-   //}
-   
+       
     virtual bool GetIndicatorMinMax( CIndicator& indi, double& Min, double& Max, TYPE_TREND& trend, int BuffIndex, int numBars)
     {
         this.Info("GetIndicatorMinMax not implemented");
@@ -236,37 +231,7 @@ public:
         IndicatorSetString(INDICATOR_SHORTNAME,name);
     }
 
-    
-   /*int GetIndicatorSubWindowNumber(long chID, string short_name)
-  {
-   int window=0;
-//--- 
-   if((ENUM_PROGRAM_TYPE)MQLInfoInteger(MQL_PROGRAM_TYPE)==PROGRAM_INDICATOR)
-     {
-        //string name = MQL5InfoString(MQL5_PROGRAM_NAME);
-      //if (IsVisualMode())
-      //   window = 0;
-      //else 
-      //--- the function is called from the indicator, name is not required
-         window = ChartWindowFind();//(int)ChartGetInteger(chID,CHART_WINDOWS_TOTAL)-1;//ChartWindowFind(chID, name);
-     }
-   else
-     {
-      //window = 0; // draw on main chart
-      //if (IsVisualMode())
-       //  window = 0;
-      //else 
-      //{   
-        //string name = MQL5InfoString(MQL5_PROGRAM_NAME);
-         window = 0;//(int)ChartGetInteger(chID,CHART_WINDOWS_TOTAL) -1; 
-      //--- the function is called from an Expert Advisor or script
-        // window = ChartWindowFind(chID,name);
-      //}
-     }
-//---
-   return(window);
-  }*/
-
+   
       CROSS_TYPE CandleBodyCross(double& price[], MqlRates& rates[])
       {
          for(int i = ArraySize(rates)-1; i>=0;i--)
@@ -394,17 +359,4 @@ IUtils* GetUtils()
     return Utils;
 }
 
-#ifdef __MQL4__
-#include <stdlib.mqh>
-#include <XTrade\MQL4Utils.mqh>
-//#import "MQL4Utils.ex5"
-//IUtils* CreateUtils(short port, string EAName);
-//#import
-#endif
-#ifdef __MQL5__
 #include <XTrade\MQL5Utils.mqh>
-//#import "MQL5Utils.ex5"
-//IUtils* CreateUtils(short port, string EAName);
-//#import
-
-#endif

@@ -33,18 +33,14 @@ namespace XTrade.MainServer
 
         [HttpGet]
         [AcceptVerbs("GET")]
-        public IEnumerable<MetaSymbolStat> MetaSymbolStatistics()
+        public IEnumerable<MetaSymbolStat> MetaSymbolStatistics([FromUri]int type)
         {
             try
             {
                 var ds =  MainService.Container.Resolve<DataService>();
                 if (ds == null)
                     return null;
-#if DEBUG
-                return ds.MetaSymbolStatistics(true);
-#else
-                return ds.MetaSymbolStatistics(false);
-#endif
+                return ds.MetaSymbolStatistics(type);
             }
             catch (Exception e)
             {

@@ -108,11 +108,12 @@ namespace BusinessLogic.Repo
             return result;
         }
 
-        public IEnumerable<MetaSymbolStat> MetaSymbolStatistics(bool IsDemoAccount)
+        public IEnumerable<MetaSymbolStat> MetaSymbolStatistics(int AccountType)
         {
             List<MetaSymbolStat> result = new List<MetaSymbolStat>();
             try
             {
+                bool IsDemoAccount = (AccountType > 0)?true:false;
                 using (ISession Session = ConnectionHelper.CreateNewSession())
                 {
                     var rateList = Session.Query<DBRates>().Where(x => x.Retired == false).ToList();
