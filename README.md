@@ -2,6 +2,8 @@ XTrade is a good project for managing trading experience and personal capital st
 Project consists from Server XTradeServer app and XTrade Web App. XTrade Main Server is a Windows service which manages all trading terminals, process all data and signals, stores everything in MySQL database, hosts XTrade Web app as a self host. 
 XTrade Web App is an Angular Web application which administrates XTrade Server.
 
+Application features list is in ***Readme.pdf*** file in root folder.
+
 How to build server application:
 1. Clone this repository
 2. Run from command line: build.bat
