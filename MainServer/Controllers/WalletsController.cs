@@ -10,6 +10,7 @@ using System.Net.Http.Formatting;
 using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json;
+using BusinessLogic.Repo;
 
 namespace XTrade.MainServer
 {
@@ -63,6 +64,24 @@ namespace XTrade.MainServer
             return null;
         }
 
+        // Warning: month is Zero based - January equal 0
+        [HttpGet]
+        [AcceptVerbs("GET")]
+        public List<TimeStat> Performance([FromUri]int month, [FromUri]int period)
+        {
+            try
+            {
+                var ds = MainService.Container.Resolve<DataService>();
+                if (ds == null)
+                    return null;
+                return ds.Performance(month, (TimePeriod)period);
+            }
+            catch (Exception e)
+            {
+                log.Error(e.ToString());
+            }
+            return null;
+        }
 
         [HttpPut]
         [AcceptVerbs("PUT")]

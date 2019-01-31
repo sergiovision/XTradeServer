@@ -19,6 +19,7 @@ namespace BusinessObjects
         public decimal ProfitStopsPercent { get; set; }    
         public decimal ProfitBricks { get; set; }
         public decimal Profit { get; set; }
+        public string Role { get; set; }
 
         public void Update()
         {

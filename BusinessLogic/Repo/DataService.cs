@@ -23,7 +23,8 @@ namespace BusinessLogic.Repo
         private AuthRepository persons;
         private AccountsRepository accounts;
         private WalletsRepository wallets;
-
+        private readonly static object lockDeals = new object();
+        private List<Rates> rates;
         public DataService(IWebLog l)
         {
             symbols = new BaseRepository<DBSymbol>();
@@ -38,6 +39,7 @@ namespace BusinessLogic.Repo
             wallets = new WalletsRepository(this);
             deals = new BaseRepository<DBDeals>();
             log = l;
+            rates = new List<Rates>();
         }
         public List<CurrencyInfo> GetCurrencies()
         {
@@ -95,12 +97,12 @@ namespace BusinessLogic.Repo
             }
         }
 
-        public decimal ConvertToUSD(decimal value, string valueCurrency, IEnumerable<DBRates> rates)
+        public decimal ConvertToUSD(decimal value, string valueCurrency)
         {
             decimal result = value;
             if ((rates == null) || valueCurrency.Equals("USD"))
                 return result;
-            DBRates rate = rates.Where(x => x.Metasymbol.C1.Equals(valueCurrency)).FirstOrDefault();
+            Rates rate = GetRates(false).Where(x => x.C1.Equals(valueCurrency)).FirstOrDefault();
             if (rate != null && (rate.Rateask > 0))
             {
                 result = result / rate.Rateask;
@@ -116,7 +118,6 @@ namespace BusinessLogic.Repo
                 bool IsDemoAccount = (AccountType > 0)?true:false;
                 using (ISession Session = ConnectionHelper.CreateNewSession())
                 {
-                    var rateList = Session.Query<DBRates>().Where(x => x.Retired == false).ToList();
                     var symbols = Session.Query<DBMetasymbol>().Where(x => x.Retired == false).ToList();
                     foreach (var sym in symbols)
                     {
@@ -125,7 +126,7 @@ namespace BusinessLogic.Repo
                         int countTrades = 0;
                         foreach (var deal in deals)
                         {
-                            sumProfit += ConvertToUSD(deal.Profit, deal.Terminal.Account.Currency.Name, rateList);
+                            sumProfit += ConvertToUSD(deal.Profit, deal.Terminal.Account.Currency.Name);
                             countTrades++;
                         }
                         if (countTrades <= 10)
@@ -148,7 +149,123 @@ namespace BusinessLogic.Repo
             }
             return result.OrderByDescending(x=>x.ProfitPerTrade);
         }
+                        
+        public List<TimeStat> Performance(int month, TimePeriod period)
+        {
+            List<TimeStat> result = new List<TimeStat>();
+            try
+            {
+                using (ISession Session = ConnectionHelper.CreateNewSession())
+                {
+                    var rateList = Session.Query<DBRates>().Where(x => x.Retired == false).ToList();
+                    DateTime now = DateTime.Now;
+                    int dayFrom = 1;
+                    int year = now.Year;
+                    if (now.Month < (month + 1))
+                    {
+                        year--;
+                    }
+                    DateTime from = new DateTime(year, month + 1, dayFrom);
+                    int dayTo = (now.Month == (month + 1)) ? now.Day : DateTime.DaysInMonth(year, month + 1);
+                    DateTime to = new DateTime(year, month + 1, dayTo);
+                    var Accounts = Session.Query<DBAccount>(); // .Where(x => (x.Retired == false));
+                    //var Deals = Session.Query<DBDeals>().Where(x => x.Terminal.Demo == false);
+                    for (int i = dayFrom; i <= dayTo; i++)
+                    {
+                        DateTime forDate = new DateTime(year, month + 1, i);
+                        DateTime forDateEnd = new DateTime(year, month + 1, i, 23, 50, 0);
+                        TimeStat ts = new TimeStat();
+                        ts.X = i;
+                        ts.Date = forDate;
+                        ts.Period = period;
+                        foreach (var acc in Accounts)
+                        {
+                            if (acc.Terminal != null)
+                                if (acc.Terminal.Demo)
+                                    continue;
+                            var accStateAll = Session.Query<DBAccountstate>().Where(x => (x.Account.Id == acc.Id));
+                            var accResultsStart = accStateAll.Where(x => (x.Date <= forDate)) //&& (x.Date >= from)
+                                                              .OrderByDescending(x => x.Date);
+                            var accResults = accStateAll.Where(x => (x.Date <= forDateEnd)) //&& (x.Date >= from)
+                                                              .OrderByDescending(x => x.Date);
 
+                            if ((accResults == null) || (accResults.Count() == 0))
+                                continue;
+                            if ((accResultsStart == null) || (accResultsStart.Count() == 0))
+                                continue;
+
+                            var accState = accResults.FirstOrDefault();
+                            if (accState != null)
+                            {
+                                if (acc.Typ > 0 )
+                                    ts.InvestingValue += ConvertToUSD(accState.Balance, acc.Currency.Name);
+
+                                ts.CheckingValue += ConvertToUSD(accState.Balance, acc.Currency.Name);
+                            }
+
+                            var accStateStart = accResultsStart.FirstOrDefault();
+                            if (accStateStart != null)
+                            {
+                                if (acc.Typ > 0)
+                                    ts.InvestingChange += ConvertToUSD(accStateStart.Balance, acc.Currency.Name);
+                                ts.CheckingChange  += ConvertToUSD(accStateStart.Balance, acc.Currency.Name);
+                            }
+                        }
+                        /*
+                        var deals = Deals.Where(x => (x.Closetime.HasValue) &&  (x.Closetime.Value >= forDate) && (x.Closetime.Value <= forDateEnd));
+                        if (deals != null)
+                        {
+                            foreach (var deal in deals)
+                            {
+                                if (deal.Terminal == null)
+                                    continue;
+                                if (deal.Terminal.Account == null)
+                                    continue;
+                                ts.InvestingChange += ConvertToUSD(deal.Profit, deal.Terminal.Account.Currency.Name, rateList);
+                            }
+                        }
+                        */
+
+                        ts.CheckingChange = ts.CheckingValue - ts.CheckingChange;
+                        ts.InvestingChange = ts.InvestingValue - ts.InvestingChange;
+
+                        ts.CheckingChange = Math.Round(ts.CheckingChange, 2);
+                        ts.InvestingChange = Math.Round(ts.InvestingChange, 2);
+                        ts.CheckingValue = Math.Round(ts.CheckingValue, 2);
+                        ts.InvestingValue = Math.Round(ts.InvestingValue, 2);
+                        result.Add(ts);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error in Performance : " + e.ToString());
+            }
+            return result;
+        }
+
+
+        public List<Rates> GetRates(bool IsReread)
+        {
+            try
+            {
+                if ((rates.Count() > 0) && (!IsReread))
+                    return rates;
+                using (ISession Session = ConnectionHelper.CreateNewSession())
+                {
+                    var dbrates = Session.Query<DBRates>();
+                    foreach(var dbr in dbrates)
+                    {
+                        rates.Add(this.toDTO(dbr));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: GetRates: " + e.ToString());
+            }
+            return rates;
+        }
 
         public List<Terminal> GetTerminals()
         {
@@ -188,7 +305,7 @@ namespace BusinessLogic.Repo
         public DealInfo toDTO(DBDeals deal)
         {
             DealInfo result = new DealInfo();
-            //result.ClosePrice = deal.;
+            //result.ClosePrice = deal;
             if (deal.Closetime.HasValue)
                 result.CloseTime = deal.Closetime.Value.ToString(xtradeConstants.MTDATETIMEFORMAT);
             result.Comment = deal.Comment;
@@ -215,6 +332,21 @@ namespace BusinessLogic.Repo
             return result;
         }
 
+        public Rates toDTO(DBRates rates)
+        {
+            Rates result = new Rates();
+            result.MetaSymbol = rates.Metasymbol.Name;
+            result.C1 = rates.Metasymbol.C1;
+            result.C2 = rates.Metasymbol.C2;
+            result.Ratebid = rates.Ratebid;
+            result.Rateask = rates.Rateask;
+            result.Retired = rates.Retired;
+            if (rates.Lastupdate.HasValue)
+                result.Lastupdate = rates.Lastupdate.Value;
+            else
+                result.Lastupdate = DateTime.UtcNow;
+            return result;
+        }
 
         public bool UpdateTerminals(Terminal t)
         {
@@ -316,56 +448,60 @@ namespace BusinessLogic.Repo
                 return;
             try
             {
-                int i = 0;
-                using (ISession Session = ConnectionHelper.CreateNewSession())
+                lock (lockDeals)
                 {
-                    foreach (var deal in deals.OrderBy(x=>x.CloseTime))
+                    int i = 0;
+                    using (ISession Session = ConnectionHelper.CreateNewSession())
                     {
-                        var sym = getSymbolByName(deal.Symbol);
-                        if (sym == null)
-                            continue;
-                        DBDeals dbDeal = Session.Get<DBDeals>((int)deal.Ticket);
-                        if (dbDeal == null)
+                        foreach (var deal in deals.OrderBy(x => x.CloseTime))
                         {
-                            if (getDealById(Session, deal.Ticket) != null)
+                            var sym = getSymbolByName(deal.Symbol);
+                            if (sym == null)
                                 continue;
-                            try
+                            DBDeals dbDeal = Session.Get<DBDeals>((int)deal.Ticket);
+                            if (dbDeal == null)
                             {
-                                using (ITransaction Transaction = Session.BeginTransaction())
+                                if (getDealById(Session, deal.Ticket) != null)
+                                    continue;
+                                try
                                 {
-                                    dbDeal = new DBDeals();
-                                    dbDeal.Dealid = (int)deal.Ticket;
-                                    dbDeal.Symbol = getSymbolByName(deal.Symbol);
-                                    dbDeal.Terminal = getBDTerminalByNumber(Session, deal.Account);
-                                    dbDeal.Adviser = getAdviserByMagicNumber(Session, deal.Magic);
-                                    dbDeal.Id = (int)deal.Ticket;
-                                    DateTime closeTime;
-                                    if (DateTime.TryParse(deal.CloseTime, out closeTime))
-                                        dbDeal.Closetime = DateTime.Parse(deal.CloseTime);
-                                    dbDeal.Comment = deal.Comment;
-                                    dbDeal.Commission = (decimal)deal.Commission;
-                                    DateTime openTime;
-                                    if (DateTime.TryParse(deal.OpenTime, out openTime))
-                                        dbDeal.Opentime = DateTime.Parse(deal.OpenTime);
-                                    dbDeal.Orderid = (int)deal.OrderId;
-                                    dbDeal.Profit = (decimal)deal.Profit;
-                                    dbDeal.Price = (decimal)deal.ClosePrice;
-                                    dbDeal.Swap = (decimal)deal.SwapValue;
-                                    dbDeal.Typ = deal.Type;
-                                    dbDeal.Volume = (decimal)deal.Lots;
-                                    Session.Save(dbDeal);
-                                    Transaction.Commit();
-                                    i++;
-                                }
+                                    using (ITransaction Transaction = Session.BeginTransaction())
+                                    {
+                                        dbDeal = new DBDeals();
+                                        dbDeal.Dealid = (int)deal.Ticket;
+                                        dbDeal.Symbol = getSymbolByName(deal.Symbol);
+                                        dbDeal.Terminal = getBDTerminalByNumber(Session, deal.Account);
+                                        dbDeal.Adviser = getAdviserByMagicNumber(Session, deal.Magic);
+                                        dbDeal.Id = (int)deal.Ticket;
+                                        DateTime closeTime;
+                                        if (DateTime.TryParse(deal.CloseTime, out closeTime))
+                                            dbDeal.Closetime = DateTime.Parse(deal.CloseTime);
+                                        dbDeal.Comment = deal.Comment;
+                                        dbDeal.Commission = (decimal)deal.Commission;
+                                        DateTime openTime;
+                                        if (DateTime.TryParse(deal.OpenTime, out openTime))
+                                            dbDeal.Opentime = DateTime.Parse(deal.OpenTime);
+                                        dbDeal.Orderid = (int)deal.OrderId;
+                                        dbDeal.Profit = (decimal)deal.Profit;
+                                        dbDeal.Price = (decimal)deal.ClosePrice;
+                                        dbDeal.Swap = (decimal)deal.SwapValue;
+                                        dbDeal.Typ = deal.Type;
+                                        dbDeal.Volume = (decimal)deal.Lots;
+                                        Session.Save(dbDeal);
+                                        Transaction.Commit();
+                                        i++;
+                                    }
 
-                            } catch (Exception )
-                            {
-                                log.Log($"Deal {deal.Ticket}:{deal.Symbol} failed to be saved in database");
+                                }
+                                catch (Exception)
+                                {
+                                    log.Log($"Deal {deal.Ticket}:{deal.Symbol} failed to be saved in database");
+                                }
                             }
                         }
                     }
+                    log.Log($"Saved {i} history deals in database");
                 }
-                log.Log($"Saved {i} history deals in database");
             } catch (Exception e)
             {
                 string message = "Error: DataService.SaveDeals: " + e.ToString();

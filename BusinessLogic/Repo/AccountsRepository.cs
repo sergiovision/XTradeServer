@@ -10,6 +10,8 @@ namespace BusinessLogic.Repo
 {
     public class AccountsRepository : BaseRepository<DBAccount>
     {
+        private readonly static object lockObject = new object();
+
         public AccountsRepository()
         {
         }
@@ -62,50 +64,55 @@ namespace BusinessLogic.Repo
 
         public void UpdateBalance(int AccountNumber, decimal Balance, decimal Equity)
         {
-            using (ISession Session = ConnectionHelper.CreateNewSession())
+            lock (lockObject)
             {
-                var terms = Session.Query<DBTerminal>().Where(x => (x.Accountnumber == AccountNumber));
-                if ((terms == null) || (terms.Count() <= 0))
-                    return;
-                DBTerminal terminal = terms.FirstOrDefault();
-                if (terminal == null)
-                    return;
-                if (terminal.Account == null)
-                    return;
-                using (ITransaction Transaction = Session.BeginTransaction())
+
+                using (ISession Session = ConnectionHelper.CreateNewSession())
                 {
-                    terminal.Account.Balance = Balance;
-                    terminal.Account.Equity = Equity;
-                    terminal.Account.Lastupdate = DateTime.UtcNow;
-                    Session.Update(terminal);
-                    Transaction.Commit();
-                }
-                using (ITransaction Transaction = Session.BeginTransaction())
-                {
-                    var acc = Session.Query<DBAccountstate>().Where(x => (x.Account.Id == terminal.Account.Id)).OrderByDescending(x => x.Date);
-                    if (acc.Any())
+                    var terms = Session.Query<DBTerminal>().Where(x => (x.Accountnumber == AccountNumber));
+                    if ((terms == null) || (terms.Count() <= 0))
+                        return;
+                    DBTerminal terminal = terms.FirstOrDefault();
+                    if (terminal == null)
+                        return;
+                    if (terminal.Account == null)
+                        return;
+                    using (ITransaction Transaction = Session.BeginTransaction())
                     {
-                        DBAccountstate state = null;
-                        state = acc.FirstOrDefault();
-                        if ((state == null ) || (state.Date.DayOfYear != DateTime.Today.DayOfYear))
-                        {
-                            var newstate = new DBAccountstate();
-                            if (state == null)
-                                newstate.Account = terminal.Account;
-                            else
-                                newstate.Account = state.Account;
-                            newstate.Balance = Balance;
-                            newstate.Comment = "Autoupdate";
-                            newstate.Date = DateTime.UtcNow;
-                            Session.Save(newstate);
-                        } else
-                        {
-                            state.Balance = Balance;
-                            state.Comment = "Autoupdate";
-                            state.Date = DateTime.UtcNow;
-                            Session.Update(state);
-                        }
+                        terminal.Account.Balance = Balance;
+                        terminal.Account.Equity = Equity;
+                        terminal.Account.Lastupdate = DateTime.UtcNow;
+                        Session.Update(terminal);
                         Transaction.Commit();
+                    }
+                    var acc = Session.Query<DBAccountstate>().Where(x => (x.Account.Id == terminal.Account.Id)).OrderByDescending(x => x.Date);
+                    using (ITransaction Transaction = Session.BeginTransaction())
+                    {
+                        if (acc.Any())
+                        {
+                            DBAccountstate state = null;
+                            state = acc.FirstOrDefault();
+                            if ((state == null) || (state.Date.DayOfYear != DateTime.Today.DayOfYear))
+                            {
+                                var newstate = new DBAccountstate();
+                                if (state == null)
+                                    newstate.Account = terminal.Account;
+                                else
+                                    newstate.Account = state.Account;
+                                newstate.Balance = Balance;
+                                newstate.Comment = "Autoupdate";
+                                newstate.Date = DateTime.UtcNow;
+                                Session.Save(newstate);
+                            }
+                            else
+                            {
+                                state.Balance = Balance;
+                                state.Comment = "Autoupdate";
+                                state.Date = DateTime.UtcNow;
+                                Session.Update(state);
+                            }
+                            Transaction.Commit();
+                        }
                     }
                 }
             }
@@ -142,7 +149,10 @@ namespace BusinessLogic.Repo
             result.Demo = t.Demo;
             result.Stopped = t.Stopped;
             result.Id = t.Id;
+            if (t.Account != null)
+                result.Currency = t.Account.Currency.Name;
             return result;
         }
+
     }
 }

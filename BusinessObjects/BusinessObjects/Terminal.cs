@@ -18,5 +18,6 @@ namespace BusinessObjects
         public bool Disabled { get; set; }
         public bool Demo { get; set; }
         public bool Stopped { get; set; }
+        public string Currency { get; set; }
     }
 }

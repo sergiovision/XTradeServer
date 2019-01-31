@@ -69,5 +69,6 @@ namespace BusinessObjects
 
         SignalInfo CreateSignal(SignalFlags flags, long ObjectId, EnumSignals Id);
 
+        List<Rates> GetRates(bool IsReread);
     }
 }

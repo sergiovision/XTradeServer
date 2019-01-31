@@ -80,7 +80,7 @@ namespace BusinessLogic.Repo
                                 account.Balance = accState.Balance;
                                 decimal value = account.Balance;
                                 if (acc.Currency != null)
-                                    value = parent.ConvertToUSD(account.Balance, acc.Currency.Name, rateList);
+                                    value = parent.ConvertToUSD(account.Balance, acc.Currency.Name);
                                 balance += value;
                             }
                             wallet.Accounts.Add(account);

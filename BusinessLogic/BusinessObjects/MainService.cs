@@ -29,7 +29,6 @@ namespace BusinessLogic.BusinessObjects
         private static int isDebug = -1;
         private SchedulerService _gSchedulerService;
         private DataService data;
-        //private INotificationUi _ui;
         protected TimeZoneInfo BrokerTimeZoneInfo;
         private bool Initialized;
         public static char[] ParamsSeparator = xtradeConstants.PARAMS_SEPARATOR.ToCharArray();
@@ -111,8 +110,18 @@ namespace BusinessLogic.BusinessObjects
             return data.GetAccounts();
         }
 
-        public IContainer Container { get; private set; }
+        public List<Rates> GetRates(bool IsReread)
+        {
+            return data.GetRates(IsReread);
+        }
 
+        public decimal ConvertToUSD(decimal value, string valueCurrency)
+        {
+            return data.ConvertToUSD(value, valueCurrency);
+        }
+
+        public IContainer Container { get; private set; }
+    
         public Person LoginPerson(string mail, string password)
         {
             return data.LoginPerson(mail, password);
@@ -1100,7 +1109,7 @@ namespace BusinessLogic.BusinessObjects
                 return "";
         }
 
-        string ProcessFolder(string folder, Terminal terminal, string sourceFolder, DeployFunc func)
+        public string ProcessFolder(string folder, Terminal terminal, string sourceFolder, DeployFunc func)
         {
             string result = "";
             string currentSourceFolder = sourceFolder;

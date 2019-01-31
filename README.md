@@ -2,7 +2,7 @@ XTrade is a good project for managing trading experience and personal capital st
 Project consists from Server XTradeServer app and XTrade Web App. XTrade Main Server is a Windows service which manages all trading terminals, process all data and signals, stores everything in MySQL database, hosts XTrade Web app as a self host. 
 XTrade Web App is an Angular Web application which administrates XTrade Server.
 
-Application features list is in ***Readme.pdf*** file in root folder.
+Application features list is in [Readme.pdf](https://github.com/sergiovision/XTradeWeb/blob/master/Readme.pdf) file in root folder.
 
 How to build server application:
 1. Clone this repository
@@ -27,28 +27,26 @@ Metatrader.CommonFiles - path to MT5 common files folder
 
 MQL.Sources - path to MQL folder where your MQL robots stored
 
-Config /bin/XTrade.config file to point to your MySQL server db.
-
 XTrade Server folders structure:
 
-/bin - binary folder where server binaries stored.
+[/bin](https://github.com/sergiovision/XTradeServer/tree/master/bin) - binary folder where server binaries stored.
 
 /dist - location of XTeade WebApp production build files.
 
-/BusinessLogic - main app logic
+[/BusinessLogic](https://github.com/sergiovision/XTradeServer/tree/master/BusinessLogic) - main app logic
 
-/BusinessObjects - shared business objects
+[/BusinessObjects](https://github.com/sergiovision/XTradeServer/tree/master/BusinessLogic/BusinessObjects) - shared business objects
 
-/MainServer - main server self host and WebAPI controllers
+[/MainServer](https://github.com/sergiovision/XTradeServer/tree/master/MainServer) - main server self host and WebAPI controllers
 
-/MQL - MQL sources of trading robot.
+[/MQL](https://github.com/sergiovision/XTradeServer/tree/master/MQL) - MQL sources of trading robot.
 
-/QUIKConnector - connector library to QUIK terminal using StockSharp libraries.
+[/QUIKConnector](https://github.com/sergiovision/XTradeServer/tree/master/QUIKConnector) - connector library to QUIK terminal using StockSharp libraries.
 
-/UnitTests - Tests of server WebAPI
+[/UnitTests](https://github.com/sergiovision/XTradeServer/tree/master/UnitTests) - Tests of server WebAPI
 
 To run application MySQL database should be created from DB folder.
-/bin/XTrade.config should point to proper MySQL server.
+[/bin/XTrade.config](https://github.com/sergiovision/XTradeServer/blob/master/bin/XTrade.config) should point to proper MySQL server.
 
 run: XTrade.MainServer.exe install 
 
@@ -67,5 +65,5 @@ If you are a programmer and want to start learn trading this application is a be
 
 If you are a professional trader then you can hire me to improve this app and apapt it to your trading goals.
 
-XTrade Web app repository and build instructions here https://github.com/sergiovision/XTradeWeb
+XTrade Web app repository and build instructions here [XTradeWeb](https://github.com/sergiovision/XTradeWeb)
 

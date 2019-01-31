@@ -18,5 +18,6 @@ namespace BusinessLogic.Repo {
         public virtual decimal Equity { get; set; }
         public virtual DateTime? Lastupdate { get; set; }
         public virtual bool Retired { get; set; }
+        public virtual int Typ { get; set; }
     }
 }

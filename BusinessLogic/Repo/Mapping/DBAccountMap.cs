@@ -4,8 +4,7 @@ using System.Text;
 using FluentNHibernate.Mapping;
 using BusinessLogic.Repo; 
 
-namespace BusinessLogic.Repo {
-    
+namespace BusinessLogic.Repo {    
     
     public class DBAccountMap : ClassMap<DBAccount> {
         
@@ -23,6 +22,7 @@ namespace BusinessLogic.Repo {
 			Map(x => x.Equity).Column("Equity");
 			Map(x => x.Lastupdate).Column("LastUpdate");
 			Map(x => x.Retired).Column("Retired").Not.Nullable();
+            Map(x => x.Typ).Column("Typ").Not.Nullable();
         }
     }
 }

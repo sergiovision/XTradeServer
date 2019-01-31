@@ -48,7 +48,7 @@ namespace XTrade.MainServer
 
         public void UpdatePositions(long magicId, long AccountNumber, IEnumerable<PositionInfo> posMagic)
         {
-            lock (lockObject) 
+            lock (lockObject)
             {
                 Dictionary<long, PositionInfo> positionsToAdd = new Dictionary<long, PositionInfo>();
                 List<long> positionsToDelete = new List<long>();
@@ -56,7 +56,8 @@ namespace XTrade.MainServer
                 {
                     if (!positionsToAdd.ContainsKey(notcontains.Ticket))
                     {
-                        notcontains.AccountName = terminals[AccountNumber].Broker;
+                        notcontains.AccountName = terminals[AccountNumber].Broker;                        
+                        notcontains.Profit = xtrade.ConvertToUSD(notcontains.Profit, terminals[AccountNumber].Currency);
                         positionsToAdd.Add(notcontains.Ticket, notcontains);
                     }
                 }
@@ -68,14 +69,15 @@ namespace XTrade.MainServer
                         positionsToAdd.Remove(pos.Key);
                         var newvalue = contains.FirstOrDefault();
                         newvalue.AccountName = terminals[AccountNumber].Broker;
-
+                        // newvalue.Profit = xtrade.ConvertToUSD(newvalue.Profit, terminals[AccountNumber].Currency);
                         if (positions.TryUpdate(pos.Key, newvalue, pos.Value))
                             UpdatePosition(newvalue);
                     } else
                     {
-                        positionsToDelete.Add(pos.Key);
+                        if (pos.Value.Magic == magicId)
+                            positionsToDelete.Add(pos.Key);
                     }
-                    foreach( var notcontains in posMagic.Where(x => (x.Ticket != pos.Key)))
+                    foreach(var notcontains in posMagic.Where(x => (x.Ticket != pos.Key)))
                     {
                         if (!positionsToAdd.ContainsKey(notcontains.Ticket))
                         {
@@ -83,7 +85,6 @@ namespace XTrade.MainServer
                         }
                     }
                 }
-
                 foreach (var toremove in positionsToDelete)
                 {
                     PositionInfo todel = null;
