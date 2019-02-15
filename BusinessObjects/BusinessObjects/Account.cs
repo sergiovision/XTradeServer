@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects
 {
-    public class Account 
+    public enum AccountType
+    {
+        Checking = 0,
+        Investment = 1
+    }
+
+    public class Account
     {
         public int Id { get; set; }
         public string Description { get; set; }
@@ -20,5 +26,6 @@ namespace BusinessObjects
         public long Number { get; set; }
         public DateTime? Lastupdate { get; set; }
         public virtual bool Retired { get; set; }
+        public AccountType Typ { get; set; }
     }
 }

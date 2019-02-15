@@ -3,10 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 
 
-namespace BusinessLogic.Repo {
-    
-    public class DBAccount : BaseEntity<DBAccount> {
-        public DBAccount() { }
+namespace BusinessLogic.Repo
+{
+    public class DBAccount : BaseEntity<DBAccount>
+    {
         public virtual int Id { get; set; }
         public virtual DBCurrency Currency { get; set; }
         public virtual DBWallet Wallet { get; set; }

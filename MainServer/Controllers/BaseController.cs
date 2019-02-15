@@ -15,6 +15,7 @@ namespace XTrade.MainServer
         protected static readonly ILog log = LogManager.GetLogger(typeof(BaseController));
 
         protected IMainService MainService;
+
         public BaseController()
         {
             MainService = Program.Container.Resolve<IMainService>();
@@ -23,8 +24,7 @@ namespace XTrade.MainServer
         [HttpDelete]
         // DELETE api/demo/5 
         [AcceptVerbs("DELETE")]
-
-        virtual public void Delete(int id)
+        public virtual void Delete(int id)
         {
         }
     }

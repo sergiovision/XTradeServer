@@ -12,6 +12,7 @@ using Microsoft.Owin.Security.OAuth;
 using Microsoft.AspNet.SignalR;
 using System.Diagnostics;
 using BusinessObjects;
+using Microsoft.Owin.Cors;
 using Microsoft.Owin.FileSystems;
 using Microsoft.Owin.StaticFiles;
 
@@ -21,7 +22,7 @@ namespace XTrade.MainServer
     {
         public void ConfigureOAuth(IAppBuilder app)
         {
-            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
+            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions
             {
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/api/token"),
@@ -32,14 +33,12 @@ namespace XTrade.MainServer
             // Token Generation
             app.UseOAuthAuthorizationServer(OAuthServerOptions);
             app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
-
         }
-
 
 
         public void Configuration(IAppBuilder app)
         {
-            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+            app.UseCors(CorsOptions.AllowAll);
 
             ConfigureOAuth(app);
             // Adding to the pipeline with our own middleware
@@ -47,7 +46,7 @@ namespace XTrade.MainServer
             {
                 // Add Header
                 context.Response.Headers["XTrade"] = "XTrade Web Api Self Host";
-                context.Response.Headers["Access-Control-Allow-Origin"] = "*"; 
+                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
                 // Call next middleware
                 await next.Invoke();
             });
@@ -58,10 +57,14 @@ namespace XTrade.MainServer
             // Configure Web API for self-host. 
             var config = new HttpConfiguration();
 
-            config.Routes.MapHttpRoute("DefaultApiWithId", "Api/{controller}/{id}", new { id = RouteParameter.Optional }, new { id = @"\d+" });
-            config.Routes.MapHttpRoute("DefaultApiWithAction", "Api/{controller}/{action}/{id}", new { id = RouteParameter.Optional });
-            config.Routes.MapHttpRoute("DefaultApiGet", "Api/{controller}", new { action = "Get" }, new { httpMethod = new HttpMethodConstraint(HttpMethod.Get) });
-            config.Routes.MapHttpRoute("DefaultApiPost", "Api/{controller}", new { action = "Post" }, new { httpMethod = new HttpMethodConstraint(HttpMethod.Post) });
+            config.Routes.MapHttpRoute("DefaultApiWithId", "Api/{controller}/{id}", new {id = RouteParameter.Optional},
+                new {id = @"\d+"});
+            config.Routes.MapHttpRoute("DefaultApiWithAction", "Api/{controller}/{action}/{id}",
+                new {id = RouteParameter.Optional});
+            config.Routes.MapHttpRoute("DefaultApiGet", "Api/{controller}", new {action = "Get"},
+                new {httpMethod = new HttpMethodConstraint(HttpMethod.Get)});
+            config.Routes.MapHttpRoute("DefaultApiPost", "Api/{controller}", new {action = "Post"},
+                new {httpMethod = new HttpMethodConstraint(HttpMethod.Post)});
             config.MapHttpAttributeRoutes();
 
             //config.EnableCors();
@@ -92,7 +95,7 @@ namespace XTrade.MainServer
             options.StaticFileOptions.ServeUnknownFileTypes = true;
             options.DefaultFilesOptions.DefaultFileNames = new[]
             {
-            "index.html"
+                "index.html"
             };
 
             app.UseFileServer(options);
@@ -109,8 +112,6 @@ namespace XTrade.MainServer
 
             app.UseFileServer(options);
             */
-
         }
-
     }
 }

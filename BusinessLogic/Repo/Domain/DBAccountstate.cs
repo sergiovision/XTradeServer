@@ -3,9 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 
 
-namespace BusinessLogic.Repo {
-    
-    public class DBAccountstate : BaseEntity<DBAccountstate> {
+namespace BusinessLogic.Repo
+{
+    public class DBAccountstate : BaseEntity<DBAccountstate>
+    {
         public virtual int Id { get; set; }
         public virtual DBAccount Account { get; set; }
         public virtual DateTime Date { get; set; }

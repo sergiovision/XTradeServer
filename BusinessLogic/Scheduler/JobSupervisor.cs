@@ -24,7 +24,7 @@ namespace BusinessLogic.Scheduler
             log.Debug("JobSuperviser c-tor");
         }
 
-        public  async Task Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
             try
             {
@@ -38,7 +38,8 @@ namespace BusinessLogic.Scheduler
                 // CronExpression decoder
                 // https://www.freeformatter.com/cron-expression-generator-quartz.html
 
-                IEnumerable<DBJobs> jobs2Check = MainService.thisGlobal.Container.Resolve<DataService>().GetDBActiveJobsList();
+                IEnumerable<DBJobs> jobs2Check =
+                    MainService.thisGlobal.Container.Resolve<DataService>().GetDBActiveJobsList();
                 UnscheduleObsoleteJobs(jobs2Check);
                 addOrModifyJobs(jobs2Check);
 
@@ -57,6 +58,7 @@ namespace BusinessLogic.Scheduler
             {
                 log.Info(string.Format("{0}***{0}Failed: {1}{0}***{0}", Environment.NewLine, ex.Message));
             }
+
             await Task.CompletedTask;
         }
 
@@ -64,7 +66,8 @@ namespace BusinessLogic.Scheduler
         {
             try
             {
-                var jobs = jobs2Check.Select<DBJobs, JobKey>(d => getJobKeyForJobDescription(d)).Where(d=> !d.Equals(thisJobDetail.Key));
+                var jobs = jobs2Check.Select(d => getJobKeyForJobDescription(d))
+                    .Where(d => !d.Equals(thisJobDetail.Key));
                 if (jobs != null)
                     MainService.thisGlobal.UnsheduleJobs(jobs);
             }
@@ -82,20 +85,17 @@ namespace BusinessLogic.Scheduler
         protected void addOrModifyJobs(IEnumerable<DBJobs> jobs2Check)
         {
             foreach (var job in jobs2Check)
-            {
                 try
                 {
                     if (!ScheduleJob(job.Classpath, job.Grp, job.Name, job.Cron))
-                    {
                         if (MainService.thisGlobal.DeleteJob(getJobKeyForJobDescription(job)))
                             ScheduleJob(job.Classpath, job.Grp, job.Name, job.Cron);
-                    }
                 }
                 catch (SchedulerException e)
                 {
-                    log.Error("method: addOrModifyJobs: error when retrieving a jobDetail with this jobKey: " + job.Name, e);
+                    log.Error(
+                        "method: addOrModifyJobs: error when retrieving a jobDetail with this jobKey: " + job.Name, e);
                 }
-            }
         }
 
         public JobKey getJobKeyForJobDescription(ScheduledJobInfo aJobDescription)
@@ -117,8 +117,9 @@ namespace BusinessLogic.Scheduler
             //ScheduleJob<EToroRatioJob>(xtradeConstants.JOBGROUP_OPENPOSRATIO, "EToroRatioJob", "0 0 0/1 ? * MON-FRI *");
             // Disabled
             //ScheduleJob<ExnessNewsJob>(xtradeConstants.JOBGROUP_NEWS, "ExnessNewsJob", "0 0 9 ? * MON-FRI *");
-            ScheduleJob(typeof(ForexFactoryNewsJob).FullName, xtradeConstants.JOBGROUP_NEWS, "ForexFactoryNewsJob", "0 0 6 ? * MON-FRI *");
-           
+            ScheduleJob(typeof(ForexFactoryNewsJob).FullName, xtradeConstants.JOBGROUP_NEWS, "ForexFactoryNewsJob",
+                "0 0 6 ? * MON-FRI *");
+
             log.Info("JobSuperviser: ------- Jobs Scheduled -------");
         }
 
@@ -136,7 +137,8 @@ namespace BusinessLogic.Scheduler
             }
         }
 
-        public bool ScheduleJob(string typeClassName, string group, string name, string cron)  // where TJobType : GenericJob, new()
+        public bool ScheduleJob(string typeClassName, string group, string name,
+            string cron) // where TJobType : GenericJob, new()
         {
             Type type = Type.GetType(typeClassName);
             if (type == null)
@@ -158,7 +160,7 @@ namespace BusinessLogic.Scheduler
                 .Build();
             SetTimeZoneForTrigger(trigger);
 
-            var result  = sched.ScheduleJob(job, trigger);
+            var result = sched.ScheduleJob(job, trigger);
             DateTimeOffset ft = result.Result;
 
             log.Info(job.Key + " scheduled at: " + ft.ToUniversalTime() + " and repeat on cron: " +
@@ -203,7 +205,7 @@ namespace BusinessLogic.Scheduler
                 .StoreDurably(true)
                 .Build();
             var exists = sched.CheckExists(job.Key);
-            if (exists.Result) 
+            if (exists.Result)
                 sched.DeleteJob(job.Key);
             string triggerName = name + "Trigger";
             SchedulerService.SetJobDataMap(job.Key, job.JobDataMap);

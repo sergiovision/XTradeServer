@@ -13,7 +13,7 @@ namespace UnitTests
     [TestClass]
     public static class InitTestsClass
     {
-        private static bool bInited = false;
+        private static bool bInited;
 
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)

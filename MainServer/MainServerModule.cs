@@ -19,5 +19,4 @@ namespace XTrade.MainServer
             // builder.RegisterType<PositionsTester>().As<ITerminalEvents>().SingleInstance();
         }
     }
-
 }

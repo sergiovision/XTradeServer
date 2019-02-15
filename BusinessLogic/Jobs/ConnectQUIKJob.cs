@@ -15,6 +15,8 @@ namespace BusinessLogic.Jobs
 {
     internal class ConnectQUIKJob : GenericJob
     {
+        protected static string strPath = "";
+        protected ITerminalConnector connector;
         protected IScheduler sched;
         protected IJobDetail thisJobDetail;
 
@@ -23,8 +25,6 @@ namespace BusinessLogic.Jobs
             log.Debug("ConnectQUIKJob c-tor");
         }
 
-        protected static string strPath = "";
-        protected ITerminalConnector connector;
         public override async Task Execute(IJobExecutionContext context)
         {
             if (Begin(context))
@@ -33,6 +33,7 @@ namespace BusinessLogic.Jobs
                 Exit(context);
                 return;
             }
+
             try
             {
                 thisJobDetail = context.JobDetail;
@@ -42,81 +43,70 @@ namespace BusinessLogic.Jobs
 
                 var terminals = MainService.thisGlobal.GetTerminals().Where(x => x.Broker.Contains("QUIK"));
                 Terminal toTerminal = null;
-                if ((terminals != null) && terminals.Count() > 0)
-                {
-                    toTerminal = terminals.FirstOrDefault();
-                }
+                if (terminals != null && terminals.Count() > 0) toTerminal = terminals.FirstOrDefault();
 
-                if (connector.Connect(toTerminal))
-                {
-                    RunProccessor(context);
-                }
+                if (connector.Connect(toTerminal)) RunProccessor(context);
+
                 connector.Dispose();
-                SetMessage($"ConnectQUIKJob Finished.");
+                SetMessage("ConnectQUIKJob Finished.");
             }
             catch (Exception ex)
             {
-                SetMessage($"ERROR: {ex.ToString()}");
+                SetMessage($"ERROR: {ex}");
             }
+
             Exit(context);
             await Task.CompletedTask;
-
         }
 
         protected SignalInfo ListenSignals(out IExpert quikExpert)
         {
             var advisers = connector.GetRunningAdvisers();
-            foreach(var expert in advisers)
+            foreach (var expert in advisers)
             {
-                SignalInfo signal = MainService.thisGlobal.ListenSignal(expert.Key, (long)SignalFlags.Expert);
+                SignalInfo signal = MainService.thisGlobal.ListenSignal(expert.Key, (long) SignalFlags.Expert);
                 if (signal != null)
                 {
                     quikExpert = expert.Value;
                     return signal;
                 }
             }
+
             quikExpert = null;
             return null;
         }
 
         public void RunProccessor(IJobExecutionContext context)
         {
-            while(!connector.IsStopped() )
-            {                    
+            while (!connector.IsStopped())
+            {
                 Thread.Sleep(100);
-                if (context.CancellationToken.IsCancellationRequested)
-                {
-                    return;
-                }
+                if (context.CancellationToken.IsCancellationRequested) return;
+
                 IExpert expert = null;
                 SignalInfo signal = ListenSignals(out expert);
                 if (signal != null)
-                {
-                    switch((EnumSignals)signal.Id)
+                    switch ((EnumSignals) signal.Id)
                     {
                         case EnumSignals.SIGNAL_ACTIVE_ORDERS:
-                            {
-                                // MainService.thisGlobal.UpdatePositions(signal.ObjectId, connector.GetActivePositions());
-                            }
+                        {
+                            // MainService.thisGlobal.UpdatePositions(signal.ObjectId, connector.GetActivePositions());
+                        }
                             break;
                         case EnumSignals.SIGNAL_MARKET_EXPERT_ORDER:
                         case EnumSignals.SIGNAL_MARKET_MANUAL_ORDER:
                         case EnumSignals.SIGNAL_MARKET_FROMPENDING_ORDER:
-                            {
-                                //PositionInfo position = JsonConvert.DeserializeObject<PositionInfo>(signal.Data);
-                                connector.MarketOrder(signal, expert);
-                            }
+                        {
+                            //PositionInfo position = JsonConvert.DeserializeObject<PositionInfo>(signal.Data);
+                            connector.MarketOrder(signal, expert);
+                        }
                             break;
                         case EnumSignals.SIGNAL_CHECK_BALANCE:
-                            {
-
-                            }
+                        {
+                        }
                             break;
                     }
-                }
             }
         }
-
     }
 }
- 

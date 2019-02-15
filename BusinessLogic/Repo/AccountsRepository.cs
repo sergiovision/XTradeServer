@@ -10,11 +10,7 @@ namespace BusinessLogic.Repo
 {
     public class AccountsRepository : BaseRepository<DBAccount>
     {
-        private readonly static object lockObject = new object();
-
-        public AccountsRepository()
-        {
-        }
+        private static readonly object lockObject = new object();
 
         public List<Account> GetAccounts()
         {
@@ -22,11 +18,9 @@ namespace BusinessLogic.Repo
             using (ISession Session = ConnectionHelper.CreateNewSession())
             {
                 var accounts = Session.Query<DBAccount>();
-                foreach (var dbacc in accounts)
-                {
-                    results.Add(toDTO(dbacc));
-                }
+                foreach (var dbacc in accounts) results.Add(toDTO(dbacc));
             }
+
             return results;
         }
 
@@ -36,11 +30,9 @@ namespace BusinessLogic.Repo
             using (ISession Session = ConnectionHelper.CreateNewSession())
             {
                 var terminals = Session.Query<DBTerminal>().OrderBy(x => x.Disabled);
-                foreach (var dbt in terminals)
-                {
-                    results.Add(toDTO(dbt));
-                }
+                foreach (var dbt in terminals) results.Add(toDTO(dbt));
             }
+
             return results;
         }
 
@@ -66,11 +58,10 @@ namespace BusinessLogic.Repo
         {
             lock (lockObject)
             {
-
                 using (ISession Session = ConnectionHelper.CreateNewSession())
                 {
-                    var terms = Session.Query<DBTerminal>().Where(x => (x.Accountnumber == AccountNumber));
-                    if ((terms == null) || (terms.Count() <= 0))
+                    var terms = Session.Query<DBTerminal>().Where(x => x.Accountnumber == AccountNumber);
+                    if (terms == null || terms.Count() <= 0)
                         return;
                     DBTerminal terminal = terms.FirstOrDefault();
                     if (terminal == null)
@@ -85,14 +76,16 @@ namespace BusinessLogic.Repo
                         Session.Update(terminal);
                         Transaction.Commit();
                     }
-                    var acc = Session.Query<DBAccountstate>().Where(x => (x.Account.Id == terminal.Account.Id)).OrderByDescending(x => x.Date);
+
+                    var acc = Session.Query<DBAccountstate>().Where(x => x.Account.Id == terminal.Account.Id)
+                        .OrderByDescending(x => x.Date);
                     using (ITransaction Transaction = Session.BeginTransaction())
                     {
                         if (acc.Any())
                         {
                             DBAccountstate state = null;
                             state = acc.FirstOrDefault();
-                            if ((state == null) || (state.Date.DayOfYear != DateTime.Today.DayOfYear))
+                            if (state == null || state.Date.DayOfYear != DateTime.Today.DayOfYear)
                             {
                                 var newstate = new DBAccountstate();
                                 if (state == null)
@@ -111,6 +104,7 @@ namespace BusinessLogic.Repo
                                 state.Date = DateTime.UtcNow;
                                 Session.Update(state);
                             }
+
                             Transaction.Commit();
                         }
                     }
@@ -136,8 +130,10 @@ namespace BusinessLogic.Repo
             result.Retired = a.Retired;
             if (a.Wallet != null)
                 result.WalletId = a.Wallet.Id;
+            result.Typ = (AccountType) a.Typ;
             return result;
         }
+
         public Terminal toDTO(DBTerminal t)
         {
             Terminal result = new Terminal();
@@ -153,6 +149,5 @@ namespace BusinessLogic.Repo
                 result.Currency = t.Account.Currency.Name;
             return result;
         }
-
     }
 }

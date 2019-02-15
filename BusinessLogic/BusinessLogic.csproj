@@ -46,21 +46,6 @@
     <Reference Include="Esent.Isam, Version=1.9.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Database.Isam.1.9.4\lib\net40\Esent.Isam.dll</HintPath>
     </Reference>
-    <Reference Include="FluentMigrator, Version=2.0.7.0, Culture=neutral, PublicKeyToken=aacfc7de5acabf05, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentMigrator.2.0.7\lib\net45\FluentMigrator.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentMigrator.Abstractions, Version=2.0.7.0, Culture=neutral, PublicKeyToken=aacfc7de5acabf05, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentMigrator.Abstractions.2.0.7\lib\net45\FluentMigrator.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentMigrator.NHibernate, Version=1.0.0.16, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentMigrator.NHibernate.1.0.0.17\lib\net461\FluentMigrator.NHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentMigrator.Runner.Core, Version=2.0.7.0, Culture=neutral, PublicKeyToken=aacfc7de5acabf05, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentMigrator.Runner.Core.2.0.7\lib\net45\FluentMigrator.Runner.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentMigrator.Runner.MySql, Version=2.0.7.0, Culture=neutral, PublicKeyToken=aacfc7de5acabf05, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentMigrator.Runner.MySql.2.0.7\lib\net45\FluentMigrator.Runner.MySql.dll</HintPath>
-    </Reference>
     <Reference Include="FluentNHibernate, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentNHibernate.2.1.2\lib\net461\FluentNHibernate.dll</HintPath>
     </Reference>
@@ -134,8 +119,6 @@
     <Compile Include="JSON.cs" />
     <Compile Include="JSONParserProvider.cs" />
     <Compile Include="Jobs\ForexFactoryNewsJob.cs" />
-    <Compile Include="Migrations\Migration1.cs" />
-    <Compile Include="Migrations\Runner.cs" />
     <Compile Include="ProcessImpersonation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

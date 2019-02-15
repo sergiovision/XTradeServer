@@ -6,8 +6,6 @@
 #include <XTrade\InputTypes.mqh>
 #include <XTrade\IndiBase.mqh>
 #include <XTrade\Orders.mqh>
-//#include <XTrade\TradeSignals.mqh>
-
 
 #define MODE_TENKANSEN  0
 
@@ -346,7 +344,7 @@ void CIchimoku::Trail(Order &order, int indent)
           if (TrailLevel(order, Utils.tick.ask, Utils.tick.bid, SL, TP, IshiMin, startLevel))
              return;
        }
-       //methods.ChangeOrder(order, SL, TP, Utils.OrderExpiration(), methods.TrailingColor);
+       // methods.ChangeOrder(order, SL, TP, Utils.OrderExpiration(), methods.TrailingColor);
     }
    
 }

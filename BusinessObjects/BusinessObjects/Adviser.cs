@@ -19,12 +19,11 @@ namespace BusinessObjects
         public string Symbol { get; set; }
         public string MetaSymbol { get; set; }
         public int ClusterId { get; set; }
-        public string Timeframe { get; set ; }
+        public string Timeframe { get; set; }
         public bool Disabled { get; set; }
         public bool Running { get; set; }
         public DateTime LastUpdate { get; set; }
         public int CloseReason { get; set; }
         public string State { get; set; }
-
     }
 }

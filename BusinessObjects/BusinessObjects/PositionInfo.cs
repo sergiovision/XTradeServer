@@ -8,15 +8,16 @@ namespace BusinessObjects
 {
     public class PositionInfo
     {
+        private static readonly Random random = new Random();
         public string AccountName { get; set; }
         public long Account { get; set; }
         public int Type { get; set; }
         public long Magic { get; set; }
-        public long Ticket { get; set; }        
+        public long Ticket { get; set; }
         public double Lots { get; set; }
         public string Symbol { get; set; }
         public string MetaSymbol { get; set; }
-        public decimal ProfitStopsPercent { get; set; }    
+        public decimal ProfitStopsPercent { get; set; }
         public decimal ProfitBricks { get; set; }
         public decimal Profit { get; set; }
         public string Role { get; set; }
@@ -28,12 +29,9 @@ namespace BusinessObjects
             Profit = newProfit;
         }
 
-        static Random random = new Random();
-
-        decimal GenerateChange()
+        private decimal GenerateChange()
         {
-            return (decimal)random.Next(-200, 200) / 10000;
+            return (decimal) random.Next(-200, 200) / 10000;
         }
     }
-
 }

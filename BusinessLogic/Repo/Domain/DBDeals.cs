@@ -3,9 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 
 
-namespace BusinessLogic.Repo {
-    
-    public class DBDeals : BaseEntity<DBDeals> {
+namespace BusinessLogic.Repo
+{
+    public class DBDeals : BaseEntity<DBDeals>
+    {
         public virtual int Id { get; set; }
         public virtual DBTerminal Terminal { get; set; }
         public virtual DBSymbol Symbol { get; set; }

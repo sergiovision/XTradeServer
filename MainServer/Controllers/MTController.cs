@@ -25,7 +25,8 @@ namespace XTrade.MainServer
             {
                 var response = request.Content.ReadAsStringAsync();
                 if (string.IsNullOrEmpty(response.Result))
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Empty data passed as a parameter");
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                        "Empty data passed as a parameter");
                 SignalInfo signal = JsonConvert.DeserializeObject<SignalInfo>(response.Result);
                 var result = MainService.SendSignal(signal);
                 return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -34,6 +35,7 @@ namespace XTrade.MainServer
             {
                 log.Error(e.ToString());
             }
+
             //await Task.CompletedTask;
             return Request.CreateResponse(HttpStatusCode.InternalServerError);
         }
@@ -46,10 +48,12 @@ namespace XTrade.MainServer
             {
                 var response = request.Content.ReadAsStringAsync();
                 if (string.IsNullOrEmpty(response.Result))
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "NULL Signal passed as a parameter");
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                        "NULL Signal passed as a parameter");
                 SignalInfo signal = JsonConvert.DeserializeObject<SignalInfo>(response.Result);
                 if (signal == null)
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Broken Signal passed as a parameter");
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                        "Broken Signal passed as a parameter");
                 MainService.PostSignalTo(signal);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -71,7 +75,8 @@ namespace XTrade.MainServer
                     return Request.CreateResponse(HttpStatusCode.OK);
                 SignalInfo signal = JsonConvert.DeserializeObject<SignalInfo>(response.Result);
                 if (signal == null)
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Broken Signal passed as a parameter");
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                        "Broken Signal passed as a parameter");
                 var result = MainService.ListenSignal(signal.ObjectId, signal.Flags);
                 return Request.CreateResponse(HttpStatusCode.OK, result);
             }
@@ -79,8 +84,8 @@ namespace XTrade.MainServer
             {
                 log.Error(e.ToString());
             }
+
             return Request.CreateResponse(HttpStatusCode.InternalServerError);
         }
     }
 }
-

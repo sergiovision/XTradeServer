@@ -8,32 +8,14 @@ namespace UnitTests
     public class TestData
     {
         public static short testPort = 2014;
-        public static string TestURL
-        {
-            get
-            {
-                return $"http://localhost:{testPort}";
-            }
-        }
 
-        public static string UserName
-        {
-            get
-            {
-                return "admin@sergego.com";
-            }
-        }
+        public static string TestURL => $"http://localhost:{testPort}";
 
-        public static string Password
-        {
-            get
-            {
-                return "654321X";
-            }
-        }
+        public static string UserName => "admin@sergego.com";
+
+        public static string Password => "654321X";
 
         #region Wallet
-
 
         public static AccountState getTestAccount()
         {
@@ -46,6 +28,5 @@ namespace UnitTests
         }
 
         #endregion
-
-    };
+    }
 }

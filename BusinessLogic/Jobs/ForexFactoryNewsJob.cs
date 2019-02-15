@@ -21,11 +21,11 @@ namespace BusinessLogic.Jobs
         public static string DATEFORMAT = "MM-dd-yyyy";
         public static string TIMEFORMAT = "h:mm tt";
         public static string SHORTDATETIMEFORMAT = "yyyy-M-d";
+        public static string URL = "http://www.forexfactory.com/ffcal_week_this.xml";
+        protected DataService dataService;
+        public int eventsAdded;
         protected string mCheckQuery;
         protected DateTime parseDateTime;
-        protected DataService dataService;
-        public static String URL = "http://www.forexfactory.com/ffcal_week_this.xml";
-        public int eventsAdded = 0;
 
         public ForexFactoryNewsJob()
         {
@@ -33,10 +33,6 @@ namespace BusinessLogic.Jobs
                       FROM newsevent NE
                       INNER JOIN Currency C ON NE.CurrencyId = C.ID
                       WHERE C.Name='{0}' AND YEAR(NE.HappenTime)={1} AND MONTH(NE.HappenTime) = {2} AND DAY(NE.HappenTime)={3} AND HOUR(NE.HappenTime)={4} AND MINUTE(NE.HappenTime)={5} AND NE.Importance={6}";
-
-//            mCheckQuery = "SELECT NE.ID, NE.HappenTime, NE.Name, NE.ParseTime, NE.Raised, NE.Importance, NE.CurrencyId FROM NewsEvent NE " +
-//                                     "WHERE (NE.CurrencyId=?) AND YEAR(NE.HappenTime)=? AND MONTH(NE.HappenTime) = ? AND DAY(NE.HappenTime)=? AND HOUR(NE.HappenTime)=? " +
-//                                     " AND MINUTE(NE.HappenTime)=? AND (NE.Importance = ?)";
         }
 
         public override async Task Execute(IJobExecutionContext context)
@@ -53,7 +49,7 @@ namespace BusinessLogic.Jobs
                 TimeZoneInfo tz = MainService.thisGlobal.GetBrokerTimeZone();
 
                 parseDateTime = DateTime.UtcNow;
-                
+
                 DateTime curDate = TimeZoneInfo.ConvertTimeFromUtc(parseDateTime, tz);
                 DateTime nowDate = curDate;
 
@@ -84,19 +80,18 @@ namespace BusinessLogic.Jobs
             using (ISession Session = ConnectionHelper.CreateNewSession())
             {
                 foreach (var el in nodes)
-                {
                     try
                     {
                         eventRow = new DBNewsevent();
                         eventRow.Parsetime = parseDateTime;
 
                         var eTitle = el.Element("title");
-                        String eventName = eTitle.Value;
+                        string eventName = eTitle.Value;
                         eventRow.Name = eventName;
 
                         var eCountry = el.Element("country");
                         string Curr = eCountry.Value;
-                        if (!String.IsNullOrEmpty(Curr))
+                        if (!string.IsNullOrEmpty(Curr))
                         {
                             if (Curr.Equals("ALL"))
                                 eventRow.Currency = dataService.getCurrencyID("USD");
@@ -105,18 +100,17 @@ namespace BusinessLogic.Jobs
                         }
 
                         var eDate = el.Element("date");
-                        String strDate = eDate.Value;
+                        string strDate = eDate.Value;
 
                         DateTime curDate = curDateTime;
                         if (DateTime.TryParseExact(strDate, DATEFORMAT,
                             CultureInfo.InvariantCulture.DateTimeFormat,
                             DateTimeStyles.None, out curDate))
                         {
-
                         }
 
                         var eTime = el.Element("time");
-                        String Time = eTime.Value;
+                        string Time = eTime.Value;
                         int i = Time.IndexOf('a');
                         if (i <= 0)
                             i = Time.IndexOf('p');
@@ -125,47 +119,48 @@ namespace BusinessLogic.Jobs
 
                         DateTime currentTime = curDateTime;
                         if (DateTime.TryParseExact(Time, TIMEFORMAT,
-                                    CultureInfo.InvariantCulture.DateTimeFormat,
-                                    DateTimeStyles.None, out currentTime))
+                            CultureInfo.InvariantCulture.DateTimeFormat,
+                            DateTimeStyles.None, out currentTime))
                         {
-
                         }
 
                         curDateTime = new DateTime(curDate.Year, curDate.Month, curDate.Day,
-                                currentTime.Hour, currentTime.Minute, 0);
+                            currentTime.Hour, currentTime.Minute, 0);
 
                         eventRow.Happentime = curDateTime; // Usually in UTC on this website.
 
                         var eImpact = el.Element("impact");
-                        String Impact = eImpact.Value;
-                        eventRow.Importance = (byte)0;
+                        string Impact = eImpact.Value;
+                        eventRow.Importance = 0;
                         switch (Impact)
                         {
                             case "Medium":
-                                eventRow.Importance = (byte)1;
+                                eventRow.Importance = 1;
                                 break;
                             case "High":
-                                eventRow.Importance = (byte)2;
+                                eventRow.Importance = 2;
                                 break;
                             case "Low":
                             default:
-                                eventRow.Importance = (byte)0;
+                                eventRow.Importance = 0;
                                 break;
                         }
 
                         var eForecast = el.Element("forecast");
-                        String Forecast = eForecast.Value;
+                        string Forecast = eForecast.Value;
                         eventRow.Forecastval = Forecast;
 
                         var ePrevious = el.Element("previous");
-                        String Previous = ePrevious.Value;
+                        string Previous = ePrevious.Value;
                         eventRow.Previousval = Previous;
 
                         // save event
                         string resultQuery = string.Format(mCheckQuery, eventRow.Currency.Name, curDateTime.Year,
-                            curDateTime.Month, curDateTime.Day, curDateTime.Hour, curDateTime.Minute, eventRow.Importance);
+                            curDateTime.Month, curDateTime.Day, curDateTime.Hour, curDateTime.Minute,
+                            eventRow.Importance);
 
-                        IList<DBNewsevent> result = dataService.ExecuteNativeQuery<DBNewsevent>(Session, resultQuery, "NE");
+                        IList<DBNewsevent> result =
+                            dataService.ExecuteNativeQuery<DBNewsevent>(Session, resultQuery, "NE");
                         int count = result.Count;
                         if (count > 0)
                             continue;
@@ -178,19 +173,15 @@ namespace BusinessLogic.Jobs
                         eventsAdded++;
 
                         dataService.SaveInsertNewsEvent(eventRow);
-
                     }
                     catch (Exception e)
                     {
-                        log.Info("Error parsing news event: " + el.Value + "Error: " + e.ToString());
-                        continue;
+                        log.Info("Error parsing news event: " + el.Value + "Error: " + e);
                     }
-                }
             }
+
             SetMessage("ForexFactoryEvents for End Date: " + curDateTime + " done. Added " + eventsAdded + " events");
             return true;
         }
     }
-
 }
-

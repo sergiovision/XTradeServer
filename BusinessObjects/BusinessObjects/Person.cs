@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects
 {
-    public class Person 
+    public class Person
     {
-        public  int Id { get; set; }
+        public int Id { get; set; }
         public int CountryId { get; set; }
         public DateTime Created { get; set; }
         public int Languageid { get; set; }

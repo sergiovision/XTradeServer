@@ -12,6 +12,7 @@ namespace BusinessLogic.Repo
     public class BaseRepository<T> : IRepository<T> //where T : Object
     {
         protected IWebLog log;
+
         public BaseRepository()
         {
             log = MainService.thisGlobal.Container.Resolve<IWebLog>();
@@ -35,23 +36,16 @@ namespace BusinessLogic.Repo
 
         public T Insert(T entity)
         {
-            try
+            using (ISession Session = ConnectionHelper.CreateNewSession())
             {
-                using (ISession Session = ConnectionHelper.CreateNewSession())
+                using (ITransaction Transaction = Session.BeginTransaction())
                 {
-                    using (ITransaction Transaction = Session.BeginTransaction())
-                    {
-                        Session.Save(entity);
-                        Transaction.Commit();
-                    }
+                    Session.Save(entity);
+                    Transaction.Commit();
                 }
-                return entity;
             }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            return entity;
         }
 
         public void Update(T entity)

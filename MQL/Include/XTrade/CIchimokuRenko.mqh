@@ -151,13 +151,6 @@ bool CIchimokuRenko::Initialize(const string symbol,const ENUM_TIMEFRAMES period
    //return true;
 }
 
-/*double CIchimokuRenko::GetData(const int buffer_num,const int index) const
-{   
-   double Buff[1];
-   CopyBuffer(m_handle, buffer_num, index, 1, Buff); 
-   //Utils.Info(StringFormat("Ichimoku BufIndex=%d, index=%d, val=%g", buffer_num, index, val));
-   return Buff[0];
-}*/
 //+------------------------------------------------------------------+
 //| Access to TenkanSen buffer of "Ichimoku Kinko Hyo"               |
 //+------------------------------------------------------------------+
@@ -349,7 +342,6 @@ void CIchimokuRenko::Trail(Order &order, int indent)
        double OP = order.openPrice;
        double Profit = order.profit;            
        
-
       if (order.type == OP_BUY)
       {
          double startLevel = order.openPrice + Spread;

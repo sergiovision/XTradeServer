@@ -8,10 +8,10 @@ namespace BusinessObjects.BusinessObjects
 {
     public enum SymbolType
     {
-        Currencies = 0, 
+        Currencies = 0,
         Metals = 1,
         Indexes = 2,
-        Commodities = 3, 
+        Commodities = 3,
         Cryptos = 4
     }
 }

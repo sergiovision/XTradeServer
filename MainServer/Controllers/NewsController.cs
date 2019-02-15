@@ -12,7 +12,7 @@ using System.Globalization;
 
 public class NewsCalendarEvent
 {
-    public string text {get; set;}
+    public string text { get; set; }
     public DateTime startDate { get; set; }
     public DateTime endDate { get; set; }
     public string currency { get; set; }
@@ -31,7 +31,8 @@ namespace XTrade.MainServer
     {
         [HttpGet]
         [AcceptVerbs("GET")]
-        public IEnumerable<NewsCalendarEvent> Get([FromUri]string datetime, [FromUri]string symbol, [FromUri]int importance, [FromUri]int timezoneoffset)
+        public IEnumerable<NewsCalendarEvent> Get([FromUri] string datetime, [FromUri] string symbol,
+            [FromUri] int importance, [FromUri] int timezoneoffset)
         {
             try
             {
@@ -48,8 +49,10 @@ namespace XTrade.MainServer
                     TimeZoneInfo BrokerTimeZoneInfo = MainService.GetBrokerTimeZone();
                     brokerTimeToday = TimeZoneInfo.ConvertTimeFromUtc(today, BrokerTimeZoneInfo);
                 }
-                IEnumerable<NewsEventInfo> events = MainService.GetTodayNews(brokerTimeToday, symbol, (byte)importance, timezoneoffset);
-                if ((events != null) && (events.Count() > 0))
+
+                IEnumerable<NewsEventInfo> events =
+                    MainService.GetTodayNews(brokerTimeToday, symbol, (byte) importance, timezoneoffset);
+                if (events != null && events.Count() > 0)
                 {
                     List<NewsCalendarEvent> news = new List<NewsCalendarEvent>();
                     foreach (var ev in events)
@@ -71,12 +74,15 @@ namespace XTrade.MainServer
                         nce.text = ev.Currency + ": " + ev.Name + vals;
                         news.Add(nce);
                     }
+
                     return news;
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
@@ -102,7 +108,5 @@ namespace XTrade.MainServer
             }
         }
         */
-
     }
 }
-

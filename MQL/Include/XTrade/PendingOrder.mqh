@@ -11,7 +11,7 @@
 #define ADD_MINUTES 68
 
 // default lifetime in minutes
-#define PENDING_ORDER_LIFETIME 480
+#define PENDING_ORDER_LIFETIME 120
 
 #include <XTrade\GenericTypes.mqh>
 #include <XTrade\Orders.mqh>
@@ -19,8 +19,6 @@
 #include <ChartObjects\ChartObjectsShapes.mqh>
 #include <ChartObjects\ChartObjectsBmpControls.mqh>
 
-class PendingOrders;
-class Order;
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+

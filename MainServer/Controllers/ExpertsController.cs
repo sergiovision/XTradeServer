@@ -23,10 +23,12 @@ namespace XTrade.MainServer
             {
                 //User.Identity.
                 return MainService.GetClusters();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
@@ -53,10 +55,12 @@ namespace XTrade.MainServer
             {
                 var wb = MainService.GetAdvisers();
                 return wb.Where(d => d.TerminalId == id);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
@@ -67,10 +71,12 @@ namespace XTrade.MainServer
             try
             {
                 return MainService.GetTerminals();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
@@ -96,14 +102,16 @@ namespace XTrade.MainServer
         public string GenerateDeployScripts()
         {
             try
-            { 
+            {
                 string sourceFolder = MainService.GetGlobalProp(xtradeConstants.SETTINGS_PROPERTY_MQLSOURCEFOLDER);
                 MainService.DeployToTerminals(sourceFolder);
                 return "OK";
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 log.Error(e.ToString());
             }
+
             return "FAILED";
         }
 
@@ -118,7 +126,7 @@ namespace XTrade.MainServer
             catch (Exception e)
             {
                 log.Error(e.ToString());
-                return $"Deploy to Account: {ID} FAILED: " + e.ToString();
+                return $"Deploy to Account: {ID} FAILED: " + e;
             }
         }
 
@@ -129,9 +137,9 @@ namespace XTrade.MainServer
             try
             {
                 if (terminal == null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Empty Terminal passed to Put method!");
-                }
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                        "Empty Terminal passed to Put method!");
+
                 if (MainService.UpdateTerminals(terminal))
                     return Request.CreateResponse(HttpStatusCode.OK);
                 return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "Failed to update");
@@ -150,9 +158,9 @@ namespace XTrade.MainServer
             try
             {
                 if (adviser == null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Empty Adviser passed to UpdateAdviserState method!");
-                }
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                        "Empty Adviser passed to UpdateAdviserState method!");
+
                 if (MainService.UpdateAdviser(adviser))
                     return Request.CreateResponse(HttpStatusCode.OK);
                 return Request.CreateResponse(HttpStatusCode.ExpectationFailed, "Failed to update");
@@ -165,4 +173,3 @@ namespace XTrade.MainServer
         }
     }
 }
-

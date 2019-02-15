@@ -16,7 +16,7 @@ namespace BusinessLogic.Jobs
     {
         protected IScheduler sched;
         protected IJobDetail thisJobDetail;
-        
+
         public TerminalsSyncJob()
         {
             log.Debug("TerminalsSyncJob c-tor");
@@ -30,36 +30,39 @@ namespace BusinessLogic.Jobs
                 Exit(context);
                 return;
             }
+
             try
             {
                 thisJobDetail = context.JobDetail;
                 sched = context.Scheduler;
 
-                SignalInfo signal_ActiveOrders = MainService.thisGlobal.CreateSignal(SignalFlags.Cluster, 1, EnumSignals.SIGNAL_ACTIVE_ORDERS);
+                SignalInfo signal_ActiveOrders =
+                    MainService.thisGlobal.CreateSignal(SignalFlags.Cluster, 1, EnumSignals.SIGNAL_ACTIVE_ORDERS);
                 MainService.thisGlobal.PostSignalTo(signal_ActiveOrders);
 
-                SignalInfo signal_UpdateRates = MainService.thisGlobal.CreateSignal(SignalFlags.AllExperts, 0, EnumSignals.SIGNAL_UPDATE_RATES);
+                SignalInfo signal_UpdateRates =
+                    MainService.thisGlobal.CreateSignal(SignalFlags.AllExperts, 0, EnumSignals.SIGNAL_UPDATE_RATES);
                 MainService.thisGlobal.PostSignalTo(signal_UpdateRates);
 
-                SignalInfo signal_checkBalance = MainService.thisGlobal.CreateSignal(SignalFlags.AllExperts, 0, EnumSignals.SIGNAL_CHECK_BALANCE);
+                SignalInfo signal_checkBalance =
+                    MainService.thisGlobal.CreateSignal(SignalFlags.AllExperts, 0, EnumSignals.SIGNAL_CHECK_BALANCE);
                 MainService.thisGlobal.PostSignalTo(signal_checkBalance);
 
-                SignalInfo signal_History = MainService.thisGlobal.CreateSignal(SignalFlags.AllExperts, 0, EnumSignals.SIGNAL_DEALS_HISTORY);
+                SignalInfo signal_History =
+                    MainService.thisGlobal.CreateSignal(SignalFlags.AllExperts, 0, EnumSignals.SIGNAL_DEALS_HISTORY);
                 signal_History.Value = 2;
                 MainService.thisGlobal.PostSignalTo(signal_History);
 
 
-                SetMessage($"TerminalsSyncJob Finished.");
+                SetMessage("TerminalsSyncJob Finished.");
             }
             catch (Exception ex)
             {
-                SetMessage($"ERROR: {ex.ToString()}");
+                SetMessage($"ERROR: {ex}");
             }
+
             Exit(context);
             await Task.CompletedTask;
-
         }
-
     }
 }
- 

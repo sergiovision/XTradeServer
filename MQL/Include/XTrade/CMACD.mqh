@@ -34,7 +34,7 @@ CMACD::CMACD()
 
 bool CMACD::Init(ENUM_TIMEFRAMES timeframe)
 {
-   if (Initialized())
+   if (Initialized() || CheckIndicatorExist(m_name))
       return true;
    m_period = timeframe;
    SetSymbolPeriod(Utils.Symbol, m_period);

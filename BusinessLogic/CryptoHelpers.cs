@@ -14,6 +14,5 @@ namespace BusinessLogic
             byte[] combined = encoder.GetBytes(value ?? "");
             return BitConverter.ToString(hash.ComputeHash(combined)).ToLower().Replace("-", "");
         }
-        
     }
 }

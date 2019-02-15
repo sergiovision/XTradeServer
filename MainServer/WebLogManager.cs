@@ -13,9 +13,7 @@ namespace XTrade.MainServer
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(WebLogManager));
 
-        private IHubConnectionContext<dynamic> Clients { get; set; }
-
-        private readonly static object lockObject = new object();
+        private static readonly object lockObject = new object();
         protected StringBuilder text;
 
         public WebLogManager()
@@ -23,6 +21,8 @@ namespace XTrade.MainServer
             Clients = GlobalHost.ConnectionManager.GetHubContext<LogsHub>().Clients;
             text = new StringBuilder($"***Logging started at {DateTime.Now.ToString()}***\n");
         }
+
+        private IHubConnectionContext<dynamic> Clients { get; }
 
         #region Interface Imp
 
@@ -41,13 +41,14 @@ namespace XTrade.MainServer
                 Clients.All.WritesLog(initMessage);
             }
         }
+
         public void Log(string message)
         {
             if (string.IsNullOrEmpty(message))
                 return;
             lock (lockObject)
             {
-                string msg = DateTime.Now.ToString() + " " + message + "\n";
+                string msg = DateTime.Now + " " + message + "\n";
                 text.Append(msg);
                 Clients.All.WriteLog(msg);
             }
@@ -66,7 +67,6 @@ namespace XTrade.MainServer
             }
         }
         */
-
 
 
         public void Error(Exception e)

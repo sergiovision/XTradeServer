@@ -11,7 +11,7 @@ using BusinessObjects;
 
 namespace BusinessLogic
 {
-    public class BusinessLogicModule: Module
+    public class BusinessLogicModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -20,7 +20,6 @@ namespace BusinessLogic
             builder.RegisterType<DataService>().AsSelf().SingleInstance();
             builder.RegisterType<ServerSignalsHandler>().As<ISignalHandler>().SingleInstance();
             builder.RegisterType<ProcessImpersonation>().AsSelf().SingleInstance();
-            
         }
     }
 }

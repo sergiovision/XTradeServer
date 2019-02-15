@@ -25,13 +25,14 @@ namespace XTrade.MainServer
                 //var list = MainService.GetRunningJobs();
                 int i = 1;
                 foreach (var job in list)
-                jobs.Add(CreateJobView(i++, job));
+                    jobs.Add(CreateJobView(i++, job));
                 return jobs;
             }
             catch (Exception e)
             {
                 log.Info(e.ToString());
             }
+
             return null;
         }
 
@@ -52,12 +53,14 @@ namespace XTrade.MainServer
             {
                 log.Info(e.ToString());
             }
+
             return null;
         }
 
         private ScheduledJobView CreateJobView(int i, ScheduledJobInfo job)
-        { 
-            return new ScheduledJobView() {
+        {
+            return new ScheduledJobView
+            {
                 ID = i,
                 IsRunning = job.IsRunning,
                 Name = job.Name,
@@ -69,23 +72,16 @@ namespace XTrade.MainServer
             };
         }
 
-
-        public class JobParam
-        {
-            public string Group { get; set; }
-            public string Name { get; set; }
-        }
-
         [AcceptVerbs("POST")]
         [HttpPost]
         public HttpResponseMessage Post(JobParam query)
-        { 
+        {
             try
             {
                 if (query == null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Empty Params passed to RunJob method!");
-                }
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                        "Empty Params passed to RunJob method!");
+
                 MainService.RunJobNow(query.Group, query.Name);
                 return Request.CreateResponse(HttpStatusCode.OK, $"Job {query.Name} Launched!");
             }
@@ -103,9 +99,9 @@ namespace XTrade.MainServer
             try
             {
                 if (query == null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Empty Params passed to RunJob method!");
-                }
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                        "Empty Params passed to RunJob method!");
+
                 MainService.StopJobNow(query.Group, query.Name);
                 return Request.CreateResponse(HttpStatusCode.OK, $"Job {query.Name} Stop Request Sent!");
             }
@@ -117,5 +113,10 @@ namespace XTrade.MainServer
         }
 
 
+        public class JobParam
+        {
+            public string Group { get; set; }
+            public string Name { get; set; }
+        }
     }
 }

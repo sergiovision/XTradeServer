@@ -3,10 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 
 
-namespace BusinessLogic.Repo {
-    
-    public class DBPerson : BaseEntity<DBPerson> {
-        public DBPerson() { }
+namespace BusinessLogic.Repo
+{
+    public class DBPerson : BaseEntity<DBPerson>
+    {
         public virtual int Id { get; set; }
         public virtual DBCountry Country { get; set; }
         public virtual DateTime Created { get; set; }

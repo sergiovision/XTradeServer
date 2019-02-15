@@ -15,15 +15,14 @@ namespace BusinessLogic.Jobs
     // ClearExpertsHistoryJob 
     internal class ClearExpertsHistoryJob : GenericJob
     {
+        protected static string strPath = "";
         protected IScheduler sched;
         protected IJobDetail thisJobDetail;
-        
+
         public ClearExpertsHistoryJob()
         {
             log.Debug("ClearExpertsHistoryJob c-tor");
         }
-
-        protected static string strPath = "";
 
         public override async Task Execute(IJobExecutionContext context)
         {
@@ -33,6 +32,7 @@ namespace BusinessLogic.Jobs
                 Exit(context);
                 return;
             }
+
             try
             {
                 thisJobDetail = context.JobDetail;
@@ -48,22 +48,18 @@ namespace BusinessLogic.Jobs
                 {
                     filesCount = setFiles.Count();
                     foreach (string currentFile in setFiles)
-                    {
                         ordersDeleted += MainService.thisGlobal.DeleteHistoryOrders(currentFile);
-                    }
                 }
-                SetMessage($"ClearExpertsHistoryJob : Files Processed: {filesCount} Deleted Orders: {ordersDeleted} ");
 
+                SetMessage($"ClearExpertsHistoryJob : Files Processed: {filesCount} Deleted Orders: {ordersDeleted} ");
             }
             catch (Exception ex)
             {
-                SetMessage($"ERROR: {ex.ToString()}");
+                SetMessage($"ERROR: {ex}");
             }
+
             Exit(context);
             await Task.CompletedTask;
-
         }
-
     }
 }
- 

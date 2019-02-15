@@ -20,10 +20,7 @@ namespace XTrade.MainServer
         [HttpPost]
         public IHttpActionResult Register(Person userModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             // TODO: Implement register user
             //IdentityResult result = await _repo.RegisterUser(userModel);
@@ -37,6 +34,5 @@ namespace XTrade.MainServer
 
             return Ok();
         }
- 
     }
 }

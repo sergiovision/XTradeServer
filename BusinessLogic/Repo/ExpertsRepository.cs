@@ -10,10 +10,6 @@ namespace BusinessLogic.Repo
 {
     public class ExpertsRepository : BaseRepository<DBAdviser>
     {
-        public ExpertsRepository()
-        {
-        }
-
         public List<Adviser> GetAdvisers()
         {
             List<Adviser> results = new List<Adviser>();
@@ -27,6 +23,7 @@ namespace BusinessLogic.Repo
                     results.Add(adv);
                 }
             }
+
             return results;
         }
 
@@ -39,20 +36,23 @@ namespace BusinessLogic.Repo
                 foreach (var dbCluster in clusters)
                 {
                     ExpertsCluster cluster = toDTO(dbCluster);
-                    var advisers = Session.Query<DBAdviser>().Where(x=> (x.Cluster != null) && (x.Cluster.Id == cluster.Id) );
+                    var advisers = Session.Query<DBAdviser>()
+                        .Where(x => x.Cluster != null && x.Cluster.Id == cluster.Id);
                     foreach (var dbAdviser in advisers)
                     {
                         Adviser adv = new Adviser();
                         toDTO(dbAdviser, ref adv);
                         cluster.Advisers.Add(adv);
                     }
+
                     results.Add(cluster);
                 }
             }
+
             return results;
         }
 
-        public  bool UpdateAdviser(Adviser adv)
+        public bool UpdateAdviser(Adviser adv)
         {
             using (ISession Session = ConnectionHelper.CreateNewSession())
             {
@@ -61,7 +61,7 @@ namespace BusinessLogic.Repo
                     return false;
                 using (ITransaction Transaction = Session.BeginTransaction())
                 {
-                    if (!String.IsNullOrEmpty(adv.State))
+                    if (!string.IsNullOrEmpty(adv.State))
                         adviser.State = adv.State;
                     Session.Update(adviser);
                     Transaction.Commit();
@@ -88,7 +88,7 @@ namespace BusinessLogic.Repo
             result.Id = adv.Id;
             result.Name = adv.Name;
             result.Running = adv.Running;
-            if (adv.Closereason!= null)
+            if (adv.Closereason != null)
                 result.CloseReason = adv.Closereason.Value;
             if (adv.Terminal != null)
             {
@@ -96,9 +96,10 @@ namespace BusinessLogic.Repo
                 result.CodeBase = adv.Terminal.Codebase;
                 result.Broker = adv.Terminal.Broker;
                 result.FullPath = adv.Terminal.Fullpath;
-                if (adv.Terminal.Accountnumber != null) 
+                if (adv.Terminal.Accountnumber != null)
                     result.AccountNumber = adv.Terminal.Accountnumber.Value;
             }
+
             result.LastUpdate = adv.Lastupdate.Value;
             result.Disabled = adv.Disabled;
             if (adv.Symbol != null)
@@ -106,6 +107,7 @@ namespace BusinessLogic.Repo
                 result.Symbol = adv.Symbol.Name;
                 result.SymbolId = adv.Symbol.Id;
             }
+
             if (adv.Cluster != null)
             {
                 result.ClusterId = adv.Cluster.Id;
@@ -114,9 +116,9 @@ namespace BusinessLogic.Repo
                 else
                     result.MetaSymbol = adv.Symbol.Name;
             }
+
             result.Timeframe = adv.Timeframe;
             result.State = adv.State;
-            
         }
 
         public static ExpertsCluster toDTO(DBExpertcluster cluster)
@@ -125,17 +127,11 @@ namespace BusinessLogic.Repo
             result.Id = cluster.Id;
             result.Name = cluster.Name;
             result.Retired = cluster.Retired;
-            if (cluster.Typ!= null)
+            if (cluster.Typ != null)
                 result.Typ = cluster.Typ.Value;
-            if (cluster.Metasymbol != null)
-            {
-                result.MetaSymbol = cluster.Metasymbol.Name;
-            }
+            if (cluster.Metasymbol != null) result.MetaSymbol = cluster.Metasymbol.Name;
 
-            if (cluster.Adviser != null)
-            {
-                result.MasterAdviserId = cluster.Adviser.Id;
-            }
+            if (cluster.Adviser != null) result.MasterAdviserId = cluster.Adviser.Id;
 
             result.Advisers = new List<Adviser>();
             return result;

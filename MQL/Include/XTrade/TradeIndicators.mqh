@@ -16,7 +16,6 @@
 #include <Indicators\Trend.mqh>
 #include <XTrade\CMedianRenko.mqh>
 
-
 class CIchimoku;
 class CNewsIndicator;
 class COsMA;
@@ -62,145 +61,119 @@ public:
    string StatusString;
    datetime timeNewsPeriodStarted;
    
-      TradeIndicators(TradeMethods* me, PanelBase* p)
-      { 
-         methods = me;
-         Trend = LATERAL;
-         thrift = Utils.Service();
-         // currentImportance = MinImportance;
-         InNewsPeriod = false;
-         timeNewsPeriodStarted = TimeCurrent();
-         //LastSignal.Handled = true; // first signal is handled!
-         Symbol = Symbol();
-         
-         if (GET(EnableRenko))
-         {
-            InitMedianRenko(methods.Period);
-            if (!Utils.IsTesting())
-               InitTimeline(methods.Period);
-         }
-   
-         InitATR();
-                  
-         //if (Period() != SignalTimeFrame)
-         //   Utils.Info(StringFormat("Chart Period should be equal to Signal TimeFrame!!! ChartTF=%s SignalTF=%s", EnumToString(Period()), EnumToString(SignalTimeFrame)));
-         if (GET(EnableNews))
-         {
-            GlobalVariablesDeleteAll("NewsSignal");
-            string strMagic = IntegerToString(thrift.MagicNumber());
-            thrift.InitNewsVariables(strMagic);
-            News = new CNewsIndicator();
-            News.Init(methods.Period);
-         }
-         
-         //InitBands(methods.Period);
-         
-         if (GET(FilterIndicator) == GET(SignalIndicator))
-         {
-            FI = InitIndicator((ENUM_INDICATORS)GET(FilterIndicator), methods.Period);
-            SI = FI;
-         }
-         else 
-         {
-            FI = InitIndicator((ENUM_INDICATORS)GET(FilterIndicator), methods.Period);
-            SI = InitIndicator((ENUM_INDICATORS)GET(SignalIndicator), methods.Period);
-         }  
-      }
-   
-      IndiBase* InitIndicator(ENUM_INDICATORS indi, ENUM_TIMEFRAMES tf)
-      {
-         IndiBase* ind = NULL;
-         switch(indi)
-         {
-            case IshimokuIndicator:
-               ind = new CIchimoku();
-               ind.Init(tf);
-               return ind;
-            case IchimokuRenkoIndicator:
-            {  
-               CIchimokuRenko* iind = new CIchimokuRenko();
-               iind.Init(tf);
-               iind.SetMedianRenko(medianRenko);
-               ind = iind;
-               return ind;
-            }
-            case CandleIndicator:
-               ind = new CCandle();
-               ind.Init(tf);
-               return ind;
-            case OsMAIndicator:
-               //InitMFI(0, FilterTimeFrame);
-               //InitBands(methods.Period);
-               ind = new COsMA();
-               ind.Init(tf);
-               return ind;
-            case NoIndicator:
-               return NULL;            
-            default:
-              Utils.Info(StringFormat("Indicator %s not implemented!!!", EnumToString(indi)));
-         }
-         return NULL;
-      }
+   TradeIndicators(TradeMethods* me, PanelBase* p)
+   { 
+      methods = me;
+      Trend = LATERAL;
+      thrift = Utils.Service();
+      // currentImportance = MinImportance;
+      InNewsPeriod = false;
+      timeNewsPeriodStarted = TimeCurrent();
+      //LastSignal.Handled = true; // first signal is handled!
+      Symbol = Symbol();
       
-      bool InitMedianRenko(ENUM_TIMEFRAMES tf)
+      if (GET(EnableRenko))
       {
-         medianRenko = new CMedianRenko();
-         return medianRenko.Init(tf);
-      }
-      
-      bool InitTimeline(ENUM_TIMEFRAMES tf)
-      {
-         if ((timeLine != NULL) || (macd != NULL))
-            return false;
-         timeLine = new CTimeLine();
-         macd = new CMACD();
-         bool res = timeLine.Init(tf);
-         macd.Init(tf);
-         return res;
-
+         InitMedianRenko(methods.Period);
+         if (!Utils.IsTesting())
+            InitTimeline(methods.Period);
       }
 
+      InitATR();
       
-      bool InitBands(ENUM_TIMEFRAMES tf)
+      if (GET(EnableNews))
       {
-         Bands = new CBBands();         
-         return Bands.Init(tf);
-      }      
+         GlobalVariablesDeleteAll("NewsSignal");
+         string strMagic = IntegerToString(thrift.MagicNumber());
+         thrift.InitNewsVariables(strMagic);
+         News = new CNewsIndicator();
+         News.Init(methods.Period);
+      }
       
+      //InitBands(methods.Period);
+      
+      if (GET(FilterIndicator) == GET(SignalIndicator))
+      {
+         FI = InitIndicator((ENUM_INDICATORS)GET(FilterIndicator), methods.Period);
+         SI = FI;
+      }
+      else 
+      {
+         FI = InitIndicator((ENUM_INDICATORS)GET(FilterIndicator), methods.Period);
+         SI = InitIndicator((ENUM_INDICATORS)GET(SignalIndicator), methods.Period);
+      }  
+   }
+   
+   IndiBase* InitIndicator(ENUM_INDICATORS indi, ENUM_TIMEFRAMES tf)
+   {
+      IndiBase* ind = NULL;
+      switch(indi)
+      {
+         case IshimokuIndicator:
+            ind = new CIchimoku();
+            ind.Init(tf);
+            return ind;
+         case IchimokuRenkoIndicator:
+         {  
+            CIchimokuRenko* iind = new CIchimokuRenko();
+            iind.Init(tf);
+            iind.SetMedianRenko(medianRenko);
+            ind = iind;
+            return ind;
+         }
+         case CandleIndicator:
+            ind = new CCandle();
+            ind.Init(tf);
+            return ind;
+         case OsMAIndicator:
+            //InitMFI(0, FilterTimeFrame);
+            //InitBands(methods.Period);
+            ind = new COsMA();
+            ind.Init(tf);
+            return ind;
+         case NoIndicator:
+            return NULL;            
+         default:
+           Utils.Info(StringFormat("Indicator %s not implemented!!!", EnumToString(indi)));
+      }
+      return NULL;
+   }
+   
+   bool InitMedianRenko(ENUM_TIMEFRAMES tf)
+   {
+      medianRenko = new CMedianRenko();
+      return medianRenko.Init(tf);
+   }
+      
+   bool InitTimeline(ENUM_TIMEFRAMES tf)
+   {
+      if ((timeLine != NULL) || (macd != NULL))
+         return false;
+      timeLine = new CTimeLine();
+      macd = new CMACD();
+      bool res = timeLine.Init(tf);
+      macd.Init(tf);
+      return res;
+
+   }
+
+   bool InitBands(ENUM_TIMEFRAMES tf)
+   {
+      Bands = new CBBands();         
+      return Bands.Init(tf);
+   }      
             
-      bool InitATR()
+   bool InitATR()
+   {
+      ATRD1 = new CNATR();
+      bool res = ATRD1.Init(PERIOD_D1);
+      if (res)
       {
-         ATRD1 = new CNATR();
-         bool res = ATRD1.Init(PERIOD_D1);
-         if (res)
-         {
-             ATRD1.FullRelease(!Utils.IsTesting());
-         }
-         return res;
+          ATRD1.FullRelease(!Utils.IsTesting());
       }
+      return res;
+   }
       
-      /*
-      bool InitMFI(ENUM_INDICATORS indi, ENUM_TIMEFRAMES timeframe)
-      {
-#ifdef __MQL5__               
-         ENUM_APPLIED_VOLUME volume = VOLUME_TICK;
-         if(SymbolInfoInteger(Symbol(),SYMBOL_TRADE_CALC_MODE)!=(int)SYMBOL_CALC_MODE_FOREX)
-           volume = VOLUME_REAL;
-
-         bool res = MFI.Create((string)Symbol, (ENUM_TIMEFRAMES) timeframe, (int)NumBarsToAnalyze, volume);
-         if (res)
-         {
-             MFI.AddToChart(chartID, indiSubWindow);
-
-             MFI.FullRelease(!Utils.IsTesting());
-         }
-#else 
-         bool res = MFI.Create((string)Symbol, (ENUM_TIMEFRAMES) timeframe, (int)NumBarsToAnalyze);         
-         Utils.AddToChart(0, "MFI", chartID, subWindow);
-#endif
-         return res;
-      }*/
-                  
       void RefreshIndicators()
       {    
           if (medianRenko != NULL)
@@ -212,9 +185,7 @@ public:
           if (ATRD1.Handle() != INVALID_HANDLE)
             ATRD1.Refresh();
              
-#ifdef __MQL5__      
           if (Bands.Handle() != INVALID_HANDLE)
-#endif          
               Bands.Refresh();
              */
           //if (OsMA.Initialized())

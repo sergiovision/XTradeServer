@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects
 {
-    public interface IExpert 
+    public interface IExpert
     {
         string AccountName();
         string Symbol();

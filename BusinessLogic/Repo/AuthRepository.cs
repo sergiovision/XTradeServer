@@ -18,10 +18,8 @@ namespace BusinessLogic.Repo
 
         public DBPerson RegisterUser(Person userModel)
         {
-            if (persons.ContainsKey(userModel.Mail))
-            {
-                throw new Exception($"User {userModel.Mail} already exists!!!");
-            }
+            if (persons.ContainsKey(userModel.Mail)) throw new Exception($"User {userModel.Mail} already exists!!!");
+
             DBPerson person = new DBPerson
             {
                 Mail = userModel.Mail,
@@ -38,7 +36,8 @@ namespace BusinessLogic.Repo
 
         public Person FindUser(string mail, string password)
         {
-            var result = GetAll().Find(x => x.Mail.Equals(mail) && CheckCredential(x.Credential, password) && (x.Retired == false)); 
+            var result = GetAll().Find(x =>
+                x.Mail.Equals(mail) && CheckCredential(x.Credential, password) && x.Retired == false);
             if (result == null)
                 return null;
             var dto = toDTO(result);
@@ -51,7 +50,7 @@ namespace BusinessLogic.Repo
             return cred.Equals(enteredCred);
         }
 
-        Person toDTO(DBPerson result)
+        private Person toDTO(DBPerson result)
         {
             Person person = new Person();
             person.Id = result.Id;
@@ -66,6 +65,5 @@ namespace BusinessLogic.Repo
             person.Activated = result.Activated;
             return person;
         }
-
     }
 }

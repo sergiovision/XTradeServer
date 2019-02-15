@@ -7,12 +7,12 @@
 
 namespace BusinessObjects
 {
-  public enum SignalFlags
-  {
-    Auto = 0,
-    Server = 1,
-    Expert = 2,
-    Cluster = 3,
-    AllExperts = 4,
-  }
+    public enum SignalFlags
+    {
+        Auto = 0,
+        Server = 1,
+        Expert = 2,
+        Cluster = 3,
+        AllExperts = 4
+    }
 }

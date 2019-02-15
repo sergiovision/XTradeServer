@@ -14,7 +14,7 @@ namespace XTrade.MainServer
     public class TerminalsHub : Hub
     {
         private readonly ITerminalEvents terminal;
-        IMainService mainService;
+        private IMainService mainService;
 
         public TerminalsHub() //ILifetimeScope lifetimeScope
         {
@@ -34,18 +34,19 @@ namespace XTrade.MainServer
             catch
             {
             }
+
             return pos;
         }
 
-      /*  protected override void Dispose(bool disposing)
-        {
-            // Dipose the hub lifetime scope when the hub is disposed.
-            if (disposing && _hubLifetimeScope != null)
-            {
-                _hubLifetimeScope.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }*/
+        /*  protected override void Dispose(bool disposing)
+          {
+              // Dipose the hub lifetime scope when the hub is disposed.
+              if (disposing && _hubLifetimeScope != null)
+              {
+                  _hubLifetimeScope.Dispose();
+              }
+  
+              base.Dispose(disposing);
+          }*/
     }
 }

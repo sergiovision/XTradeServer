@@ -24,20 +24,22 @@ namespace XTrade.MainServer
             {
                 //User.Identity.
                 return MainService.GetDeals();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
         [HttpGet]
         [AcceptVerbs("GET")]
-        public IEnumerable<MetaSymbolStat> MetaSymbolStatistics([FromUri]int type)
+        public IEnumerable<MetaSymbolStat> MetaSymbolStatistics([FromUri] int type)
         {
             try
             {
-                var ds =  MainService.Container.Resolve<DataService>();
+                var ds = MainService.Container.Resolve<DataService>();
                 if (ds == null)
                     return null;
                 return ds.MetaSymbolStatistics(type);
@@ -46,17 +48,19 @@ namespace XTrade.MainServer
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
         [HttpGet]
         [AcceptVerbs("GET")]
-        public HttpResponseMessage ClosePosition([FromUri]int Magic, [FromUri]int Ticket)
+        public HttpResponseMessage ClosePosition([FromUri] int Magic, [FromUri] int Ticket)
         {
             try
             {
-                SignalInfo signalPos = MainService.CreateSignal(SignalFlags.Expert, Magic, EnumSignals.SIGNAL_CLOSE_POSITION);
-                signalPos.Value = (int)Ticket;
+                SignalInfo signalPos =
+                    MainService.CreateSignal(SignalFlags.Expert, Magic, EnumSignals.SIGNAL_CLOSE_POSITION);
+                signalPos.Value = Ticket;
                 MainService.PostSignalTo(signalPos);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -65,7 +69,6 @@ namespace XTrade.MainServer
                 log.Error(e.ToString());
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, e.ToString());
             }
-
         }
 
         [HttpGet]
@@ -76,11 +79,13 @@ namespace XTrade.MainServer
             {
                 List<ExpertsCluster> clusters = MainService.GetClusters();
                 SignalInfo signalC = null;
-                foreach(var cluster in clusters)
+                foreach (var cluster in clusters)
                 {
-                    signalC = MainService.CreateSignal(SignalFlags.Cluster, cluster.Id, EnumSignals.SIGNAL_ACTIVE_ORDERS);
+                    signalC = MainService.CreateSignal(SignalFlags.Cluster, cluster.Id,
+                        EnumSignals.SIGNAL_ACTIVE_ORDERS);
                     MainService.PostSignalTo(signalC);
                 }
+
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -89,8 +94,5 @@ namespace XTrade.MainServer
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, e.ToString());
             }
         }
-
-
     }
 }
-

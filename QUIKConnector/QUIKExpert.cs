@@ -10,9 +10,9 @@ namespace QUIK
 {
     public class QUIKExpert : Adviser, IExpert
     {
-        public short Volume;
-        public string PortfolioName;
         public string Comment;
+        public string PortfolioName;
+        public short Volume;
 
         public QUIKExpert(Adviser adv)
         {
@@ -38,25 +38,17 @@ namespace QUIK
             Comment = "QUIK";
 
             //ExpertsRepository.toDTO(dbAdviser, ref refThis);
-            Dictionary<string, string> parameters = JsonConvert.DeserializeObject<Dictionary<string, string>>(this.State);
+            Dictionary<string, string> parameters =
+                JsonConvert.DeserializeObject<Dictionary<string, string>>(State);
 
             if (parameters != null)
             {
-                if (parameters.ContainsKey("Volume"))
-                {
-                    Volume = short.Parse(parameters["Volume"]);
-                }
+                if (parameters.ContainsKey("Volume")) Volume = short.Parse(parameters["Volume"]);
 
-                if (parameters.ContainsKey("PortfolioName"))
-                {
-                    PortfolioName = parameters["PortfolioName"];
-                }
-                if (parameters.ContainsKey("Comment"))
-                {
-                    Comment = parameters["Comment"];
-                }
+                if (parameters.ContainsKey("PortfolioName")) PortfolioName = parameters["PortfolioName"];
+
+                if (parameters.ContainsKey("Comment")) Comment = parameters["Comment"];
             }
-
         }
 
         public string AccountName()
@@ -66,16 +58,7 @@ namespace QUIK
 
         public long Magic()
         {
-            return this.Id;
-        }
-
-        public string Serialize()
-        {
-            Dictionary<string, string> parameters = new Dictionary<string, string>();
-            parameters["Volume"] = Volume.ToString();
-            parameters["Comment"] = Comment;
-            parameters["PortfolioName"] = PortfolioName;
-            return JsonConvert.SerializeObject(parameters);
+            return Id;
         }
 
         string IExpert.Comment()
@@ -91,6 +74,15 @@ namespace QUIK
         double IExpert.Volume()
         {
             return Volume;
+        }
+
+        public string Serialize()
+        {
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            parameters["Volume"] = Volume.ToString();
+            parameters["Comment"] = Comment;
+            parameters["PortfolioName"] = PortfolioName;
+            return JsonConvert.SerializeObject(parameters);
         }
     }
 }

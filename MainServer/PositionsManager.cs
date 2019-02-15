@@ -5,20 +5,16 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autofac;
 
 namespace XTrade.MainServer
 {
     public class PositionsManager : ITerminalEvents
     {
-        private ConcurrentDictionary<long, PositionInfo > positions;
-        private IHubConnectionContext<dynamic> Clients { get; set; }
-
-        private readonly static object lockObject = new object();
-        private IMainService xtrade;
-        private Dictionary<long, Terminal> terminals;
+        private static readonly object lockObject = new object();
+        private readonly ConcurrentDictionary<long, PositionInfo> positions;
+        private readonly Dictionary<long, Terminal> terminals;
+        private readonly IMainService xtrade;
 
         public PositionsManager()
         {
@@ -27,22 +23,19 @@ namespace XTrade.MainServer
             xtrade = Program.Container.Resolve<IMainService>();
 
             terminals = new Dictionary<long, Terminal>();
-            foreach (var term in xtrade.GetTerminals())
-            {
-                terminals.Add(term.AccountNumber, term);
-            }
+            foreach (var term in xtrade.GetTerminals()) terminals.Add(term.AccountNumber, term);
         }
+
+        private IHubConnectionContext<dynamic> Clients { get; }
 
         public List<PositionInfo> GetAllPositions()
         {
             List<PositionInfo> result = new List<PositionInfo>();
             lock (lockObject)
             {
-                foreach (var posTerm in positions)
-                {
-                    result.Add(posTerm.Value);
-                }
+                foreach (var posTerm in positions) result.Add(posTerm.Value);
             }
+
             return result;
         }
 
@@ -53,44 +46,42 @@ namespace XTrade.MainServer
                 Dictionary<long, PositionInfo> positionsToAdd = new Dictionary<long, PositionInfo>();
                 List<long> positionsToDelete = new List<long>();
                 foreach (var notcontains in posMagic)
-                {
                     if (!positionsToAdd.ContainsKey(notcontains.Ticket))
                     {
-                        notcontains.AccountName = terminals[AccountNumber].Broker;                        
+                        notcontains.AccountName = terminals[AccountNumber].Broker;
                         notcontains.Profit = xtrade.ConvertToUSD(notcontains.Profit, terminals[AccountNumber].Currency);
                         positionsToAdd.Add(notcontains.Ticket, notcontains);
                     }
-                }
-                foreach (var pos in positions.Where(x=>x.Value.Account.Equals(AccountNumber)))
+
+                foreach (var pos in positions.Where(x => x.Value.Account.Equals(AccountNumber)))
                 {
-                    var contains = posMagic.Where(x => (x.Ticket == pos.Key) && (x.Account == AccountNumber));
-                    if ((contains != null) && (contains.Count() > 0))
+                    var contains = posMagic.Where(x => x.Ticket == pos.Key && x.Account == AccountNumber);
+                    if (contains != null && contains.Count() > 0)
                     {
                         positionsToAdd.Remove(pos.Key);
                         var newvalue = contains.FirstOrDefault();
                         newvalue.AccountName = terminals[AccountNumber].Broker;
-                        // newvalue.Profit = xtrade.ConvertToUSD(newvalue.Profit, terminals[AccountNumber].Currency);
                         if (positions.TryUpdate(pos.Key, newvalue, pos.Value))
                             UpdatePosition(newvalue);
-                    } else
+                    }
+                    else
                     {
                         if (pos.Value.Magic == magicId)
                             positionsToDelete.Add(pos.Key);
                     }
-                    foreach(var notcontains in posMagic.Where(x => (x.Ticket != pos.Key)))
-                    {
+
+                    foreach (var notcontains in posMagic.Where(x => x.Ticket != pos.Key))
                         if (!positionsToAdd.ContainsKey(notcontains.Ticket))
-                        {
                             positionsToAdd.Add(notcontains.Ticket, notcontains);
-                        }
-                    }
                 }
+
                 foreach (var toremove in positionsToDelete)
                 {
                     PositionInfo todel = null;
                     if (positions.TryRemove(toremove, out todel))
                         RemovePosition(toremove);
                 }
+
                 foreach (var toadd in positionsToAdd)
                 {
                     toadd.Value.AccountName = terminals[AccountNumber].Broker;
@@ -101,6 +92,7 @@ namespace XTrade.MainServer
         }
 
         #region Interface Imp
+
         public void InsertPosition(PositionInfo pos)
         {
             Clients.All.InsertPosition(pos);
@@ -115,6 +107,7 @@ namespace XTrade.MainServer
         {
             Clients.All.RemovePosition(Ticket);
         }
+
         #endregion
     }
 }

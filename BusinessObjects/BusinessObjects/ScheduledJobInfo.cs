@@ -6,8 +6,8 @@ using System.IO;
 
 namespace BusinessObjects
 {
-  public class ScheduledJobInfo 
-  {
+    public class ScheduledJobInfo
+    {
         public bool IsRunning { get; set; }
         public string Group { get; set; }
         public string Name { get; set; }
@@ -15,5 +15,5 @@ namespace BusinessObjects
         public string Schedule { get; set; }
         public long PrevTime { get; set; }
         public long NextTime { get; set; }
-  }
+    }
 }

@@ -25,22 +25,29 @@ namespace BusinessLogic.BusinessObjects
 {
     public class MainService : IMainService
     {
+        public const int CHAR_BUFF_SIZE = 512;
         public static MainService thisGlobal;
         private static int isDebug = -1;
-        private SchedulerService _gSchedulerService;
-        private DataService data;
-        protected TimeZoneInfo BrokerTimeZoneInfo;
-        private bool Initialized;
         public static char[] ParamsSeparator = xtradeConstants.PARAMS_SEPARATOR.ToCharArray();
-        public  const int CHAR_BUFF_SIZE = 512;
-        private ConcurrentDictionary<long, ConcurrentQueue<SignalInfo>> signalQue;
         protected static IWebLog log;
+        private SchedulerService _gSchedulerService;
+        protected TimeZoneInfo BrokerTimeZoneInfo;
+        private DataService data;
+        private bool Initialized;
+        private ConcurrentDictionary<long, ConcurrentQueue<SignalInfo>> signalQue;
+
+        public MainService()
+        {
+            // RegisterContainer();
+            Initialized = false;
+            thisGlobal = this;
+            isDeploying = false;
+        }
 
         public static string AssemblyDirectory
         {
             get
             {
-
                 string codeBase = Assembly.GetExecutingAssembly().CodeBase;
                 UriBuilder uri = new UriBuilder(codeBase);
                 string path = Uri.UnescapeDataString(uri.Path);
@@ -61,6 +68,7 @@ namespace BusinessLogic.BusinessObjects
                 {
                     log.Error(e);
                 }
+
                 return result;
             }
         }
@@ -88,16 +96,9 @@ namespace BusinessLogic.BusinessObjects
                 {
                     log.Error(e);
                 }
+
                 return result;
             }
-        }
-
-        public MainService()
-        {
-            // RegisterContainer();
-            Initialized = false;
-            thisGlobal = this;
-            isDeploying = false;
         }
 
         public List<CurrencyInfo> GetCurrencies()
@@ -121,7 +122,7 @@ namespace BusinessLogic.BusinessObjects
         }
 
         public IContainer Container { get; private set; }
-    
+
         public Person LoginPerson(string mail, string password)
         {
             return data.LoginPerson(mail, password);
@@ -157,9 +158,8 @@ namespace BusinessLogic.BusinessObjects
         public TimeZoneInfo GetBrokerTimeZone()
         {
             if (BrokerTimeZoneInfo == null)
-            {
                 BrokerTimeZoneInfo = GetTimeZoneFromString(xtradeConstants.SETTINGS_PROPERTY_BROKERSERVERTIMEZONE);
-            }
+
             return BrokerTimeZoneInfo;
         }
 
@@ -193,27 +193,12 @@ namespace BusinessLogic.BusinessObjects
             return SchedulerService.GetJobPrevTime(group, name);
         }
 
-        #region DBJobs
-
-        public void UnsheduleJobs(IEnumerable<JobKey> jobs)
-        {
-            foreach (var job in jobs)
-                SchedulerService.removeJobTriggers(job);
-        }
-
-        public bool DeleteJob(JobKey job)
-        {
-             return SchedulerService.sched.DeleteJob(job).Result;
-        }
-
-        #endregion
-
         public void Dispose()
         {
             if (_gSchedulerService != null)
                 _gSchedulerService.Shutdown();
 
-            ITerminalConnector connector = MainService.thisGlobal.Container.Resolve<ITerminalConnector>();
+            ITerminalConnector connector = thisGlobal.Container.Resolve<ITerminalConnector>();
             if (connector != null)
                 connector.Dispose();
         }
@@ -244,10 +229,9 @@ namespace BusinessLogic.BusinessObjects
             {
                 TimeZoneInfo tzInfo = BrokerTimeZoneInfo = GetBrokerTimeZone();
                 if (tzoffset != 0)
-                {
-                    tzInfo = TimeZoneInfo.CreateCustomTimeZone("ClientTZ", TimeSpan.FromHours(-tzoffset), "ClientTZ", "ClientTZ");
-                    //tzInfo = TimeZoneInfo.Local;
-                }
+                    tzInfo = TimeZoneInfo.CreateCustomTimeZone("ClientTZ", TimeSpan.FromHours(-tzoffset), "ClientTZ",
+                        "ClientTZ");
+
                 string queryStrInterval = "";
 
                 DateTime from = date;
@@ -255,33 +239,37 @@ namespace BusinessLogic.BusinessObjects
 
                 if (date.Equals(DateTime.MaxValue))
                 {
-                    from = from.AddDays(-(int)from.DayOfWeek+1);
+                    from = from.AddDays(-(int) from.DayOfWeek + 1);
                     to = from.AddDays(5);
-                } else
+                }
+                else
                 {
                     // from current time bar
                     // until midnight
                     from = TimeZoneInfo.ConvertTimeToUtc(date, tzInfo);
-                    from = from.AddDays(-(int)from.DayOfWeek + 1);
+                    from = from.AddDays(-(int) from.DayOfWeek + 1);
                     to = from.AddDays(5);
                     //to = from.AddDays(1).AddSeconds(-1);
-                } 
+                }
+
                 Tuple<string, object, IType>[] parameters = null;
 
-                if ( (symbolStr == "ALL") || string.IsNullOrEmpty(symbolStr) )
+                if (symbolStr == "ALL" || string.IsNullOrEmpty(symbolStr))
                 {
                     queryStrInterval =
-                       @"SELECT NE.* FROM newsevent NE 
+                        @"SELECT NE.* FROM newsevent NE 
                       WHERE (NE.HappenTime >= :FR_DT) AND (NE.HappenTime <= :TO_DT) 
                     AND (NE.Importance >= :IMP) ORDER BY NE.HappenTime ASC, NE.Importance DESC";
 
-                    Tuple<string, object, IType>[] paramets = {
-                        new Tuple<string, object, IType>("FR_DT", from.ToString(xtradeConstants.MYSQLDATETIMEFORMAT), NHibernateUtil.String),
-                        new Tuple<string, object, IType>("TO_DT", to.ToString(xtradeConstants.MYSQLDATETIMEFORMAT), NHibernateUtil.String),
+                    Tuple<string, object, IType>[] paramets =
+                    {
+                        new Tuple<string, object, IType>("FR_DT", from.ToString(xtradeConstants.MYSQLDATETIMEFORMAT),
+                            NHibernateUtil.String),
+                        new Tuple<string, object, IType>("TO_DT", to.ToString(xtradeConstants.MYSQLDATETIMEFORMAT),
+                            NHibernateUtil.String),
                         new Tuple<string, object, IType>("IMP", minImportance, NHibernateUtil.Byte)
                     };
                     parameters = paramets;
-
                 }
                 else
                 {
@@ -291,7 +279,7 @@ namespace BusinessLogic.BusinessObjects
                         C2 = symbolStr.Substring(3, 3);
 
                     queryStrInterval =
-                    @"SELECT NE.* FROM newsevent NE INNER JOIN Currency C ON NE.CurrencyId = C.ID
+                        @"SELECT NE.* FROM newsevent NE INNER JOIN Currency C ON NE.CurrencyId = C.ID
                       WHERE (C.Name=:C1 OR C.Name=:C2) AND (NE.HappenTime >= :FR_DT) AND (NE.HappenTime <= :TO_DT) 
                     AND (NE.Importance >= :IMP) ORDER BY NE.HappenTime ASC, NE.Importance DESC";
 
@@ -299,37 +287,36 @@ namespace BusinessLogic.BusinessObjects
                     {
                         new Tuple<string, object, IType>("C1", C1, NHibernateUtil.String),
                         new Tuple<string, object, IType>("C2", C2, NHibernateUtil.String),
-                        new Tuple<string, object, IType>("FR_DT", from.ToString(xtradeConstants.MYSQLDATETIMEFORMAT), NHibernateUtil.String),
-                        new Tuple<string, object, IType>("TO_DT", to.ToString(xtradeConstants.MYSQLDATETIMEFORMAT), NHibernateUtil.String),
+                        new Tuple<string, object, IType>("FR_DT", from.ToString(xtradeConstants.MYSQLDATETIMEFORMAT),
+                            NHibernateUtil.String),
+                        new Tuple<string, object, IType>("TO_DT", to.ToString(xtradeConstants.MYSQLDATETIMEFORMAT),
+                            NHibernateUtil.String),
                         new Tuple<string, object, IType>("IMP", minImportance, NHibernateUtil.Byte)
                     };
                     parameters = parametsC;
-
                 }
 
                 using (ISession Session = ConnectionHelper.CreateNewSession())
                 {
-                    IList<DBNewsevent> newsresult = data.ExecuteNativeQuery<DBNewsevent>(Session, queryStrInterval, "NE", parameters);
+                    IList<DBNewsevent> newsresult =
+                        data.ExecuteNativeQuery<DBNewsevent>(Session, queryStrInterval, "NE", parameters);
                     int count = newsresult.Count;
-                    if (count <= 0)
-                    {
-                        return result;
-                    }
+                    if (count <= 0) return result;
 
                     NewsEventInfo eventInfo = null;
                     foreach (var row in newsresult)
                     {
                         eventInfo = new NewsEventInfo();
-                        eventInfo.Currency = (string)row.Currency.Name;
-                        DateTime raiseDT = (DateTime)row.Happentime;
-                        
+                        eventInfo.Currency = row.Currency.Name;
+                        DateTime raiseDT = row.Happentime;
+
                         raiseDT = TimeZoneInfo.ConvertTimeFromUtc(raiseDT, tzInfo);
                         eventInfo.RaiseDateTime = raiseDT.ToString(xtradeConstants.MTDATETIMEFORMAT);
                         eventInfo.ForecastVal = row.Forecastval;
                         eventInfo.PreviousVal = row.Previousval;
-                        eventInfo.Name = (string)row.Name;
-                        byte imp = (byte)row.Importance;
-                        eventInfo.Importance = (sbyte)imp;
+                        eventInfo.Name = row.Name;
+                        byte imp = (byte) row.Importance;
+                        eventInfo.Importance = (sbyte) imp;
                         result.Add(eventInfo);
                     }
                 }
@@ -338,6 +325,7 @@ namespace BusinessLogic.BusinessObjects
             {
                 log.Error(e.ToString());
             }
+
             return result;
         }
 
@@ -362,24 +350,6 @@ namespace BusinessLogic.BusinessObjects
             return isDebug > 0 ? true : false;
         }
 
-        /*
-        private void RegisterContainer()
-        {
-            var builder = new ContainerBuilder();
-            Container = builder.Build();
-        }
-        */
-
-        protected TimeZoneInfo GetTimeZoneFromString(string propName)
-        {
-            string strTimeZone = GetGlobalProp(propName);
-            ReadOnlyCollection<TimeZoneInfo> tz = TimeZoneInfo.GetSystemTimeZones();
-            foreach (TimeZoneInfo tzi in tz)
-                if (tzi.StandardName.Equals(strTimeZone))
-                    return tzi;
-            return null;
-        }
-
         public List<Wallet> GetWalletsState(DateTime date)
         {
             List<Wallet> result = new List<Wallet>();
@@ -389,37 +359,10 @@ namespace BusinessLogic.BusinessObjects
             }
             catch (Exception e)
             {
-                log.Error("Error: GetWalletsState: " + e.ToString());
+                log.Error("Error: GetWalletsState: " + e);
             }
-            return result;
-        }
 
-        public Wallet CalculateBalanceForDate(int walletId, DateTime dt)
-        {
-            IList<Wallet> result = data.GetWalletsState(dt);
-            int count = result.Count;
-            if (count > 0)
-            {
-                if (walletId != 0)
-                {
-                    return result.Where(x => x.Id == walletId).FirstOrDefault();
-                }
-                Wallet wb = new Wallet();
-                wb.Id = walletId;
-                if (dt.Equals(DateTime.MaxValue))
-                    wb.Date = DateTime.UtcNow;
-                else 
-                    wb.Date = dt;
-                foreach (var row in result)
-                {
-                    wb.Balance += row.Balance; // for total
-                    //wb.PersonId = row.PersonId;
-                    //wb.Retired = row.Retired;
-                    //wb.Name = row.Name;
-                }
-                return wb;
-            }
-            return null;
+            return result;
         }
 
         public List<Wallet> GetWalletBalanceRange(int WID, DateTime fromDate, DateTime toDate)
@@ -430,77 +373,26 @@ namespace BusinessLogic.BusinessObjects
                 DateTime dt = fromDate;
                 int dateIteration = 3;
                 DateTime to = toDate;
-                while(dt <= to)
+                while (dt <= to)
                 {
                     var res = CalculateBalanceForDate(WID, dt);
                     result.Add(res);
                     dt = dt.AddDays(dateIteration);
                 }
+
                 result.Add(CalculateBalanceForDate(WID, toDate));
             }
             catch (Exception e)
             {
-                log.Error("Error: GetWalletBalanceRange: " + e.ToString());
+                log.Error("Error: GetWalletBalanceRange: " + e);
             }
+
             return result;
         }
+
         public List<Terminal> GetTerminals()
         {
             return data.GetTerminals();
-        }
-
-        public IEnumerable<DBAdviser> GetAdvisersByTerminal(long terminalId)
-        {
-            List<DBAdviser> advisers = new List<DBAdviser>();
-            try
-            {
-                IQueryable<DBAdviser> res = null;
-                using (ISession Session = ConnectionHelper.CreateNewSession())
-                {
-                    res = Session.Query<DBAdviser>().Where(x => (x.Terminal.Id == terminalId) && (x.Disabled == false));
-                    foreach (var adviser in res)
-                    {
-                        //Adviser adv = new Adviser()
-                        //ExpertsRepository.toDTO(adviser, ref adv);
-                        advisers.Add(adviser);
-                    }
-                }
-                return advisers;
-            }
-            catch (Exception e)
-            {
-                log.Error("Error: GetAdvisersByTerminal: " + e.ToString());
-            }
-            return advisers;
-        }
-
-        public IEnumerable<Adviser> GetAdvisersClusterByMasterId(long masterId)
-        {
-            List<Adviser> advisers = new List<Adviser>();
-            try
-            {
-                IQueryable<DBAdviser> res = null;
-                using (ISession Session = ConnectionHelper.CreateNewSession())
-                {
-                    var clusters = Session.Query<DBExpertcluster>().Where(x=> (x.Adviser != null) && (x.Adviser.Id == (int)masterId));
-                    if ((clusters == null) || (clusters.Count() == 0))
-                        return advisers; // it is not master expert
-                    DBExpertcluster cluster = clusters.FirstOrDefault();
-                    res = Session.Query<DBAdviser>().Where(x => (x.Cluster != null) && (x.Cluster.Id == cluster.Id) && (x.Disabled == false));
-                    foreach (var adviser in res)
-                    {
-                        Adviser adv = new Adviser();
-                        ExpertsRepository.toDTO(adviser, ref adv);
-                        advisers.Add(adv);
-                    }
-                }
-                return advisers;
-            }
-            catch (Exception e)
-            {
-                log.Error("Error: GetAdvisersClusterByMasterId: " + e.ToString());
-            }
-            return advisers;
         }
 
         public bool UpdateTerminals(Terminal t)
@@ -513,8 +405,9 @@ namespace BusinessLogic.BusinessObjects
             }
             catch (Exception e)
             {
-                log.Error("Error: UpdateTerminals: " + e.ToString());
+                log.Error("Error: UpdateTerminals: " + e);
             }
+
             return false;
         }
 
@@ -536,10 +429,128 @@ namespace BusinessLogic.BusinessObjects
             }
             catch (Exception e)
             {
-                log.Error("Error: UpdateAccountState: " + e.ToString());
+                log.Error("Error: UpdateAccountState: " + e);
             }
+
             return result;
         }
+
+        /*
+        private void RegisterContainer()
+        {
+            var builder = new ContainerBuilder();
+            Container = builder.Build();
+        }
+        */
+
+        protected TimeZoneInfo GetTimeZoneFromString(string propName)
+        {
+            string strTimeZone = GetGlobalProp(propName);
+            ReadOnlyCollection<TimeZoneInfo> tz = TimeZoneInfo.GetSystemTimeZones();
+            foreach (TimeZoneInfo tzi in tz)
+                if (tzi.StandardName.Equals(strTimeZone))
+                    return tzi;
+            return null;
+        }
+
+        public Wallet CalculateBalanceForDate(int walletId, DateTime dt)
+        {
+            IList<Wallet> result = data.GetWalletsState(dt);
+            int count = result.Count;
+            if (count > 0)
+            {
+                if (walletId != 0) return result.Where(x => x.Id == walletId).FirstOrDefault();
+
+                Wallet wb = new Wallet();
+                wb.Id = walletId;
+                if (dt.Equals(DateTime.MaxValue))
+                    wb.Date = DateTime.UtcNow;
+                else
+                    wb.Date = dt;
+                foreach (var row in result)
+                    wb.Balance += row.Balance; // for total
+                //wb.PersonId = row.PersonId;
+                //wb.Retired = row.Retired;
+                //wb.Name = row.Name;
+
+                return wb;
+            }
+
+            return null;
+        }
+
+        public IEnumerable<DBAdviser> GetAdvisersByTerminal(long terminalId)
+        {
+            List<DBAdviser> advisers = new List<DBAdviser>();
+            try
+            {
+                IQueryable<DBAdviser> res = null;
+                using (ISession Session = ConnectionHelper.CreateNewSession())
+                {
+                    res = Session.Query<DBAdviser>().Where(x => x.Terminal.Id == terminalId && x.Disabled == false);
+                    foreach (var adviser in res)
+                        //Adviser adv = new Adviser()
+                        //ExpertsRepository.toDTO(adviser, ref adv);
+                        advisers.Add(adviser);
+                }
+
+                return advisers;
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: GetAdvisersByTerminal: " + e);
+            }
+
+            return advisers;
+        }
+
+        public IEnumerable<Adviser> GetAdvisersClusterByMasterId(long masterId)
+        {
+            List<Adviser> advisers = new List<Adviser>();
+            try
+            {
+                IQueryable<DBAdviser> res = null;
+                using (ISession Session = ConnectionHelper.CreateNewSession())
+                {
+                    var clusters = Session.Query<DBExpertcluster>()
+                        .Where(x => x.Adviser != null && x.Adviser.Id == (int) masterId);
+                    if (clusters == null || clusters.Count() == 0)
+                        return advisers; // it is not master expert
+                    DBExpertcluster cluster = clusters.FirstOrDefault();
+                    res = Session.Query<DBAdviser>().Where(x =>
+                        x.Cluster != null && x.Cluster.Id == cluster.Id && x.Disabled == false);
+                    foreach (var adviser in res)
+                    {
+                        Adviser adv = new Adviser();
+                        ExpertsRepository.toDTO(adviser, ref adv);
+                        advisers.Add(adv);
+                    }
+                }
+
+                return advisers;
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: GetAdvisersClusterByMasterId: " + e);
+            }
+
+            return advisers;
+        }
+
+        #region DBJobs
+
+        public void UnsheduleJobs(IEnumerable<JobKey> jobs)
+        {
+            foreach (var job in jobs)
+                SchedulerService.removeJobTriggers(job);
+        }
+
+        public bool DeleteJob(JobKey job)
+        {
+            return SchedulerService.sched.DeleteJob(job).Result;
+        }
+
+        #endregion
 
         #region Jobs
 
@@ -564,19 +575,24 @@ namespace BusinessLogic.BusinessObjects
         }
 
         [DllImport("kernel32.dll")]
-        static extern int GetPrivateProfileString(int Section, string Key,
-              string Value, [MarshalAs(UnmanagedType.LPArray)] byte[] Result,
-              int Size, string FileName);
+        private static extern int GetPrivateProfileString(int Section, string Key,
+            string Value, [MarshalAs(UnmanagedType.LPArray)] byte[] Result,
+            int Size, string FileName);
 
-        [DllImport("kernel32.dll", EntryPoint = "GetPrivateProfileStringW", SetLastError = true, CharSet = CharSet.Unicode)]
-        static extern int GetPrivateProfileStringW(string lpApplicationName, string lpKeyName, string lpDefault,
-                                                   [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] char[] lpReturnedString, int nSize, string Filename);
+        [DllImport("kernel32.dll", EntryPoint = "GetPrivateProfileStringW", SetLastError = true,
+            CharSet = CharSet.Unicode)]
+        private static extern int GetPrivateProfileStringW(string lpApplicationName, string lpKeyName, string lpDefault,
+            [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)]
+            char[] lpReturnedString, int nSize, string Filename);
 
         [DllImport("kernel32.dll", EntryPoint = "WritePrivateProfileStringW", CharSet = CharSet.Unicode)]
-        static extern int WritePrivateProfileStringW(string lpApplicationName, int lpKeyName, int lpString,string lpFileName);
+        private static extern int WritePrivateProfileStringW(string lpApplicationName, int lpKeyName, int lpString,
+            string lpFileName);
 
         [DllImport("kernel32.dll", EntryPoint = "WritePrivateProfileStringW", CharSet = CharSet.Unicode)]
-        static extern int WritePrivateProfileStringW2(string lpApplicationName, string lpKeyName, string lpString, string lpFileName);
+        private static extern int WritePrivateProfileStringW2(string lpApplicationName, string lpKeyName,
+            string lpString,
+            string lpFileName);
 
         // The Function called to obtain the SectionHeaders,
         // and returns them in an Dynamic Array.
@@ -586,7 +602,7 @@ namespace BusinessLogic.BusinessObjects
             {
                 //    Sets the maxsize buffer to 500, if the more
                 //    is required then doubles the size each time.
-                for (int maxsize = CHAR_BUFF_SIZE; true; maxsize *= 2)
+                for (int maxsize = CHAR_BUFF_SIZE;; maxsize *= 2)
                 {
                     //    Obtains the information in bytes and stores
                     //    them in the maxsize buffer (Bytes array)
@@ -601,18 +617,19 @@ namespace BusinessLogic.BusinessObjects
                     {
                         // Converts the bytes value into an ASCII char. This is one long string.
                         string Selected = Encoding.ASCII.GetString(bytes, 0,
-                                                   size - (size > 0 ? 1 : 0));
+                            size - (size > 0 ? 1 : 0));
                         // Splits the Long string into an array based on the "\0"
                         // or null (Newline) value and returns the value(s) in an array
-                        return Selected.Split(new char[] { '\0' });
+                        return Selected.Split('\0');
                     }
                 }
             }
             catch (Exception e)
             {
-                log.Error("Failed to get Section Names from file: " + path + ". Error: " + e.ToString());
+                log.Error("Failed to get Section Names from file: " + path + ". Error: " + e);
             }
-            return new string[] { "" };
+
+            return new[] {""};
         }
 
         public static string GetPrivateProfileString(string fileName, string sectionName, string keyName)
@@ -629,28 +646,16 @@ namespace BusinessLogic.BusinessObjects
                 if (sectionName != null && keyName != null)
                 {
                     if (length == ret.Length - 1)
-                    {
-                        // Double the buffer size and call again
                         ret = new char[ret.Length * 2];
-                    }
                     else
-                    {
-                        // Return simple string
                         return new string(ret, 0, length);
-                    }
                 }
                 else
                 {
                     if (length == ret.Length - 2)
-                    {
-                        // Double the buffer size and call again
                         ret = new char[ret.Length * 2];
-                    }
                     else
-                    {
-                        // Return multistring
                         return new string(ret, 0, length - 1);
-                    }
                 }
             }
         }
@@ -661,22 +666,19 @@ namespace BusinessLogic.BusinessObjects
         protected bool IsAdviserMaster(DBAdviser adviser)
         {
             if (adviser.Cluster != null)
-            {
                 if (adviser.Cluster.Adviser != null)
-                {
                     return adviser.Cluster.Adviser.Id == adviser.Id;
-                }
-            }
+
             return false;
         }
 
-        public ExpertInfo InitExpert(ExpertInfo expert) 
+        public ExpertInfo InitExpert(ExpertInfo expert)
         {
             try
             {
                 using (ISession Session = ConnectionHelper.CreateNewSession())
                 {
-                    long accNumber = Int64.Parse(expert.Account);
+                    long accNumber = long.Parse(expert.Account);
                     Terminal terminal = data.getTerminalByNumber(Session, accNumber);
                     if (terminal == null)
                     {
@@ -684,6 +686,7 @@ namespace BusinessLogic.BusinessObjects
                         expert.Magic = 0;
                         return expert;
                     }
+
                     string strSymbol = expert.Symbol;
                     if (strSymbol.Contains("_i"))
                         strSymbol = strSymbol.Substring(0, strSymbol.Length - 2);
@@ -705,17 +708,17 @@ namespace BusinessLogic.BusinessObjects
                         dbt.Id = terminal.Id;
                         adviser.Terminal = dbt;
                         adviser.Symbol = symbol;
-
-                    } else
+                    }
+                    else
                     {
                         expert.IsMaster = IsAdviserMaster(adviser);
                     }
 
                     adviser.Running = true;
                     adviser.Lastupdate = DateTime.UtcNow;
-                    if (!String.IsNullOrEmpty(adviser.State))
+                    if (!string.IsNullOrEmpty(adviser.State))
                         expert.Data = adviser.State;
-                    if (adviser.Id <= 0 )
+                    if (adviser.Id <= 0)
                         data.SaveInsertAdviser(Session, adviser);
                     GetOrdersListToLoad(adviser, ref expert);
                     expert.Magic = adviser.Id;
@@ -723,6 +726,7 @@ namespace BusinessLogic.BusinessObjects
 
                     log.Info($"Expert On <{adviser.Symbol.Name}> On TF=<{expert.ChartTimeFrame}> loaded successfully!");
                 }
+
                 return expert;
             }
             catch (Exception e)
@@ -730,30 +734,32 @@ namespace BusinessLogic.BusinessObjects
                 log.Error(e);
                 expert.Magic = 0;
             }
+
             return expert;
         }
 
         public SignalInfo SendSignal(SignalInfo signal)
         {
             SignalInfo result = null;
-            switch((EnumSignals)signal.Id)
+            switch ((EnumSignals) signal.Id)
             {
                 case EnumSignals.SIGNAL_INIT_EXPERT:
                     if (signal.Data != null)
                     {
                         ExpertInfo ei = JsonConvert.DeserializeObject<ExpertInfo>(signal.Data.ToString());
                         var expertInfo = InitExpert(ei);
-                        result = CreateSignal(SignalFlags.Expert, signal.ObjectId, (EnumSignals)signal.Id);
+                        result = CreateSignal(SignalFlags.Expert, signal.ObjectId, (EnumSignals) signal.Id);
 
                         result.Data = JsonConvert.SerializeObject(expertInfo);
-
                     }
+
                     break;
             }
+
             return result;
         }
 
-        bool GetOrdersListToLoad(DBAdviser adviser, ref ExpertInfo expert)
+        private bool GetOrdersListToLoad(DBAdviser adviser, ref ExpertInfo expert)
         {
             //if (expert.OrderTicketsToLoad == null)
             //    expert.OrderTicketsToLoad = new List<string>();
@@ -796,7 +802,7 @@ namespace BusinessLogic.BusinessObjects
         {
             try
             {
-                int magicNumber = (int)expert.Magic;
+                int magicNumber = (int) expert.Magic;
                 using (ISession Session = ConnectionHelper.CreateNewSession())
                 {
                     DBAdviser adviser = data.getAdviserByMagicNumber(Session, magicNumber);
@@ -805,15 +811,12 @@ namespace BusinessLogic.BusinessObjects
                         log.Log("Expert with Magic=" + magicNumber + " doesn't exist");
                         return;
                     }
+
                     adviser.Running = true;
                     adviser.Lastupdate = DateTime.UtcNow;
                     if (!string.IsNullOrEmpty(expert.Data))
-                    {
                         if (string.IsNullOrEmpty(adviser.State)) //|| (expert.Data.CompareTo(adviser.State) != 0)
-                        {
                             adviser.State = expert.Data;
-                        }
-                    }
 
                     /*
                     string filePath = GetAdviserFilePath(adviser);
@@ -840,7 +843,6 @@ namespace BusinessLogic.BusinessObjects
                     */
 
                     data.SaveInsertAdviser(Session, adviser);
-
                 }
             }
             catch (Exception e)
@@ -856,17 +858,16 @@ namespace BusinessLogic.BusinessObjects
             if (sections.Length > 0)
             {
                 List<string> sectionsList = sections.ToList();
-                if ((sectionsList != null) && (sectionsList.Count() > 0))
-                {
+                if (sectionsList != null && sectionsList.Count() > 0)
                     foreach (var sectionName in sectionsList)
                     {
                         if (sectionName.Equals(xtradeConstants.GLOBAL_SECTION_NAME))
                             continue;
 
                         string roleString = GetPrivateProfileString(filePath, sectionName, "role");
-                        if (!String.IsNullOrEmpty(roleString))
+                        if (!string.IsNullOrEmpty(roleString))
                         {
-                            ENUM_ORDERROLE role = (ENUM_ORDERROLE)Int32.Parse(roleString);
+                            ENUM_ORDERROLE role = (ENUM_ORDERROLE) int.Parse(roleString);
                             if (role.Equals(ENUM_ORDERROLE.History))
                             {
                                 // Deletes section!!!
@@ -875,12 +876,12 @@ namespace BusinessLogic.BusinessObjects
                             }
                         }
                     }
-                }
             }
+
             return result;
         }
 
-        protected string GetAdviserFilePath(Repo.DBAdviser adviser)
+        protected string GetAdviserFilePath(DBAdviser adviser)
         {
             string path = GetGlobalProp(xtradeConstants.SETTINGS_PROPERTY_MTCOMMONFILES);
             string sym = adviser.Symbol.Name;
@@ -890,14 +891,15 @@ namespace BusinessLogic.BusinessObjects
             return filePath;
         }
 
-        public  bool FileLocked(string FileName)
+        public bool FileLocked(string FileName)
         {
             FileStream fs = null;
 
             try
             {
                 // NOTE: This doesn't handle situations where file is opened for writing by another process but put into write shared mode, it will not throw an exception and won't show it as write locked
-                fs = File.Open(FileName, FileMode.Open, FileAccess.ReadWrite, FileShare.None); // If we can't open file for reading and writing then it's locked by another process for writing
+                fs = File.Open(FileName, FileMode.Open, FileAccess.ReadWrite,
+                    FileShare.None); // If we can't open file for reading and writing then it's locked by another process for writing
             }
             catch (UnauthorizedAccessException) // https://msdn.microsoft.com/en-us/library/y973b725(v=vs.110).aspx
             {
@@ -920,6 +922,7 @@ namespace BusinessLogic.BusinessObjects
                 if (fs != null)
                     fs.Close();
             }
+
             return false;
         }
 
@@ -935,12 +938,13 @@ namespace BusinessLogic.BusinessObjects
         }
         */
 
-        string ReasonToString(int Reason)
+        private string ReasonToString(int Reason)
         {
             switch (Reason)
             {
                 case 0: //0
-                    return "0 <REASON_PROGRAM> - Expert Advisor terminated its operation by calling the _ExpertRemove()_ function";
+                    return
+                        "0 <REASON_PROGRAM> - Expert Advisor terminated its operation by calling the _ExpertRemove()_ function";
                 case 1: //1
                     return "1 <REASON_REMOVE> Program has been deleted from the chart";
                 case 2: // 2
@@ -952,14 +956,17 @@ namespace BusinessLogic.BusinessObjects
                 case 5:
                     return "5 <REASON_PARAMETERS> Input parameters have been changed by a user";
                 case 6:
-                    return "6 <REASON_ACCOUNT> Another account has been activated or reconnection to the trade server has occurred due to changes in the account settings";
+                    return
+                        "6 <REASON_ACCOUNT> Another account has been activated or reconnection to the trade server has occurred due to changes in the account settings";
                 case 7:
                     return "7 <REASON_TEMPLATE> A new template has been applied";
                 case 8:
-                    return "8 <REASON_INITFAILED> This value means that _OnInit()_ handler has returned a nonzero value";
+                    return
+                        "8 <REASON_INITFAILED> This value means that _OnInit()_ handler has returned a nonzero value";
                 case 9:
                     return "9 <REASON_CLOSE> Terminal has been closed";
             }
+
             return $"Unknown reason: {Reason}";
         }
 
@@ -969,13 +976,14 @@ namespace BusinessLogic.BusinessObjects
             {
                 using (ISession Session = ConnectionHelper.CreateNewSession())
                 {
-                    int magicNumber = (int)expert.Magic;
+                    int magicNumber = (int) expert.Magic;
                     DBAdviser adviser = data.getAdviserByMagicNumber(Session, magicNumber);
                     if (adviser == null)
                     {
                         log.Error("Expert with MagicNumber=" + magicNumber + " doesn't exist");
                         return;
                     }
+
                     UnSubscribeFromSignals(magicNumber);
 
                     adviser.Running = false;
@@ -993,7 +1001,7 @@ namespace BusinessLogic.BusinessObjects
             }
             catch (Exception e)
             {
-                log.Error("DeInitExpert: " + e.ToString());
+                log.Error("DeInitExpert: " + e);
             }
         }
 
@@ -1002,7 +1010,7 @@ namespace BusinessLogic.BusinessObjects
             try
             {
                 var terminals = data.GetActiveTerminals();
-                foreach ( var terminal in terminals )
+                foreach (var terminal in terminals)
                 {
                     DirectoryInfo sourceDir = new DirectoryInfo(sourceFolder);
                     string fileName = string.Format(@"deployto_{0}.bat", terminal.AccountNumber);
@@ -1018,7 +1026,7 @@ namespace BusinessLogic.BusinessObjects
             }
             catch (Exception e)
             {
-                log.Error("Error: Generate Deploy Scripts: " + e.ToString());
+                log.Error("Error: Generate Deploy Scripts: " + e);
             }
         }
 
@@ -1032,13 +1040,15 @@ namespace BusinessLogic.BusinessObjects
                     ProcessImpersonation pi = new ProcessImpersonation(log);
                     pi.CloseTerminal(terminal.FullPath);
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
-                log.Info("CloseTerminal error: " + e.ToString());
+                log.Info("CloseTerminal error: " + e);
             }
         }
 
         protected bool isDeploying;
+
         public string DeployToAccount(int id)
         {
             if (isDeploying)
@@ -1047,6 +1057,7 @@ namespace BusinessLogic.BusinessObjects
                 log.Error(message);
                 return message;
             }
+
             try
             {
                 isDeploying = true;
@@ -1062,13 +1073,15 @@ namespace BusinessLogic.BusinessObjects
                     return $"Deploy process started for terminal {terminal.AccountNumber}!";
                 }
                 else
+                {
                     return $"Terminal with ID={id} not found or disabled!!!";
+                }
             }
             catch (Exception e)
             {
-                var message = "Error: DeployToAccount: " + e.ToString();
+                var message = "Error: DeployToAccount: " + e;
                 log.Error(message);
-                return message; 
+                return message;
             }
             finally
             {
@@ -1095,9 +1108,7 @@ namespace BusinessLogic.BusinessObjects
             {
                 string compilerApp = "\\metaeditor";
                 if (IsMQL5(targetFolder))
-                {
                     compilerApp += "64.exe";
-                }
                 else
                     compilerApp += ".exe";
 
@@ -1105,8 +1116,8 @@ namespace BusinessLogic.BusinessObjects
                 string targetFile = terminal.CodeBase + folder + "\\" + Path.GetFileName(file);
                 return string.Format(@"""{0}"" /compile:""{1}"" {2}", compilerPath, targetFile, Environment.NewLine);
             }
-            else
-                return "";
+
+            return "";
         }
 
         public string ProcessFolder(string folder, Terminal terminal, string sourceFolder, DeployFunc func)
@@ -1114,24 +1125,21 @@ namespace BusinessLogic.BusinessObjects
             string result = "";
             string currentSourceFolder = sourceFolder;
             if (folder.Length > 0)
-                currentSourceFolder +=  folder;
+                currentSourceFolder += folder;
             if (!Directory.Exists(currentSourceFolder))
                 return result;
             try
             {
                 var folders = Directory.EnumerateDirectories(currentSourceFolder);
                 foreach (var file in folders)
-                {
-                    if (Directory.Exists(file.ToString()))
+                    if (Directory.Exists(file))
                     {
                         string subF = folder + "\\" + Path.GetFileName(file);
                         result += ProcessFolder(subF, terminal, sourceFolder, func);
                     }
-                }
 
                 var files = Directory.EnumerateFiles(currentSourceFolder);
                 foreach (var file in files)
-                {
                     if (File.Exists(file))
                     {
                         string targetFolder = terminal.CodeBase + folder;
@@ -1139,11 +1147,12 @@ namespace BusinessLogic.BusinessObjects
                         result += func(folder, terminal, file, targetFolder);
                         // result += string.Format(@"xcopy /y {0} {1}{2}", file, targetFolder, Environment.NewLine);
                     }
-                }
-            } catch (Exception e )
+            }
+            catch (Exception e)
             {
                 log.Info(e.ToString());
             }
+
             return result;
         }
 
@@ -1151,6 +1160,7 @@ namespace BusinessLogic.BusinessObjects
         {
             return data.GetAdvisers();
         }
+
         public List<ExpertsCluster> GetClusters()
         {
             return data.GetClusters();
@@ -1179,13 +1189,10 @@ namespace BusinessLogic.BusinessObjects
 
         public void PostSignalTo(SignalInfo signal)
         {
-            SignalFlags to = (SignalFlags)signal.Flags;
+            SignalFlags to = (SignalFlags) signal.Flags;
             if (to == SignalFlags.AllExperts)
             {
-                foreach (var que in signalQue)
-                {
-                    que.Value.Enqueue(signal);
-                }
+                foreach (var que in signalQue) que.Value.Enqueue(signal);
             }
             else if (to == SignalFlags.Expert)
             {
@@ -1196,18 +1203,17 @@ namespace BusinessLogic.BusinessObjects
                 ISignalHandler handler = Container.Resolve<ISignalHandler>();
                 if (handler != null)
                     handler.PostSignal(signal);
-            } else if (to == SignalFlags.Cluster)
+            }
+            else if (to == SignalFlags.Cluster)
             {
                 var advisers = GetAdvisersClusterByMasterId(signal.ObjectId);
-                if ((advisers != null) && (advisers.Count() > 0))
-                {
+                if (advisers != null && advisers.Count() > 0)
                     foreach (var adv in advisers)
                     {
-                        signal.Flags = (long)SignalFlags.Expert;
+                        signal.Flags = (long) SignalFlags.Expert;
                         signal.ObjectId = adv.Id;
                         PostSignal(signal);
                     }
-                }
             }
         }
 
@@ -1219,17 +1225,10 @@ namespace BusinessLogic.BusinessObjects
                 if (que.Count > 0)
                 {
                     SignalInfo si;
-                    if (que.TryDequeue(out si))
-                    {
-                        //if( si.ObjectId != ObjectId ) // this signal intented for other object
-                        //{
-                         //   que.Enqueue(si);
-                         //   return null;
-                        //}
-                        return si;
-                    }
+                    if (que.TryDequeue(out si)) return si;
                 }
             }
+
             return null;
         }
 
@@ -1251,8 +1250,8 @@ namespace BusinessLogic.BusinessObjects
         public SignalInfo CreateSignal(SignalFlags flags, long ObjectId, EnumSignals Id)
         {
             SignalInfo signal = new SignalInfo();
-            signal.Flags = (long)flags;
-            signal.Id = (int)Id;
+            signal.Flags = (long) flags;
+            signal.Id = (int) Id;
             signal.Name = Id.ToString();
             signal.ObjectId = ObjectId;
             signal.Value = 1;
@@ -1269,7 +1268,6 @@ namespace BusinessLogic.BusinessObjects
         {
             data.SaveDeals(deals);
         }
-
 
         #endregion
     }

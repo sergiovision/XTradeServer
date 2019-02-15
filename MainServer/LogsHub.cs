@@ -14,7 +14,7 @@ namespace XTrade.MainServer
     public class LogsHub : Hub
     {
         private readonly IWebLog weblog;
-        IMainService mainService;
+        private IMainService mainService;
 
         public LogsHub() // ILifetimeScope lifetimeScope
         {
@@ -34,7 +34,5 @@ namespace XTrade.MainServer
             // clear
             weblog.ClearLog();
         }
-
-
     }
 }

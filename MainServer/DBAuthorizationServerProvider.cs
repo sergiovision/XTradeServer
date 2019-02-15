@@ -32,20 +32,21 @@ namespace XTrade.MainServer
                 context.Validated();
                 return Task.FromResult<object>(null);
             }
+
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
             identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
             identity.AddClaim(new Claim(ClaimTypes.Role, result.Privilege));
             identity.AddClaim(new Claim("sub", context.UserName));
-            
+
             var props = new AuthenticationProperties(new Dictionary<string, string>
+            {
                 {
-                    {
-                        "as:client_id", (context.ClientId == null) ? string.Empty : context.ClientId
-                    },
-                    {
-                        "userName", context.UserName
-                    }
-                });
+                    "as:client_id", context.ClientId == null ? string.Empty : context.ClientId
+                },
+                {
+                    "userName", context.UserName
+                }
+            });
 
             var ticket = new AuthenticationTicket(identity, props);
 

@@ -30,6 +30,7 @@ namespace XTrade.MainServer
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
@@ -37,7 +38,8 @@ namespace XTrade.MainServer
         [AcceptVerbs("GET")]
         public Wallet Get(int id)
         {
-            try { 
+            try
+            {
                 var wb = MainService.GetWalletsState(DateTime.MaxValue);
                 return wb.Where(d => d.Id.Equals(id)).FirstOrDefault();
             }
@@ -45,6 +47,7 @@ namespace XTrade.MainServer
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
@@ -61,25 +64,27 @@ namespace XTrade.MainServer
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
         // Warning: month is Zero based - January equal 0
         [HttpGet]
         [AcceptVerbs("GET")]
-        public List<TimeStat> Performance([FromUri]int month, [FromUri]int period)
+        public List<TimeStat> Performance([FromUri] int month, [FromUri] int period)
         {
             try
             {
                 var ds = MainService.Container.Resolve<DataService>();
                 if (ds == null)
                     return null;
-                return ds.Performance(month, (TimePeriod)period);
+                return ds.Performance(month, (TimePeriod) period);
             }
             catch (Exception e)
             {
                 log.Error(e.ToString());
             }
+
             return null;
         }
 
@@ -90,9 +95,9 @@ namespace XTrade.MainServer
             try
             {
                 if (state == null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Empty state passed to Put method!");
-                }
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                        "Empty state passed to Put method!");
+
                 bool bres = MainService.UpdateAccountState(state);
                 if (bres)
                     return Request.CreateResponse(HttpStatusCode.OK);
@@ -108,9 +113,8 @@ namespace XTrade.MainServer
         // POST api/demo
         [AcceptVerbs("POST")]
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody] string value)
         {
         }
- 
     }
 }

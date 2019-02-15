@@ -1,8 +1,7 @@
-
 namespace BusinessObjects
 {
-  public enum EnumSignals
-  {
+    public enum EnumSignals
+    {
         SIGNAL_CHECK_HEALTH = 1001,
         SIGNAL_DEALS_HISTORY = 1002,
         SIGNAL_CHECK_BALANCE = 1003,
@@ -21,4 +20,3 @@ namespace BusinessObjects
         SIGNAL_UPDATE_SLTP = 1019
     }
 }
-

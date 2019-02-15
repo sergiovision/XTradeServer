@@ -6,7 +6,9 @@ using Topshelf;
 using System.Management;
 using System;
 using System.ServiceProcess;
+using BusinessLogic;
 using Microsoft.AspNet.SignalR;
+using QUIK;
 
 namespace XTrade.MainServer
 {
@@ -23,8 +25,8 @@ namespace XTrade.MainServer
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new BusinessLogic.BusinessLogicModule());
-            builder.RegisterModule(new QUIK.QUIKConnectorModule());
+            builder.RegisterModule(new BusinessLogicModule());
+            builder.RegisterModule(new QUIKConnectorModule());
             builder.RegisterModule(new MainServerModule());
 
             Container = builder.Build();
@@ -43,7 +45,6 @@ namespace XTrade.MainServer
 
             var rc = HostFactory.Run(x =>
             {
-
                 x.SetDescription(Configuration.ServiceDescription);
                 x.SetDisplayName(Configuration.ServiceDisplayName);
                 x.SetServiceName(Configuration.ServiceName);
@@ -61,16 +62,16 @@ namespace XTrade.MainServer
                 //    });
                 //} else
                 //{
-                    x.Service(factory =>
-                    {
-                        var server = Container.Resolve<QuartzServer>();
-                        server.Initialize(xtradeConstants.WebBackend_PORT);
-                        //server.Start();
-                        return server;
-                    });
+                x.Service(factory =>
+                {
+                    var server = Container.Resolve<QuartzServer>();
+                    server.Initialize(xtradeConstants.WebBackend_PORT);
+                    //server.Start();
+                    return server;
+                });
                 //}
             });
-            var exitCode = (int)Convert.ChangeType(rc, rc.GetTypeCode());
+            var exitCode = (int) Convert.ChangeType(rc, rc.GetTypeCode());
             Environment.ExitCode = exitCode;
         }
     }

@@ -65,7 +65,7 @@ namespace UnitTests
             var aState = TestData.getTestAccount();
             string jsonString = JsonConvert.SerializeObject(aState);
             var result2 = httpWebApi.PutJson("/api/wallets/Put", jsonString);
-            Assert.IsTrue(String.IsNullOrEmpty(result2.Result));
+            Assert.IsTrue(string.IsNullOrEmpty(result2.Result));
         }
 
         [TestMethod]
@@ -79,7 +79,5 @@ namespace UnitTests
             List<NewsCalendarEvent> list2 = JsonConvert.DeserializeObject<List<NewsCalendarEvent>>(result2.Result);
             Assert.IsTrue(list2.Count >= 0);
         }
-
-
     }
 }

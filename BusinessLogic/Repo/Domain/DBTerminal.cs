@@ -3,10 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 
 
-namespace BusinessLogic.Repo {
-    
-    public class DBTerminal : BaseEntity<DBTerminal> {
-        public DBTerminal() { }
+namespace BusinessLogic.Repo
+{
+    public class DBTerminal : BaseEntity<DBTerminal>
+    {
         public virtual int Id { get; set; }
         public virtual DBAccount Account { get; set; }
         public virtual int? Accountnumber { get; set; }

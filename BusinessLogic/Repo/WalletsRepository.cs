@@ -10,7 +10,8 @@ namespace BusinessLogic.Repo
 {
     public class WalletsRepository : BaseRepository<DBAccount>
     {
-        DataService parent;
+        private readonly DataService parent;
+
         public WalletsRepository(DataService p)
         {
             parent = p;
@@ -22,11 +23,9 @@ namespace BusinessLogic.Repo
             using (ISession Session = ConnectionHelper.CreateNewSession())
             {
                 var wallets = Session.Query<DBWallet>();
-                foreach (var dbw in wallets)
-                {
-                    results.Add(toDTO(dbw));
-                }
+                foreach (var dbw in wallets) results.Add(toDTO(dbw));
             }
+
             return results;
         }
 
@@ -40,9 +39,10 @@ namespace BusinessLogic.Repo
                     var rateList = Session.Query<DBRates>().Where(x => x.Retired == false).ToList();
                     IQueryable<DBWallet> wallets = null;
                     if (forDate == DateTime.MaxValue)
-                        wallets = Session.Query<DBWallet>().Where(x => (x.Retired == false) && (!x.Name.Equals("test")));
+                        wallets = Session.Query<DBWallet>()
+                            .Where(x => x.Retired == false && !x.Name.Equals("test"));
                     else
-                        wallets = Session.Query<DBWallet>().Where(x=> !x.Name.Equals("test"));
+                        wallets = Session.Query<DBWallet>().Where(x => !x.Name.Equals("test"));
 
                     foreach (var dbw in wallets)
                     {
@@ -50,9 +50,10 @@ namespace BusinessLogic.Repo
                         decimal balance = 0;
                         IQueryable<DBAccount> accounts = null;
                         if (forDate == DateTime.MaxValue)
-                            accounts = Session.Query<DBAccount>().Where(x => (x.Wallet.Id == wallet.Id) && (x.Retired == false));
+                            accounts = Session.Query<DBAccount>()
+                                .Where(x => x.Wallet.Id == wallet.Id && x.Retired == false);
                         else
-                            accounts = Session.Query<DBAccount>().Where(x => (x.Wallet.Id == wallet.Id));
+                            accounts = Session.Query<DBAccount>().Where(x => x.Wallet.Id == wallet.Id);
 
                         foreach (var acc in accounts)
                         {
@@ -60,18 +61,15 @@ namespace BusinessLogic.Repo
                             DBAccountstate accState = null;
                             IQueryable<DBAccountstate> accResults = null;
                             if (forDate.Equals(DateTime.MaxValue))
-                            {
                                 accResults = Session.Query<DBAccountstate>()
-                                .Where(x => x.Account.Id == acc.Id)
-                                .OrderByDescending(x => x.Date);
-                            }
+                                    .Where(x => x.Account.Id == acc.Id)
+                                    .OrderByDescending(x => x.Date);
                             else
-                            {
                                 accResults = Session.Query<DBAccountstate>()
-                                .Where(x => (x.Account.Id == acc.Id) && (x.Date <= forDate))
-                                .OrderByDescending(x => x.Date);
-                            }
-                            if ((accResults == null) || (accResults.Count() == 0))
+                                    .Where(x => x.Account.Id == acc.Id && x.Date <= forDate)
+                                    .OrderByDescending(x => x.Date);
+
+                            if (accResults == null || accResults.Count() == 0)
                                 continue;
                             // acc.Currency.Id
                             accState = accResults.FirstOrDefault();
@@ -83,8 +81,10 @@ namespace BusinessLogic.Repo
                                     value = parent.ConvertToUSD(account.Balance, acc.Currency.Name);
                                 balance += value;
                             }
+
                             wallet.Accounts.Add(account);
                         }
+
                         wallet.Balance = balance;
                         results.Add(wallet);
                     }
@@ -92,8 +92,10 @@ namespace BusinessLogic.Repo
             }
             catch (Exception e)
             {
-                log.Error("GetWalletsState for Date: " + forDate.ToString(xtradeConstants.MTDATETIMEFORMAT) + e.ToString());
+                log.Error("GetWalletsState for Date: " + forDate.ToString(xtradeConstants.MTDATETIMEFORMAT) +
+                          e);
             }
+
             return results;
         }
 

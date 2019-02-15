@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects
 {
-    public class Wallet 
+    public class Wallet
     {
         public int Id { get; set; }
         public int PersonId { get; set; }

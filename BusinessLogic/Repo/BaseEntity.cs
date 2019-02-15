@@ -8,8 +8,6 @@ namespace BusinessLogic.Repo
 {
     public abstract class BaseEntity<T> where T : BaseEntity<T>
     {
-        
-
         public override bool Equals(object obj)
         {
             T fooItem = obj as T;

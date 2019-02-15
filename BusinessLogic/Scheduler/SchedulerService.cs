@@ -128,7 +128,6 @@ namespace BusinessLogic.Scheduler
             var triggers = sched.GetTriggersOfJob(jobKey);
             var trigs = triggers.Result;
             foreach (ITrigger trigger in trigs) sched.UnscheduleJob(trigger.Key);
-
         }
 
         public void Shutdown()
@@ -286,7 +285,7 @@ namespace BusinessLogic.Scheduler
         {
             if (!bInitialized)
                 return;
-            if (!(sched.CheckExists(key).Result))
+            if (!sched.CheckExists(key).Result)
                 return;
             sched.TriggerJob(key);
         }
@@ -294,13 +293,10 @@ namespace BusinessLogic.Scheduler
         public static void StopJobNow(JobKey key)
         {
             if (!bInitialized)
-                return;            
-            if (!(sched.CheckExists(key).Result))
                 return;
-            if (IsJobRunning(key))
-            {
-                sched.Interrupt(key);
-            }
+            if (!sched.CheckExists(key).Result)
+                return;
+            if (IsJobRunning(key)) sched.Interrupt(key);
         }
 
 
@@ -362,24 +358,21 @@ namespace BusinessLogic.Scheduler
                 if (!list.ContainsKey(view.Group + view.Name))
                     list.Add(view.Group + view.Name, view);
             }
+
             return list;
         }
 
-        public static bool IsJobRunning (JobKey jk)
+        public static bool IsJobRunning(JobKey jk)
         {
             if (!bInitialized)
                 return false;
             var ilist = sched.GetCurrentlyExecutingJobs();
             Task.WaitAll(ilist);
             foreach (IJobExecutionContext ic in ilist.Result)
-            {
-                if ((ic.JobDetail.Key.Name == jk.Name)&& (ic.JobDetail.Key.Group == jk.Group))
-                {
+                if (ic.JobDetail.Key.Name == jk.Name && ic.JobDetail.Key.Group == jk.Group)
                     return true;
-                }
-            }
+
             return false;
         }
-
     }
 }

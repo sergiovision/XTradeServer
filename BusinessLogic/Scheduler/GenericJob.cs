@@ -12,6 +12,7 @@ namespace BusinessLogic.Scheduler
         protected readonly IWebLog log;
 
         private DateTimeOffset runTime;
+
         protected string strMessage;
         // protected bool bShouldBeStopped;
 
@@ -20,6 +21,8 @@ namespace BusinessLogic.Scheduler
             log = MainService.thisGlobal.Container.Resolve<IWebLog>();
             // bShouldBeStopped = false;
         }
+
+        public abstract Task Execute(IJobExecutionContext context);
 
         public void SetMessage(string message)
         {
@@ -40,11 +43,9 @@ namespace BusinessLogic.Scheduler
             strMessage += ". For " + (long) duration.TotalMilliseconds + " ms. At " +
                           now.ToString(xtradeConstants.MTDATETIMEFORMAT) + " GMT";
             SchedulerService.LogJob(context, strMessage);
-            if ((log != null) && !String.IsNullOrEmpty(strMessage))
+            if (log != null && !string.IsNullOrEmpty(strMessage))
                 log.Log(strMessage);
             await Task.CompletedTask;
         }
-
-        public abstract Task Execute(IJobExecutionContext context);
     }
 }

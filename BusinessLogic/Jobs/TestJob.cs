@@ -16,15 +16,14 @@ namespace BusinessLogic.Jobs
 {
     internal class TestJob : GenericJob
     {
+        public static Random NotRandom = new Random();
         protected IScheduler sched;
         protected IJobDetail thisJobDetail;
-        public static Random NotRandom = new Random();
 
 
         public TestJob()
         {
             log.Debug("TestJob c-tor");
-
         }
 
         public override async Task Execute(IJobExecutionContext context)
@@ -35,6 +34,7 @@ namespace BusinessLogic.Jobs
                 Exit(context);
                 return;
             }
+
             try
             {
                 thisJobDetail = context.JobDetail;
@@ -58,7 +58,8 @@ namespace BusinessLogic.Jobs
                 //if (termNotify != null)
                 //   termNotify.InsertPosition(pos);
 
-                SignalInfo signal_History = MainService.thisGlobal.CreateSignal(SignalFlags.AllExperts, 0, EnumSignals.SIGNAL_DEALS_HISTORY);
+                SignalInfo signal_History =
+                    MainService.thisGlobal.CreateSignal(SignalFlags.AllExperts, 0, EnumSignals.SIGNAL_DEALS_HISTORY);
                 signal_History.Value = 0;
                 MainService.thisGlobal.PostSignalTo(signal_History);
 
@@ -72,13 +73,11 @@ namespace BusinessLogic.Jobs
             }
             catch (Exception ex)
             {
-                SetMessage($"ERROR: {ex.ToString()}");
+                SetMessage($"ERROR: {ex}");
             }
+
             Exit(context);
             await Task.CompletedTask;
-
         }
-
     }
 }
- 

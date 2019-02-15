@@ -34,12 +34,9 @@
 //  and call the Init() method in your EA's OnInit() function.
 //  Don't forget to release the indicator when you're done by calling the Deinit() method.
 //  Example shown in OnInit & OnDeinit functions below:
-//
-
 
 //#define CURRENT_UNCOMPLETED_BAR  0
 //#define LAST_COMPLETED_BAR       1
-
 
 class CMedianRenko : public IndiBase
 {
@@ -48,7 +45,6 @@ protected:
    string chartIndicatorName;
    int openBars;
    int closeBars;
-   bool bAlreadyExist;
 public:
    CMedianRenko();
    ~CMedianRenko();
@@ -63,9 +59,8 @@ public:
    bool AddToChart(const long chart,const int subwin);                               
    void GetRenkoInfo(int offset, int &_iteration);
    bool IsNewBar();
-   MqlRates             RenkoRatesInfoArray[];
+   MqlRates   RenkoRatesInfoArray[];
    bool GetMqlRates(MqlRates &ratesInfoArray[], int start, int count);
-   bool CheckIndicatorExist();
 };
 
 //+------------------------------------------------------------------+
@@ -84,7 +79,6 @@ bool CMedianRenko::GetMqlRates(MqlRates &ratesInfoArray[], int start, int count)
 {
    return this.medianRenko.GetMqlRates(ratesInfoArray, start, count);
 }
-
 
 bool CMedianRenko::AddToChart(const long chart,const int subwin)
 {
@@ -105,27 +99,6 @@ bool CMedianRenko::AddToChart(const long chart,const int subwin)
 }
 
 
-bool CMedianRenko::CheckIndicatorExist(void)
-{
-   int i = ChartIndicatorsTotal(0,0);
-   int j=0;
-   
-   while(j < i)
-   {
-      chartIndicatorName = ChartIndicatorName(0,0,j);
-      if(StringFind(chartIndicatorName,CUSTOM_CHART_NAME) != -1)
-      {
-         //Print("Using handle of "+iName);
-         Utils.Info("<" + chartIndicatorName + "> Already exists from previous load!");
-         bAlreadyExist = true;
-         return true;// ChartIndicatorGet(0,0,iName);   
-      }   
-      j++;
-   }
-   bAlreadyExist = false;
-   return false;
-}
-
 
 bool CMedianRenko::Init(ENUM_TIMEFRAMES timeframe)
 {
@@ -133,7 +106,7 @@ bool CMedianRenko::Init(ENUM_TIMEFRAMES timeframe)
       return true;
    m_period = timeframe;
    
-   bool isUsedByIndicatorOnRenkoChart = CheckIndicatorExist(); // Utils.IsTesting();   
+   bool isUsedByIndicatorOnRenkoChart = CheckIndicatorExist(CUSTOM_CHART_NAME); 
 
    medianRenko = new MedianRenko(isUsedByIndicatorOnRenkoChart);
    if (medianRenko == NULL)
@@ -149,7 +122,6 @@ bool CMedianRenko::Init(ENUM_TIMEFRAMES timeframe)
    {
       Print(StringFormat("%s Added to Chart successfully", m_name));
    }
-   //chartIndicatorName = m_name;
    return m_bInited;
 }
 

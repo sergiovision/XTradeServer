@@ -3,9 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 
 
-namespace BusinessLogic.Repo {
-    
-    public class DBExpertcluster : BaseEntity<DBExpertcluster> {
+namespace BusinessLogic.Repo
+{
+    public class DBExpertcluster : BaseEntity<DBExpertcluster>
+    {
         public virtual int Id { get; set; }
         public virtual DBMetasymbol Metasymbol { get; set; }
         public virtual DBAdviser Adviser { get; set; }

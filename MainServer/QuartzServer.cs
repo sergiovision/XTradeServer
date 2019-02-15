@@ -14,29 +14,13 @@ namespace XTrade.MainServer
     {
         //public static QuartzServer quartz;
         private static readonly ILog Log = LogManager.GetLogger(typeof(QuartzServer));
-        private IMainService xtradeServer;
         private IDisposable webapi;
         private short webport;
+        private IMainService xtradeServer;
 
         public QuartzServer()
         {
             Initialize(xtradeConstants.WebBackend_PORT);
-        }
-        /// <summary>
-        ///     Initializes the instance of the <see cref="QuartzServer" /> class.
-        /// </summary>
-        public virtual void Initialize(short WEBAPIPORT)
-        {
-            try
-            {
-                webport = WEBAPIPORT;
-                xtradeServer = Program.Container.Resolve<IMainService>();
-            }
-            catch (Exception e)
-            {
-                Log.Error("Server initialization failed:" + e.Message, e);
-                throw;
-            }
         }
 
         /// <summary>
@@ -72,7 +56,6 @@ namespace XTrade.MainServer
                     xtradeServer.Dispose();
                 if (webapi != null)
                     webapi.Dispose();
-
             }
             catch (Exception ex)
             {
@@ -115,6 +98,23 @@ namespace XTrade.MainServer
         {
             Stop();
             return true;
+        }
+
+        /// <summary>
+        ///     Initializes the instance of the <see cref="QuartzServer" /> class.
+        /// </summary>
+        public virtual void Initialize(short WEBAPIPORT)
+        {
+            try
+            {
+                webport = WEBAPIPORT;
+                xtradeServer = Program.Container.Resolve<IMainService>();
+            }
+            catch (Exception e)
+            {
+                Log.Error("Server initialization failed:" + e.Message, e);
+                throw;
+            }
         }
 
 

@@ -9,6 +9,7 @@ namespace BusinessObjects
     public interface IWebLog
     {
         void Log(string message);
+
         //void Log(string scope, string message);
         void Error(Exception e);
         void Error(string s);

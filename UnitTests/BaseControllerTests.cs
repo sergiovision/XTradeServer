@@ -20,11 +20,9 @@ namespace UnitTests
         [TestInitialize]
         public virtual void TestInitialize()
         {
-            var result = BaseControllerTests.httpWebApi.Login(TestData.UserName, TestData.Password);
+            var result = httpWebApi.Login(TestData.UserName, TestData.Password);
             Assert.IsNotNull(result.Result);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Result.access_token));
         }
-
     }
 }
-

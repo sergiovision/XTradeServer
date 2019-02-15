@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects
 {
-    public enum TimePeriod {
-        Daily, 
+    public enum TimePeriod
+    {
+        Daily,
         Weekly,
         Monthly
     }

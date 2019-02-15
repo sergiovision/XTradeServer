@@ -7,10 +7,10 @@
 
 namespace BusinessObjects
 {
-  public enum EnumExpertValueScope
-  {
-    GlobalScope = 0,
-    ExpertScope = 1,
-    OrderScope = 3,
-  }
+    public enum EnumExpertValueScope
+    {
+        GlobalScope = 0,
+        ExpertScope = 1,
+        OrderScope = 3
+    }
 }

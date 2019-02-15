@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.IO;
 using System.Net;
+using BusinessLogic.Repo;
+using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using NHibernate;
 
@@ -10,7 +12,7 @@ namespace BusinessLogic
     internal static class ConnectionHelper
     {
         public static string connString;
-        private readonly static object lockObject = new object();
+        private static readonly object lockObject = new object();
         private static ISessionFactory _sessionFactory;
 
         public static string getMysqlConnectionString()
@@ -25,9 +27,9 @@ namespace BusinessLogic
             {
                 string connection = getMysqlConnectionString();
                 var mysqlConfig = MySQLConfiguration.Standard.ConnectionString(connection);
-                _sessionFactory = FluentNHibernate.Cfg.Fluently.Configure().Database(mysqlConfig)
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Repo.DBAdviser>())
-                .BuildSessionFactory();
+                _sessionFactory = Fluently.Configure().Database(mysqlConfig)
+                    .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DBAdviser>())
+                    .BuildSessionFactory();
             }
 
             /*            

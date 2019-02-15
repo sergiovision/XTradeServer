@@ -7,12 +7,12 @@
 
 namespace BusinessObjects
 {
-  public enum ENUM_ORDERROLE
-  {
-    RegularTrail = 0,
-    GridHead = 1,
-    GridTail = 2,
-    ShouldBeClosed = 3,
-    History = 4,
-  }
+    public enum ENUM_ORDERROLE
+    {
+        RegularTrail = 0,
+        GridHead = 1,
+        GridTail = 2,
+        ShouldBeClosed = 3,
+        History = 4
+    }
 }

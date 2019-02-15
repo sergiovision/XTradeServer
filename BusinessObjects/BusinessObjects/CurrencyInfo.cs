@@ -6,7 +6,7 @@ using System.IO;
 
 namespace BusinessObjects
 {
-    public class CurrencyInfo 
+    public class CurrencyInfo
     {
         public short Id { get; set; }
         public string Name { get; set; }
