@@ -59,10 +59,9 @@ If you have problems running check XTrade.MainServer.log to see errors.
 
 
 ***Warning***:
-It is a free version of application. Application works and can be used on real trading accounts. This repository contains free alfa version so it may contain bugs. You can base your trading software solutions on this app. If you need help with application installation/run/clarification on your trade server you can write me, but consultation is not free. Also better version of this application available which can be purchased or modified to your needs for money, contact me if you like application idea and ready to invest money/time to adapt this application to your trading goals.
+It is a free version of application. Application works and can be used on real trading accounts. This repository contains free alfa version. You can base your trading software solutions on this app. If you need help with application installation/run/clarification on your trade server you can write me, but consultation is not free. Also better version of this application available which can be purchased or modified to your needs for money, contact me if you like application idea and ready to invest money/time to adapt this application to your trading goals.
 
-If you are a programmer and want to start learn trading this application is a best free choice.
-
+If you are a programmer and want to start learn trading this application is a good free choice.
 If you are a professional trader then you can hire me to improve this app and apapt it to your trading goals.
 
 XTrade Web app repository and build instructions here [XTradeWeb](https://github.com/sergiovision/XTradeWeb)
