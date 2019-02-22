@@ -110,12 +110,12 @@ bool CMedianRenko::Init(ENUM_TIMEFRAMES timeframe)
 
    medianRenko = new MedianRenko(isUsedByIndicatorOnRenkoChart);
    if (medianRenko == NULL)
-      return(INIT_FAILED);
+      return false;
    if (medianRenko.Init() == INVALID_HANDLE)
    {
       Utils.Info("MedianRenko failed to initialize");
       m_bInited = false;
-      return(INIT_FAILED);
+      return false;
    }
    m_bInited = true;
    if (AddToChart(Utils.Trade().ChartId(), Utils.Trade().SubWindow()))

@@ -230,7 +230,7 @@ void CIchimoku::Process()
     double IchiMaxFlat = 0;    
     TYPE_TREND IchiMiniTrend = 0;     
     
-    Utils.GetIndicatorMinMax(this, IchiMinFlat, IchiMaxFlat, IchiMiniTrend, MODE_SENKOUSPANB, (int)GET(NumBarsFlatPeriod));
+    Utils.GetIndicatorMinMax(this, IchiMinFlat, IchiMaxFlat, IchiMiniTrend, MODE_SENKOUSPANB, ISHIMOKU_PLAIN_NOTRADE);
     double differenceM = MathAbs(IchiMaxFlat - IchiMinFlat)/delta;
     if ((differenceM <= 1.0) ) 
     {

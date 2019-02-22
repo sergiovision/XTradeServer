@@ -109,9 +109,9 @@ public:
       return "";
    }
    
-   virtual long WriteProfileString(string lpSection, string lpKey,string lpValue)
+   virtual bool WriteProfileString(string lpSection, string lpKey,string lpValue)
    {
-      return 0;
+      return false;
    }
    
    virtual string FileName()

@@ -47,7 +47,7 @@
 #endif
 
 EXPERT_PARAMS_CLASS
-INPUT_VARIABLE(ClusterMode, long)
+//INPUT_VARIABLE(ClusterMode, long)
 INPUT_VARIABLE(LotsBUY, double)
 INPUT_VARIABLE(LotsSELL, double)
 //INPUT_VARIABLE(LotsMIN, double, 0.02)
@@ -77,11 +77,12 @@ INPUT_VARIABLE(MoreTriesOpenOrder, bool)
 //--------------------------------------------------------------------
 // Indicators 
 INPUT_VARIABLE(EnableRenko, bool)
+INPUT_VARIABLE(EnableRenkoMA, bool)
 INPUT_VARIABLE(FilterIndicator, long)
 INPUT_VARIABLE(SignalIndicator, long)
 INPUT_VARIABLE(WeightCalculation, long)
 INPUT_VARIABLE(NumBarsToAnalyze, long)
-INPUT_VARIABLE(NumBarsFlatPeriod, long)
+//INPUT_VARIABLE(NumBarsFlatPeriod, long)
 INPUT_VARIABLE(IshimokuPeriod1, long)
 INPUT_VARIABLE(IshimokuPeriod2, long)
 INPUT_VARIABLE(IshimokuPeriod3, long)
@@ -92,7 +93,7 @@ INPUT_VARIABLE(BandsDeviation, double)
 //--------------------------------------------------------------------
 INPUT_VARIABLE(TrailingType, long)
 INPUT_VARIABLE(TrailingIndent, long)
-INPUT_VARIABLE(TrailInLoss, bool) // If true - stoploss should be defined!!!
+// INPUT_VARIABLE(TrailInLoss, bool) // If true - stoploss should be defined!!!
 
 // News Params
 INPUT_VARIABLE(EnableNews, bool)
@@ -103,7 +104,7 @@ INPUT_VARIABLE(MinImportance, long)
 INPUT_VARIABLE(Slippage, long)
 
 EXPERT_CLASS_STORE
-STORE_INT_VARIABLE(ClusterMode, long, "ClusterMode", (long)LocalMode)
+//STORE_INT_VARIABLE(ClusterMode, long, "ClusterMode", (long)LocalMode)
 STORE_DBL_VARIABLE(LotsBUY, double, "LotsBUY", 0.02)
 STORE_DBL_VARIABLE(LotsSELL, double, "LotsSELL", 0.02)
 STORE_INT_VARIABLE(BrickSize, long, "BrickSize", 100)
@@ -126,19 +127,20 @@ STORE_DBL_VARIABLE(CoeffBE, double, "CoeffBE", 1.5) // If BE == 0 then no BE. BE
 STORE_INT_VARIABLE(PendingOrderStep, long, "PendingOrderStep", 4)
 STORE_BOOL_VARIABLE(MoreTriesOpenOrder, bool, "MoreTriesOpenOrder", false)
 STORE_BOOL_VARIABLE(EnableRenko, bool, "EnableRenko", true)
+STORE_BOOL_VARIABLE(EnableRenkoMA, bool, "EnableRenkoMA", false)
 STORE_INT_VARIABLE(FilterIndicator, long, "FilterIndicator", (long)IchimokuRenkoIndicator)
 STORE_INT_VARIABLE(SignalIndicator, long, "SignalIndicator", (long)NoIndicator)
 STORE_INT_VARIABLE(WeightCalculation, long, "WeightCalculation", (long)WeightBySignal)
 STORE_INT_VARIABLE(NumBarsToAnalyze, long, "NumBarsToAnalyze", 20)
-STORE_INT_VARIABLE(NumBarsFlatPeriod, long, "NumBarsFlatPeriod", (long)ISHIMOKU_PLAIN_NOTRADE)
+//STORE_INT_VARIABLE(NumBarsFlatPeriod, long, "NumBarsFlatPeriod", (long)ISHIMOKU_PLAIN_NOTRADE)
 STORE_INT_VARIABLE(IshimokuPeriod1, long, "IshimokuPeriod1", 7)
 STORE_INT_VARIABLE(IshimokuPeriod2, long, "IshimokuPeriod2", 35)
 STORE_INT_VARIABLE(IshimokuPeriod3, long, "IshimokuPeriod3", 105)
 STORE_INT_VARIABLE(BandsPeriod, long, "BandsPeriod", 20)
 STORE_DBL_VARIABLE(BandsDeviation, double, "BandsDeviation", 1.6)
-STORE_INT_VARIABLE(TrailingType, long, "TrailingType", (long)TrailingFilter)
+STORE_INT_VARIABLE(TrailingType, long, "TrailingType", (long)TrailingStairs)
 STORE_INT_VARIABLE(TrailingIndent, long, "TrailingIndent", 0)
-STORE_BOOL_VARIABLE(TrailInLoss, bool, "TrailInLoss", false) // If true - stoploss should be defined!!!
+// STORE_BOOL_VARIABLE(TrailInLoss, bool, "TrailInLoss", false) // If true - stoploss should be defined!!!
 STORE_BOOL_VARIABLE(EnableNews, bool, "EnableNews", false)
 STORE_INT_VARIABLE(RaiseSignalBeforeEventMinutes, long, "RaiseSignalBeforeEventMinutes", 65)
 STORE_INT_VARIABLE(NewsPeriodMinutes, long, "NewsPeriodMinutes", 200)

@@ -348,7 +348,7 @@ public:
    
    bool ObjDeleteAll(string prefix)
    {
-      return ObjectsDeleteAll(ChartID(), prefix);
+      return ObjectsDeleteAll(ChartID(), prefix) > 0;
    }
 
 };
