@@ -128,6 +128,33 @@ namespace BusinessLogic.Repo
             return result;
         }
 
+        public bool isSameDay(DateTime d1, DateTime d2)
+        {
+            return (d1.DayOfYear == d2.DayOfYear) && (d2.Year == d1.Year);
+        }
+
+        public List<DealInfo> TodayDeals()
+        {
+            List<DealInfo> result = new List<DealInfo>();
+            try
+            {
+                DateTime now = DateTime.Now;
+                using (ISession Session = ConnectionHelper.CreateNewSession())
+                {
+                    var deals = Session.Query<DBDeals>().OrderByDescending(x => x.Closetime);
+                    foreach (var dbd in deals)
+                        if (isSameDay(dbd.Closetime.Value, now))
+                            result.Add(toDTO(dbd));
+                        
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: TodayDeals: " + e);
+            }
+            return result;
+        }
+
         public List<DealInfo> GetDeals()
         {
             List<DealInfo> result = new List<DealInfo>();
@@ -136,7 +163,8 @@ namespace BusinessLogic.Repo
                 using (ISession Session = ConnectionHelper.CreateNewSession())
                 {
                     var deals = Session.Query<DBDeals>().OrderByDescending(x => x.Closetime);
-                    foreach (var dbd in deals) result.Add(toDTO(dbd));
+                    foreach (var dbd in deals)
+                        result.Add(toDTO(dbd));
                 }
             }
             catch (Exception e)
