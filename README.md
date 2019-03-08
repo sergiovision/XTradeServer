@@ -16,7 +16,7 @@ Applications need to be installed to run server properly:
 3. Optionally StockSharp applications in case if you trade with QUIK and/or Cryptos. StockSharp is free and can be downloaded here http://stocksharp.com.
 4. Optionally MySQL Server version 5 or later.
 
-SQLite database located in /DB folder. By default SQLite DB file used, but MySQL also supported, you can switch to MySQL in XTrade.conf file.
+SQLite database located in /DB folder. By default SQLite DB file used, but MySQL also supported, you can switch to MySQL in bin/XTrade.config file.
 
 Open xtrade_empty.sqlite file in any DB editor that works with SQLite ( like Navicat ).
 
