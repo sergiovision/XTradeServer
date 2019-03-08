@@ -44,11 +44,14 @@ namespace BusinessObjects
 
         ExpertInfo InitExpert(ExpertInfo expert);
 
+        ExpertInfo InitTerminal(ExpertInfo expert);
 
         void SaveExpert(ExpertInfo expert);
 
         void DeInitExpert(ExpertInfo expert);
 
+        void DeInitTerminal(ExpertInfo expert);
+        
         int DeleteHistoryOrders(string filePath);
 
         void DeployToTerminals(string sourceFolder);

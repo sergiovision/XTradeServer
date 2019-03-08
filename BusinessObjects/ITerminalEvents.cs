@@ -16,5 +16,8 @@ namespace BusinessObjects
 
         // methods and functions
         List<PositionInfo> GetAllPositions();
+
+        List<DealInfo> GetTodayDeals();
+
     }
 }

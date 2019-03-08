@@ -19,8 +19,8 @@ namespace BusinessLogic.Repo
                 foreach (var dbadv in advisers)
                 {
                     Adviser adv = new Adviser();
-                    toDTO(dbadv, ref adv);
-                    results.Add(adv);
+                    if (toDTO(dbadv, ref adv))
+                        results.Add(adv);
                 }
             }
 
@@ -35,17 +35,19 @@ namespace BusinessLogic.Repo
                 var clusters = Session.Query<DBExpertcluster>();
                 foreach (var dbCluster in clusters)
                 {
-                    ExpertsCluster cluster = toDTO(dbCluster);
-                    var advisers = Session.Query<DBAdviser>()
-                        .Where(x => x.Cluster != null && x.Cluster.Id == cluster.Id);
-                    foreach (var dbAdviser in advisers)
+                    ExpertsCluster cluster = new ExpertsCluster();
+                    if (toDTO(dbCluster, ref cluster))
                     {
-                        Adviser adv = new Adviser();
-                        toDTO(dbAdviser, ref adv);
-                        cluster.Advisers.Add(adv);
+                        var advisers = Session.Query<DBAdviser>()
+                            .Where(x => x.Cluster != null && x.Cluster.Id == cluster.Id);
+                        foreach (var dbAdviser in advisers)
+                        {
+                            Adviser adv = new Adviser();
+                            if (toDTO(dbAdviser, ref adv))
+                                cluster.Advisers.Add(adv);
+                        }
+                        results.Add(cluster);
                     }
-
-                    results.Add(cluster);
                 }
             }
 
@@ -83,58 +85,70 @@ namespace BusinessLogic.Repo
             }
         }
 
-        public static void toDTO(DBAdviser adv, ref Adviser result)
+        public static bool toDTO(DBAdviser adv, ref Adviser result)
         {
-            result.Id = adv.Id;
-            result.Name = adv.Name;
-            result.Running = adv.Running;
-            if (adv.Closereason != null)
-                result.CloseReason = adv.Closereason.Value;
-            if (adv.Terminal != null)
+            try
             {
-                result.TerminalId = adv.Terminal.Id;
-                result.CodeBase = adv.Terminal.Codebase;
-                result.Broker = adv.Terminal.Broker;
-                result.FullPath = adv.Terminal.Fullpath;
-                if (adv.Terminal.Accountnumber != null)
-                    result.AccountNumber = adv.Terminal.Accountnumber.Value;
-            }
+                result.Id = adv.Id;
+                result.Name = adv.Name;
+                result.Running = adv.Running;
+                if (adv.Closereason != null)
+                    result.CloseReason = adv.Closereason.Value;
+                if (adv.Terminal != null)
+                {
+                    result.TerminalId = adv.Terminal.Id;
+                    result.CodeBase = adv.Terminal.Codebase;
+                    result.Broker = adv.Terminal.Broker;
+                    result.FullPath = adv.Terminal.Fullpath;
+                    if (adv.Terminal.Accountnumber != null)
+                        result.AccountNumber = adv.Terminal.Accountnumber.Value;
+                }
 
-            result.LastUpdate = adv.Lastupdate.Value;
-            result.Disabled = adv.Disabled;
-            if (adv.Symbol != null)
+                result.LastUpdate = adv.Lastupdate.Value;
+                result.Disabled = adv.Disabled;
+                if (adv.Symbol != null)
+                {
+                    result.Symbol = adv.Symbol.Name;
+                    result.SymbolId = adv.Symbol.Id;
+                }
+
+                if (adv.Cluster != null)
+                {
+                    result.ClusterId = adv.Cluster.Id;
+                    if (adv.Cluster.Metasymbol != null)
+                        result.MetaSymbol = adv.Cluster.Metasymbol.Name;
+                    else
+                        result.MetaSymbol = adv.Symbol.Name;
+                }
+
+                result.Timeframe = adv.Timeframe;
+                result.State = adv.State;
+                return true;
+            } catch
             {
-                result.Symbol = adv.Symbol.Name;
-                result.SymbolId = adv.Symbol.Id;
+                return false;
             }
-
-            if (adv.Cluster != null)
-            {
-                result.ClusterId = adv.Cluster.Id;
-                if (adv.Cluster.Metasymbol != null)
-                    result.MetaSymbol = adv.Cluster.Metasymbol.Name;
-                else
-                    result.MetaSymbol = adv.Symbol.Name;
-            }
-
-            result.Timeframe = adv.Timeframe;
-            result.State = adv.State;
         }
 
-        public static ExpertsCluster toDTO(DBExpertcluster cluster)
+        public static bool toDTO(DBExpertcluster cluster, ref ExpertsCluster result)
         {
-            ExpertsCluster result = new ExpertsCluster();
-            result.Id = cluster.Id;
-            result.Name = cluster.Name;
-            result.Retired = cluster.Retired;
-            if (cluster.Typ != null)
-                result.Typ = cluster.Typ.Value;
-            if (cluster.Metasymbol != null) result.MetaSymbol = cluster.Metasymbol.Name;
+            try
+            {
+                result.Id = cluster.Id;
+                result.Name = cluster.Name;
+                result.Retired = cluster.Retired;
+                if (cluster.Typ != null)
+                    result.Typ = cluster.Typ.Value;
+                if (cluster.Metasymbol != null) result.MetaSymbol = cluster.Metasymbol.Name;
 
-            if (cluster.Adviser != null) result.MasterAdviserId = cluster.Adviser.Id;
+                if (cluster.Adviser != null) result.MasterAdviserId = cluster.Adviser.Id;
 
-            result.Advisers = new List<Adviser>();
-            return result;
+                result.Advisers = new List<Adviser>();
+                return true;
+            } catch
+            {
+                return false;
+            }
         }
     }
 }

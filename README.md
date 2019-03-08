@@ -11,12 +11,15 @@ How to build server application:
 To make build succeeded the following apps should be installed: Visual Studio 2017, Visual Studio 2017 Build tools.
 Applications need to be installed to run server properly: 
 
-1. MySQL Server version 5 or later.
-2. Metatrader 5 Terminal
-3. Optionally - QUIK terminal.
-4. Optionally StockSharp applications in case if you trade with QUIK and/or Cryptos. StockSharp is free and can be downloaded here http://stocksharp.com.
+1. Metatrader 5 Terminal
+2. Optionally - QUIK terminal.
+3. Optionally StockSharp applications in case if you trade with QUIK and/or Cryptos. StockSharp is free and can be downloaded here http://stocksharp.com.
+4. Optionally MySQL Server version 5 or later.
 
-MySQL database script located in /DB folder. Create database and name it “xtrade”. Run both sql scripts in DB folder.
+SQLite database located in /DB folder. By default SQLite DB file used, but MySQL also supported, you can switch to MySQL in XTrade.conf file.
+
+Open xtrade_empty.sqlite file in any DB editor that works with SQLite ( like Navicat ).
+
 Open Settings table and set the following variables
 
 XTrade.TerminalUser - should be set to windows user login name where trading terminals will be running
@@ -26,6 +29,11 @@ XTrade.InstallDir - XTrade installation folder.
 Metatrader.CommonFiles - path to MT5 common files folder
 
 MQL.Sources - path to MQL folder where your MQL robots stored
+
+
+To install application run: install.bat
+
+If you have problems running check XTrade.MainServer.log to see errors.
 
 XTrade Server folders structure:
 
@@ -44,18 +52,6 @@ XTrade Server folders structure:
 [/QUIKConnector](https://github.com/sergiovision/XTradeServer/tree/master/QUIKConnector) - connector library to QUIK terminal using StockSharp libraries.
 
 [/UnitTests](https://github.com/sergiovision/XTradeServer/tree/master/UnitTests) - Tests of server WebAPI
-
-To run application MySQL database should be created from DB folder.
-[/bin/XTrade.config](https://github.com/sergiovision/XTradeServer/blob/master/bin/XTrade.config) should point to proper MySQL server.
-
-run: XTrade.MainServer.exe install 
-
-to install windows service.
-
-Go to services.msc 
-and run XTrade Main Server.
-
-If you have problems running check XTrade.MainServer.log to see errors.
 
 
 ***Warning***:

@@ -18,9 +18,13 @@ namespace BusinessLogic.Repo
             using (ISession Session = ConnectionHelper.CreateNewSession())
             {
                 var accounts = Session.Query<DBAccount>();
-                foreach (var dbacc in accounts) results.Add(toDTO(dbacc));
+                foreach (var dbacc in accounts)
+                {
+                    Account account = new Account();
+                    if (toDTO(dbacc, ref account))
+                        results.Add(account);
+                }
             }
-
             return results;
         }
 
@@ -30,9 +34,13 @@ namespace BusinessLogic.Repo
             using (ISession Session = ConnectionHelper.CreateNewSession())
             {
                 var terminals = Session.Query<DBTerminal>().OrderBy(x => x.Disabled);
-                foreach (var dbt in terminals) results.Add(toDTO(dbt));
+                foreach (var dbt in terminals)
+                {
+                    Terminal terminal = new Terminal();
+                    if (toDTO(dbt, ref terminal))
+                        results.Add(terminal);
+                }
             }
-
             return results;
         }
 
@@ -112,42 +120,52 @@ namespace BusinessLogic.Repo
             }
         }
 
-        public static Account toDTO(DBAccount a)
+        public static bool toDTO(DBAccount a, ref Account result)
         {
-            Account result = new Account();
-            result.Id = a.Id;
-            result.Number = a.Number;
-            result.Balance = a.Balance;
-            if (a.Terminal != null)
-                result.TerminalId = a.Terminal.Id;
-            result.Lastupdate = a.Lastupdate;
-            result.Description = a.Description;
-            result.Equity = a.Equity;
-            if (a.Person != null)
-                result.PersonId = a.Person.Id;
-            if (a.Currency != null)
-                result.CurrencyStr = a.Currency.Name;
-            result.Retired = a.Retired;
-            if (a.Wallet != null)
-                result.WalletId = a.Wallet.Id;
-            result.Typ = (AccountType) a.Typ;
-            return result;
+            try
+            {
+                result.Id = a.Id;
+                result.Number = a.Number;
+                result.Balance = a.Balance;
+                if (a.Terminal != null)
+                    result.TerminalId = a.Terminal.Id;
+                result.Lastupdate = a.Lastupdate;
+                result.Description = a.Description;
+                result.Equity = a.Equity;
+                if (a.Person != null)
+                    result.PersonId = a.Person.Id;
+                if (a.Currency != null)
+                    result.CurrencyStr = a.Currency.Name;
+                result.Retired = a.Retired;
+                if (a.Wallet != null)
+                    result.WalletId = a.Wallet.Id;
+                result.Typ = (AccountType)a.Typ;
+                return true;
+            } catch
+            {
+                return false;
+            }
         }
 
-        public Terminal toDTO(DBTerminal t)
+        public bool toDTO(DBTerminal t, ref Terminal result )
         {
-            Terminal result = new Terminal();
-            result.AccountNumber = t.Accountnumber.Value;
-            result.Broker = t.Broker;
-            result.CodeBase = t.Codebase;
-            result.Disabled = t.Disabled;
-            result.FullPath = t.Fullpath;
-            result.Demo = t.Demo;
-            result.Stopped = t.Stopped;
-            result.Id = t.Id;
-            if (t.Account != null)
-                result.Currency = t.Account.Currency.Name;
-            return result;
+            try
+            {
+                result.AccountNumber = t.Accountnumber.Value;
+                result.Broker = t.Broker;
+                result.CodeBase = t.Codebase;
+                result.Disabled = t.Disabled;
+                result.FullPath = t.Fullpath;
+                result.Demo = t.Demo;
+                result.Stopped = t.Stopped;
+                result.Id = t.Id;
+                if (t.Account != null)
+                    result.Currency = t.Account.Currency.Name;
+                return true;
+            } catch
+            {
+                return false;
+            }
         }
     }
 }

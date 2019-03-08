@@ -30,6 +30,7 @@
 #include <XTrade\MedianRenko\Renko_EA_Logic.mqh>
 #include <XTrade\CMedianRenko.mqh>
 #include <XTrade\CIchimokuRenko.mqh>
+#include <XTrade\TradeMethods.mqh>
 
 //
 //  Inputs
@@ -65,6 +66,7 @@ input int               InpRequoteTimeout_ms = 250;               // Requote tim
 
 MedianRenko * medianRenko;
 CEaLogic eaLogic;
+TradeMethods* methods = NULL;
 
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
@@ -73,8 +75,12 @@ int OnInit()
 {
    string name = "Renko_EA";
    Utils = CreateUtils((short)2010, name);
+   
+   methods = new TradeMethods();
+   Utils.SetTrade(methods);
 
-   CMedianRenko* mr = new CMedianRenko(NULL);
+
+   CMedianRenko* mr = new CMedianRenko();
    if (mr.Init(15))
    {
       medianRenko = mr.GetMR();
@@ -116,7 +122,7 @@ int OnInit()
    if(!eaLogic.Initialize(params, medianRenko))
       return(INIT_FAILED);
       
-    CIchimokuRenko* iind = new CIchimokuRenko(NULL);
+    CIchimokuRenko* iind = new CIchimokuRenko();
     iind.Init(15);
     iind.SetMedianRenko(mr);
        
@@ -128,6 +134,8 @@ int OnInit()
 void OnDeinit(const int reason)
 {
 
+   DELETE_PTR(methods);
+   
    if(medianRenko != NULL)
    {
       medianRenko.Deinit();

@@ -119,6 +119,11 @@ namespace XTrade.MainServer
             // this is a real update positions method. Empty for tester
         }
 
+        public List<DealInfo> GetTodayDeals()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

@@ -19,6 +19,236 @@
             The generated stack frames
             </summary>
         </member>
+        <member name="T:Microsoft.Owin.Diagnostics.Views.StackFrame">
+            <summary>
+            Detailed exception stack information used to generate a view
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.Function">
+            <summary>
+            Function containing instruction
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.File">
+            <summary>
+            File containing the instruction
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.Line">
+            <summary>
+            The line number of the instruction
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.PreContextLine">
+            <summary>
+            The line preceeding the frame line
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.PreContextCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.ContextCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.PostContextCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.Owin.Diagnostics.Views.ErrorPageModel">
+            <summary>
+            Holds data to be displayed on the error page.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Options">
+            <summary>
+            Options for what output to display.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.ErrorDetails">
+            <summary>
+            Detailed information about each exception in the stack
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Query">
+            <summary>
+            Parsed query data
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Cookies">
+            <summary>
+            Request cookies
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Headers">
+            <summary>
+            Request headers
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Environment">
+            <summary>
+            The request environment
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPage.Model">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.Owin.Diagnostics.Views.BaseView">
+            <summary>
+            Infrastructure
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.BaseView.Context">
+            <summary>
+            The request context
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.BaseView.Request">
+            <summary>
+            The request
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.BaseView.Response">
+            <summary>
+            The response
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Diagnostics.Views.BaseView.Output">
+            <summary>
+            The output stream
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.Execute(Microsoft.Owin.IOwinContext)">
+            <summary>
+            Execute an individual request
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.Execute">
+            <summary>
+            Execute an individual request
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteLiteral(System.String)">
+            <summary>
+            Write the given value directly to the output
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``1(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean})">
+            <summary>
+            
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <param name="name"></param>
+            <param name="leader"></param>
+            <param name="trailer"></param>
+            <param name="part1"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``2(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean})">
+            <summary>
+            
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <param name="name"></param>
+            <param name="leader"></param>
+            <param name="trailer"></param>
+            <param name="part1"></param>
+            <param name="part2"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``3(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``2,System.Int32},System.Boolean})">
+            <summary>
+            
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <typeparam name="T3"></typeparam>
+            <param name="name"></param>
+            <param name="leader"></param>
+            <param name="trailer"></param>
+            <param name="part1"></param>
+            <param name="part2"></param>
+            <param name="part3"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``4(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``2,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``3,System.Int32},System.Boolean})">
+            <summary>
+            
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <typeparam name="T3"></typeparam>
+            <typeparam name="T4"></typeparam>
+            <param name="name"></param>
+            <param name="leader"></param>
+            <param name="trailer"></param>
+            <param name="part1"></param>
+            <param name="part2"></param>
+            <param name="part3"></param>
+            <param name="part4"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``5(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``2,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``3,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``4,System.Int32},System.Boolean})">
+            <summary>
+            
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <typeparam name="T3"></typeparam>
+            <typeparam name="T4"></typeparam>
+            <typeparam name="T5"></typeparam>
+            <param name="name"></param>
+            <param name="leader"></param>
+            <param name="trailer"></param>
+            <param name="part1"></param>
+            <param name="part2"></param>
+            <param name="part3"></param>
+            <param name="part4"></param>
+            <param name="part5"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``6(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``2,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``3,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``4,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``5,System.Int32},System.Boolean})">
+            <summary>
+            
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <typeparam name="T3"></typeparam>
+            <typeparam name="T4"></typeparam>
+            <typeparam name="T5"></typeparam>
+            <typeparam name="T6"></typeparam>
+            <param name="name"></param>
+            <param name="leader"></param>
+            <param name="trailer"></param>
+            <param name="part1"></param>
+            <param name="part2"></param>
+            <param name="part3"></param>
+            <param name="part4"></param>
+            <param name="part5"></param>
+            <param name="part6"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteEncoded(System.String)">
+            <summary>
+            Html encode and write
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.Write(System.Object)">
+            <summary>
+            Convert to string and html encode
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.Write(System.String)">
+            <summary>
+            Html encode and write
+            </summary>
+            <param name="value"></param>
+        </member>
         <member name="T:Microsoft.Owin.Diagnostics.ErrorPageOptions">
             <summary>
             Options for the ErrorPageMiddleware
@@ -28,12 +258,6 @@
             <summary>
             Create an instance with the default options settings.
             </summary>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.ErrorPageOptions.SetDefaultVisibility(System.Boolean)">
-            <summary>
-            Sets the default visibility for options not otherwise specified.
-            </summary>
-            <param name="isVisible"></param>
         </member>
         <member name="P:Microsoft.Owin.Diagnostics.ErrorPageOptions.ShowAll">
             <summary>
@@ -76,6 +300,12 @@
             <summary>
             Enables the enumeration of the OWIN environment values.
             </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.ErrorPageOptions.SetDefaultVisibility(System.Boolean)">
+            <summary>
+            Sets the default visibility for options not otherwise specified.
+            </summary>
+            <param name="isVisible"></param>
         </member>
         <member name="T:Microsoft.Owin.Diagnostics.Resources">
             <summary>
@@ -233,234 +463,53 @@
               Looks up a localized string similar to Your OWIN application has been successfully started..
             </summary>
         </member>
-        <member name="T:Microsoft.Owin.Diagnostics.Views.BaseView">
+        <member name="T:Microsoft.Owin.Diagnostics.WelcomePageMiddleware">
             <summary>
-            Infrastructure
+            This middleware provides a default web page for new applications.
             </summary>
         </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.Execute(Microsoft.Owin.IOwinContext)">
+        <member name="M:Microsoft.Owin.Diagnostics.WelcomePageMiddleware.#ctor(System.Func{System.Collections.Generic.IDictionary{System.String,System.Object},System.Threading.Tasks.Task},Microsoft.Owin.Diagnostics.WelcomePageOptions)">
             <summary>
-            Execute an individual request
+            Creates a default web page for new applications.
             </summary>
-            <param name="context"></param>
+            <param name="next"></param>
+            <param name="options"></param>
         </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.Execute">
+        <member name="M:Microsoft.Owin.Diagnostics.WelcomePageMiddleware.Invoke(System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
-            Execute an individual request
+            Process an individual request.
             </summary>
+            <param name="environment"></param>
+            <returns></returns>
         </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteLiteral(System.String)">
+        <member name="T:Microsoft.Owin.Diagnostics.ErrorPageMiddleware">
             <summary>
-            Write the given value directly to the output
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``1(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean})">
-            <summary>
-            
-            </summary>
-            <typeparam name="T1"></typeparam>
-            <param name="name"></param>
-            <param name="leader"></param>
-            <param name="trailer"></param>
-            <param name="part1"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``2(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean})">
-            <summary>
-            
-            </summary>
-            <typeparam name="T1"></typeparam>
-            <typeparam name="T2"></typeparam>
-            <param name="name"></param>
-            <param name="leader"></param>
-            <param name="trailer"></param>
-            <param name="part1"></param>
-            <param name="part2"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``3(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``2,System.Int32},System.Boolean})">
-            <summary>
-            
-            </summary>
-            <typeparam name="T1"></typeparam>
-            <typeparam name="T2"></typeparam>
-            <typeparam name="T3"></typeparam>
-            <param name="name"></param>
-            <param name="leader"></param>
-            <param name="trailer"></param>
-            <param name="part1"></param>
-            <param name="part2"></param>
-            <param name="part3"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``4(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``2,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``3,System.Int32},System.Boolean})">
-            <summary>
-            
-            </summary>
-            <typeparam name="T1"></typeparam>
-            <typeparam name="T2"></typeparam>
-            <typeparam name="T3"></typeparam>
-            <typeparam name="T4"></typeparam>
-            <param name="name"></param>
-            <param name="leader"></param>
-            <param name="trailer"></param>
-            <param name="part1"></param>
-            <param name="part2"></param>
-            <param name="part3"></param>
-            <param name="part4"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``5(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``2,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``3,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``4,System.Int32},System.Boolean})">
-            <summary>
-            
-            </summary>
-            <typeparam name="T1"></typeparam>
-            <typeparam name="T2"></typeparam>
-            <typeparam name="T3"></typeparam>
-            <typeparam name="T4"></typeparam>
-            <typeparam name="T5"></typeparam>
-            <param name="name"></param>
-            <param name="leader"></param>
-            <param name="trailer"></param>
-            <param name="part1"></param>
-            <param name="part2"></param>
-            <param name="part3"></param>
-            <param name="part4"></param>
-            <param name="part5"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteAttribute``6(System.String,System.Tuple{System.String,System.Int32},System.Tuple{System.String,System.Int32},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``0,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``1,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``2,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``3,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``4,System.Int32},System.Boolean},System.Tuple{System.Tuple{System.String,System.Int32},System.Tuple{``5,System.Int32},System.Boolean})">
-            <summary>
-            
-            </summary>
-            <typeparam name="T1"></typeparam>
-            <typeparam name="T2"></typeparam>
-            <typeparam name="T3"></typeparam>
-            <typeparam name="T4"></typeparam>
-            <typeparam name="T5"></typeparam>
-            <typeparam name="T6"></typeparam>
-            <param name="name"></param>
-            <param name="leader"></param>
-            <param name="trailer"></param>
-            <param name="part1"></param>
-            <param name="part2"></param>
-            <param name="part3"></param>
-            <param name="part4"></param>
-            <param name="part5"></param>
-            <param name="part6"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.WriteEncoded(System.String)">
-            <summary>
-            Html encode and write
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.Write(System.Object)">
-            <summary>
-            Convert to string and html encode
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.Views.BaseView.Write(System.String)">
-            <summary>
-            Html encode and write
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.BaseView.Context">
-            <summary>
-            The request context
+            Captures synchronous and asynchronous exceptions from the pipeline and generates HTML error responses.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.BaseView.Request">
+        <member name="M:Microsoft.Owin.Diagnostics.ErrorPageMiddleware.#ctor(System.Func{System.Collections.Generic.IDictionary{System.String,System.Object},System.Threading.Tasks.Task},Microsoft.Owin.Diagnostics.ErrorPageOptions,Microsoft.Owin.Logging.ILogger,System.Boolean)">
             <summary>
-            The request
+            Initializes a new instance of the <see cref="T:Microsoft.Owin.Diagnostics.ErrorPageMiddleware"/> class
+            </summary>
+            <param name="next"></param>
+            <param name="options"></param>
+            <param name="isDevMode"></param>
+        </member>
+        <member name="M:Microsoft.Owin.Diagnostics.ErrorPageMiddleware.Invoke(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Process an individual request.
+            </summary>
+            <param name="environment"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Owin.Diagnostics.WelcomePageOptions">
+            <summary>
+            Options for the WelcomePageMiddleware.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.BaseView.Response">
+        <member name="P:Microsoft.Owin.Diagnostics.WelcomePageOptions.Path">
             <summary>
-            The response
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.BaseView.Output">
-            <summary>
-            The output stream
-            </summary>
-        </member>
-        <member name="T:Microsoft.Owin.Diagnostics.Views.StackFrame">
-            <summary>
-            Detailed exception stack information used to generate a view
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.Function">
-            <summary>
-            Function containing instruction
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.File">
-            <summary>
-            File containing the instruction
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.Line">
-            <summary>
-            The line number of the instruction
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.PreContextLine">
-            <summary>
-            The line preceeding the frame line
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.PreContextCode">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.ContextCode">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.StackFrame.PostContextCode">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Microsoft.Owin.Diagnostics.Views.ErrorPageModel">
-            <summary>
-            Holds data to be displayed on the error page.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Options">
-            <summary>
-            Options for what output to display.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.ErrorDetails">
-            <summary>
-            Detailed information about each exception in the stack
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Query">
-            <summary>
-            Parsed query data
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Cookies">
-            <summary>
-            Request cookies
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Headers">
-            <summary>
-            Request headers
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPageModel.Environment">
-            <summary>
-            The request environment
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.Views.ErrorPage.Model">
-            <summary>
-            
+            Specifies which requests paths will be responded to. Exact matches only. Leave null to handle all requests.
             </summary>
         </member>
         <member name="T:Owin.WelcomePageExtensions">
@@ -499,25 +548,6 @@
             <param name="builder"></param>
             <returns></returns>
         </member>
-        <member name="T:Microsoft.Owin.Diagnostics.WelcomePageMiddleware">
-            <summary>
-            This middleware provides a default web page for new applications.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.WelcomePageMiddleware.#ctor(System.Func{System.Collections.Generic.IDictionary{System.String,System.Object},System.Threading.Tasks.Task},Microsoft.Owin.Diagnostics.WelcomePageOptions)">
-            <summary>
-            Creates a default web page for new applications.
-            </summary>
-            <param name="next"></param>
-            <param name="options"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.WelcomePageMiddleware.Invoke(System.Collections.Generic.IDictionary{System.String,System.Object})">
-            <summary>
-            Process an individual request.
-            </summary>
-            <param name="environment"></param>
-            <returns></returns>
-        </member>
         <member name="T:Owin.ErrorPageExtensions">
             <summary>
             IAppBuilder extension methods for the ErrorPageMiddleware.
@@ -539,36 +569,6 @@
             <param name="builder"></param>
             <param name="options"></param>
             <returns></returns>
-        </member>
-        <member name="T:Microsoft.Owin.Diagnostics.ErrorPageMiddleware">
-            <summary>
-            Captures synchronous and asynchronous exceptions from the pipeline and generates HTML error responses.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.ErrorPageMiddleware.#ctor(System.Func{System.Collections.Generic.IDictionary{System.String,System.Object},System.Threading.Tasks.Task},Microsoft.Owin.Diagnostics.ErrorPageOptions,Microsoft.Owin.Logging.ILogger,System.Boolean)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Microsoft.Owin.Diagnostics.ErrorPageMiddleware"/> class
-            </summary>
-            <param name="next"></param>
-            <param name="options"></param>
-            <param name="isDevMode"></param>
-        </member>
-        <member name="M:Microsoft.Owin.Diagnostics.ErrorPageMiddleware.Invoke(System.Collections.Generic.IDictionary{System.String,System.Object})">
-            <summary>
-            Process an individual request.
-            </summary>
-            <param name="environment"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Microsoft.Owin.Diagnostics.WelcomePageOptions">
-            <summary>
-            Options for the WelcomePageMiddleware.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Diagnostics.WelcomePageOptions.Path">
-            <summary>
-            Specifies which requests paths will be responded to. Exact matches only. Leave null to handle all requests.
-            </summary>
         </member>
     </members>
 </doc>

@@ -122,7 +122,7 @@ void DrawTimeLine(const int nPosition, const int nRatesCount, const datetime &ca
       
       if(_start)
          c++;
-   }   
+   }
    
    ChartRedraw();
 }

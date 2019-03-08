@@ -144,7 +144,9 @@ namespace BusinessLogic.Repo
                     var deals = Session.Query<DBDeals>().OrderByDescending(x => x.Closetime);
                     foreach (var dbd in deals)
                         if (isSameDay(dbd.Closetime.Value, now))
+                        {
                             result.Add(toDTO(dbd));
+                        }
                         
                 }
             }
@@ -633,15 +635,15 @@ namespace BusinessLogic.Repo
                 if (result.Any())
                 {
                     var term = result.FirstOrDefault();
-                    if (term != null)
-                        return accounts.toDTO(term);
+                    Terminal terminal = new Terminal();
+                    if ((term != null) && accounts.toDTO(term, ref terminal))
+                        return terminal;
                 }
             }
             catch (Exception e)
             {
                 log.Error("Error: getTerminalByNumber: " + e);
             }
-
             return null;
         }
 

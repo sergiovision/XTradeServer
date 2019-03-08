@@ -1121,6 +1121,15 @@
 
  <exception cref="System.ArgumentNullException">Thrown when the input sequence is null.</exception>
 </member>
+<member name="M:Microsoft.FSharp.Collections.SeqModule.TryExactlyOne``1(System.Collections.Generic.IEnumerable{``0})">
+ <summary>Returns the only element of the sequence or <c>None</c> if sequence is empty or contains more than one element.</summary>
+
+ <param name="source">The input sequence.</param>
+
+ <returns>The only element of the sequence or None.</returns>
+
+ <exception cref="System.ArgumentNullException">Thrown when the input sequence is null.</exception>
+</member>
 <member name="M:Microsoft.FSharp.Collections.SeqModule.ExactlyOne``1(System.Collections.Generic.IEnumerable{``0})">
  <summary>Returns the only element of the sequence.</summary>
 
@@ -2268,6 +2277,13 @@
  <param name="list">The input list.</param>
  <returns>True if any element satisfies the predicate.</returns>
 </member>
+<member name="M:Microsoft.FSharp.Collections.ListModule.TryExactlyOne``1(Microsoft.FSharp.Collections.FSharpList{``0})">
+ <summary>Returns the only element of the list or <c>None</c> if it is empty or contains more than one element.</summary>
+
+ <param name="list">The input list.</param>
+
+ <returns>The only element of the list or None.</returns>
+</member>
 <member name="M:Microsoft.FSharp.Collections.ListModule.ExactlyOne``1(Microsoft.FSharp.Collections.FSharpList{``0})">
  <summary>Returns the only element of the list.</summary>
 
@@ -3179,6 +3195,15 @@
  <returns>An array that contains the distinct elements of <c>array</c> that do not appear in <c>itemsToExclude</c>.</returns>
 
  <exception cref="System.ArgumentNullException">Thrown when either itemsToExclude or array is null.</exception>
+</member>
+<member name="M:Microsoft.FSharp.Collections.ArrayModule.TryExactlyOne``1(``0[])">
+ <summary>Returns the only element of the array or <c>None</c> if array is empty or contains more than one element.</summary>
+
+ <param name="array">The input array.</param>
+
+ <returns>The only element of the array or None.</returns>
+
+ <exception cref="System.ArgumentNullException">Thrown when the input array is null.</exception>
 </member>
 <member name="M:Microsoft.FSharp.Collections.ArrayModule.ExactlyOne``1(``0[])">
  <summary>Returns the only element of the array.</summary>
@@ -7843,6 +7868,20 @@
 <member name="P:Microsoft.FSharp.Core.FSharpValueOption`1.Value">
  <summary>Get the value of a 'ValueSome' option. An InvalidOperationException is raised if the option is 'ValueNone'.</summary>
 </member>
+<member name="P:Microsoft.FSharp.Core.FSharpValueOption`1.None">
+ <summary>Create a value option value that is a 'ValueNone' value.</summary>
+</member>
+<member name="P:Microsoft.FSharp.Core.FSharpValueOption`1.IsSome">
+ <summary>Return 'true' if the value option is a 'ValueSome' value.</summary>
+</member>
+<member name="P:Microsoft.FSharp.Core.FSharpValueOption`1.IsNone">
+ <summary>Return 'true' if the value option is a 'ValueNone' value.</summary>
+</member>
+<member name="M:Microsoft.FSharp.Core.FSharpValueOption`1.Some(`0)">
+ <summary>Create a value option value that is a 'Some' value.</summary>
+ <param name="value">The input value</param>
+ <returns>A value option representing the value.</returns>
+</member>
 <member name="T:Microsoft.FSharp.Core.FSharpValueOption`1">
  <summary>The type of optional values, represented as structs.</summary>
 
@@ -11049,6 +11088,170 @@
 <summary>
  Represents the types of byrefs in F# 4.5+
 </summary>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.ToObj``1(Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Convert an option to a potentially null value.</summary>
+ <param name="value">The input value.</param>
+ <returns>The result value, which is null if the input was ValueNone.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.OfObj``1(``0)">
+ <summary>Convert a potentially null value to a value option.</summary>
+ <param name="value">The input value.</param>
+ <returns>The result value option.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.OfNullable``1(System.Nullable{``0})">
+ <summary>Convert a Nullable value to a value option.</summary>
+ <param name="value">The input nullable value.</param>
+ <returns>The result value option.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.ToNullable``1(Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Convert the value option to a Nullable value.</summary>
+ <param name="voption">The input value option.</param>
+ <returns>The result value.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.ToList``1(Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Convert the value option to a list of length 0 or 1.</summary>
+ <param name="voption">The input value option.</param>
+ <returns>The result list.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.ToArray``1(Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Convert the value option to an array of length 0 or 1.</summary>
+ <param name="voption">The input value option.</param>
+ <returns>The result array.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Filter``1(Microsoft.FSharp.Core.FSharpFunc{``0,System.Boolean},Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary><c>filter f inp</c> evaluates to <c>match inp with ValueNone -> ValueNone | ValueSome x -> if f x then ValueSome x else ValueNone</c>.</summary>
+ <param name="predicate">A function that evaluates whether the value contained in the value option should remain, or be filtered out.</param>
+ <param name="voption">The input value option.</param>
+ <returns>The input if the predicate evaluates to true; otherwise, ValueNone.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Flatten``1(Microsoft.FSharp.Core.FSharpValueOption{Microsoft.FSharp.Core.FSharpValueOption{``0}})">
+ <summary><c>flatten inp</c> evaluates to <c>match inp with ValueNone -> ValueNone | ValueSome x -> x</c></summary>
+ <param name="voption">The input value option.</param>
+ <returns>A value option of the output type of the binder.</returns>
+ <remarks><c>flatten</c> is equivalent to <c>bind id</c>.</remarks>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Bind``2(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.FSharpValueOption{``1}},Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary><c>bind f inp</c> evaluates to <c>match inp with ValueNone -> ValueNone | ValueSome x -> f x</c></summary>
+ <param name="binder">A function that takes the value of type T from a value option and transforms it into
+ a value option containing a value of type U.</param>
+ <param name="voption">The input value option.</param>
+ <returns>An option of the output type of the binder.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Map3``4(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.FSharpFunc{``1,Microsoft.FSharp.Core.FSharpFunc{``2,``3}}},Microsoft.FSharp.Core.FSharpValueOption{``0},Microsoft.FSharp.Core.FSharpValueOption{``1},Microsoft.FSharp.Core.FSharpValueOption{``2})">
+ <summary><c>map f voption1 voption2 voption3</c> evaluates to <c>match voption1, voption2, voption3 with ValueSome x, ValueSome y, ValueSome z -> ValueSome (f x y z) | _ -> ValueNone</c>.</summary>
+ <param name="mapping">A function to apply to the value option values.</param>
+ <param name="voption1">The first value option.</param>
+ <param name="voption2">The second value option.</param>
+ <param name="voption3">The third value option.</param>
+ <returns>A value option of the input values after applying the mapping function, or ValueNone if any input is ValueNone.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Map2``3(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.FSharpFunc{``1,``2}},Microsoft.FSharp.Core.FSharpValueOption{``0},Microsoft.FSharp.Core.FSharpValueOption{``1})">
+ <summary><c>map f voption1 voption2</c> evaluates to <c>match voption1, voption2 with ValueSome x, ValueSome y -> ValueSome (f x y) | _ -> ValueNone</c>.</summary>
+ <param name="mapping">A function to apply to the voption values.</param>
+ <param name="voption1">The first value option.</param>
+ <param name="voption2">The second value option.</param>
+ <returns>A value option of the input values after applying the mapping function, or ValueNone if either input is ValueNone.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Map``2(Microsoft.FSharp.Core.FSharpFunc{``0,``1},Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary><c>map f inp</c> evaluates to <c>match inp with ValueNone -> ValueNone | ValueSome x -> ValueSome (f x)</c>.</summary>
+ <param name="mapping">A function to apply to the voption value.</param>
+ <param name="voption">The input value option.</param>
+ <returns>A value option of the input value after applying the mapping function, or ValueNone if the input is ValueNone.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Iterate``1(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.Unit},Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary><c>iter f inp</c> executes <c>match inp with ValueNone -> () | ValueSome x -> f x</c>.</summary>
+ <param name="action">A function to apply to the voption value.</param>
+ <param name="voption">The input value option.</param>
+ <returns>Unit if the option is ValueNone, otherwise it returns the result of applying the predicate
+ to the voption value.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Contains``1(``0,Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Evaluates to true if <paramref name="voption"/> is <c>ValueSome</c> and its value is equal to <paramref name="value"/>.</summary>
+ <param name="value">The value to test for equality.</param>
+ <param name="voption">The input value option.</param>
+ <returns>True if the option is <c>ValueSome</c> and contains a value equal to <paramref name="value"/>, otherwise false.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.ForAll``1(Microsoft.FSharp.Core.FSharpFunc{``0,System.Boolean},Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary><c>forall p inp</c> evaluates to <c>match inp with ValueNone -> true | ValueSome x -> p x</c>.</summary>
+ <param name="predicate">A function that evaluates to a boolean when given a value from the value option type.</param>
+ <param name="voption">The input value option.</param>
+ <returns>True if the option is None, otherwise it returns the result of applying the predicate
+ to the option value.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Exists``1(Microsoft.FSharp.Core.FSharpFunc{``0,System.Boolean},Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary><c>exists p inp</c> evaluates to <c>match inp with ValueNone -> false | ValueSome x -> p x</c>.</summary>
+ <param name="predicate">A function that evaluates to a boolean when given a value from the option type.</param>
+ <param name="voption">The input value option.</param>
+ <returns>False if the option is ValueNone, otherwise it returns the result of applying the predicate
+ to the option value.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.FoldBack``2(Microsoft.FSharp.Core.FSharpFunc{``0,Microsoft.FSharp.Core.FSharpFunc{``1,``1}},Microsoft.FSharp.Core.FSharpValueOption{``0},``1)">
+ <summary><c>fold f inp s</c> evaluates to <c>match inp with ValueNone -> s | ValueSome x -> f x s</c>.</summary>
+ <param name="folder">A function to update the state data when given a value from a value option.</param>
+ <param name="voption">The input value option.</param>
+ <param name="state">The initial state.</param>
+ <returns>The original state if the option is ValueNone, otherwise it returns the updated state with the folder
+ and the voption value.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Fold``2(Microsoft.FSharp.Core.FSharpFunc{``1,Microsoft.FSharp.Core.FSharpFunc{``0,``1}},``1,Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary><c>fold f s inp</c> evaluates to <c>match inp with ValueNone -> s | ValueSome x -> f s x</c>.</summary>
+ <param name="folder">A function to update the state data when given a value from a value option.</param>
+ <param name="state">The initial state.</param>
+ <param name="voption">The input value option.</param>
+ <returns>The original state if the option is ValueNone, otherwise it returns the updated state with the folder
+ and the voption value.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.Count``1(Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary><c>count inp</c> evaluates to <c>match inp with ValueNone -> 0 | ValueSome _ -> 1</c>.</summary>
+ <param name="voption">The input value option.</param>
+ <returns>A zero if the option is ValueNone, a one otherwise.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.GetValue``1(Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Gets the value associated with the option.</summary>
+ <param name="voption">The input value option.</param>
+ <returns>The value within the option.</returns>
+ <exception href="System.ArgumentException">Thrown when the option is ValueNone.</exception>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.OrElseWith``1(Microsoft.FSharp.Core.FSharpFunc{Microsoft.FSharp.Core.Unit,Microsoft.FSharp.Core.FSharpValueOption{``0}},Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Returns <paramref name="voption"/> if it is <c>Some</c>, otherwise evaluates <paramref name="ifNoneThunk"/> and returns the result.</summary>
+ <param name="ifNoneThunk">A thunk that provides an alternate value option when evaluated.</param>
+ <param name="voption">The input value option.</param>
+ <returns>The voption if the voption is ValueSome, else the result of evaluating <paramref name="ifNoneThunk"/>.</returns>
+ <remarks><paramref name="ifNoneThunk"/> is not evaluated unless <paramref name="voption"/> is <c>ValueNone</c>.</remarks>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.OrElse``1(Microsoft.FSharp.Core.FSharpValueOption{``0},Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Returns <paramref name="option"/> if it is <c>Some</c>, otherwise returns <paramref name="ifNone"/>.</summary>
+ <param name="ifNone">The value to use if <paramref name="option"/> is <c>None</c>.</param>
+ <param name="option">The input option.</param>
+ <returns>The option if the option is Some, else the alternate option.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.DefaultWith``1(Microsoft.FSharp.Core.FSharpFunc{Microsoft.FSharp.Core.Unit,``0},Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Gets the value of the voption if the voption is <c>ValueSome</c>, otherwise evaluates <paramref name="defThunk"/> and returns the result.</summary>
+ <param name="defThunk">A thunk that provides a default value when evaluated.</param>
+ <param name="voption">The input voption.</param>
+ <returns>The voption if the voption is ValueSome, else the result of evaluating <paramref name="defThunk"/>.</returns>
+ <remarks><paramref name="defThunk"/> is not evaluated unless <paramref name="voption"/> is <c>ValueNone</c>.</remarks>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.DefaultValue``1(``0,Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Gets the value of the value option if the option is <c>ValueSome</c>, otherwise returns the specified default value.</summary>
+ <param name="value">The specified default value.</param>
+ <param name="voption">The input voption.</param>
+ <returns>The voption if the voption is ValueSome, else the default value.</returns>
+ <remarks>Identical to the built-in <see cref="defaultArg"/> operator, except with the arguments swapped.</remarks>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.IsNone``1(Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Returns true if the value option is ValueNone.</summary>
+ <param name="voption">The input value option.</param>
+ <returns>True if the voption is ValueNone.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Core.ValueOption.IsSome``1(Microsoft.FSharp.Core.FSharpValueOption{``0})">
+ <summary>Returns true if the value option is not ValueNone.</summary>
+ <param name="voption">The input value option.</param>
+ <returns>True if the value option is not ValueNone.</returns>
+</member>
+<member name="T:Microsoft.FSharp.Core.ValueOption">
+ <summary>Basic operations on value options.</summary>
 </member>
 <member name="M:Microsoft.FSharp.Core.OptionModule.ToObj``1(Microsoft.FSharp.Core.FSharpOption{``0})">
  <summary>Convert an option to a potentially null value.</summary>

@@ -30,6 +30,7 @@ public:
    Constants constant;
    ushort sep;   
    ushort sepList; 
+   bool IsEA;
 
    ITradeService(short Port, string EA)
    {
@@ -41,10 +42,12 @@ public:
       isActive = false;
       //set = NULL;
       isMaster = false;
+      //IsEA = true;
    }
    
    virtual bool Init(bool isEA)
    {
+       IsEA = isEA;
        return true;
    }
    
@@ -140,9 +143,12 @@ public:
    
    virtual void PostSignalLocally(Signal* signal)
    {
-      ushort event_id = (ushort)signal.type;
-      EventChartCustom(Utils.Trade().ChartId(), event_id, signal.ObjectId, signal.Value, signal.Serialize());
-      DELETE_PTR(signal);
+      if (IsEA) 
+      {
+         ushort event_id = (ushort)signal.type;
+         EventChartCustom(Utils.Trade().ChartId(), event_id, signal.ObjectId, signal.Value, signal.Serialize());
+         DELETE_PTR(signal);
+      } 
    }
    
    void NotifyUpdatePositions()

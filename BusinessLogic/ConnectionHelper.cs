@@ -3,6 +3,7 @@ using System.Configuration;
 using System.IO;
 using System.Net;
 using BusinessLogic.Repo;
+using BusinessObjects;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using NHibernate;
@@ -11,35 +12,31 @@ namespace BusinessLogic
 {
     internal static class ConnectionHelper
     {
-        public static string connString;
         private static readonly object lockObject = new object();
         private static ISessionFactory _sessionFactory;
-
-        public static string getMysqlConnectionString()
-        {
-            connString = ConfigurationManager.ConnectionStrings["XTrade.MySQLConnection"].ConnectionString;
-            return connString;
-        }
 
         public static ISession CreateNewSession()
         {
             if (_sessionFactory == null)
             {
-                string connection = getMysqlConnectionString();
-                var mysqlConfig = MySQLConfiguration.Standard.ConnectionString(connection);
-                _sessionFactory = Fluently.Configure().Database(mysqlConfig)
-                    .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DBAdviser>())
-                    .BuildSessionFactory();
-            }
+                string connection =  XTradeConfig.ConnectionString();
+                if (XTradeConfig.ConnectionStringName().Contains("SQLite"))
+                {
+                    // http://qaru.site/questions/754091/getting-fluent-nhibernate-to-work-with-sqlite
+                    var dbConfig = SQLiteConfiguration.Standard.ConnectionString(connection);
+                    _sessionFactory = Fluently.Configure().Database(dbConfig)
+                        .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DBAdviser>())
+                        .BuildSessionFactory();
+                }
+                else
+                {
+                    var dbConfig = MySQLConfiguration.Standard.ConnectionString(connection);
+                    _sessionFactory = Fluently.Configure().Database(dbConfig)
+                        .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DBAdviser>())
+                        .BuildSessionFactory();
+                }
 
-            /*            
-             *            ISessionFactory _sessionFactory = FluentNHibernate.Cfg.Fluently.Configure()
-                            .Database(getConnectionString())
-                            .Mappings(x => x.FluentMappings.AddFromAssemblyOf<UsersMap>())
-                            //.ExposeConfiguration(cfg => new SchemaExport(cfg).Create(false, true)) //when i removed this line it doesn't
-                            //remove the elements from the db
-                            .BuildSessionFactory(); 
-            */
+            }
             lock (lockObject) // Session is not thread safe thus - should be locked.
             {
                 return _sessionFactory.OpenSession();

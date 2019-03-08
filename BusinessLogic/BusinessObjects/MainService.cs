@@ -489,8 +489,6 @@ namespace BusinessLogic.BusinessObjects
                 {
                     res = Session.Query<DBAdviser>().Where(x => x.Terminal.Id == terminalId && x.Disabled == false);
                     foreach (var adviser in res)
-                        //Adviser adv = new Adviser()
-                        //ExpertsRepository.toDTO(adviser, ref adv);
                         advisers.Add(adviser);
                 }
 
@@ -522,8 +520,8 @@ namespace BusinessLogic.BusinessObjects
                     foreach (var adviser in res)
                     {
                         Adviser adv = new Adviser();
-                        ExpertsRepository.toDTO(adviser, ref adv);
-                        advisers.Add(adv);
+                        if (ExpertsRepository.toDTO(adviser, ref adv))
+                            advisers.Add(adv);
                     }
                 }
 
@@ -738,6 +736,47 @@ namespace BusinessLogic.BusinessObjects
             return expert;
         }
 
+        public ExpertInfo InitTerminal(ExpertInfo expert)
+        {
+            try
+            {
+                using (ISession Session = ConnectionHelper.CreateNewSession())
+                {
+                    long accNumber = long.Parse(expert.Account);
+                    Terminal terminal = data.getTerminalByNumber(Session, accNumber);
+                    if (terminal == null)
+                    {
+                        log.Log("Unknown AccountNumber " + expert.Account + " ERROR");
+                        expert.Magic = accNumber;
+                        return expert;
+                    }
+                    SubscribeToSignals(accNumber);
+                    log.Info($"Terminal <{accNumber}> Subscribed.");
+                }
+                return expert;
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                expert.Magic = 0;
+            }
+            return expert;
+        }
+
+        public void DeInitTerminal(ExpertInfo expert)
+        {
+            try
+            {
+                long accNumber = long.Parse(expert.Account);
+                UnSubscribeFromSignals(accNumber);
+                log.Info($"Terminal: <{accNumber}> UnSubscribed.");
+            }
+            catch (Exception e)
+            {
+                log.Error("DeInitTerminal: " + e);
+            }
+        }
+
         public SignalInfo SendSignal(SignalInfo signal)
         {
             SignalInfo result = null;
@@ -752,7 +791,15 @@ namespace BusinessLogic.BusinessObjects
 
                         result.Data = JsonConvert.SerializeObject(expertInfo);
                     }
-
+                    break;
+                case EnumSignals.SIGNAL_INIT_TERMINAL:
+                    if (signal.Data != null)
+                    {
+                        ExpertInfo ei = JsonConvert.DeserializeObject<ExpertInfo>(signal.Data.ToString());
+                        var expertInfo = InitTerminal(ei);
+                        result = CreateSignal(SignalFlags.Expert, signal.ObjectId, (EnumSignals)signal.Id);
+                        result.Data = JsonConvert.SerializeObject(expertInfo);
+                    }
                     break;
             }
 
@@ -1190,11 +1237,11 @@ namespace BusinessLogic.BusinessObjects
         public void PostSignalTo(SignalInfo signal)
         {
             SignalFlags to = (SignalFlags) signal.Flags;
-            if (to == SignalFlags.AllExperts)
+            if (to == SignalFlags.AllTerminals)
             {
                 foreach (var que in signalQue) que.Value.Enqueue(signal);
             }
-            else if (to == SignalFlags.Expert)
+            else if ((to == SignalFlags.Expert) || (to == SignalFlags.Terminal))
             {
                 PostSignal(signal);
             }
@@ -1228,7 +1275,6 @@ namespace BusinessLogic.BusinessObjects
                     if (que.TryDequeue(out si)) return si;
                 }
             }
-
             return null;
         }
 
@@ -1267,6 +1313,11 @@ namespace BusinessLogic.BusinessObjects
         public void SaveDeals(List<DealInfo> deals)
         {
             data.SaveDeals(deals);
+        }
+
+        public List<DealInfo> TodayDeals()
+        {
+            return data.TodayDeals();
         }
 
         #endregion

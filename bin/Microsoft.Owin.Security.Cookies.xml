@@ -19,11 +19,6 @@
             The prefix used to provide a default CookieAuthenticationOptions.CookieName
             </summary>
         </member>
-        <member name="F:Microsoft.Owin.Security.Cookies.CookieAuthenticationDefaults.ReturnUrlParameter">
-            <summary>
-            The default value of the CookieAuthenticationOptions.ReturnUrlParameter
-            </summary>
-        </member>
         <member name="F:Microsoft.Owin.Security.Cookies.CookieAuthenticationDefaults.LoginPath">
             <summary>
             The default value used by UseApplicationSignInCookie for the
@@ -34,6 +29,11 @@
             <summary>
             The default value used by UseApplicationSignInCookie for the
             CookieAuthenticationOptions.LogoutPath
+            </summary>
+        </member>
+        <member name="F:Microsoft.Owin.Security.Cookies.CookieAuthenticationDefaults.ReturnUrlParameter">
+            <summary>
+            The default value of the CookieAuthenticationOptions.ReturnUrlParameter
             </summary>
         </member>
         <member name="T:Microsoft.Owin.Security.Cookies.CookieSecureOption">
@@ -63,28 +63,6 @@
             CookieOptions.Secure is always marked true. Use this value when your login page and all subsequent pages
             requiring the authenticated identity are HTTPS. Local development will also need to be done with HTTPS urls.
             </summary>
-        </member>
-        <member name="T:Owin.CookieAuthenticationExtensions">
-            <summary>
-            Extension methods provided by the cookies authentication middleware
-            </summary>
-        </member>
-        <member name="M:Owin.CookieAuthenticationExtensions.UseCookieAuthentication(Owin.IAppBuilder,Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions)">
-            <summary>
-            Adds a cookie-based authentication middleware to your web application pipeline.
-            </summary>
-            <param name="app">The IAppBuilder passed to your configuration method</param>
-            <param name="options">An options class that controls the middleware behavior</param>
-            <returns>The original app parameter</returns>
-        </member>
-        <member name="M:Owin.CookieAuthenticationExtensions.UseCookieAuthentication(Owin.IAppBuilder,Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions,Owin.PipelineStage)">
-            <summary>
-            Adds a cookie-based authentication middleware to your web application pipeline.
-            </summary>
-            <param name="app">The IAppBuilder passed to your configuration method</param>
-            <param name="options">An options class that controls the middleware behavior</param>
-            <param name="stage"></param>
-            <returns>The original app parameter</returns>
         </member>
         <member name="T:Microsoft.Owin.Security.Cookies.CookieAuthenticationMiddleware">
             <summary>
@@ -243,53 +221,39 @@
             or may be instantiated directly.
             </summary>
         </member>
-        <member name="T:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider">
-            <summary>
-            Specifies callback methods which the <see cref="T:Microsoft.Owin.Security.Cookies.CookieAuthenticationMiddleware"></see> invokes to enable developer control over the authentication process. /&gt;
-            </summary>
-        </member>
-        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ValidateIdentity(Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext)">
-            <summary>
-            Called each time a request identity has been validated by the middleware. By implementing this method the
-            application may alter or reject the identity which has arrived with the request.
-            </summary>
-            <param name="context">Contains information about the login session as well as the user <see cref="T:System.Security.Claims.ClaimsIdentity"/>.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the completed operation.</returns>
-        </member>
-        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ResponseSignIn(Microsoft.Owin.Security.Cookies.CookieResponseSignInContext)">
-            <summary>
-            Called when an endpoint has provided sign in information before it is converted into a cookie. By
-            implementing this method the claims and extra information that go into the ticket may be altered.
-            </summary>
-            <param name="context">Contains information about the login session as well as the user <see cref="T:System.Security.Claims.ClaimsIdentity"/>.</param>
-        </member>
-        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ResponseSignedIn(Microsoft.Owin.Security.Cookies.CookieResponseSignedInContext)">
-            <summary>
-            Called when an endpoint has provided sign in information after it is converted into a cookie.
-            </summary>
-            <param name="context">Contains information about the login session as well as the user <see cref="T:System.Security.Claims.ClaimsIdentity"/>.</param>
-        </member>
-        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ApplyRedirect(Microsoft.Owin.Security.Cookies.CookieApplyRedirectContext)">
-            <summary>
-            Called when a Challenge, SignIn, or SignOut causes a redirect in the cookie middleware
-            </summary>
-            <param name="context">Contains information about the event</param>
-        </member>
-        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ResponseSignOut(Microsoft.Owin.Security.Cookies.CookieResponseSignOutContext)">
-            <summary>
-            Called during the sign-out flow to augment the cookie cleanup process.
-            </summary>
-            <param name="context">Contains information about the login session as well as information about the authentication cookie.</param>
-        </member>
-        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.Exception(Microsoft.Owin.Security.Cookies.CookieExceptionContext)">
-            <summary>
-            Called when an exception occurs during request or response processing.
-            </summary>
-            <param name="context">Contains information about the exception that occurred</param>
-        </member>
         <member name="M:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.#ctor">
             <summary>
             Create a new instance of the default provider.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnValidateIdentity">
+            <summary>
+            A delegate assigned to this property will be invoked when the related method is called
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnResponseSignIn">
+            <summary>
+            A delegate assigned to this property will be invoked when the related method is called
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnResponseSignedIn">
+            <summary>
+            A delegate assigned to this property will be invoked when the related method is called
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnResponseSignOut">
+            <summary>
+            A delegate assigned to this property will be invoked when the related method is called
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnApplyRedirect">
+            <summary>
+            A delegate assigned to this property will be invoked when the related method is called
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnException">
+            <summary>
+            A delegate assigned to this property will be invoked when the related method is called
             </summary>
         </member>
         <member name="M:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.ValidateIdentity(Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext)">
@@ -329,36 +293,6 @@
             </summary>
             <param name="context">Contains information about the event</param>
         </member>
-        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnValidateIdentity">
-            <summary>
-            A delegate assigned to this property will be invoked when the related method is called
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnResponseSignIn">
-            <summary>
-            A delegate assigned to this property will be invoked when the related method is called
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnResponseSignedIn">
-            <summary>
-            A delegate assigned to this property will be invoked when the related method is called
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnResponseSignOut">
-            <summary>
-            A delegate assigned to this property will be invoked when the related method is called
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnApplyRedirect">
-            <summary>
-            A delegate assigned to this property will be invoked when the related method is called
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationProvider.OnException">
-            <summary>
-            A delegate assigned to this property will be invoked when the related method is called
-            </summary>
-        </member>
         <member name="T:Microsoft.Owin.Security.Cookies.CookieExceptionContext">
             <summary>
             Context object passed to the ICookieAuthenticationProvider method Exception.
@@ -373,6 +307,26 @@
             <param name="location">The location of the exception</param>
             <param name="exception">The exception thrown.</param>
             <param name="ticket">The current ticket, if any.</param>
+        </member>
+        <member name="T:Microsoft.Owin.Security.Cookies.CookieExceptionContext.ExceptionLocation">
+            <summary>
+            The code paths where exceptions may be reported.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Owin.Security.Cookies.CookieExceptionContext.ExceptionLocation.AuthenticateAsync">
+            <summary>
+            The exception was reported in the AuthenticateAsync code path.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Owin.Security.Cookies.CookieExceptionContext.ExceptionLocation.ApplyResponseGrant">
+            <summary>
+            The exception was reported in the ApplyResponseGrant code path, during sign-in, sign-out, or refresh.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Owin.Security.Cookies.CookieExceptionContext.ExceptionLocation.ApplyResponseChallenge">
+            <summary>
+            The exception was reported in the ApplyResponseChallenge code path, during redirect generation.
+            </summary>
         </member>
         <member name="P:Microsoft.Owin.Security.Cookies.CookieExceptionContext.Location">
             <summary>
@@ -394,26 +348,6 @@
             The current authentication ticket, if any.
             In the AuthenticateAsync code path, if the given exception is not re-thrown then this ticket
             will be returned to the application. The ticket may be replaced if needed.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Owin.Security.Cookies.CookieExceptionContext.ExceptionLocation">
-            <summary>
-            The code paths where exceptions may be reported.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Owin.Security.Cookies.CookieExceptionContext.ExceptionLocation.AuthenticateAsync">
-            <summary>
-            The exception was reported in the AuthenticateAsync code path.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Owin.Security.Cookies.CookieExceptionContext.ExceptionLocation.ApplyResponseGrant">
-            <summary>
-            The exception was reported in the ApplyResponseGrant code path, during sign-in, sign-out, or refresh.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Owin.Security.Cookies.CookieExceptionContext.ExceptionLocation.ApplyResponseChallenge">
-            <summary>
-            The exception was reported in the ApplyResponseChallenge code path, during redirect generation.
             </summary>
         </member>
         <member name="T:Microsoft.Owin.Security.Cookies.CookieResponseSignedInContext">
@@ -517,6 +451,17 @@
             <param name="ticket">Contains the initial values for identity and extra data</param>
             <param name="options"></param>
         </member>
+        <member name="P:Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext.Identity">
+            <summary>
+            Contains the claims identity arriving with the request. May be altered to change the 
+            details of the authenticated user.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext.Properties">
+            <summary>
+            Contains the extra meta-data arriving with the request ticket. May be altered.
+            </summary>
+        </member>
         <member name="M:Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext.ReplaceIdentity(System.Security.Principal.IIdentity)">
             <summary>
             Called to replace the claims identity. The supplied identity will replace the value of the 
@@ -530,16 +475,71 @@
             account is no longer active, and the request should be treated as if it was anonymous.
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext.Identity">
+        <member name="T:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider">
             <summary>
-            Contains the claims identity arriving with the request. May be altered to change the 
-            details of the authenticated user.
+            Specifies callback methods which the <see cref="T:Microsoft.Owin.Security.Cookies.CookieAuthenticationMiddleware"></see> invokes to enable developer control over the authentication process. />
             </summary>
         </member>
-        <member name="P:Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext.Properties">
+        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ValidateIdentity(Microsoft.Owin.Security.Cookies.CookieValidateIdentityContext)">
             <summary>
-            Contains the extra meta-data arriving with the request ticket. May be altered.
+            Called each time a request identity has been validated by the middleware. By implementing this method the
+            application may alter or reject the identity which has arrived with the request.
             </summary>
+            <param name="context">Contains information about the login session as well as the user <see cref="T:System.Security.Claims.ClaimsIdentity"/>.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the completed operation.</returns>
+        </member>
+        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ResponseSignIn(Microsoft.Owin.Security.Cookies.CookieResponseSignInContext)">
+            <summary>
+            Called when an endpoint has provided sign in information before it is converted into a cookie. By
+            implementing this method the claims and extra information that go into the ticket may be altered.
+            </summary>
+            <param name="context">Contains information about the login session as well as the user <see cref="T:System.Security.Claims.ClaimsIdentity"/>.</param>
+        </member>
+        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ResponseSignedIn(Microsoft.Owin.Security.Cookies.CookieResponseSignedInContext)">
+            <summary>
+            Called when an endpoint has provided sign in information after it is converted into a cookie.
+            </summary>
+            <param name="context">Contains information about the login session as well as the user <see cref="T:System.Security.Claims.ClaimsIdentity"/>.</param>
+        </member>
+        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ApplyRedirect(Microsoft.Owin.Security.Cookies.CookieApplyRedirectContext)">
+            <summary>
+            Called when a Challenge, SignIn, or SignOut causes a redirect in the cookie middleware
+            </summary>
+            <param name="context">Contains information about the event</param>
+        </member>
+        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.ResponseSignOut(Microsoft.Owin.Security.Cookies.CookieResponseSignOutContext)">
+            <summary>
+            Called during the sign-out flow to augment the cookie cleanup process.
+            </summary>
+            <param name="context">Contains information about the login session as well as information about the authentication cookie.</param>
+        </member>
+        <member name="M:Microsoft.Owin.Security.Cookies.ICookieAuthenticationProvider.Exception(Microsoft.Owin.Security.Cookies.CookieExceptionContext)">
+            <summary>
+            Called when an exception occurs during request or response processing.
+            </summary>
+            <param name="context">Contains information about the exception that occurred</param>
+        </member>
+        <member name="T:Owin.CookieAuthenticationExtensions">
+            <summary>
+            Extension methods provided by the cookies authentication middleware
+            </summary>
+        </member>
+        <member name="M:Owin.CookieAuthenticationExtensions.UseCookieAuthentication(Owin.IAppBuilder,Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions)">
+            <summary>
+            Adds a cookie-based authentication middleware to your web application pipeline.
+            </summary>
+            <param name="app">The IAppBuilder passed to your configuration method</param>
+            <param name="options">An options class that controls the middleware behavior</param>
+            <returns>The original app parameter</returns>
+        </member>
+        <member name="M:Owin.CookieAuthenticationExtensions.UseCookieAuthentication(Owin.IAppBuilder,Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions,Owin.PipelineStage)">
+            <summary>
+            Adds a cookie-based authentication middleware to your web application pipeline.
+            </summary>
+            <param name="app">The IAppBuilder passed to your configuration method</param>
+            <param name="options">An options class that controls the middleware behavior</param>
+            <param name="stage"></param>
+            <returns>The original app parameter</returns>
         </member>
     </members>
 </doc>

@@ -469,6 +469,12 @@
             </summary>
             <param name="callback">The action to run when an exception occurs.</param>
         </member>
+        <member name="P:Topshelf.HostConfigurators.HostConfigurator.UnhandledExceptionPolicy">
+            <summary>
+            The policy that will be used when Topself detects an UnhandledException in the
+            application. The default policy is to log an error and to stop the service.
+            </summary>
+        </member>
         <member name="T:Topshelf.HostConfigurators.ServiceRecoveryHostConfigurator">
             <summary>
             Implements a service recovery configurator and host builder configurator.
@@ -528,6 +534,12 @@
             </summary>
             <param name="delayInMinutes">The delay in minutes.</param>
             <param name="command">The command.</param>
+            <returns>The service recovery configurator.</returns>
+        </member>
+        <member name="M:Topshelf.HostConfigurators.ServiceRecoveryHostConfigurator.TakeNoAction">
+            <summary>
+            Adds a take no action recovery action.
+            </summary>
             <returns>The service recovery configurator.</returns>
         </member>
         <member name="M:Topshelf.HostConfigurators.ServiceRecoveryHostConfigurator.SetResetPeriod(System.Int32)">
@@ -720,6 +732,12 @@
             <param name="command">The command to run.</param>
             <returns>The service recovery configurator.</returns>
         </member>
+        <member name="M:Topshelf.ServiceRecoveryConfigurator.TakeNoAction">
+            <summary>
+              Take no action
+            </summary>
+            <returns>The service recovery configurator.</returns>
+        </member>
         <member name="M:Topshelf.ServiceRecoveryConfigurator.SetResetPeriod(System.Int32)">
             <summary>
               Specifies the reset period for the restart options
@@ -767,11 +785,6 @@
         <member name="M:Topshelf.HostControl.Stop(Topshelf.TopshelfExitCode)">
             <summary>
             Stops the Host, returning the specified exit code
-            </summary>
-        </member>
-        <member name="M:Topshelf.HostControl.Restart">
-            <summary>
-            Restarts the Host
             </summary>
         </member>
         <member name="T:Topshelf.HostFactory">
@@ -1275,6 +1288,12 @@
             own handling.
             </summary>
         </member>
+        <member name="P:Topshelf.Runtime.HostSettings.UnhandledExceptionPolicy">
+            <summary>
+            The policy that will be used when Topself detects an UnhandledException in the
+            application. The default policy is to log an error and to stop the service.
+            </summary>
+        </member>
         <member name="T:Topshelf.Runtime.ServiceHandle">
             <summary>
             A handle to a service being hosted by the Host
@@ -1334,6 +1353,24 @@
             </summary>
             <param name="hostControl"></param>
             <param name="command"></param>
+        </member>
+        <member name="F:Topshelf.Runtime.UnhandledExceptionPolicyCode.LogErrorAndStopService">
+            <summary>
+            If an UnhandledException occurs, Topshelf will log an error and 
+            stop the service
+            </summary>
+        </member>
+        <member name="F:Topshelf.Runtime.UnhandledExceptionPolicyCode.LogErrorOnly">
+            <summary>
+            If an UnhandledException occurs, Topshelf will log an error and 
+            continue without stopping the service
+            </summary>
+        </member>
+        <member name="F:Topshelf.Runtime.UnhandledExceptionPolicyCode.TakeNoAction">
+            <summary>
+            If an UnhandledException occurs, Topshelf will take no action. 
+            It is assumed that the application will handle the UnhandledException itself.
+            </summary>
         </member>
         <member name="F:Topshelf.Runtime.Windows.NativeMethods.SCM_ACCESS.SC_MANAGER_CONNECT">
             <summary>
@@ -1475,6 +1512,22 @@
             Gets the service recovery configuration action.
             </summary>
             <returns>A <see cref="T:Topshelf.Runtime.Windows.NativeMethods.SC_ACTION"/> representing the service recovery configuration action.</returns>
+        </member>
+        <member name="T:Topshelf.Runtime.Windows.TakeNoActionAction">
+            <summary>
+            Represents a take no action recovery action.
+            </summary>
+        </member>
+        <member name="M:Topshelf.Runtime.Windows.TakeNoActionAction.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Topshelf.Runtime.Windows.TakeNoActionAction"/> class.
+            </summary>
+        </member>
+        <member name="M:Topshelf.Runtime.Windows.TakeNoActionAction.GetAction">
+            <summary>
+            Gets the service recovery configuration action.
+            </summary>
+            <returns>A <see cref="T:Topshelf.Runtime.Windows.NativeMethods.SC_ACTION"/> representing the take no action service recovery configuration action.</returns>
         </member>
         <member name="M:Topshelf.Runtime.Windows.WindowsHostSettings.#ctor">
             <summary>

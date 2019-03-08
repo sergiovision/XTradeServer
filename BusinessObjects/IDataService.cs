@@ -23,5 +23,6 @@ namespace BusinessObjects
         void UpdateBalance(int TerminalId, decimal Balance, decimal Equity);
         void SaveDeals(List<DealInfo> deals);
         decimal ConvertToUSD(decimal value, string valueCurrency);
+        List<DealInfo> TodayDeals();
     }
 }

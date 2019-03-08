@@ -56,7 +56,7 @@ namespace XTrade.MainServer
 
             // Configure Web API for self-host. 
             var config = new HttpConfiguration();
-
+            
             config.Routes.MapHttpRoute("DefaultApiWithId", "Api/{controller}/{id}", new {id = RouteParameter.Optional},
                 new {id = @"\d+"});
             config.Routes.MapHttpRoute("DefaultApiWithAction", "Api/{controller}/{action}/{id}",

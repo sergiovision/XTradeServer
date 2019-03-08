@@ -13,6 +13,7 @@ namespace BusinessObjects
         Server = 1,
         Expert = 2,
         Cluster = 3,
-        AllExperts = 4
+        Terminal = 4,
+        AllTerminals = 5
     }
 }

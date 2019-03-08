@@ -9,6 +9,31 @@
             Provides a mapping between file extensions and MIME types.
             </summary>
         </member>
+        <member name="M:Microsoft.Owin.StaticFiles.ContentTypes.FileExtensionContentTypeProvider.#ctor">
+            <summary>
+            Creates a new provider with a set of default mappings.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.StaticFiles.ContentTypes.FileExtensionContentTypeProvider.#ctor(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Creates a lookup engine using the provided mapping.
+            It is recommended that the IDictionary instance use StringComparer.OrdinalIgnoreCase.
+            </summary>
+            <param name="mapping"></param>
+        </member>
+        <member name="P:Microsoft.Owin.StaticFiles.ContentTypes.FileExtensionContentTypeProvider.Mappings">
+            <summary>
+            The cross reference table of file extensions and content-types.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.StaticFiles.ContentTypes.FileExtensionContentTypeProvider.TryGetContentType(System.String,System.String@)">
+            <summary>
+            Given a file path, determine the MIME type
+            </summary>
+            <param name="subpath">A file path</param>
+            <param name="contentType">The resulting MIME type</param>
+            <returns>True if MIME type could be determined</returns>
+        </member>
         <member name="T:Microsoft.Owin.StaticFiles.ContentTypes.IContentTypeProvider">
             <summary>
             Used to look up MIME types given a file path
@@ -22,32 +47,12 @@
             <param name="contentType">The resulting MIME type</param>
             <returns>True if MIME type could be determined</returns>
         </member>
-        <member name="M:Microsoft.Owin.StaticFiles.ContentTypes.FileExtensionContentTypeProvider.#ctor">
-            <summary>
-            Creates a new provider with a set of default mappings.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Owin.StaticFiles.ContentTypes.FileExtensionContentTypeProvider.#ctor(System.Collections.Generic.IDictionary{System.String,System.String})">
-            <summary>
-            Creates a lookup engine using the provided mapping.
-            It is recommended that the IDictionary instance use StringComparer.OrdinalIgnoreCase.
-            </summary>
-            <param name="mapping"></param>
-        </member>
-        <member name="M:Microsoft.Owin.StaticFiles.ContentTypes.FileExtensionContentTypeProvider.TryGetContentType(System.String,System.String@)">
-            <summary>
-            Given a file path, determine the MIME type
-            </summary>
-            <param name="subpath">A file path</param>
-            <param name="contentType">The resulting MIME type</param>
-            <returns>True if MIME type could be determined</returns>
-        </member>
-        <member name="P:Microsoft.Owin.StaticFiles.ContentTypes.FileExtensionContentTypeProvider.Mappings">
-            <summary>
-            The cross reference table of file extensions and content-types.
-            </summary>
-        </member>
         <member name="T:Microsoft.Owin.StaticFiles.DirectoryFormatters.HtmlDirectoryFormatter">
+            <summary>
+            Generates an HTML view for a directory.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.StaticFiles.DirectoryFormatters.HtmlDirectoryFormatter.GenerateContentAsync(Microsoft.Owin.IOwinContext,System.Collections.Generic.IEnumerable{Microsoft.Owin.FileSystems.IFileInfo})">
             <summary>
             Generates an HTML view for a directory.
             </summary>
@@ -64,41 +69,9 @@
             Implementers should set all necessary response headers (e.g. Content-Type, Content-Length, etc.).
             </summary>
         </member>
-        <member name="M:Microsoft.Owin.StaticFiles.DirectoryFormatters.HtmlDirectoryFormatter.GenerateContentAsync(Microsoft.Owin.IOwinContext,System.Collections.Generic.IEnumerable{Microsoft.Owin.FileSystems.IFileInfo})">
-            <summary>
-            Generates an HTML view for a directory.
-            </summary>
-        </member>
         <member name="T:Microsoft.Owin.StaticFiles.DefaultFilesOptions">
             <summary>
             Options for selecting default file names.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1">
-            <summary>
-            Options common to several middleware components
-            </summary>
-            <typeparam name="T">The type of the subclass</typeparam>
-        </member>
-        <member name="M:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1.#ctor(Microsoft.Owin.StaticFiles.Infrastructure.SharedOptions)">
-            <summary>
-            Creates an new instance of the SharedOptionsBase.
-            </summary>
-            <param name="sharedOptions"></param>
-        </member>
-        <member name="P:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1.SharedOptions">
-            <summary>
-            Options common to several middleware components
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1.RequestPath">
-            <summary>
-            The relative request path that maps to static resources.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1.FileSystem">
-            <summary>
-            The file system used to locate resources
             </summary>
         </member>
         <member name="M:Microsoft.Owin.StaticFiles.DefaultFilesOptions.#ctor">
@@ -158,6 +131,33 @@
             The file system used to locate resources
             </summary>
         </member>
+        <member name="T:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1">
+            <summary>
+            Options common to several middleware components
+            </summary>
+            <typeparam name="T">The type of the subclass</typeparam>
+        </member>
+        <member name="M:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1.#ctor(Microsoft.Owin.StaticFiles.Infrastructure.SharedOptions)">
+            <summary>
+            Creates an new instance of the SharedOptionsBase.
+            </summary>
+            <param name="sharedOptions"></param>
+        </member>
+        <member name="P:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1.SharedOptions">
+            <summary>
+            Options common to several middleware components
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1.RequestPath">
+            <summary>
+            The relative request path that maps to static resources.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.StaticFiles.Infrastructure.SharedOptionsBase`1.FileSystem">
+            <summary>
+            The file system used to locate resources
+            </summary>
+        </member>
         <member name="T:Microsoft.Owin.StaticFiles.FileServerOptions">
             <summary>
             Options for all of the static file middleware components
@@ -192,71 +192,6 @@
             <summary>
             Default files are enabled by default.
             </summary>
-        </member>
-        <member name="T:Owin.FileServerExtensions">
-            <summary>
-            Extension methods that combine all of the static file middleware components:
-            Default files, directory browsing, send file, and static files
-            </summary>
-        </member>
-        <member name="M:Owin.FileServerExtensions.UseFileServer(Owin.IAppBuilder)">
-            <summary>
-            Enable all static file middleware (except directory browsing) for the current request path in the current directory.
-            </summary>
-            <param name="builder"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Owin.FileServerExtensions.UseFileServer(Owin.IAppBuilder,System.Boolean)">
-            <summary>
-            Enable all static file middleware on for the current request path in the current directory.
-            </summary>
-            <param name="builder"></param>
-            <param name="enableDirectoryBrowsing">Should directory browsing be enabled?</param>
-            <returns></returns>
-        </member>
-        <member name="M:Owin.FileServerExtensions.UseFileServer(Owin.IAppBuilder,System.String)">
-            <summary>
-            Enables all static file middleware (except directory browsing) for the given request path from the directory of the same name
-            </summary>
-            <param name="builder"></param>
-            <param name="requestPath">The relative request path and physical path.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Owin.FileServerExtensions.UseFileServer(Owin.IAppBuilder,Microsoft.Owin.StaticFiles.FileServerOptions)">
-            <summary>
-            Enable all static file middleware with the given options
-            </summary>
-            <param name="builder"></param>
-            <param name="options"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Owin.DefaultFilesExtensions">
-            <summary>
-            Extension methods for the DefaultFilesMiddleware
-            </summary>
-        </member>
-        <member name="M:Owin.DefaultFilesExtensions.UseDefaultFiles(Owin.IAppBuilder)">
-            <summary>
-            Enables default file mapping on the current path from the current directory
-            </summary>
-            <param name="builder"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Owin.DefaultFilesExtensions.UseDefaultFiles(Owin.IAppBuilder,System.String)">
-            <summary>
-            Enables default file mapping for the given request path from the directory of the same name
-            </summary>
-            <param name="builder"></param>
-            <param name="requestPath">The relative request path and physical path.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Owin.DefaultFilesExtensions.UseDefaultFiles(Owin.IAppBuilder,Microsoft.Owin.StaticFiles.DefaultFilesOptions)">
-            <summary>
-            Enables default file mapping with the given options
-            </summary>
-            <param name="builder"></param>
-            <param name="options"></param>
-            <returns></returns>
         </member>
         <member name="T:Microsoft.Owin.StaticFiles.DefaultFilesMiddleware">
             <summary>
@@ -298,34 +233,6 @@
             Examines the request to see if it matches a configured directory.  If so, a view of the directory contents is returned.
             </summary>
             <param name="environment">The request environment.</param>
-            <returns></returns>
-        </member>
-        <member name="T:Owin.DirectoryBrowserExtensions">
-            <summary>
-            Extension methods for the DirectoryBrowserMiddleware
-            </summary>
-        </member>
-        <member name="M:Owin.DirectoryBrowserExtensions.UseDirectoryBrowser(Owin.IAppBuilder)">
-            <summary>
-            Enable directory browsing on the current path for the current directory
-            </summary>
-            <param name="builder"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Owin.DirectoryBrowserExtensions.UseDirectoryBrowser(Owin.IAppBuilder,System.String)">
-            <summary>
-            Enables directory browsing for the given request path from the directory of the same name
-            </summary>
-            <param name="builder"></param>
-            <param name="requestPath">The relative request path and physical path.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Owin.DirectoryBrowserExtensions.UseDirectoryBrowser(Owin.IAppBuilder,Microsoft.Owin.StaticFiles.DirectoryBrowserOptions)">
-            <summary>
-            Enable directory browsing with the given options
-            </summary>
-            <param name="builder"></param>
-            <param name="options"></param>
             <returns></returns>
         </member>
         <member name="T:Microsoft.Owin.StaticFiles.Resources">
@@ -422,65 +329,6 @@
             <param name="builder"></param>
             <returns></returns>
         </member>
-        <member name="T:Microsoft.Owin.SendFileResponseExtensions">
-            <summary>
-            Provides extensions for IOwinResponse exposing the SendFile extension.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Owin.SendFileResponseExtensions.SupportsSendFile(Microsoft.Owin.IOwinResponse)">
-            <summary>
-            Checks if the SendFile extension is supported.
-            </summary>
-            <param name="response"></param>
-            <returns>True if sendfile.SendAsync is defined in the environment.</returns>
-        </member>
-        <member name="M:Microsoft.Owin.SendFileResponseExtensions.SendFileAsync(Microsoft.Owin.IOwinResponse,System.String)">
-            <summary>
-            Sends the given file using the SendFile extension.
-            </summary>
-            <param name="response"></param>
-            <param name="fileName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Owin.SendFileResponseExtensions.SendFileAsync(Microsoft.Owin.IOwinResponse,System.String,System.Int64,System.Nullable{System.Int64},System.Threading.CancellationToken)">
-            <summary>
-            Sends the given file using the SendFile extension.
-            </summary>
-            <param name="response"></param>
-            <param name="fileName">The full or relative path to the file.</param>
-            <param name="offset">The offset in the file.</param>
-            <param name="count">The number of types to send, or null to send the remainder of the file.</param>
-            <param name="cancellationToken"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Owin.StaticFileExtensions">
-            <summary>
-            Extension methods for the StaticFileMiddleware
-            </summary>
-        </member>
-        <member name="M:Owin.StaticFileExtensions.UseStaticFiles(Owin.IAppBuilder)">
-            <summary>
-            Enables static file serving for the current request path from the current directory
-            </summary>
-            <param name="builder"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Owin.StaticFileExtensions.UseStaticFiles(Owin.IAppBuilder,System.String)">
-            <summary>
-            Enables static file serving for the given request path from the directory of the same name
-            </summary>
-            <param name="builder"></param>
-            <param name="requestPath">The relative request path and physical path.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Owin.StaticFileExtensions.UseStaticFiles(Owin.IAppBuilder,Microsoft.Owin.StaticFiles.StaticFileOptions)">
-            <summary>
-            Enables static file serving with the given options
-            </summary>
-            <param name="builder"></param>
-            <param name="options"></param>
-            <returns></returns>
-        </member>
         <member name="T:Microsoft.Owin.StaticFiles.StaticFileMiddleware">
             <summary>
             Enables serving static files for a given request path
@@ -554,6 +402,158 @@
             <summary>
             The file to be served.
             </summary>
+        </member>
+        <member name="T:Microsoft.Owin.SendFileResponseExtensions">
+            <summary>
+            Provides extensions for IOwinResponse exposing the SendFile extension.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.SendFileResponseExtensions.SupportsSendFile(Microsoft.Owin.IOwinResponse)">
+            <summary>
+            Checks if the SendFile extension is supported.
+            </summary>
+            <param name="response"></param>
+            <returns>True if sendfile.SendAsync is defined in the environment.</returns>
+        </member>
+        <member name="M:Microsoft.Owin.SendFileResponseExtensions.SendFileAsync(Microsoft.Owin.IOwinResponse,System.String)">
+            <summary>
+            Sends the given file using the SendFile extension.
+            </summary>
+            <param name="response"></param>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Owin.SendFileResponseExtensions.SendFileAsync(Microsoft.Owin.IOwinResponse,System.String,System.Int64,System.Nullable{System.Int64},System.Threading.CancellationToken)">
+            <summary>
+            Sends the given file using the SendFile extension.
+            </summary>
+            <param name="response"></param>
+            <param name="fileName">The full or relative path to the file.</param>
+            <param name="offset">The offset in the file.</param>
+            <param name="count">The number of types to send, or null to send the remainder of the file.</param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Owin.FileServerExtensions">
+            <summary>
+            Extension methods that combine all of the static file middleware components:
+            Default files, directory browsing, send file, and static files
+            </summary>
+        </member>
+        <member name="M:Owin.FileServerExtensions.UseFileServer(Owin.IAppBuilder)">
+            <summary>
+            Enable all static file middleware (except directory browsing) for the current request path in the current directory.
+            </summary>
+            <param name="builder"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Owin.FileServerExtensions.UseFileServer(Owin.IAppBuilder,System.Boolean)">
+            <summary>
+            Enable all static file middleware on for the current request path in the current directory.
+            </summary>
+            <param name="builder"></param>
+            <param name="enableDirectoryBrowsing">Should directory browsing be enabled?</param>
+            <returns></returns>
+        </member>
+        <member name="M:Owin.FileServerExtensions.UseFileServer(Owin.IAppBuilder,System.String)">
+            <summary>
+            Enables all static file middleware (except directory browsing) for the given request path from the directory of the same name
+            </summary>
+            <param name="builder"></param>
+            <param name="requestPath">The relative request path and physical path.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Owin.FileServerExtensions.UseFileServer(Owin.IAppBuilder,Microsoft.Owin.StaticFiles.FileServerOptions)">
+            <summary>
+            Enable all static file middleware with the given options
+            </summary>
+            <param name="builder"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Owin.DefaultFilesExtensions">
+            <summary>
+            Extension methods for the DefaultFilesMiddleware
+            </summary>
+        </member>
+        <member name="M:Owin.DefaultFilesExtensions.UseDefaultFiles(Owin.IAppBuilder)">
+            <summary>
+            Enables default file mapping on the current path from the current directory
+            </summary>
+            <param name="builder"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Owin.DefaultFilesExtensions.UseDefaultFiles(Owin.IAppBuilder,System.String)">
+            <summary>
+            Enables default file mapping for the given request path from the directory of the same name
+            </summary>
+            <param name="builder"></param>
+            <param name="requestPath">The relative request path and physical path.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Owin.DefaultFilesExtensions.UseDefaultFiles(Owin.IAppBuilder,Microsoft.Owin.StaticFiles.DefaultFilesOptions)">
+            <summary>
+            Enables default file mapping with the given options
+            </summary>
+            <param name="builder"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Owin.DirectoryBrowserExtensions">
+            <summary>
+            Extension methods for the DirectoryBrowserMiddleware
+            </summary>
+        </member>
+        <member name="M:Owin.DirectoryBrowserExtensions.UseDirectoryBrowser(Owin.IAppBuilder)">
+            <summary>
+            Enable directory browsing on the current path for the current directory
+            </summary>
+            <param name="builder"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Owin.DirectoryBrowserExtensions.UseDirectoryBrowser(Owin.IAppBuilder,System.String)">
+            <summary>
+            Enables directory browsing for the given request path from the directory of the same name
+            </summary>
+            <param name="builder"></param>
+            <param name="requestPath">The relative request path and physical path.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Owin.DirectoryBrowserExtensions.UseDirectoryBrowser(Owin.IAppBuilder,Microsoft.Owin.StaticFiles.DirectoryBrowserOptions)">
+            <summary>
+            Enable directory browsing with the given options
+            </summary>
+            <param name="builder"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Owin.StaticFileExtensions">
+            <summary>
+            Extension methods for the StaticFileMiddleware
+            </summary>
+        </member>
+        <member name="M:Owin.StaticFileExtensions.UseStaticFiles(Owin.IAppBuilder)">
+            <summary>
+            Enables static file serving for the current request path from the current directory
+            </summary>
+            <param name="builder"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Owin.StaticFileExtensions.UseStaticFiles(Owin.IAppBuilder,System.String)">
+            <summary>
+            Enables static file serving for the given request path from the directory of the same name
+            </summary>
+            <param name="builder"></param>
+            <param name="requestPath">The relative request path and physical path.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Owin.StaticFileExtensions.UseStaticFiles(Owin.IAppBuilder,Microsoft.Owin.StaticFiles.StaticFileOptions)">
+            <summary>
+            Enables static file serving with the given options
+            </summary>
+            <param name="builder"></param>
+            <param name="options"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

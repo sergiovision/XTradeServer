@@ -62,6 +62,23 @@
             A pluggable CORS policy provider that always returns null by default.
             </summary>
         </member>
+        <member name="M:Microsoft.Owin.Cors.CorsPolicyProvider.#ctor">
+            <summary>
+            Creates a new CorsPolicyProvider instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Cors.CorsPolicyProvider.PolicyResolver">
+            <summary>
+            A pluggable callback that will be used to select the CORS policy for the given requests.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Cors.CorsPolicyProvider.GetCorsPolicyAsync(Microsoft.Owin.IOwinRequest)">
+            <summary>
+            Executes the PolicyResolver unless overridden by a subclass.
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
         <member name="T:Microsoft.Owin.Cors.ICorsPolicyProvider">
             <summary>
             Defines how to select a CORS policy for a given request.
@@ -74,23 +91,6 @@
             <param name="request"></param>
             <returns>The CORS policy to apply to the request, or null if no policy applies and
             the request should be passed through to the next middleware.</returns>
-        </member>
-        <member name="M:Microsoft.Owin.Cors.CorsPolicyProvider.#ctor">
-            <summary>
-            Creates a new CorsPolicyProvider instance.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Owin.Cors.CorsPolicyProvider.GetCorsPolicyAsync(Microsoft.Owin.IOwinRequest)">
-            <summary>
-            Executes the PolicyResolver unless overridden by a subclass.
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="P:Microsoft.Owin.Cors.CorsPolicyProvider.PolicyResolver">
-            <summary>
-            A pluggable callback that will be used to select the CORS policy for the given requests.
-            </summary>
         </member>
     </members>
 </doc>

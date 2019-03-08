@@ -38,7 +38,7 @@ namespace XTrade.MainServer
         public static void Main()
         {
             XmlConfigurator.Configure();
-            Log.Info("MainServer Main function started.");
+            //Log.Info("MainServer Main function started.");
 
             RegisterContainer();
 
@@ -65,7 +65,7 @@ namespace XTrade.MainServer
                 x.Service(factory =>
                 {
                     var server = Container.Resolve<QuartzServer>();
-                    server.Initialize(xtradeConstants.WebBackend_PORT);
+                    server.Initialize(XTradeConfig.WebPort());
                     //server.Start();
                     return server;
                 });

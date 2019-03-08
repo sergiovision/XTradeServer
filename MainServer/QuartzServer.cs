@@ -20,7 +20,7 @@ namespace XTrade.MainServer
 
         public QuartzServer()
         {
-            Initialize(xtradeConstants.WebBackend_PORT);
+            Initialize(XTradeConfig.WebPort());
         }
 
         /// <summary>

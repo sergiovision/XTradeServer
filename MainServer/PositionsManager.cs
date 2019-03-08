@@ -14,6 +14,7 @@ namespace XTrade.MainServer
         private static readonly object lockObject = new object();
         private readonly ConcurrentDictionary<long, PositionInfo> positions;
         private readonly Dictionary<long, Terminal> terminals;
+        private readonly Dictionary<long, DealInfo> todayDeals;
         private readonly IMainService xtrade;
 
         public PositionsManager()
@@ -21,7 +22,7 @@ namespace XTrade.MainServer
             positions = new ConcurrentDictionary<long, PositionInfo>();
             Clients = GlobalHost.ConnectionManager.GetHubContext<TerminalsHub>().Clients;
             xtrade = Program.Container.Resolve<IMainService>();
-
+            todayDeals = new Dictionary<long, DealInfo>();
             terminals = new Dictionary<long, Terminal>();
             foreach (var term in xtrade.GetTerminals()) terminals.Add(term.AccountNumber, term);
         }
@@ -66,7 +67,8 @@ namespace XTrade.MainServer
                     }
                     else
                     {
-                        if (pos.Value.Magic == magicId)
+                        //if (pos.Value.Magic == magicId)
+                        if (pos.Value.Account == AccountNumber)
                             positionsToDelete.Add(pos.Key);
                     }
 
@@ -91,6 +93,40 @@ namespace XTrade.MainServer
             }
         }
 
+        public List<DealInfo> GetTodayDeals()
+        {
+            var xtrade = Program.Container.Resolve<IMainService>();
+            if (xtrade == null)
+                return null;
+            var deals = xtrade.TodayDeals();
+            if (deals != null)
+            {
+                foreach (var deal in deals)
+                {
+                    if (todayDeals.ContainsKey(deal.Ticket))
+                        continue;
+                    string currency = terminals[deal.Account].Currency;
+                    deal.Profit = (double)xtrade.ConvertToUSD(new decimal(deal.Profit), currency);
+                    todayDeals.Add(deal.Ticket, deal);
+                }
+            }
+            DateTime now = DateTime.UtcNow;
+            List<long> toDelete = new List<long>();
+            foreach( var val in todayDeals)
+            {
+                DateTime time = DateTime.Parse(val.Value.CloseTime);
+                if (now.DayOfYear != time.DayOfYear)
+                {
+                    toDelete.Add(val.Key);
+                }
+            }
+            foreach (var val in toDelete)
+            {
+                todayDeals.Remove(val);
+            }
+            return todayDeals.Values.OrderByDescending(x=>x.CloseTime).ToList();
+        }
+
         #region Interface Imp
 
         public void InsertPosition(PositionInfo pos)
@@ -107,7 +143,6 @@ namespace XTrade.MainServer
         {
             Clients.All.RemovePosition(Ticket);
         }
-
         #endregion
     }
 }

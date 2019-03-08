@@ -277,8 +277,8 @@
         </member>
         <member name="P:MySql.Data.MySqlClient.MySqlBulkLoader.Local">
             <summary>
-            Gets or sets a value indicating whether the filename that is to be loaded
-            is local to the client or not
+            Gets or sets a value indicating whether the file name that is to be loaded
+            is local to the client or not. The default value is False.
             </summary>
             <value><c>true</c> if local; otherwise, <c>false</c>.</value>
         </member>
@@ -5524,14 +5524,6 @@
             <param name="value">The <see cref="T:MySql.Data.MySqlClient.MySqlParameter"/> to add to the collection.</param>
             <returns>The newly added <see cref="T:MySql.Data.MySqlClient.MySqlParameter"/> object.</returns>
         </member>
-        <member name="M:MySql.Data.MySqlClient.MySqlParameterCollection.Add(System.String,System.Object)">
-            <summary>
-            Adds a <see cref="T:MySql.Data.MySqlClient.MySqlParameter"/> to the <see cref="T:MySql.Data.MySqlClient.MySqlParameterCollection"/> given the specified parameter name and value.
-            </summary>
-            <param name="parameterName">The name of the parameter.</param>
-            <param name="value">The <see cref="P:MySql.Data.MySqlClient.MySqlParameter.Value"/> of the <see cref="T:MySql.Data.MySqlClient.MySqlParameter"/> to add to the collection.</param>
-            <returns>The newly added <see cref="T:MySql.Data.MySqlClient.MySqlParameter"/> object.</returns>
-        </member>
         <member name="M:MySql.Data.MySqlClient.MySqlParameterCollection.AddWithValue(System.String,System.Object)">
             <summary>
             Adds a parameter and its value.
@@ -6117,9 +6109,34 @@
             Gets or sets the password that should be used to make a connection.
             </summary>
         </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.CertificateFile">
+            <summary>
+             Gets or sets the path to the certificate file to be used.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.CertificatePassword">
+            <summary>
+            Gets or sets the password to be used in conjunction with the certificate file.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.CertificateStoreLocation">
+            <summary>
+            Gets or sets the location to a personal store where a certificate is held.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.CertificateThumbprint">
+            <summary>
+            Gets or sets a certificate thumbprint to ensure correct identification of a certificate contained within a personal store.
+            </summary>
+        </member>
         <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.SslMode">
             <summary>
             Indicates whether to use SSL connections and how to handle server certificate errors.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.Keepalive">
+            <summary>
+            Gets or sets the idle connection time(seconds) for TCP connections.
             </summary>
         </member>
         <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.CharacterSet">
@@ -11581,6 +11598,11 @@
               Looks up a localized string similar to Client option &apos;{0}&apos; is not recognized as valid..
             </summary>
         </member>
+        <member name="P:MySql.Data.ResourcesX.CollectionTableDoesNotExist">
+            <summary>
+              Looks up a localized string similar to {0} &apos;{1}&apos; does not exist in schema &apos;{2}&apos;..
+            </summary>
+        </member>
         <member name="P:MySql.Data.ResourcesX.FeatureNotSupported">
             <summary>
               Looks up a localized string similar to This feature is currently not supported..
@@ -11744,11 +11766,6 @@
         <member name="P:MySql.Data.ResourcesX.ProgramDataNotDefined">
             <summary>
               Looks up a localized string similar to ProgramData path is not defined..
-            </summary>
-        </member>
-        <member name="P:MySql.Data.ResourcesX.RemovingRequiresId">
-            <summary>
-              Looks up a localized string similar to Removing a document from a collection requires an _id property..
             </summary>
         </member>
         <member name="P:MySql.Data.ResourcesX.ThrowingAwayResults">
@@ -12710,6 +12727,22 @@
             The session object is executing a command.
             </summary>
         </member>
+        <member name="T:MySqlX.XDevAPI.Client">
+            <summary>
+            Class encapsulating a session pooling functionality.
+            </summary>
+        </member>
+        <member name="M:MySqlX.XDevAPI.Client.GetSession">
+            <summary>
+            Get a session from pool or create a new one.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MySqlX.XDevAPI.Client.Close">
+            <summary>
+            Closes all sessions the Client object created and destroys the managed pool.
+            </summary>
+        </member>
         <member name="T:MySqlX.XDevAPI.Collection">
             <summary>
             Represents a collection of documents.
@@ -12735,25 +12768,6 @@
             <returns>A <see cref="T:MySqlX.XDevAPI.CRUD.RemoveStatement"/> object set with the given condition.</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="condition"/> is <c>null</c> or white space.</exception>
             <remarks>The statement can then be further modified before execution.</remarks>
-        </member>
-        <member name="M:MySqlX.XDevAPI.Collection.Remove(System.Object)">
-            <summary>
-            Creates a <see cref="T:MySqlX.XDevAPI.CRUD.RemoveStatement"/> with the given identifier that can be used to remove a single
-            document from a collection.
-            </summary>
-            <param name="id">The identifier to match the document.</param>
-            <returns>A <see cref="T:MySqlX.XDevAPI.CRUD.RemoveStatement"/> object set with the given identifier.</returns>
-            <remarks>The statement can then be further modified before execution.</remarks>
-        </member>
-        <member name="M:MySqlX.XDevAPI.Collection.Remove(MySqlX.XDevAPI.DbDoc)">
-            <summary>
-            Creates a <see cref="T:MySqlX.XDevAPI.CRUD.RemoveStatement"/> containing the identifier of the provided document that can
-            be used to remove a single document from a collection.
-            </summary>
-            <param name="doc">The <see cref="T:MySqlX.XDevAPI.DbDoc"/> representing the document to remove.</param>
-            <returns>A <see cref="T:MySqlX.XDevAPI.CRUD.RemoveStatement"/> object set with the given document's identifier.</returns>
-            <exception cref="T:System.InvalidOperationException">No identifier for the document was provided.</exception>
-            <remarks>The remove statement can then be further modified before execution.</remarks>
         </member>
         <member name="M:MySqlX.XDevAPI.Collection.RemoveOne(System.Object)">
             <summary>
@@ -12905,11 +12919,6 @@
         <member name="P:MySqlX.XDevAPI.Common.BaseResult.Warnings">
             <summary>
             Gets a read-only collection of <see cref="T:MySqlX.XDevAPI.Common.WarningInfo"/> objects derived from statement execution.
-            </summary>
-        </member>
-        <member name="P:MySqlX.XDevAPI.Common.BaseResult.WarningCount">
-            <summary>
-            Gets the number of warnings in the <see cref="P:MySqlX.XDevAPI.Common.BaseResult.Warnings"/> collection derived from statement execution.
             </summary>
         </member>
         <member name="P:MySqlX.XDevAPI.Common.BaseResult.WarningsCount">
@@ -13156,11 +13165,6 @@
             Represents a general statement result.
             </summary>
         </member>
-        <member name="P:MySqlX.XDevAPI.Common.Result.RecordsAffected">
-            <summary>
-            Gets the number of records affected by the statement that generated this result.
-            </summary>
-        </member>
         <member name="P:MySqlX.XDevAPI.Common.Result.AutoIncrementValue">
             <summary>
             Gets the last inserted identifier (if there is one) by the statement that generated this result.
@@ -13281,14 +13285,6 @@
             Executes the Find statement.
             </summary>
             <returns>A <see cref="T:MySqlX.XDevAPI.CRUD.DocResult"/> object containing the results of execution and data.</returns>
-        </member>
-        <member name="M:MySqlX.XDevAPI.CRUD.FindStatement.Limit(System.Int64,System.Int64)">
-            <summary>
-            Allows the user to set the limit and offset for the operation.
-            </summary>
-            <param name="rows">Number of items to be returned.</param>
-            <param name="offset">Number of items to be skipped.</param>
-            <returns>This same <see cref="T:MySqlX.XDevAPI.CRUD.FindStatement"/> object set with the specified limit.</returns>
         </member>
         <member name="M:MySqlX.XDevAPI.CRUD.FindStatement.LockShared(MySql.Data.MySqlClient.LockContention)">
             <summary>
@@ -13575,7 +13571,7 @@
             new { pooling = new
               {
                 enabled = true,
-                maxSize = 25,
+                maxSize = 15,
                 maxIdleTime = 60000,
                 queueTimeout = 60000
               }
@@ -13604,7 +13600,7 @@
             new { pooling = new
               {
                 enabled = true,
-                maxSize = 25,
+                maxSize = 15,
                 maxIdleTime = 60000,
                 queueTimeout = 60000
               }
@@ -13620,7 +13616,7 @@
             Contains connection options specific to the X protocol.
             </summary>
         </member>
-        <member name="P:MySqlX.XDevAPI.MySqlXConnectionStringBuilder.ConnectionTimeout">
+        <member name="P:MySqlX.XDevAPI.MySqlXConnectionStringBuilder.ConnectTimeout">
             <summary>
             Gets or sets the connection timeout.
             </summary>
@@ -13794,16 +13790,6 @@
             Gets a boolean value indicating if this result has data.
             </summary>
         </member>
-        <member name="P:MySqlX.XDevAPI.Relational.SqlResult.RecordsAffected">
-            <summary>
-            Gets the number of records affected by the statement that generated this result.
-            </summary>
-        </member>
-        <member name="P:MySqlX.XDevAPI.Relational.SqlResult.AutoIncrementValue">
-            <summary>
-            Gets the last inserted identifier (if there is one) by the statement that generated this result.
-            </summary>
-        </member>
         <member name="M:MySqlX.XDevAPI.Relational.SqlResult.NextResult">
             <summary>
             Moves to next resultset.
@@ -13948,14 +13934,6 @@
             Executes the select statement.
             </summary>
             <returns>A <see cref="T:MySqlX.XDevAPI.Common.Result"/> object containing the results of the execution and data.</returns>
-        </member>
-        <member name="M:MySqlX.XDevAPI.Relational.TableSelectStatement.Limit(System.Int64,System.Int64)">
-            <summary>
-            Sets user-defined limit and offset for the operation.
-            </summary>
-            <param name="rows">The number of items to be returned.</param>
-            <param name="offset">The number of items to be skipped.</param>
-            <returns>This same <see cref="T:MySqlX.XDevAPI.Relational.TableSelectStatement"/> object set with the specified limit.</returns>
         </member>
         <member name="M:MySqlX.XDevAPI.Relational.TableSelectStatement.LockShared(MySql.Data.MySqlClient.LockContention)">
             <summary>

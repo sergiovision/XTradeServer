@@ -1,9 +1,9 @@
-﻿using BusinessObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObjects;
+using System;
+using System.Collections.Generic;
 using System.Web.Http;
 using Autofac;
 using System.Net.Http;
@@ -39,10 +39,10 @@ namespace XTrade.MainServer
         {
             try
             {
-                var ds = MainService.Container.Resolve<DataService>();
+                var ds = MainService.Container.Resolve<ITerminalEvents>();
                 if (ds == null)
                     return null;
-                return ds.TodayDeals();
+                return ds.GetTodayDeals();
             }
             catch (Exception e)
             {
@@ -74,12 +74,11 @@ namespace XTrade.MainServer
 
         [HttpGet]
         [AcceptVerbs("GET")]
-        public HttpResponseMessage ClosePosition([FromUri] int Magic, [FromUri] int Ticket)
+        public HttpResponseMessage ClosePosition([FromUri] int account, [FromUri] int Ticket)
         {
             try
             {
-                SignalInfo signalPos =
-                    MainService.CreateSignal(SignalFlags.Expert, Magic, EnumSignals.SIGNAL_CLOSE_POSITION);
+                SignalInfo signalPos = MainService.CreateSignal(SignalFlags.Terminal, account, EnumSignals.SIGNAL_CLOSE_POSITION);
                 signalPos.Value = Ticket;
                 MainService.PostSignalTo(signalPos);
                 return Request.CreateResponse(HttpStatusCode.OK);

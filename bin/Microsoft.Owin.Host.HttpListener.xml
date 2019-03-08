@@ -16,6 +16,30 @@
             to the header validations performed by the underlying collection.
             </summary>
         </member>
+        <member name="T:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerRequest">
+            <summary>
+            This wraps an HttpListenerRequest and exposes it as an OWIN environment IDictionary.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerRequest.#ctor(System.Net.HttpListenerRequest,System.String,System.String,System.String,Microsoft.Owin.Host.HttpListener.RequestProcessing.CallEnvironment)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerRequest"/> class.
+            Uses the given request object to populate the OWIN standard keys in the environment IDictionary.
+            Most values are copied so that they can be mutable, but the headers collection is only wrapped.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerResponse">
+            <summary>
+            This wraps an HttpListenerResponse, populates it with the given response fields, and relays 
+            the response body to the underlying stream.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerResponse.#ctor(System.Net.HttpListenerContext,Microsoft.Owin.Host.HttpListener.RequestProcessing.CallEnvironment)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerResponse"/> class.
+            Sets up the Environment with the necessary request state items.
+            </summary>
+        </member>
         <member name="T:Microsoft.Owin.Host.HttpListener.OwinHttpListener">
             <summary>
             This wraps HttpListener and exposes it as an OWIN compatible server.
@@ -24,6 +48,11 @@
         <member name="M:Microsoft.Owin.Host.HttpListener.OwinHttpListener.#ctor">
             <summary>
             Creates a listener wrapper that can be configured by the user before starting.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Owin.Host.HttpListener.OwinHttpListener.Listener">
+            <summary>
+            The HttpListener instance wrapped by this wrapper.
             </summary>
         </member>
         <member name="M:Microsoft.Owin.Host.HttpListener.OwinHttpListener.SetRequestProcessingLimits(System.Int32,System.Int32)">
@@ -55,35 +84,6 @@
         <member name="M:Microsoft.Owin.Host.HttpListener.OwinHttpListener.Dispose">
             <summary>
             Shuts down the listener and disposes it.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Owin.Host.HttpListener.OwinHttpListener.Listener">
-            <summary>
-            The HttpListener instance wrapped by this wrapper.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerRequest">
-            <summary>
-            This wraps an HttpListenerRequest and exposes it as an OWIN environment IDictionary.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerRequest.#ctor(System.Net.HttpListenerRequest,System.String,System.String,System.String,Microsoft.Owin.Host.HttpListener.RequestProcessing.CallEnvironment)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerRequest"/> class.
-            Uses the given request object to populate the OWIN standard keys in the environment IDictionary.
-            Most values are copied so that they can be mutable, but the headers collection is only wrapped.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerResponse">
-            <summary>
-            This wraps an HttpListenerResponse, populates it with the given response fields, and relays 
-            the response body to the underlying stream.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerResponse.#ctor(System.Net.HttpListenerContext,Microsoft.Owin.Host.HttpListener.RequestProcessing.CallEnvironment)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Microsoft.Owin.Host.HttpListener.RequestProcessing.OwinHttpListenerResponse"/> class.
-            Sets up the Environment with the necessary request state items.
             </summary>
         </member>
         <member name="T:Microsoft.Owin.Host.HttpListener.Resources">

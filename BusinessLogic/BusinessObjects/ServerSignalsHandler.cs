@@ -70,11 +70,11 @@ namespace BusinessLogic.BusinessObjects
                     break;
                 case EnumSignals.SIGNAL_ACTIVE_ORDERS:
                 {
-                    //Dictionary<string, string> signal = JsonConvert.DeserializeObject<Dictionary<string, string>>(parameters);
-                    //var jObject = JObject.Parse(parameters);
-                    //var jTokenData = jObject.GetValue("Data");
-                    //var Value = jObject.GetValue("Value");
-                    //if (jTokenData != null)
+                    // Dictionary<string, string> signal = JsonConvert.DeserializeObject<Dictionary<string, string>>(parameters);
+                    // var jObject = JObject.Parse(parameters);
+                    // var jTokenData = jObject.GetValue("Data");
+                    // var Value = jObject.GetValue("Value");
+                    // if (jTokenData != null)
                     List<PositionInfo> positions = null;
                     if (signal.Data != null)
                         positions = JsonConvert.DeserializeObject<List<PositionInfo>>(signal.Data.ToString());
@@ -85,11 +85,17 @@ namespace BusinessLogic.BusinessObjects
                     break;
                 case EnumSignals.SIGNAL_WARN_NEWS:
                     break;
-                case EnumSignals.SIGNAL_DEINIT_EXPERT:
-                {
-                    ExpertInfo expert = JsonConvert.DeserializeObject<ExpertInfo>(signal.Data.ToString());
-                    xtrade.DeInitExpert(expert);
-                }
+                    case EnumSignals.SIGNAL_DEINIT_EXPERT:
+                    {
+                        ExpertInfo expert = JsonConvert.DeserializeObject<ExpertInfo>(signal.Data.ToString());
+                        xtrade.DeInitExpert(expert);
+                    }
+                    break;
+                case EnumSignals.SIGNAL_DEINIT_TERMINAL:
+                    {
+                        ExpertInfo expert = JsonConvert.DeserializeObject<ExpertInfo>(signal.Data.ToString());
+                        xtrade.DeInitTerminal(expert);
+                    }
                     break;
                 case EnumSignals.SIGNAL_SAVE_EXPERT:
                 {
@@ -102,8 +108,7 @@ namespace BusinessLogic.BusinessObjects
                 {
                     if (signal.Data == null)
                         break;
-                    Dictionary<string, string> paramsList =
-                        JsonConvert.DeserializeObject<Dictionary<string, string>>(signal.Data.ToString());
+                    Dictionary<string, string> paramsList = JsonConvert.DeserializeObject<Dictionary<string, string>>(signal.Data.ToString());
                     StringBuilder message = new StringBuilder();
                     if (paramsList.ContainsKey("Account"))
                         message.Append("<" + paramsList["Account"] + ">:");
@@ -116,7 +121,7 @@ namespace BusinessLogic.BusinessObjects
                     log.Log(message.ToString());
                     // log.Info(message);
                 }
-                    break;
+                break;
             }
         }
 
@@ -141,7 +146,7 @@ namespace BusinessLogic.BusinessObjects
                             CultureInfo.InvariantCulture.DateTimeFormat, DateTimeStyles.None, out date);
 
                         string symbolStr = paramsList["symbol"];
-                        //int BeforeMin = Int32.Parse(paramsList["before"]);
+                        // int BeforeMin = Int32.Parse(paramsList["before"]);
                         byte minImportance = byte.Parse(paramsList["importance"]);
                         NewsEventInfo info = null;
                         if (xtrade.GetNextNewsEvent(date, symbolStr, minImportance, ref info))
@@ -176,11 +181,12 @@ namespace BusinessLogic.BusinessObjects
                             i++;
                         }
                     }
-                        break;
+                    break;
                     case "Somefunc":
                     {
+                        
                     }
-                        break;
+                    break;
                 }
             }
             catch (Exception e)

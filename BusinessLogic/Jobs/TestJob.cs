@@ -59,7 +59,7 @@ namespace BusinessLogic.Jobs
                 //   termNotify.InsertPosition(pos);
 
                 SignalInfo signal_History =
-                    MainService.thisGlobal.CreateSignal(SignalFlags.AllExperts, 0, EnumSignals.SIGNAL_DEALS_HISTORY);
+                    MainService.thisGlobal.CreateSignal(SignalFlags.AllTerminals, 0, EnumSignals.SIGNAL_DEALS_HISTORY);
                 signal_History.Value = 0;
                 MainService.thisGlobal.PostSignalTo(signal_History);
 

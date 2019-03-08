@@ -57,34 +57,35 @@ namespace BusinessLogic.Repo
 
                         foreach (var acc in accounts)
                         {
-                            var account = AccountsRepository.toDTO(acc);
-                            DBAccountstate accState = null;
-                            IQueryable<DBAccountstate> accResults = null;
-                            if (forDate.Equals(DateTime.MaxValue))
-                                accResults = Session.Query<DBAccountstate>()
-                                    .Where(x => x.Account.Id == acc.Id)
-                                    .OrderByDescending(x => x.Date);
-                            else
-                                accResults = Session.Query<DBAccountstate>()
-                                    .Where(x => x.Account.Id == acc.Id && x.Date <= forDate)
-                                    .OrderByDescending(x => x.Date);
-
-                            if (accResults == null || accResults.Count() == 0)
-                                continue;
-                            // acc.Currency.Id
-                            accState = accResults.FirstOrDefault();
-                            if (accState != null)
+                            Account account = new Account();
+                            if (AccountsRepository.toDTO(acc, ref account))
                             {
-                                account.Balance = accState.Balance;
-                                decimal value = account.Balance;
-                                if (acc.Currency != null)
-                                    value = parent.ConvertToUSD(account.Balance, acc.Currency.Name);
-                                balance += value;
+                                DBAccountstate accState = null;
+                                IQueryable<DBAccountstate> accResults = null;
+                                if (forDate.Equals(DateTime.MaxValue))
+                                    accResults = Session.Query<DBAccountstate>()
+                                        .Where(x => x.Account.Id == acc.Id)
+                                        .OrderByDescending(x => x.Date);
+                                else
+                                    accResults = Session.Query<DBAccountstate>()
+                                        .Where(x => x.Account.Id == acc.Id && x.Date <= forDate)
+                                        .OrderByDescending(x => x.Date);
+
+                                if (accResults == null || accResults.Count() == 0)
+                                    continue;
+                                // acc.Currency.Id
+                                accState = accResults.FirstOrDefault();
+                                if (accState != null)
+                                {
+                                    account.Balance = accState.Balance;
+                                    decimal value = account.Balance;
+                                    if (acc.Currency != null)
+                                        value = parent.ConvertToUSD(account.Balance, acc.Currency.Name);
+                                    balance += value;
+                                }
+                                wallet.Accounts.Add(account);
                             }
-
-                            wallet.Accounts.Add(account);
                         }
-
                         wallet.Balance = balance;
                         results.Add(wallet);
                     }
