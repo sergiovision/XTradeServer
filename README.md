@@ -31,7 +31,7 @@ Metatrader.CommonFiles - path to MT5 common files folder
 MQL.Sources - path to MQL folder where your MQL robots stored
 
 
-To install application run: install.bat
+To install application run (under Administrator privileges): install.bat
 
 If you have problems running check XTrade.MainServer.log to see errors.
 
