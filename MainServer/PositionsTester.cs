@@ -42,8 +42,8 @@ namespace XTrade.MainServer
             return new List<PositionInfo>
             {
                 new PositionInfo {Symbol = "EURUSD", Ticket = 1123, Lots = 0.01, Profit = 3},
-                new PositionInfo {Symbol = "AUDUSD", Ticket = 2429, Lots = 0.02, Profit = new decimal(3.1)},
-                new PositionInfo {Symbol = "BRENT", Ticket = 34402, Lots = 0.04, Profit = new decimal(1.1)},
+                new PositionInfo {Symbol = "AUDUSD", Ticket = 2429, Lots = 0.02, Profit = 3.1},
+                new PositionInfo {Symbol = "BRENT", Ticket = 34402, Lots = 0.04, Profit = 1.1},
                 new PositionInfo {Symbol = "BRN", Ticket = 23432, Lots = 1.0, Profit = -1}
             };
         }
@@ -77,7 +77,7 @@ namespace XTrade.MainServer
             else if (r >= 0.5 && r <= 0.65)
             {
                 position = new PositionInfo
-                    {Symbol = "AUDUSD", Ticket = (long) (r * 1000), Lots = 0.02, Profit = new decimal(0)};
+                    {Symbol = "AUDUSD", Ticket = (long) (r * 1000), Lots = 0.02, Profit = 0.0};
                 InsertPosition(position);
                 return false;
             }
@@ -120,6 +120,22 @@ namespace XTrade.MainServer
         }
 
         public List<DealInfo> GetTodayDeals()
+        {
+            //throw new NotImplementedException();
+            return new List<DealInfo>();
+        }
+
+        public void UpdateSLTP(long magicId, long AccountNumber, IEnumerable<PositionInfo> pos)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void DeletePosition(long Ticket)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TodayStat GetTodayStat()
         {
             throw new NotImplementedException();
         }

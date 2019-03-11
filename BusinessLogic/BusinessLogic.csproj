@@ -116,13 +116,10 @@
     <Compile Include="ConnectionHelper.cs" />
     <Compile Include="CryptoHelpers.cs" />
     <Compile Include="GenericParser.cs" />
-    <Compile Include="IJSONObject.cs" />
     <Compile Include="Jobs\ConnectQUIKJob.cs" />
     <Compile Include="Jobs\TestJob.cs" />
     <Compile Include="Jobs\TerminalsSyncJob.cs" />
     <Compile Include="Jobs\ClearExpertsHistoryJob.cs" />
-    <Compile Include="JSON.cs" />
-    <Compile Include="JSONParserProvider.cs" />
     <Compile Include="Jobs\ForexFactoryNewsJob.cs" />
     <Compile Include="ProcessImpersonation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

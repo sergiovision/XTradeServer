@@ -61,6 +61,7 @@
     <Compile Include="BusinessObjects\SignalFlags.cs" />
     <Compile Include="BusinessObjects\SignalInfo.cs" />
     <Compile Include="BusinessObjects\MetaSymbolStat.cs" />
+    <Compile Include="BusinessObjects\TodayStat.cs" />
     <Compile Include="BusinessObjects\TimeStat.cs" />
     <Compile Include="BusinessObjects\Wallet.cs" />
     <Compile Include="BusinessObjects\Person.cs" />

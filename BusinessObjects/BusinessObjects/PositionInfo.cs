@@ -17,21 +17,21 @@ namespace BusinessObjects
         public double Lots { get; set; }
         public string Symbol { get; set; }
         public string MetaSymbol { get; set; }
-        public decimal ProfitStopsPercent { get; set; }
-        public decimal ProfitBricks { get; set; }
-        public decimal Profit { get; set; }
+        public double ProfitStopsPercent { get; set; }
+        public double ProfitBricks { get; set; }
+        public double Profit { get; set; }
         public string Role { get; set; }
 
         public void Update()
         {
-            decimal change = GenerateChange();
-            decimal newProfit = change;
+            double change = GenerateChange();
+            double newProfit = change;
             Profit = newProfit;
         }
 
-        private decimal GenerateChange()
+        private double GenerateChange()
         {
-            return (decimal) random.Next(-200, 200) / 10000;
+            return (double) random.Next(-200, 200) / 10000;
         }
     }
 }

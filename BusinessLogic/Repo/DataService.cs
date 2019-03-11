@@ -449,20 +449,7 @@ namespace BusinessLogic.Repo
                                 ts.CheckingChange += ConvertToUSD(accStateStart.Balance, acc.Currency.Name);
                             }
                         }
-                        /*
-                        var deals = Deals.Where(x => (x.Closetime.HasValue) &&  (x.Closetime.Value >= forDate) && (x.Closetime.Value <= forDateEnd));
-                        if (deals != null)
-                        {
-                            foreach (var deal in deals)
-                            {
-                                if (deal.Terminal == null)
-                                    continue;
-                                if (deal.Terminal.Account == null)
-                                    continue;
-                                ts.InvestingChange += ConvertToUSD(deal.Profit, deal.Terminal.Account.Currency.Name, rateList);
-                            }
-                        }
-                        */
+              
 
                         ts.CheckingChange = ts.CheckingValue - ts.CheckingChange;
                         ts.InvestingChange = ts.InvestingValue - ts.InvestingChange;

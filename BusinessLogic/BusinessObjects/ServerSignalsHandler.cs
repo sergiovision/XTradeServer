@@ -83,6 +83,18 @@ namespace BusinessLogic.BusinessObjects
                     terminals.UpdatePositions(signal.ObjectId, signal.Value, positions);
                 }
                     break;
+                /*
+                case EnumSignals.SIGNAL_UPDATE_SLTP:
+                {
+                    List<PositionInfo> positions = null;
+                    if (signal.Data != null)
+                        positions = JsonConvert.DeserializeObject<List<PositionInfo>>(signal.Data.ToString());
+                    else
+                        positions = new List<PositionInfo>();
+                    terminals.UpdateSLTP(signal.ObjectId, signal.Value, positions);
+                }
+                 break;
+                 */
                 case EnumSignals.SIGNAL_WARN_NEWS:
                     break;
                     case EnumSignals.SIGNAL_DEINIT_EXPERT:

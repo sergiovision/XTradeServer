@@ -15,7 +15,9 @@ namespace XTrade.MainServer
         private readonly ConcurrentDictionary<long, PositionInfo> positions;
         private readonly Dictionary<long, Terminal> terminals;
         private readonly Dictionary<long, DealInfo> todayDeals;
+        private TodayStat todayStat;
         private readonly IMainService xtrade;
+        private IHubConnectionContext<dynamic> Clients { get; }
 
         public PositionsManager()
         {
@@ -25,9 +27,9 @@ namespace XTrade.MainServer
             todayDeals = new Dictionary<long, DealInfo>();
             terminals = new Dictionary<long, Terminal>();
             foreach (var term in xtrade.GetTerminals()) terminals.Add(term.AccountNumber, term);
+            todayStat = new TodayStat();
         }
 
-        private IHubConnectionContext<dynamic> Clients { get; }
 
         public List<PositionInfo> GetAllPositions()
         {
@@ -50,7 +52,7 @@ namespace XTrade.MainServer
                     if (!positionsToAdd.ContainsKey(notcontains.Ticket))
                     {
                         notcontains.AccountName = terminals[AccountNumber].Broker;
-                        notcontains.Profit = xtrade.ConvertToUSD(notcontains.Profit, terminals[AccountNumber].Currency);
+                        notcontains.Profit = (double)xtrade.ConvertToUSD(new decimal(notcontains.Profit), terminals[AccountNumber].Currency);
                         positionsToAdd.Add(notcontains.Ticket, notcontains);
                     }
 
@@ -61,14 +63,15 @@ namespace XTrade.MainServer
                     {
                         positionsToAdd.Remove(pos.Key);
                         var newvalue = contains.FirstOrDefault();
+                        //newvalue.ProfitStopsPercent = pos.Value.ProfitStopsPercent;
                         newvalue.AccountName = terminals[AccountNumber].Broker;
                         if (positions.TryUpdate(pos.Key, newvalue, pos.Value))
                             UpdatePosition(newvalue);
                     }
                     else
                     {
-                        //if (pos.Value.Magic == magicId)
-                        if (pos.Value.Account == AccountNumber)
+                        //if (pos.Value.Account == AccountNumber) (pos.Value.Magic == magicId)
+                        if ((pos.Value.Account == AccountNumber) && (pos.Value.Ticket > 0))
                             positionsToDelete.Add(pos.Key);
                     }
 
@@ -93,6 +96,61 @@ namespace XTrade.MainServer
             }
         }
 
+        public void UpdateSLTP(long magicId, long AccountNumber, IEnumerable<PositionInfo> UpdatePositions)
+        {
+            lock (lockObject)
+            {
+                Dictionary<long, PositionInfo> positionsToAdd = new Dictionary<long, PositionInfo>();
+                List<long> positionsToDelete = new List<long>();
+                foreach (var notcontains in UpdatePositions)
+                    if (!positionsToAdd.ContainsKey(notcontains.Ticket))
+                    {
+                        notcontains.AccountName = terminals[AccountNumber].Broker;
+                        notcontains.Profit = (double)xtrade.ConvertToUSD(new decimal(notcontains.Profit), terminals[AccountNumber].Currency);
+                        positionsToAdd.Add(notcontains.Ticket, notcontains);
+                    }
+
+                foreach (var pos in positions.Where(x => x.Value.Account.Equals(AccountNumber)))
+                {
+                    var contains = UpdatePositions.Where(x => x.Ticket == pos.Key && x.Account == AccountNumber);
+                    if (contains != null && contains.Count() > 0)
+                    {
+                        positionsToAdd.Remove(pos.Key);
+                        var newvalue = contains.FirstOrDefault();
+                        newvalue.AccountName = terminals[AccountNumber].Broker;
+                        if (positions.TryUpdate(pos.Key, newvalue, pos.Value))
+                            UpdatePosition(newvalue);
+                    }
+                    else
+                    {
+                        //if (pos.Value.Magic == magicId)
+                        if ((pos.Value.Account == AccountNumber) && (pos.Value.Ticket > 0))
+                            positionsToDelete.Add(pos.Key);
+                    }
+
+                    foreach (var notcontains in UpdatePositions.Where(x => x.Ticket != pos.Key))
+                        if (!positionsToAdd.ContainsKey(notcontains.Ticket))
+                            positionsToAdd.Add(notcontains.Ticket, notcontains);
+                }
+
+                foreach (var toremove in positionsToDelete)
+                {
+                    PositionInfo todel = null;
+                    if (positions.TryRemove(toremove, out todel))
+                        RemovePosition(toremove);
+                }
+
+                foreach (var toadd in positionsToAdd)
+                {
+                    toadd.Value.AccountName = terminals[AccountNumber].Broker;
+                    if (positions.TryAdd(toadd.Key, toadd.Value))
+                        InsertPosition(toadd.Value);
+                }
+
+            }
+
+        }
+
         public List<DealInfo> GetTodayDeals()
         {
             var xtrade = Program.Container.Resolve<IMainService>();
@@ -107,6 +165,7 @@ namespace XTrade.MainServer
                         continue;
                     string currency = terminals[deal.Account].Currency;
                     deal.Profit = (double)xtrade.ConvertToUSD(new decimal(deal.Profit), currency);
+                    bool IsDemo = terminals[deal.Account].Demo;
                     todayDeals.Add(deal.Ticket, deal);
                 }
             }
@@ -127,6 +186,35 @@ namespace XTrade.MainServer
             return todayDeals.Values.OrderByDescending(x=>x.CloseTime).ToList();
         }
 
+        public TodayStat GetTodayStat()
+        {
+            if (todayDeals.Count <= 0)
+                GetTodayDeals();
+            double sumReal = 0;
+            double sumDemo = 0;
+            foreach (var deal in todayDeals)
+            {
+                bool IsDemo = terminals[deal.Value.Account].Demo;
+                if (IsDemo)
+                    sumDemo += deal.Value.Profit;
+                else
+                    sumReal += deal.Value.Profit;
+
+            }
+            todayStat.TodayGainDemo = decimal.Round((decimal)sumDemo, 2);
+            todayStat.TodayGainReal = decimal.Round((decimal)sumReal, 2);
+            return todayStat;
+        }
+
+        public void DeletePosition(long Ticket)
+        {
+            lock (lockObject)
+            {
+                PositionInfo todel = null;
+                positions.TryRemove(Ticket, out todel);
+            }
+        }
+
         #region Interface Imp
 
         public void InsertPosition(PositionInfo pos)
@@ -143,6 +231,7 @@ namespace XTrade.MainServer
         {
             Clients.All.RemovePosition(Ticket);
         }
+
         #endregion
     }
 }

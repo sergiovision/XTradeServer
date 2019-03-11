@@ -862,8 +862,20 @@ namespace BusinessLogic.BusinessObjects
                     adviser.Running = true;
                     adviser.Lastupdate = DateTime.UtcNow;
                     if (!string.IsNullOrEmpty(expert.Data))
-                        if (string.IsNullOrEmpty(adviser.State)) //|| (expert.Data.CompareTo(adviser.State) != 0)
+                        if (string.IsNullOrEmpty(adviser.State)) // || (expert.Data.CompareTo(adviser.State) != 0)
                             adviser.State = expert.Data;
+
+                    var terminals = Container.Resolve<ITerminalEvents>();
+                    if (terminals != null)
+                    {
+                        long accountNumber = long.Parse(expert.Account);
+                        List<PositionInfo> positions = null;
+                        if (!String.IsNullOrEmpty(expert.Orders))
+                            positions = JsonConvert.DeserializeObject<List<PositionInfo>>(expert.Orders);
+                        else
+                            positions = new List<PositionInfo>();
+                        terminals.UpdateSLTP(magicNumber, accountNumber, positions);
+                    }
 
                     /*
                     string filePath = GetAdviserFilePath(adviser);

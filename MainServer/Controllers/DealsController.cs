@@ -22,7 +22,6 @@ namespace XTrade.MainServer
         {
             try
             {
-                //User.Identity.
                 return MainService.GetDeals();
             }
             catch (Exception e)
@@ -43,6 +42,25 @@ namespace XTrade.MainServer
                 if (ds == null)
                     return null;
                 return ds.GetTodayDeals();
+            }
+            catch (Exception e)
+            {
+                log.Error(e.ToString());
+            }
+
+            return null;
+        }
+
+        [HttpGet]
+        [AcceptVerbs("GET")]
+        public TodayStat GetTodayStat()
+        {
+            try
+            {
+                var ds = MainService.Container.Resolve<ITerminalEvents>();
+                if (ds == null)
+                    return null;
+                return ds.GetTodayStat();
             }
             catch (Exception e)
             {
@@ -74,13 +92,25 @@ namespace XTrade.MainServer
 
         [HttpGet]
         [AcceptVerbs("GET")]
-        public HttpResponseMessage ClosePosition([FromUri] int account, [FromUri] int Ticket)
+        public HttpResponseMessage ClosePosition([FromUri] int account, [FromUri] int Magic, [FromUri] int Ticket)
         {
             try
             {
-                SignalInfo signalPos = MainService.CreateSignal(SignalFlags.Terminal, account, EnumSignals.SIGNAL_CLOSE_POSITION);
+                SignalInfo signalPos = null;
+                if (Ticket > 0)
+                {
+                    signalPos = MainService.CreateSignal(SignalFlags.Terminal, account, EnumSignals.SIGNAL_CLOSE_POSITION);
+                } else
+                {
+                    signalPos = MainService.CreateSignal(SignalFlags.Expert, Magic, EnumSignals.SIGNAL_CLOSE_POSITION);
+                }
                 signalPos.Value = Ticket;
+                signalPos.Data = Magic.ToString();
                 MainService.PostSignalTo(signalPos);
+                var terminals = MainService.Container.Resolve<ITerminalEvents>();
+                if (terminals != null)
+                    terminals.DeletePosition(Ticket);
+
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception e)

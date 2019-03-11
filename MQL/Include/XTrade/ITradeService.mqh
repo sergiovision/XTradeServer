@@ -59,6 +59,11 @@ public:
       return isMaster;
    }
    
+   virtual void SaveAllSettings(string strExpertData, string strOrdersData) 
+   {
+   }
+
+   
    virtual void CallLoadParams(CJAVal* pars) {
    }
    
@@ -87,11 +92,6 @@ public:
    {
       //Print(message);
    }
-
-   virtual void SaveAllSettings(string ActiveOrdersList, string strData)
-   {
-       
-   }
    
    virtual void ProcessSignals() {   
       // TODO: Implement local signals QUEUE   
@@ -102,10 +102,10 @@ public:
        return INIT_SUCCEEDED;
    }
    
-   virtual SettingsFile* Settings()
-   {
-       return NULL;
-   }
+   //virtual SettingsFile* Settings()
+   //{
+   //    return NULL;
+   //}
    
    virtual string GetProfileString(string lpSection, string lpKey)
    {
@@ -151,12 +151,12 @@ public:
       } 
    }
    
-   void NotifyUpdatePositions()
-   { 
-      if (Utils.IsTesting())
-          return;
-      Signal* signal = new Signal(SignalToServer, SIGNAL_ACTIVE_ORDERS, this.MagicNumber());
-      PostSignalLocally(signal);
-   }
+   //void NotifyUpdatePositions()
+   //{ 
+   //   if (Utils.IsTesting())
+   //       return;
+   //   Signal* signal = new Signal(SignalToServer, SIGNAL_ACTIVE_ORDERS, this.MagicNumber());
+   //   PostSignalLocally(signal);
+   //}
 };
 
