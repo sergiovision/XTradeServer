@@ -41,7 +41,7 @@ bool CNATR::Init(ENUM_TIMEFRAMES timeframe)
       return true;      
    m_period = timeframe;
    InpAtrPeriod = (int)GET(NumBarsToAnalyze); 
-   InpAtrPercent = 10;//TMAPercentileRank;   
+   InpAtrPercent = int((1.0 - SL_PERCENTILE)*100.0);//TMAPercentileRank;   
    PercentileATR = false;
   
    SetSymbolPeriod(Utils.Symbol, m_period);
@@ -152,50 +152,4 @@ void CNATR::Trail(Order &order, int indent)
    ArraySetAsSeries(rates, true);
    CopyRates(Utils.Symbol, (ENUM_TIMEFRAMES)m_period, 0, 3, rates);
    
-/*   double Pt = signals.methods.Point;
-   signals.trailDelta = (Utils.Spread() + indent + signals.methods.StopLevelPoints)*Pt;
-   double mediaPrice = (Utils.tick.ask + Utils.tick.bid)/2.0;
-
-   order.stopLoss = Utils.OrderStopLoss();
-   order.takeProfit = Utils.OrderTakeProfit();    
-   order.openPrice = Utils.OrderOpenPrice();
-   order.profit = order.RealProfit();
-          
-   double SL = order.stopLoss;
-   double TP = order.takeProfit;
-   double OP = order.openPrice;
-   double Profit = order.profit;             
-   if (MathAbs(OP - mediaPrice) <= (signals.trailDelta*2))
-    return; // Skip trailing
-    
-   order.Select();
-   CROSS_TYPE upperCross = Utils.CandleCross(upperBand, rates);
-   if ((upperCross == CROSS_DOWN) && (order.type == OP_BUY) ) //((Trend == LATERAL) || (Trend == DOWN)))
-   {
-      //Utils.Info(StringFormat("Order(%d) hit Upper band set new SL", order.ticket));
-      if (TrailLevel(order, Utils.tick.ask, Utils.tick.bid, SL, TP, upperBand))
-         return;
-      //order.SetRole(ShouldBeClosed);
-      return;
-   }
-
-   CROSS_TYPE lowerCross = Utils.CandleCross(lowerBand, rates);
-   if ((lowerCross == CROSS_UP) && (order.type == OP_SELL) )//((Trend == LATERAL) || (Trend == UPPER)) )
-   {
-      //Utils.Info(StringFormat("Order(%d) hit Lower band set new SL", order.ticket));
-      if (TrailLevel(order, Utils.tick.ask, Utils.tick.bid, SL, TP, lowerBand))
-         return;
-      //order.SetRole(ShouldBeClosed);
-      return;
-   }
-   if (order.RealProfit() > 0)
-   {
-      if (TrailLevel(order, Utils.tick.ask, Utils.tick.bid, SL, TP, lowerBand))
-         return;
-      //if (TrailLevel(order, Utils.tick.ask, Utils.tick.bid, SL, TP, mediaBand))
-      //   return;       
-      if (TrailLevel(order, Utils.tick.ask, Utils.tick.bid, SL, TP, upperBand))
-         return;
-   }*/
-
 }

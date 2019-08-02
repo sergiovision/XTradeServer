@@ -70,7 +70,7 @@ namespace XTrade.MainServer
                     }
                     else
                     {
-                        //if (pos.Value.Account == AccountNumber) (pos.Value.Magic == magicId)
+                        //if (pos.Value.Account == AccountNumber)  (pos.Value.Account == AccountNumber) && (pos.Value.Ticket > 0)
                         if ((pos.Value.Account == AccountNumber) && (pos.Value.Ticket > 0))
                             positionsToDelete.Add(pos.Key);
                     }
@@ -123,8 +123,8 @@ namespace XTrade.MainServer
                     }
                     else
                     {
-                        //if (pos.Value.Magic == magicId)
-                        if ((pos.Value.Account == AccountNumber) && (pos.Value.Ticket > 0))
+                        //if (pos.Value.Magic == magicId) (pos.Value.Account == AccountNumber)
+                        if ((pos.Value.Magic == magicId))//&& (pos.Value.Ticket > 0)
                             positionsToDelete.Add(pos.Key);
                     }
 

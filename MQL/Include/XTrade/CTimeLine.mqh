@@ -59,7 +59,7 @@ bool CTimeLine::Init(ENUM_TIMEFRAMES timeframe)
    params[6].type = TYPE_INT;
    params[6].integer_value = InpSpacing;
    params[7].type = TYPE_INT;
-   params[7].integer_value = 160;
+   params[7].integer_value = 28;
    params[8].type = TYPE_INT;
    bool isUsedByIndicatorOnRenkoChart = true;//!Utils.IsTesting();   
    params[8].integer_value = isUsedByIndicatorOnRenkoChart; // Use on Charts = should be true = 1

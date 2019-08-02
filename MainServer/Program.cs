@@ -8,7 +8,7 @@ using System;
 using System.ServiceProcess;
 using BusinessLogic;
 using Microsoft.AspNet.SignalR;
-using QUIK;
+//using QUIK;
 
 namespace XTrade.MainServer
 {
@@ -26,7 +26,7 @@ namespace XTrade.MainServer
             var builder = new ContainerBuilder();
 
             builder.RegisterModule(new BusinessLogicModule());
-            builder.RegisterModule(new QUIKConnectorModule());
+            //builder.RegisterModule(new QUIKConnectorModule());
             builder.RegisterModule(new MainServerModule());
 
             Container = builder.Build();
@@ -38,7 +38,6 @@ namespace XTrade.MainServer
         public static void Main()
         {
             XmlConfigurator.Configure();
-            //Log.Info("MainServer Main function started.");
 
             RegisterContainer();
 

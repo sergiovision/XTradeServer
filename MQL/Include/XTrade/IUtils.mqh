@@ -262,11 +262,6 @@ public:
          return CROSS_NO;
       }
 
-//      bool PriceCross(double price, double value)
-//      {
-//          return MathAbs(price - value) <= deltaCross;
-///      }
-            
       bool LowerThanAll(double price, double A, double B, double C, double D)
       {
           return (price < A) && (A <= B) && (B <= C) && (C <= D);
@@ -341,6 +336,7 @@ public:
           return true;
       return false;
    }
+
    bool ObjDelete(string name)
    {
       return ObjectDelete(ChartID(), name);
@@ -350,7 +346,96 @@ public:
    {
       return ObjectsDeleteAll(ChartID(), prefix) > 0;
    }
-
+   
+   bool ObjDeleteAll()
+   {
+      return ObjectsDeleteAll(this.ChartId()) > 0;
+   }
+     
+   // Graphical objects
+   //+------------------------------------------------------------------+
+   //| Create the horizontal line                                       |
+   //+------------------------------------------------------------------+
+   bool HLineCreate(const string          name="HLine_max",// line name
+                 const int             sub_window=0,// subwindow index
+                 double                hprice=0,// line price
+                 const color           clr=clrRed,        // line color
+                 const ENUM_LINE_STYLE style=STYLE_SOLID, // line style
+                 const int             width=1,           // line width
+                 const bool            back=false,        // in the background
+                 const bool            selection=true,    // highlight to move
+                 const bool            hidden=true,       // hidden in the object list
+                 const long            z_order=0,         // priority for mouse click
+                 const string          tooltip="")
+   {
+      const long  chart_ID = ChartId();
+      ObjectDelete(chart_ID,name);
+   //--- reset the error value
+      ResetLastError();
+   //--- create a horizontal line
+      if(!ObjectCreate(chart_ID,name,OBJ_HLINE,sub_window,0,hprice))
+        {
+         Print(__FUNCTION__,
+               ": failed to create a horizontal line! Error code = ",GetLastError());
+         return(false);
+        }
+   //--- set line color
+      ObjectSetInteger(chart_ID,name,OBJPROP_COLOR,clr);
+   //--- set line display style
+      ObjectSetInteger(chart_ID,name,OBJPROP_STYLE,style);
+   //--- set line width
+      ObjectSetInteger(chart_ID,name,OBJPROP_WIDTH,width);
+   //--- display in the foreground (false) or background (true)
+      ObjectSetInteger(chart_ID,name,OBJPROP_BACK,back);
+   //--- enable (true) or disable (false) the mode of moving the line by mouse
+   //--- when creating a graphical object using ObjectCreate function, the object cannot be
+   //--- highlighted and moved by default. Inside this method, selection parameter
+   //--- is true by default making it possible to highlight and move the object
+      ObjectSetInteger(chart_ID,name,OBJPROP_SELECTABLE,selection);
+      ObjectSetInteger(chart_ID,name,OBJPROP_SELECTED,selection);
+   //--- hide (true) or display (false) graphical object name in the object list
+      ObjectSetInteger(chart_ID,name,OBJPROP_HIDDEN,hidden);
+   //--- set the priority for receiving the event of a mouse click in the chart
+      ObjectSetInteger(chart_ID,name,OBJPROP_ZORDER,z_order);
+   
+      ObjectSetString(chart_ID,name,OBJPROP_TOOLTIP,tooltip);
+   //--- successful execution
+      return(true);
+   }
+  
+   //+------------------------------------------------------------------+
+   //| Move horizontal line                                             |
+   //+------------------------------------------------------------------+
+   bool HLineMove(const string name="HLine", // line name
+                  double       pricel=0, const string tooltip = "") // line price
+   {
+      const long  chart_ID=ChartId();
+   
+   //--- if the line price is not set, move it to the current Bid price level
+      if(!pricel)
+         pricel=SymbolInfoDouble(Symbol(),SYMBOL_BID);
+   //--- reset the error value
+      ResetLastError();
+   //--- move a horizontal line
+      if(!ObjectMove(chart_ID,name,0,0,pricel))
+        {
+         Print(__FUNCTION__,
+               ": failed to move the horizontal line! Error code = ",GetLastError());
+         return(false);
+        }
+      ObjectSetString(chart_ID,name,OBJPROP_TOOLTIP,tooltip);
+   //--- successful execution
+      return(true);
+   }
+   
+   long ChartId()
+   { 
+      ITrade* parent = Trade();
+      if (parent != NULL)
+         return parent.ChartId();
+      return ChartID(); 
+   }
+   
 };
 
 static IUtils* Utils = NULL;

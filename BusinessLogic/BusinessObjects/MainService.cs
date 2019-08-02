@@ -197,10 +197,11 @@ namespace BusinessLogic.BusinessObjects
         {
             if (_gSchedulerService != null)
                 _gSchedulerService.Shutdown();
-
-            ITerminalConnector connector = thisGlobal.Container.Resolve<ITerminalConnector>();
-            if (connector != null)
-                connector.Dispose();
+           
+            // To enable QUIK: uncomment these lines
+            //ITerminalConnector connector = thisGlobal.Container.Resolve<ITerminalConnector>();
+            //if (connector != null)
+            //    connector.Dispose();
         }
 
         public void PauseScheduler()

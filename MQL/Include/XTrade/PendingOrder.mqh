@@ -172,9 +172,9 @@ void PendingOrder::SetOPLine(void)
    {
       string name = OPLineName();
       if (!Utils.ObjExist(name))
-         HLineCreate(name,0,openPrice,opColor,SL_LINE_STYLE,TP_LINE_WIDTH,false,false,false,0,name);
+         Utils.HLineCreate(name,0,openPrice,opColor,SL_LINE_STYLE,TP_LINE_WIDTH,false,false,false,0,name);
       else
-         HLineMove(name, openPrice);
+         Utils.HLineMove(name, openPrice);
    }
 
 }

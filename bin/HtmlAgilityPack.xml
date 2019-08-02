@@ -151,11 +151,26 @@
             Gets a given attribute from the list using its name.
             </summary>
         </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Add(System.String,System.String)">
+            <summary>
+            Adds a new attribute to the collection with the given values
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+        </member>
         <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Add(HtmlAgilityPack.HtmlAttribute)">
             <summary>
             Adds supplied item to collection
             </summary>
             <param name="item"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.AddRange(System.Collections.Generic.IEnumerable{HtmlAgilityPack.HtmlAttribute})">
+            <summary>Adds a range supplied items to collection.</summary>
+            <param name="items">An IEnumerable&lt;HtmlAttribute&gt; of items to append to this.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.AddRange(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>Adds a range supplied items to collection using a dictionary.</summary>
+            <param name="items">A Dictionary&lt;string,string&gt; of items to append to this.</param>
         </member>
         <member name="M:HtmlAgilityPack.HtmlAttributeCollection.System#Collections#Generic#ICollection{HtmlAgilityPack#HtmlAttribute}#Clear">
             <summary>
@@ -214,13 +229,6 @@
             Removes the attribute at the specified index.
             </summary>
             <param name="index">The index of the attribute to remove.</param>
-        </member>
-        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Add(System.String,System.String)">
-            <summary>
-            Adds a new attribute to the collection with the given values
-            </summary>
-            <param name="name"></param>
-            <param name="value"></param>
         </member>
         <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Append(HtmlAgilityPack.HtmlAttribute)">
             <summary>
@@ -317,8 +325,8 @@
             Represents a complete HTML document.
             </summary>
         </member>
-        <member name="F:HtmlAgilityPack.HtmlDocument.DisableBehavaiorTagP">
-            <summary>True to disable, false to enable the behavaior tag p.</summary>
+        <member name="P:HtmlAgilityPack.HtmlDocument.DisableBehaviorTagP">
+            <summary>True to disable, false to enable the behavior tag p.</summary>
         </member>
         <member name="P:HtmlAgilityPack.HtmlDocument.DefaultBuilder">
             <summary>Default builder to use in the HtmlDocument constructor</summary>
@@ -434,6 +442,12 @@
         <member name="F:HtmlAgilityPack.HtmlDocument.OptionWriteEmptyNodes">
             <summary>
             Defines if empty nodes must be written as closed during output. Default is false.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionMaxNestedChildNodes">
+            <summary>
+            The max number of nested child nodes. 
+            Added to prevent stackoverflow problem when a page has tens of thousands of opening html tags with no closing tags 
             </summary>
         </member>
         <member name="M:HtmlAgilityPack.HtmlDocument.#ctor">
@@ -932,8 +946,12 @@
         </member>
         <member name="P:HtmlAgilityPack.HtmlNode.InnerText">
             <summary>
-            Gets or Sets the text between the start and end tags of the object.
+            Gets the text between the start and end tags of the object.
             </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.GetDirectInnerText">
+            <summary>Gets direct inner text.</summary>
+            <returns>The direct inner text.</returns>
         </member>
         <member name="P:HtmlAgilityPack.HtmlNode.LastChild">
             <summary>
@@ -1013,6 +1031,11 @@
         <member name="P:HtmlAgilityPack.HtmlNode.XPath">
             <summary>
             Gets a valid XPath string that points to this node
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.Depth">
+            <summary>
+            The depth of the node relative to the opening root html element. This value is used to determine if a document has to many nested html nodes which can cause stack overflows
             </summary>
         </member>
         <member name="M:HtmlAgilityPack.HtmlNode.CanOverlapElement(System.String)">
@@ -1341,6 +1364,11 @@
             Saves the current node to a string.
             </summary>
             <returns>The saved string.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.SetParent(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Sets the parent Html node and properly determines the current node's depth using the parent node's depth.
+            </summary>
         </member>
         <member name="M:HtmlAgilityPack.HtmlNode.AddClass(System.String)">
             <summary>
@@ -2606,40 +2634,6 @@
             <param name="xsltArgs">An XsltArgumentList containing the namespace-qualified arguments used as input to the transform.</param>
             <param name="writer">The XmlTextWriter to which you want to save.</param>
             <param name="xmlPath">A file path where the temporary XML before transformation will be saved. Mostly used for debugging purposes.</param>
-        </member>
-        <member name="T:HtmlAgilityPack.PermissionHelper">
-            <summary>
-            Wraps getting AppDomain permissions
-            </summary>
-        </member>
-        <member name="M:HtmlAgilityPack.PermissionHelper.GetIsRegistryAvailable">
-            <summary>
-            Checks to see if Registry access is available to the caller
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HtmlAgilityPack.PermissionHelper.GetIsDnsAvailable">
-            <summary>
-            Checks to see if DNS information is available to the caller
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:HtmlAgilityPack.IPermissionHelper">
-            <summary>
-            An interface for getting permissions of the running application
-            </summary>
-        </member>
-        <member name="M:HtmlAgilityPack.IPermissionHelper.GetIsRegistryAvailable">
-            <summary>
-            Checks to see if Registry access is available to the caller
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:HtmlAgilityPack.IPermissionHelper.GetIsDnsAvailable">
-            <summary>
-            Checks to see if DNS information is available to the caller
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:HtmlAgilityPack.HtmlWebException">
             <summary>

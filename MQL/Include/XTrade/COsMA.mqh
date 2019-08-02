@@ -94,7 +94,6 @@ double COsMA::GetData(const int buffer_num,const int index) const
 
 void COsMA::Process()
 {
-   
    double totalMax = 0;
    double totalMin = 0;
    TYPE_TREND totalTrend = 0;
@@ -115,27 +114,12 @@ void COsMA::Process()
             
    bool osMABUY = (osMABuf[0] > osMABuf[1]) && (osMABuf[2] > osMABuf[1]) && (OSMAValue < 0); // dip
    bool osMASELL = (osMABuf[0] < osMABuf[1]) && (osMABuf[2] < osMABuf[1]) && (OSMAValue > 0); // peak
-   
-   //double mfiMax = 0;
-   //double mfiMin = 0;
-   //TYPE_TREND mfiTrend = 0;
-   //Utils.GetIndicatorMinMax(signals.MFI, mfiMin, mfiMax, mfiTrend, 0, CANDLE_PATTERN_MAXBARS);   
-   
-   //TYPE_TREND bandTrend = 0;
-   //double bandUpperMin = 0;
-   //double bandUpperMax = 0;            
-   //Utils.GetIndicatorMinMax(signals.Bands, bandUpperMin, bandUpperMax, bandTrend, UPPER_BAND, CANDLE_PATTERN_MAXBARS);
-   //double bandLowMin = 0;
-   //double bandLowMax = 0;            
-   //Utils.GetIndicatorMinMax(signals.Bands, bandLowMin, bandLowMax, bandTrend, LOWER_BAND, CANDLE_PATTERN_MAXBARS);
-      
+         
    MqlRates rates[];
    ArrayResize(rates, 2);
    ArraySetAsSeries(rates, true);    
    CopyRates(Utils.Symbol, (ENUM_TIMEFRAMES)m_period, 0, 2, rates);
    
-   //double priceHigh = rates[0].high;
-   //double priceLow = rates[0].low;
    
    double priceHigh = MathMax(rates[0].high, rates[1].high);
    double priceLow = MathMin(rates[0].low, rates[1].low);

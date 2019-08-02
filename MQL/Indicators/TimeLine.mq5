@@ -26,7 +26,7 @@ input int                  SubWindow = 1;
 input color                InfoTextColor = clrBlack;    // Font color
 input int                  InpFontSize  = 9;                // Font size
 input int                  InpSpacing = 8;                  // Date/Time spacing
-input int                  Height = 160;                  // Date/Time spacing
+input int                  Height = 28;                  // Date/Time spacing
 
 int prevDay = 0;
 string strPREFIX = PREFIX_SEED;
@@ -105,6 +105,8 @@ void DrawTimeLine(const int nPosition, const int nRatesCount, const datetime &ca
    bool     _start = false;
    int      c = 0;
    
+   if (ArraySize(customChartIndicator.Time) < nRatesCount)
+       return;
    for(int i=nPosition;i<nRatesCount;i++)
    {
       curBarTime = (datetime)customChartIndicator.Time[i];

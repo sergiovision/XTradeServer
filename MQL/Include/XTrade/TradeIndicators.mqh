@@ -24,6 +24,8 @@ class CNATR;
 class CMedianRenko;
 class CIchimokuRenko;
 class CTimeLine;
+class SSAFastTrend;
+class CLevels;
 
 #include <XTrade\CIchimoku.mqh>
 #include <XTrade\CNewsIndicator.mqh>
@@ -34,6 +36,8 @@ class CTimeLine;
 #include <XTrade\CIchimokuRenko.mqh>
 #include <XTrade\CTimeLine.mqh>
 #include <XTrade\CMACD.mqh>
+#include <XTrade\SSAFastTrend.mqh>
+#include <XTrade\CLevels.mqh>
 
 class TradeMethods;
 
@@ -55,14 +59,23 @@ public:
    CMedianRenko*  medianRenko;
    CTimeLine*     timeLine;
    CMACD*         macd;
+   CLevels*       levels;
+   SSAFastTrend* ssaTrend;
    IndiBase*   FI;
    IndiBase*   SI;
    double deltaCross;
    string StatusString;
    datetime timeNewsPeriodStarted;
-   
+   bool AllowAutoTrading;
+
    TradeIndicators(TradeMethods* me, PanelBase* p)
    { 
+      AllowAutoTrading = false;
+      ssaTrend = NULL;
+      medianRenko = NULL;
+      timeLine = NULL;
+      macd = NULL;
+      levels = NULL;
       methods = me;
       Trend = LATERAL;
       thrift = Utils.Service();
@@ -77,9 +90,13 @@ public:
          InitMedianRenko(methods.Period);
          if (!Utils.IsTesting())
             InitTimeline(methods.Period);
+      } else {
+         InitSSATrend(methods.Period);
       }
 
       InitATR();
+      
+      InitLevels(methods.Period);
       
       if (GET(EnableNews))
       {
@@ -131,6 +148,7 @@ public:
             ind = new COsMA();
             ind.Init(tf);
             return ind;
+         case DefaultIndicator:
          case NoIndicator:
             return NULL;            
          default:
@@ -141,18 +159,31 @@ public:
    
    bool InitMedianRenko(ENUM_TIMEFRAMES tf)
    {
+      if (medianRenko != NULL)
+         if (medianRenko.Initialized())
+             return true;
       medianRenko = new CMedianRenko();
       return medianRenko.Init(tf);
    }
+   
+   bool InitSSATrend(ENUM_TIMEFRAMES tf)
+   {
+      if (ssaTrend != NULL)
+         if (ssaTrend.Initialized())
+             return true;
+      ssaTrend = new SSAFastTrend();
+      return ssaTrend.Init(tf);
+   }
+      
       
    bool InitTimeline(ENUM_TIMEFRAMES tf)
    {
       if ((timeLine != NULL) || (macd != NULL))
          return false;
       timeLine = new CTimeLine();
-      macd = new CMACD();
+      //macd = new CMACD();
       bool res = timeLine.Init(tf);
-      macd.Init(tf);
+      //macd.Init(tf);
       return res;
 
    }
@@ -173,11 +204,29 @@ public:
       }
       return res;
    }
-      
+   
+   bool InitLevels(ENUM_TIMEFRAMES tf)
+   {
+      levels = new CLevels();
+      bool res = levels.Init(tf);
+      if (res)
+      {
+         levels.FullRelease(!Utils.IsTesting());
+      }
+      return res;
+   }
+   
       void RefreshIndicators()
       {    
-          if (medianRenko != NULL)
-            medianRenko.Process();  
+         if (!AllowAutoTrading)
+             return;
+          if (GET(EnableRenko)) {
+             if (medianRenko != NULL)
+               medianRenko.Process();  
+          } else {
+             if (ssaTrend != NULL)
+               ssaTrend.Process();  
+          }
 /*
           if (ATRCurrent.Handle() != INVALID_HANDLE)
             ATRCurrent.Refresh();
@@ -187,7 +236,7 @@ public:
              
           if (Bands.Handle() != INVALID_HANDLE)
               Bands.Refresh();
-             */
+*/
           //if (OsMA.Initialized())
           //   OsMA.Refresh();
              
@@ -217,6 +266,11 @@ public:
                    if (timeLine.Initialized())
                       timeLine.Delete();
                 }
+             } else {
+                  if (ssaTrend != NULL) {
+                      if (ssaTrend.Initialized())
+                         ssaTrend.Delete();
+                  }
              }
 
              if (Bands != NULL)            
@@ -225,7 +279,12 @@ public:
                 Bands.Delete();
                 Bands.DeleteFromChart(methods.ChartId(), methods.SubWindow());
              }
-                          
+             
+             if (levels.Initialized())
+             {
+                levels.DeleteFromChart(methods.ChartId(), methods.SubWindow());
+             }
+
              if (News != NULL)            
              if (News.Initialized())
              {
@@ -248,6 +307,7 @@ public:
           }
           DELETE_PTR(FI);
           DELETE_PTR(SI);
+          DELETE_PTR(levels);
           DELETE_PTR(ATRD1);
           DELETE_PTR(News);
           DELETE_PTR(Bands);
@@ -255,11 +315,14 @@ public:
           {
             DELETE_PTR(macd);
             DELETE_PTR(timeLine);
-            if (medianRenko != NULL)
+            if (medianRenko != NULL) 
             {  
                medianRenko.Delete();
                DELETE_PTR(medianRenko);
             }
+          } else 
+          {
+            DELETE_PTR(ssaTrend);
           }
       }
       
@@ -277,14 +340,17 @@ public:
       {
          if (GET(FilterIndicator) == NoIndicator)
             return;
+          if (!AllowAutoTrading)
+              return;
          if (FI == NULL)
              return;
-
          FI.Process();
       }
       
       void ProcessSignal()
       {
+          if (!AllowAutoTrading)
+              return;
           if (SI == NULL)
              return;
           SI.Process();  

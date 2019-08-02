@@ -29,7 +29,7 @@
 
 #include <XTrade\MedianRenko\Renko_EA_Logic.mqh>
 #include <XTrade\CMedianRenko.mqh>
-#include <XTrade\CIchimokuRenko.mqh>
+//#include <XTrade\CIchimokuRenko.mqh>
 #include <XTrade\TradeMethods.mqh>
 
 //

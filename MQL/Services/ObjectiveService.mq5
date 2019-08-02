@@ -10,6 +10,9 @@
 
 #define THRIFT 1
 
+#define TEMPLATE_NAME   "ObjectiveService"
+
+
 #include <XTrade\TradeExpert.mqh>
 
 TradeExpert* expert = NULL;
