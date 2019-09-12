@@ -1,10 +1,7 @@
-//+------------------------------------------------------------------+
-//|                                             ClassProgressBar.mqh |
-//|                                      Copyright vdv_2001 Software |
-//|                                                 vdv_2001@mail.ru |
-//+------------------------------------------------------------------+
-#property copyright "Dmitry Voronkov"
-#property link      "vdv_2001@mail.ru"
+#property library
+#property copyright "Sergei Zhuravlev"
+#property link      "http://github.com/sergiovision"
+#property strict
 
 #include <ChartObjects\ChartObjectsTxtControls.mqh>
 

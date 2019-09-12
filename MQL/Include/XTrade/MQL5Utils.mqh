@@ -21,14 +21,14 @@ protected:
    ITradeService* service;
 public:
    MQL5Utils(short Port, string EA)
-   {   
+   {
        Symbol = Symbol();
        Period = (ENUM_TIMEFRAMES)Period();
 #ifdef THRIFT   
        service = new TradeConnector(Port, EA);
 #else 
        service = new ITradeService(Port, EA);
-#endif       
+#endif
    }
 
    virtual ~MQL5Utils()
@@ -65,7 +65,6 @@ public:
    {
       return SymbolInfoDouble(sym, SYMBOL_BID);
    }
-
 
    datetime CurrentTimeOnTF()
    {

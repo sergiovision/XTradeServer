@@ -278,7 +278,7 @@
         <member name="P:MySql.Data.MySqlClient.MySqlBulkLoader.Local">
             <summary>
             Gets or sets a value indicating whether the file name that is to be loaded
-            is local to the client or not. The default value is False.
+            is local to the client or not. The default value is false.
             </summary>
             <value><c>true</c> if local; otherwise, <c>false</c>.</value>
         </member>
@@ -6134,6 +6134,46 @@
             Indicates whether to use SSL connections and how to handle server certificate errors.
             </summary>
         </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.SslKey">
+            <summary>
+            Gets or sets the path to a local key file in PEM format to use for establishing an encrypted connection.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.SslCert">
+            <summary>
+            Gets or sets the path to a local certificate file in PEM format to use for establishing an encrypted connection.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.SshHostName">
+            <summary>
+            Gets or sets the name of the SSH server.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.SshPort">
+            <summary>
+            Gets or sets the port number to use when authenticating to the SSH server.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.SshUserName">
+            <summary>
+            Gets or sets the user name to authenticate to the SSH server.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.SshPassword">
+            <summary>
+            Gets or sets the password to authenticate to the SSH server.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.SshKeyFile">
+            <summary>
+            Gets or sets the SSH key file to authenticate to the SSH server.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.SshPassphrase">
+            <summary>
+            Gets or sets the passphrase of the key file to authenticate to the SSH server.
+            </summary>
+        </member>
         <member name="P:MySql.Data.MySqlClient.MySqlBaseConnectionStringBuilder.Keepalive">
             <summary>
             Gets or sets the idle connection time(seconds) for TCP connections.
@@ -6247,6 +6287,12 @@
             Gets or sets the connection timeout.
             </summary>
         </member>
+        <member name="P:MySql.Data.MySqlClient.MySqlConnectionStringBuilder.AllowLoadLocalInfile">
+            <summary>
+            Gets or sets a boolean value that indicates whether this connection will allow
+            to load data local infile.
+            </summary>
+        </member>
         <member name="P:MySql.Data.MySqlClient.MySqlConnectionStringBuilder.PersistSecurityInfo">
             <summary>
             Gets or sets a boolean value that indicates if the password should be persisted
@@ -6261,9 +6307,12 @@
         </member>
         <member name="P:MySql.Data.MySqlClient.MySqlConnectionStringBuilder.AllowPublicKeyRetrieval">
             <summary>
-            Gets or sets the authentication mechanism to use with X Protocol connections.
+            Gets or sets a boolean value that indicates if RSA public keys should be retrieved from the server.
             </summary>
-            <remarks>This option is specific to X Protocol connections. Default value is <see cref="F:MySql.Data.MySqlClient.MySqlAuthenticationMode.Default"/>.</remarks>
+            <remarks>This option is only relevant when SSL is disabled. Setting this option to <c>true</c> in
+            8.0 servers that have the caching_sha2_password authentication plugin as the default plugin will
+            cause the connection attempt to fail if the user hasn't successfully connected to the server on a
+            previous occasion.</remarks>
         </member>
         <member name="P:MySql.Data.MySqlClient.MySqlConnectionStringBuilder.AllowZeroDateTime">
             <summary>
@@ -10717,11 +10766,60 @@
             </summary>
             <param name="tok"></param>
         </member>
-        <member name="M:MySql.Data.Common.Ssl.GetClientCertificates">
+        <member name="T:MySql.Data.Common.Ssl">
             <summary>
-            Retrieve client SSL certificates. Dependent on connection string
-            settings we use either file or store based certificates.
+            Handles SSL connections for the Classic and X protocols.
             </summary>
+        </member>
+        <member name="F:MySql.Data.Common.Ssl._settings">
+            <summary>
+            Contains the connection options provided by the user.
+            </summary>
+        </member>
+        <member name="F:MySql.Data.Common.Ssl._treatCertificatesAsPemFormat">
+            <summary>
+            A flag to establish how certificates are to be treated and validated.
+            </summary>
+        </member>
+        <member name="F:MySql.Data.Common.Ssl.tlsProtocols">
+            <summary>
+            Defines the supported TLS protocols.
+            </summary>
+        </member>
+        <member name="M:MySql.Data.Common.Ssl.GetPFXClientCertificates">
+            <summary>
+            Retrieves a collection containing the client SSL PFX certificates.
+            </summary>
+            <remarks>Dependent on connection string settings.
+            Either file or store based certificates are used.</remarks>
+        </member>
+        <member name="M:MySql.Data.Common.Ssl.StartSSL(System.IO.Stream@,System.Text.Encoding,System.String)">
+            <summary>
+            Initiates the SSL connection.
+            </summary>
+            <param name="baseStream">The base stream.</param>
+            <param name="encoding">The encoding used in the SSL connection.</param>
+            <param name="connectionString">The connection string used to establish the connection.</param>
+            <returns>A <see cref="T:MySql.Data.MySqlClient.MySqlStream"/> instance ready to initiate an SSL connection.</returns>
+        </member>
+        <member name="M:MySql.Data.Common.Ssl.ServerCheckValidation(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Verifies the SSL certificates used for authentication.
+            </summary>
+            <param name="sender">An object that contains state information for this validation.</param>
+            <param name="certificate">The MySQL server certificate used to authenticate the remote party.</param>
+            <param name="chain">The chain of certificate authorities associated with the remote certificate.</param>
+            <param name="sslPolicyErrors">One or more errors associated with the remote certificate.</param>
+            <returns><c>true</c> if no errors were found based on the selected SSL mode; <c>false</c>, otherwise.</returns>
+        </member>
+        <member name="M:MySql.Data.Common.Ssl.GetCertificateFileExtension(System.String,System.Boolean)">
+            <summary>
+            Gets the extension of the specified file.
+            </summary>
+            <param name="filePath">The path of the file.</param>
+            <param name="toLowerCase">Flag to indicate if the result should be converted to lower case.</param>
+            <remarks>The . character is ommited from the result.</remarks>
+            <returns></returns>
         </member>
         <member name="T:MySql.Data.Common.StreamCreator">
             <summary>
@@ -10740,6 +10838,72 @@
             Summary description for Version.
             </summary>
         </member>
+        <member name="T:MySql.Data.common.SslPemCertificateValidator">
+            <summary>
+            Provides functionality to read SSL PEM certificates and to perform multiple validations via Bouncy Castle.
+            </summary>
+        </member>
+        <member name="M:MySql.Data.common.SslPemCertificateValidator.VerifyEmptyOrWhitespaceSslConnectionOption(System.String,System.String)">
+            <summary>
+            Raises an exception if the specified connection option is null, empty or whitespace.
+            </summary>
+            <param name="connectionOption">The connection option to verify.</param>
+        </member>
+        <member name="M:MySql.Data.common.SslPemCertificateValidator.GetBuffer(System.String)">
+            <summary>
+            Reads the specified file as a byte array.
+            </summary>
+            <param name="fileName">The path of the file to read.</param>
+            <returns>A byte array representing the read file.</returns>
+        </member>
+        <member name="M:MySql.Data.common.SslPemCertificateValidator.ReadSslCertificate(System.String)">
+            <summary>
+            Reads the SSL certificate file.
+            </summary>
+            <param name="filePath">The path to the certificate file.</param>
+            <returns>A <see cref="T:Org.BouncyCastle.X509.X509Certificate"/> instance representing the SSL certificate file.</returns>
+        </member>
+        <member name="M:MySql.Data.common.SslPemCertificateValidator.ReadKey(System.String)">
+            <summary>
+            Reads the SSL certificate key file.
+            </summary>
+            <param name="filePath">The path to the certificate key file.</param>
+            <returns>A <see cref="T:Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair"/> instance representing the SSL certificate key file.</returns>
+        </member>
+        <member name="M:MySql.Data.common.SslPemCertificateValidator.VerifyDates(Org.BouncyCastle.X509.X509Certificate)">
+            <summary>
+            Verifies that the certificate has not yet expired.
+            </summary>
+            <param name="certificate">The certificate to verify.</param>
+        </member>
+        <member name="M:MySql.Data.common.SslPemCertificateValidator.VerifyCAStatus(Org.BouncyCastle.X509.X509Certificate,System.Boolean)">
+            <summary>
+            Verifies a certificate CA status.
+            </summary>
+            <param name="certificate">The certificate to validate.</param>
+            <param name="expectedCAStatus">A flag indicating the expected CA status.</param>
+        </member>
+        <member name="M:MySql.Data.common.SslPemCertificateValidator.VerifySignature(Org.BouncyCastle.X509.X509Certificate,Org.BouncyCastle.X509.X509Certificate)">
+            <summary>
+            Verifies that the certificate was signed using the private key that corresponds to the specified public key
+            </summary>
+            <param name="certificate">The client side certificate containing the public key.</param>
+            <param name="serverCertificate">The server certificate.</param>
+        </member>
+        <member name="M:MySql.Data.common.SslPemCertificateValidator.VerifyIdentity(System.Net.Security.SslPolicyErrors)">
+            <summary>
+            Verifies that no SSL policy errors regarding the identitfy of the host were raised.
+            </summary>
+            <param name="sslPolicyErrors">A <see cref="T:System.Net.Security.SslPolicyErrors"/> instance set with the raised SSL errors.</param>
+        </member>
+        <member name="M:MySql.Data.common.SslPemCertificateValidator.VerifyIssuer(Org.BouncyCastle.X509.X509Certificate,System.Security.Cryptography.X509Certificates.X509Certificate)">
+            <summary>
+            Verifies that the issuer matches the CA by comparing the CA certificate issuer and the server certificate issuer.
+            </summary>
+            <param name="CACertificate">The CA certificate.</param>
+            <param name="serverCertificate">The server certificate.</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:MySql.Data.common.SslPemCertificateValidator.IsCA(Org.BouncyCastle.X509.X509Certificate,System.Int32@)" -->
         <member name="T:MySql.Data.Resources">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -10901,6 +11065,11 @@
               Looks up a localized string similar to SSL connection option &apos;{0}&apos; is duplicated..
             </summary>
         </member>
+        <member name="P:MySql.Data.Resources.EncodingError">
+            <summary>
+              Looks up a localized string similar to Encoding error during validation..
+            </summary>
+        </member>
         <member name="P:MySql.Data.Resources.ErrorCreatingSocket">
             <summary>
               Looks up a localized string similar to Error creating socket connection.
@@ -10924,6 +11093,26 @@
         <member name="P:MySql.Data.Resources.FileBasedCertificateNotSupported">
             <summary>
               Looks up a localized string similar to File based certificates are only supported when connecting to MySQL Server 5.1 or greater..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.FileIsNotACertificate">
+            <summary>
+              Looks up a localized string similar to The specified file cannot be converted to a certificate..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.FileIsNotAKey">
+            <summary>
+              Looks up a localized string similar to The specified file cannot be converted to a key..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.FileNotFound">
+            <summary>
+              Looks up a localized string similar to Failed to read file at the specified location..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.FilePathNotSet">
+            <summary>
+              Looks up a localized string similar to No file path has been provided for the connection option {0}..
             </summary>
         </member>
         <member name="P:MySql.Data.Resources.FromAndLengthTooBig">
@@ -10966,6 +11155,11 @@
               Looks up a localized string similar to Index must be a valid position in the buffer.
             </summary>
         </member>
+        <member name="P:MySql.Data.Resources.InvalidCertificateKey">
+            <summary>
+              Looks up a localized string similar to The provided key is invalid..
+            </summary>
+        </member>
         <member name="P:MySql.Data.Resources.InvalidColumnOrdinal">
             <summary>
               Looks up a localized string similar to You have specified an invalid column ordinal..
@@ -10994,6 +11188,21 @@
         <member name="P:MySql.Data.Resources.InvalidProcName">
             <summary>
               Looks up a localized string similar to Procedure or function &apos;{0}&apos; cannot be found in database &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.InvalidSslCertificate">
+            <summary>
+              Looks up a localized string similar to The certificate is invalid..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.InvalidSslCertificateSignature">
+            <summary>
+              Looks up a localized string similar to Unable to validate the signature..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.InvalidSslCertificateSignatureGeneral">
+            <summary>
+              Looks up a localized string similar to Unable to verify the signature..
             </summary>
         </member>
         <member name="P:MySql.Data.Resources.InvalidSslMode">
@@ -11076,6 +11285,11 @@
             DISTINCTROW
             D [rest of string was truncated]&quot;;.
              </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.LocalInfileDisabled">
+            <summary>
+              Looks up a localized string similar to Server asked for stream in response to LOAD DATA LOCAL INFILE, but the functionality is disabled by client setting &apos;allowlocalinfile&apos; to &apos;false&apos;..
+            </summary>
         </member>
         <member name="P:MySql.Data.Resources.MixedParameterNamingNotAllowed">
             <summary>
@@ -11175,6 +11389,11 @@
         <member name="P:MySql.Data.Resources.ParameterCannotBeNull">
             <summary>
               Looks up a localized string similar to Parameter cannot be null.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.ParameterCannotBeNullOrEmpty">
+            <summary>
+              Looks up a localized string similar to Parameter &apos;{0}&apos; can&apos;t be null or empty..
             </summary>
         </member>
         <member name="P:MySql.Data.Resources.ParameterIndexNotFound">
@@ -11320,6 +11539,31 @@
         <member name="P:MySql.Data.Resources.SPNotSupported">
             <summary>
               Looks up a localized string similar to Stored procedures are not supported on this version of MySQL.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.SshAuthenticationModeNotSet">
+            <summary>
+              Looks up a localized string similar to The SSH Key File and/or SSH Password must be provided..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.SshInvalidPassphrase">
+            <summary>
+              Looks up a localized string similar to The provided passphrase is invalid..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.SslCertificateCAMismatch">
+            <summary>
+              Looks up a localized string similar to The certificate authority (CA) does not match..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.SslCertificateHostNameMismatch">
+            <summary>
+              Looks up a localized string similar to The host name does not match the name on the certificate..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Resources.SslCertificateIsNotCA">
+            <summary>
+              Looks up a localized string similar to The certificate is not a certificate authority (CA)..
             </summary>
         </member>
         <member name="P:MySql.Data.Resources.SslConnectionError">
@@ -11603,6 +11847,16 @@
               Looks up a localized string similar to {0} &apos;{1}&apos; does not exist in schema &apos;{2}&apos;..
             </summary>
         </member>
+        <member name="P:MySql.Data.ResourcesX.DuplicateUserDefinedAttribute">
+            <summary>
+              Looks up a localized string similar to Duplicate key &apos;{0}&apos; used in &quot;connection-attributes&quot;..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.ResourcesX.EmptyKeyConnectionAttribute">
+            <summary>
+              Looks up a localized string similar to Key name in connection attribute cannot be an empty string..
+            </summary>
+        </member>
         <member name="P:MySql.Data.ResourcesX.FeatureNotSupported">
             <summary>
               Looks up a localized string similar to This feature is currently not supported..
@@ -11616,6 +11870,11 @@
         <member name="P:MySql.Data.ResourcesX.InvalidCollationId">
             <summary>
               Looks up a localized string similar to Collation with id &apos;{0}&apos; not found..
+            </summary>
+        </member>
+        <member name="P:MySql.Data.ResourcesX.InvalidConnectionAttributes">
+            <summary>
+              Looks up a localized string similar to The value of &quot;connection-attributes&quot; must be either a boolean or a list of key-value pairs..
             </summary>
         </member>
         <member name="P:MySql.Data.ResourcesX.InvalidConnectionData">
@@ -11681,6 +11940,11 @@
         <member name="P:MySql.Data.ResourcesX.InvalidUriQuery">
             <summary>
               Looks up a localized string similar to Invalid uri query value.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.ResourcesX.InvalidUserDefinedAttribute">
+            <summary>
+              Looks up a localized string similar to Key names in &quot;connection-attributes&quot; cannot start with &quot;_&quot;..
             </summary>
         </member>
         <member name="P:MySql.Data.ResourcesX.JsonUriOrHost">
@@ -12456,6 +12720,12 @@
             </summary>
             <returns>An instance of <see cref="T:MySql.Data.Common.DBVersion"/> containing the server version.</returns>
         </member>
+        <member name="M:MySqlX.Sessions.InternalSession.GetThreadId">
+            <summary>
+            Gets the thread Id of the connection.
+            </summary>
+            <returns>Thread Id</returns>
+        </member>
         <member name="T:MySqlX.Sessions.QueueTaskScheduler">
             <summary>
             Implementation class for object that manages low-level work of queuing tasks onto threads.
@@ -12469,6 +12739,11 @@
         <member name="T:MySqlX.XDevAPI.BaseSession">
             <summary>
             Represents a base class for a Session.
+            </summary>
+        </member>
+        <member name="P:MySqlX.XDevAPI.BaseSession.SupportsPreparedStatements">
+            <summary>
+            Flag to set if prepared statements are supported.
             </summary>
         </member>
         <member name="P:MySqlX.XDevAPI.BaseSession.Settings">
@@ -12875,6 +13150,7 @@
             <para />- TIMESTAMP
             <para />- DATETIME
             <para />- TEXT[(length)]
+            <para />- CHAR[(lenght)] 
             <para />- GEOJSON (extra options: options, srid)
             </para>
             </remarks>
@@ -12959,6 +13235,22 @@
             Executes a statement asynchronously.
             </summary>
             <returns>A result object containing the details of the execution.</returns>
+        </member>
+        <member name="M:MySqlX.XDevAPI.Common.BaseStatement`1.ValidateOpenSession">
+            <summary>
+            Validates if the session is open and valid.
+            </summary>
+        </member>
+        <member name="M:MySqlX.XDevAPI.Common.BaseStatement`1.SetChanged">
+            <summary>
+            Sets the status as Changed for prepared statement validation.
+            </summary>
+        </member>
+        <member name="M:MySqlX.XDevAPI.Common.BaseStatement`1.ConvertToPreparedStatement``1(System.Func{``0,`0},``0,System.Collections.IEnumerable)">
+            <summary>
+            Converts a statement to prepared statement for a second execution 
+            without any change but Bind, Limit, or Offset.
+            </summary>
         </member>
         <member name="T:MySqlX.XDevAPI.Common.BufferingResult`1">
             <summary>
@@ -13096,7 +13388,7 @@
         </member>
         <member name="M:MySqlX.XDevAPI.Common.FilterableStatement`3.Where(System.String)">
             <summary>
-            Allows the user to set the where condition for this operation.
+            Enables the setting of Where condition for this operation.
             </summary>
             <param name="condition">The Where condition.</param>
             <returns>The implementing statement type.</returns>
@@ -13324,6 +13616,13 @@
             <param name="order">The order criteria.</param>
             <returns>A generic object representing the implementing statement type.</returns>
         </member>
+        <member name="M:MySqlX.XDevAPI.CRUD.FindStatement.Where(System.String)">
+            <summary>
+            Enables the setting of Where condition for this operation.
+            </summary>
+            <param name="condition">The Where condition.</param>
+            <returns>The implementing statement type.</returns>
+        </member>
         <member name="T:MySqlX.XDevAPI.CRUD.ModifyStatement">
             <summary>
             Represents a chaining collection modify statement.
@@ -13386,6 +13685,13 @@
             <param name="order">The order criteria.</param>
             <returns>A generic object representing the implementing statement type.</returns>
         </member>
+        <member name="M:MySqlX.XDevAPI.CRUD.ModifyStatement.Where(System.String)">
+            <summary>
+            Enables the setting of Where condition for this operation.
+            </summary>
+            <param name="condition">The Where condition.</param>
+            <returns>The implementing statement type.</returns>
+        </member>
         <member name="M:MySqlX.XDevAPI.CRUD.ModifyStatement.Execute">
             <summary>
             Executes the modify statement.
@@ -13404,6 +13710,13 @@
             </summary>
             <param name="order">The order criteria.</param>
             <returns>A generic object representing the implementing statement type.</returns>
+        </member>
+        <member name="M:MySqlX.XDevAPI.CRUD.RemoveStatement.Where(System.String)">
+            <summary>
+            Enables the setting of Where condition for this operation.
+            </summary>
+            <param name="condition">The Where condition.</param>
+            <returns>The implementing statement type.</returns>
         </member>
         <member name="M:MySqlX.XDevAPI.CRUD.RemoveStatement.Execute">
             <summary>
@@ -13619,6 +13932,16 @@
         <member name="P:MySqlX.XDevAPI.MySqlXConnectionStringBuilder.ConnectTimeout">
             <summary>
             Gets or sets the connection timeout.
+            </summary>
+        </member>
+        <member name="P:MySqlX.XDevAPI.MySqlXConnectionStringBuilder.ConnectionAttributes">
+            <summary>
+            Gets or sets the connection attributes.
+            </summary>
+        </member>
+        <member name="P:MySqlX.XDevAPI.MySqlXConnectionStringBuilder.SslCrl">
+            <summary>
+            Path to a local file containing certificate revocation lists.
             </summary>
         </member>
         <member name="T:MySqlX.XDevAPI.Relational.Column">
@@ -14105,13 +14428,13 @@
         </member>
         <member name="T:Mysqlx.ClientMessages">
              <summary>
-              IDs of messages that can be sent from client to the server
+             IDs of messages that can be sent from client to the server
             
-              .. note::
-                this message is never sent on the wire. It is only used to let ``protoc``
+             .. note::
+               this message is never sent on the wire. It is only used to let ``protoc``
             
-                * generate constants
-                * check for uniqueness
+               * generate constants
+               * check for uniqueness
              </summary>
         </member>
         <member name="T:Mysqlx.ClientMessages.Types">
@@ -14119,13 +14442,13 @@
         </member>
         <member name="T:Mysqlx.ServerMessages">
              <summary>
-              IDs of messages that can be sent from server to client
+             IDs of messages that can be sent from server to client
             
-              .. note::
-                this message is never sent on the wire. It is only used to let ``protoc``
+             .. note::
+               this message is never sent on the wire. It is only used to let ``protoc``
             
-                * generate constants
-                * check for uniqueness
+               * generate constants
+               * check for uniqueness
              </summary>
         </member>
         <member name="T:Mysqlx.ServerMessages.Types">
@@ -14133,70 +14456,45 @@
         </member>
         <member name="F:Mysqlx.ServerMessages.Types.Type.Notice">
             <summary>
-             NOTICE has to stay at 11 forever
+            NOTICE has to stay at 11 forever
             </summary>
         </member>
         <member name="T:Mysqlx.Ok">
             <summary>
-             generic Ok message
+            generic Ok message
             </summary>
         </member>
         <member name="F:Mysqlx.Ok.MsgFieldNumber">
             <summary>Field number for the "msg" field.</summary>
         </member>
-        <member name="P:Mysqlx.Ok.Msg">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="T:Mysqlx.Error">
              <summary>
-              generic Error message
+             generic Error message
             
-              A ``severity`` of ``ERROR`` indicates the current message sequence is
-              aborted for the given error and the session is ready for more.
+             A ``severity`` of ``ERROR`` indicates the current message sequence is
+             aborted for the given error and the session is ready for more.
             
-              In case of a ``FATAL`` error message the client should not expect
-              the server to continue handling any further messages and should
-              close the connection.
+             In case of a ``FATAL`` error message the client should not expect
+             the server to continue handling any further messages and should
+             close the connection.
             
-              :param severity: severity of the error message
-              :param code: error-code
-              :param sql_state: SQL state
-              :param msg: human readable error message
+             :param severity: severity of the error message
+             :param code: error-code
+             :param sql_state: SQL state
+             :param msg: human readable error message
              </summary>
         </member>
         <member name="F:Mysqlx.Error.SeverityFieldNumber">
             <summary>Field number for the "severity" field.</summary>
         </member>
-        <member name="P:Mysqlx.Error.Severity">
-            <summary>
-            optional [ default = ERROR ]
-            </summary>
-        </member>
         <member name="F:Mysqlx.Error.CodeFieldNumber">
             <summary>Field number for the "code" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Error.Code">
-            <summary>
-            required
-            </summary>
         </member>
         <member name="F:Mysqlx.Error.SqlStateFieldNumber">
             <summary>Field number for the "sql_state" field.</summary>
         </member>
-        <member name="P:Mysqlx.Error.SqlState">
-            <summary>
-            required
-            </summary>
-        </member>
         <member name="F:Mysqlx.Error.MsgFieldNumber">
             <summary>Field number for the "msg" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Error.Msg">
-            <summary>
-            required
-            </summary>
         </member>
         <member name="T:Mysqlx.Error.Types">
             <summary>Container for nested types declared in the Error message type.</summary>
@@ -14422,6 +14720,35 @@
             optional
              </summary>
         </member>
+        <member name="T:Mysqlx.Crud.LimitExpr">
+             <summary>
+             limit expression
+            
+             LimitExpr in comparison to Limit, is able to specify that row_count and
+             offset are placeholders.
+             This message support expressions of following types Expr/literal/UINT,
+             Expr/PLACEHOLDER.
+            
+             :param row_count: maximum rows to filter
+             :param offset: maximum rows to skip before applying the row_count
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Crud.LimitExpr.RowCountFieldNumber">
+            <summary>Field number for the "row_count" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Crud.LimitExpr.RowCount">
+             <summary>
+            required
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Crud.LimitExpr.OffsetFieldNumber">
+            <summary>Field number for the "offset" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Crud.LimitExpr.Offset">
+             <summary>
+            optional
+             </summary>
+        </member>
         <member name="T:Mysqlx.Crud.Order">
             <summary>
             sort order
@@ -14539,12 +14866,13 @@
              :param projection: list of column projections that shall be returned
              :param args: values for parameters used in filter expression
              :param criteria: filter criteria
-             :param limit: numbers of rows that shall be skipped and returned
+             :param limit: numbers of rows that shall be skipped and returned (user can set one of: limit, limit_expr)
              :param order: sort-order in which the rows/document shall be returned in
              :param grouping: column expression list for aggregation (GROUP BY)
              :param grouping_criteria: filter criteria for aggregated groups
              :param locking: perform row locking on matches
              :param locking_options: additional options how to handle locked rows
+             :param limit_expr: numbers of rows that shall be skipped and returned (user can set one of: limit, limit_expr)
              :Returns: :protobuf:msg:`Mysqlx.Resultset::`
              </summary>
         </member>
@@ -14578,14 +14906,6 @@
         <member name="F:Mysqlx.Crud.Find.ArgsFieldNumber">
             <summary>Field number for the "args" field.</summary>
         </member>
-        <member name="F:Mysqlx.Crud.Find.LimitFieldNumber">
-            <summary>Field number for the "limit" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Crud.Find.Limit">
-             <summary>
-            optional
-             </summary>
-        </member>
         <member name="F:Mysqlx.Crud.Find.OrderFieldNumber">
             <summary>Field number for the "order" field.</summary>
         </member>
@@ -14612,6 +14932,22 @@
             <summary>Field number for the "locking_options" field.</summary>
         </member>
         <member name="P:Mysqlx.Crud.Find.LockingOptions">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Crud.Find.LimitFieldNumber">
+            <summary>Field number for the "limit" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Crud.Find.Limit">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Crud.Find.LimitExprFieldNumber">
+            <summary>Field number for the "limit_expr" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Crud.Find.LimitExpr">
              <summary>
             optional
              </summary>
@@ -14699,9 +15035,10 @@
              :param data_model: datamodel that the operations refer to
              :param criteria: filter expression to match rows that the operations will apply on
              :param args: values for parameters used in filter expression
-             :param limit: limits the number of rows to match
+             :param limit: limits the number of rows to match (user can set one of: limit, limit_expr)
              :param order: specifies order of matched rows
              :param operation: list of operations to be applied. Valid operations will depend on the data_model.
+             :param limit_expr: limits the number of rows to match (user can set one of: limit, limit_expr)
              :Returns: :protobuf:msg:`Mysqlx.Resultset::`
              </summary>
         </member>
@@ -14732,6 +15069,12 @@
         <member name="F:Mysqlx.Crud.Update.ArgsFieldNumber">
             <summary>Field number for the "args" field.</summary>
         </member>
+        <member name="F:Mysqlx.Crud.Update.OrderFieldNumber">
+            <summary>Field number for the "order" field.</summary>
+        </member>
+        <member name="F:Mysqlx.Crud.Update.OperationFieldNumber">
+            <summary>Field number for the "operation" field.</summary>
+        </member>
         <member name="F:Mysqlx.Crud.Update.LimitFieldNumber">
             <summary>Field number for the "limit" field.</summary>
         </member>
@@ -14740,11 +15083,13 @@
             optional
              </summary>
         </member>
-        <member name="F:Mysqlx.Crud.Update.OrderFieldNumber">
-            <summary>Field number for the "order" field.</summary>
+        <member name="F:Mysqlx.Crud.Update.LimitExprFieldNumber">
+            <summary>Field number for the "limit_expr" field.</summary>
         </member>
-        <member name="F:Mysqlx.Crud.Update.OperationFieldNumber">
-            <summary>Field number for the "operation" field.</summary>
+        <member name="P:Mysqlx.Crud.Update.LimitExpr">
+             <summary>
+            optional
+             </summary>
         </member>
         <member name="T:Mysqlx.Crud.Delete">
              <summary>
@@ -14754,8 +15099,9 @@
              :param data_model: datamodel that the operations refer to
              :param criteria: filter expression to match rows that the operations will apply on
              :param args: values for parameters used in filter expression
-             :param limit: limits the number of rows to match
+             :param limit: limits the number of rows to match (user can set one of: limit, limit_expr)
              :param order: specifies order of matched rows
+             :param limit_expr: limits the number of rows to match (user can set one of: limit, limit_expr)
              :Returns: :protobuf:msg:`Mysqlx.Resultset::`
              </summary>
         </member>
@@ -14786,6 +15132,9 @@
         <member name="F:Mysqlx.Crud.Delete.ArgsFieldNumber">
             <summary>Field number for the "args" field.</summary>
         </member>
+        <member name="F:Mysqlx.Crud.Delete.OrderFieldNumber">
+            <summary>Field number for the "order" field.</summary>
+        </member>
         <member name="F:Mysqlx.Crud.Delete.LimitFieldNumber">
             <summary>Field number for the "limit" field.</summary>
         </member>
@@ -14794,8 +15143,13 @@
             optional
              </summary>
         </member>
-        <member name="F:Mysqlx.Crud.Delete.OrderFieldNumber">
-            <summary>Field number for the "order" field.</summary>
+        <member name="F:Mysqlx.Crud.Delete.LimitExprFieldNumber">
+            <summary>Field number for the "limit_expr" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Crud.Delete.LimitExpr">
+             <summary>
+            optional
+             </summary>
         </member>
         <member name="F:Mysqlx.Crud.CreateView.CollectionFieldNumber">
             <summary>Field number for the "collection" field.</summary>
@@ -14923,6 +15277,137 @@
             optional//[ default = false ]
              </summary>
         </member>
+        <member name="T:Mysqlx.Cursor.MysqlxCursorReflection">
+            <summary>Holder for reflection information generated from mysqlx_cursor.proto</summary>
+        </member>
+        <member name="P:Mysqlx.Cursor.MysqlxCursorReflection.Descriptor">
+            <summary>File descriptor for mysqlx_cursor.proto</summary>
+        </member>
+        <member name="T:Mysqlx.Cursor.Open">
+             <summary>
+             Open a cursor
+            
+             .. uml::
+            
+               client -> server: Open
+               alt Success
+                 ... none or partial Resultsets or full Resultsets ...
+                 client &lt;- server: StmtExecuteOk
+              else Failure
+                 client &lt;- server: Error
+              end
+            
+             :param cursor_id: client side assigned cursor id, the ID is going to represent new cursor and assigned to it statement
+             :param stmt: statement which resultset is going to be iterated through the cursor
+             :param fetch_rows: number of rows which should be retrieved from sequential cursor
+             :Returns: :protobuf:msg:`Mysqlx.Ok::`
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Cursor.Open.CursorIdFieldNumber">
+            <summary>Field number for the "cursor_id" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Cursor.Open.CursorId">
+             <summary>
+            required
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Cursor.Open.StmtFieldNumber">
+            <summary>Field number for the "stmt" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Cursor.Open.Stmt">
+             <summary>
+            required
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Cursor.Open.FetchRowsFieldNumber">
+            <summary>Field number for the "fetch_rows" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Cursor.Open.FetchRows">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="T:Mysqlx.Cursor.Open.Types">
+            <summary>Container for nested types declared in the Open message type.</summary>
+        </member>
+        <member name="F:Mysqlx.Cursor.Open.Types.OneOfMessage.TypeFieldNumber">
+            <summary>Field number for the "type" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Cursor.Open.Types.OneOfMessage.Type">
+             <summary>
+            required
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Cursor.Open.Types.OneOfMessage.PrepareExecuteFieldNumber">
+            <summary>Field number for the "prepare_execute" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Cursor.Open.Types.OneOfMessage.PrepareExecute">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="T:Mysqlx.Cursor.Open.Types.OneOfMessage.Types">
+            <summary>Container for nested types declared in the OneOfMessage message type.</summary>
+        </member>
+        <member name="T:Mysqlx.Cursor.Fetch">
+             <summary>
+             Fetch next portion of data from a cursor
+            
+             .. uml::
+            
+               client -> server: Fetch
+               alt Success
+                 ... none or partial Resultsets or full Resultsets ...
+                 client &lt;- server: StmtExecuteOk
+               else
+                client &lt;- server: Error
+               end
+            
+             :param cursor_id: client side assigned cursor id, must be already open
+             :param fetch_rows: number of rows which should be retrieved from sequential cursor
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Cursor.Fetch.CursorIdFieldNumber">
+            <summary>Field number for the "cursor_id" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Cursor.Fetch.CursorId">
+             <summary>
+            required
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Cursor.Fetch.FetchRowsFieldNumber">
+            <summary>Field number for the "fetch_rows" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Cursor.Fetch.FetchRows">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="T:Mysqlx.Cursor.Close">
+             <summary>
+             Close cursor
+            
+             .. uml::
+            
+               client -> server: Close
+               alt Success
+                 client &lt;- server: Ok
+               else Failure
+                 client &lt;- server: Error
+               end
+            
+             :param cursor_id: client side assigned cursor id, must be allocated/open
+             :Returns: :protobuf:msg:`Mysqlx.Ok|Mysqlx.Error`
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Cursor.Close.CursorIdFieldNumber">
+            <summary>Field number for the "cursor_id" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Cursor.Close.CursorId">
+             <summary>
+            required
+             </summary>
+        </member>
         <member name="T:Mysqlx.Datatypes.MysqlxDatatypesReflection">
             <summary>Holder for reflection information generated from mysqlx_datatypes.proto</summary>
         </member>
@@ -14931,125 +15416,88 @@
         </member>
         <member name="T:Mysqlx.Datatypes.Scalar">
             <summary>
-             a scalar
+            a scalar
             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Scalar.TypeFieldNumber">
             <summary>Field number for the "type" field.</summary>
         </member>
         <member name="P:Mysqlx.Datatypes.Scalar.Type">
-            <summary>
-            required
-            </summary>
+             <summary>
+            required 
+             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Scalar.VSignedIntFieldNumber">
             <summary>Field number for the "v_signed_int" field.</summary>
         </member>
-        <member name="P:Mysqlx.Datatypes.Scalar.VSignedInt">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Datatypes.Scalar.VUnsignedIntFieldNumber">
             <summary>Field number for the "v_unsigned_int" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Datatypes.Scalar.VUnsignedInt">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Scalar.VOctetsFieldNumber">
             <summary>Field number for the "v_octets" field.</summary>
         </member>
         <member name="P:Mysqlx.Datatypes.Scalar.VOctets">
             <summary>
-             4 is unused, was Null which doesn't have a storage anymore
+            4 is unused, was Null which doesn't have a storage anymore
             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Scalar.VDoubleFieldNumber">
             <summary>Field number for the "v_double" field.</summary>
         </member>
-        <member name="P:Mysqlx.Datatypes.Scalar.VDouble">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Datatypes.Scalar.VFloatFieldNumber">
             <summary>Field number for the "v_float" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Datatypes.Scalar.VFloat">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Scalar.VBoolFieldNumber">
             <summary>Field number for the "v_bool" field.</summary>
         </member>
-        <member name="P:Mysqlx.Datatypes.Scalar.VBool">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Datatypes.Scalar.VStringFieldNumber">
             <summary>Field number for the "v_string" field.</summary>
         </member>
-        <member name="P:Mysqlx.Datatypes.Scalar.VString">
-            <summary>
-            optional
-            </summary>
-        </member>
-        <member name="T:Mysqlx.Datatypes.Scalar.DefaultOneofOneofCase">
-            <summary>Enum of possible cases for the "default_oneof" oneof.</summary>
+        <member name="T:Mysqlx.Datatypes.Scalar.DefaultOneOfOneofCase">
+            <summary>Enum of possible cases for the "DefaultOneOf" oneof.</summary>
         </member>
         <member name="T:Mysqlx.Datatypes.Scalar.Types">
             <summary>Container for nested types declared in the Scalar message type.</summary>
         </member>
         <member name="T:Mysqlx.Datatypes.Scalar.Types.String">
             <summary>
-             a string with a charset/collation
+            a string with a charset/collation
             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Scalar.Types.String.ValueFieldNumber">
             <summary>Field number for the "value" field.</summary>
         </member>
         <member name="P:Mysqlx.Datatypes.Scalar.Types.String.Value">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Scalar.Types.String.CollationFieldNumber">
             <summary>Field number for the "collation" field.</summary>
         </member>
-        <member name="P:Mysqlx.Datatypes.Scalar.Types.String.Collation">
-            <summary>
-            optional
-            </summary>
+        <member name="T:Mysqlx.Datatypes.Scalar.Types.String.StringPresentOneofCase">
+            <summary>Enum of possible cases for the "String_present" oneof.</summary>
         </member>
         <member name="T:Mysqlx.Datatypes.Scalar.Types.Octets">
             <summary>
-             an opaque octet sequence, with an optional content_type
-             See ``Mysqlx.Resultset.ContentType_BYTES`` for list of known values.
+            an opaque octet sequence, with an optional content_type
+            See ``Mysqlx.Resultset.ColumnMetadata`` for list of known values.
             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Scalar.Types.Octets.ValueFieldNumber">
             <summary>Field number for the "value" field.</summary>
         </member>
         <member name="P:Mysqlx.Datatypes.Scalar.Types.Octets.Value">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Scalar.Types.Octets.ContentTypeFieldNumber">
             <summary>Field number for the "content_type" field.</summary>
         </member>
-        <member name="P:Mysqlx.Datatypes.Scalar.Types.Octets.ContentType">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="T:Mysqlx.Datatypes.Object">
             <summary>
-             a object
+            a object
             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Object.FldFieldNumber">
@@ -15062,21 +15510,21 @@
             <summary>Field number for the "key" field.</summary>
         </member>
         <member name="P:Mysqlx.Datatypes.Object.Types.ObjectField.Key">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Object.Types.ObjectField.ValueFieldNumber">
             <summary>Field number for the "value" field.</summary>
         </member>
         <member name="P:Mysqlx.Datatypes.Object.Types.ObjectField.Value">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="T:Mysqlx.Datatypes.Array">
             <summary>
-             a Array
+            a Array
             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Array.ValueFieldNumber">
@@ -15084,40 +15532,25 @@
         </member>
         <member name="T:Mysqlx.Datatypes.Any">
             <summary>
-             a helper to allow all field types
+            a helper to allow all field types
             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Any.TypeFieldNumber">
             <summary>Field number for the "type" field.</summary>
         </member>
         <member name="P:Mysqlx.Datatypes.Any.Type">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Datatypes.Any.ScalarFieldNumber">
             <summary>Field number for the "scalar" field.</summary>
         </member>
-        <member name="P:Mysqlx.Datatypes.Any.Scalar">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Datatypes.Any.ObjFieldNumber">
             <summary>Field number for the "obj" field.</summary>
         </member>
-        <member name="P:Mysqlx.Datatypes.Any.Obj">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Datatypes.Any.ArrayFieldNumber">
             <summary>Field number for the "array" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Datatypes.Any.Array">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="T:Mysqlx.Datatypes.Any.Types">
             <summary>Container for nested types declared in the Any message type.</summary>
@@ -15235,204 +15668,149 @@
         </member>
         <member name="T:Mysqlx.Expr.Expr">
              <summary>
-              Expressions
+             Expressions
             
-              the "root" of the expression tree
+             the "root" of the expression tree
             
-              .. productionlist::
-                expr: `operator` |
-                    : `identifier` |
-                    : `function_call` |
-                    : variable |
-                    : `literal` |
-                    : placeholder
+             .. productionlist::
+               expr: `operator` |
+                   : `identifier` |
+                   : `function_call` |
+                   : variable |
+                   : `literal` |
+                   : placeholder
             
-              If expression type is PLACEHOLDER then it refers to the value of a parameter
-              specified when executing a statement (see `args` field of `StmtExecute` command).
-              Field `position` (which must be present for such an expression) gives 0-based
-              position of the parameter in the parameter list.
+             If expression type is PLACEHOLDER then it refers to the value of a parameter
+             specified when executing a statement (see `args` field of `StmtExecute` command).
+             Field `position` (which must be present for such an expression) gives 0-based
+             position of the parameter in the parameter list.
              </summary>
         </member>
         <member name="F:Mysqlx.Expr.Expr.TypeFieldNumber">
             <summary>Field number for the "type" field.</summary>
         </member>
         <member name="P:Mysqlx.Expr.Expr.Type">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Expr.Expr.IdentifierFieldNumber">
             <summary>Field number for the "identifier" field.</summary>
         </member>
-        <member name="P:Mysqlx.Expr.Expr.Identifier">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Expr.Expr.VariableFieldNumber">
             <summary>Field number for the "variable" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Expr.Expr.Variable">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Expr.Expr.LiteralFieldNumber">
             <summary>Field number for the "literal" field.</summary>
         </member>
-        <member name="P:Mysqlx.Expr.Expr.Literal">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Expr.Expr.FunctionCallFieldNumber">
             <summary>Field number for the "function_call" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Expr.Expr.FunctionCall">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Expr.Expr.OperatorFieldNumber">
             <summary>Field number for the "operator" field.</summary>
         </member>
-        <member name="P:Mysqlx.Expr.Expr.Operator">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Expr.Expr.PositionFieldNumber">
             <summary>Field number for the "position" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Expr.Expr.Position">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Expr.Expr.ObjectFieldNumber">
             <summary>Field number for the "object" field.</summary>
         </member>
-        <member name="P:Mysqlx.Expr.Expr.Object">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Expr.Expr.ArrayFieldNumber">
             <summary>Field number for the "array" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Expr.Expr.Array">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="T:Mysqlx.Expr.Expr.Types">
             <summary>Container for nested types declared in the Expr message type.</summary>
         </member>
         <member name="T:Mysqlx.Expr.Identifier">
              <summary>
-              identifier: name, schame.name
+             identifier: name, schame.name
             
-              .. productionlist::
-                identifier: string "." string |
-                          : string
+             .. productionlist::
+               identifier: string "." string |
+                         : string
              </summary>
         </member>
         <member name="F:Mysqlx.Expr.Identifier.NameFieldNumber">
             <summary>Field number for the "name" field.</summary>
         </member>
         <member name="P:Mysqlx.Expr.Identifier.Name">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Expr.Identifier.SchemaNameFieldNumber">
             <summary>Field number for the "schema_name" field.</summary>
         </member>
-        <member name="P:Mysqlx.Expr.Identifier.SchemaName">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="T:Mysqlx.Expr.DocumentPathItem">
              <summary>
-              DocumentPathItem
+             DocumentPathItem
             
-              .. productionlist::
-                 document_path: path_item | path_item document_path
-                 path_item    : member | array_index | "**"
-                 member       : "." string | "." "*"
-                 array_index  : "[" number "]" | "[" "*" "]"
+             .. productionlist::
+                document_path: path_item | path_item document_path
+                path_item    : member | array_index | "**"
+                member       : "." string | "." "*"
+                array_index  : "[" number "]" | "[" "*" "]"
              </summary>
         </member>
         <member name="F:Mysqlx.Expr.DocumentPathItem.TypeFieldNumber">
             <summary>Field number for the "type" field.</summary>
         </member>
         <member name="P:Mysqlx.Expr.DocumentPathItem.Type">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Expr.DocumentPathItem.ValueFieldNumber">
             <summary>Field number for the "value" field.</summary>
         </member>
-        <member name="P:Mysqlx.Expr.DocumentPathItem.Value">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Expr.DocumentPathItem.IndexFieldNumber">
             <summary>Field number for the "index" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Expr.DocumentPathItem.Index">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="T:Mysqlx.Expr.DocumentPathItem.Types">
             <summary>Container for nested types declared in the DocumentPathItem message type.</summary>
         </member>
         <member name="F:Mysqlx.Expr.DocumentPathItem.Types.Type.Member">
             <summary>
-             .member
+            .member
             </summary>
         </member>
         <member name="F:Mysqlx.Expr.DocumentPathItem.Types.Type.MemberAsterisk">
             <summary>
-             .*
+            .*
             </summary>
         </member>
         <member name="F:Mysqlx.Expr.DocumentPathItem.Types.Type.ArrayIndex">
             <summary>
-             [index]
+            [index]
             </summary>
         </member>
         <member name="F:Mysqlx.Expr.DocumentPathItem.Types.Type.ArrayIndexAsterisk">
             <summary>
-             [*]
+            [*]
             </summary>
         </member>
         <member name="F:Mysqlx.Expr.DocumentPathItem.Types.Type.DoubleAsterisk">
             <summary>
-             **
+            **
             </summary>
         </member>
         <member name="T:Mysqlx.Expr.ColumnIdentifier">
              <summary>
-              col_identifier (table): col@doc_path, tbl.col@doc_path col, tbl.col, schema.tbl.col
-              col_identifier (document): doc_path
+             col_identifier (table): col@doc_path, tbl.col@doc_path col, tbl.col, schema.tbl.col
+             col_identifier (document): doc_path
             
-              .. productionlist::
-                col_identifier: string "." string "." string |
-                          : string "." string |
-                          : string |
-                          : string "." string "." string "@" document_path |
-                          : string "." string "@" document_path |
-                          : string "@" document_path |
-                          : document_path
-                 document_path: member | arrayLocation | doubleAsterisk
-                 member = "." string | "." "*"
-                 arrayLocation = "[" index "]" | "[" "*" "]"
-                 doubleAsterisk = "**"
+             .. productionlist::
+               col_identifier: string "." string "." string |
+                         : string "." string |
+                         : string |
+                         : string "." string "." string "@" document_path |
+                         : string "." string "@" document_path |
+                         : string "@" document_path |
+                         : document_path
+                document_path: member | arrayLocation | doubleAsterisk
+                member = "." string | "." "*"
+                arrayLocation = "[" index "]" | "[" "*" "]"
+                doubleAsterisk = "**"
              </summary>
         </member>
         <member name="F:Mysqlx.Expr.ColumnIdentifier.DocumentPathFieldNumber">
@@ -15441,155 +15819,140 @@
         <member name="F:Mysqlx.Expr.ColumnIdentifier.NameFieldNumber">
             <summary>Field number for the "name" field.</summary>
         </member>
-        <member name="P:Mysqlx.Expr.ColumnIdentifier.Name">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Expr.ColumnIdentifier.TableNameFieldNumber">
             <summary>Field number for the "table_name" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Expr.ColumnIdentifier.TableName">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Expr.ColumnIdentifier.SchemaNameFieldNumber">
             <summary>Field number for the "schema_name" field.</summary>
         </member>
-        <member name="P:Mysqlx.Expr.ColumnIdentifier.SchemaName">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="T:Mysqlx.Expr.FunctionCall">
              <summary>
-              function call: ``func(a, b, "1", 3)``
+             function call: ``func(a, b, "1", 3)``
             
-              .. productionlist::
-                function_call: `identifier` "(" [ `expr` ["," `expr` ]* ] ")"
+             .. productionlist::
+               function_call: `identifier` "(" [ `expr` ["," `expr` ]* ] ")"
              </summary>
         </member>
         <member name="F:Mysqlx.Expr.FunctionCall.NameFieldNumber">
             <summary>Field number for the "name" field.</summary>
         </member>
         <member name="P:Mysqlx.Expr.FunctionCall.Name">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Expr.FunctionCall.ParamFieldNumber">
             <summary>Field number for the "param" field.</summary>
         </member>
         <member name="T:Mysqlx.Expr.Operator">
              <summary>
-              operator: ``&lt;&lt;(a, b)``
+             operator: ``&lt;&lt;(a, b)``
             
-              .. note::
+             .. note::
             
-                Non-authoritative list of operators implemented (case sensitive):
+               Non-authoritative list of operators implemented (case sensitive):
             
-                Nullary
-                  * ``*``
-                  * ``default``
+               Nullary
+                 * ``*``
+                 * ``default``
             
-                Unary
-                  * ``!``
-                  * ``sign_plus``
-                  * ``sign_minus``
-                  * ``~``
+               Unary
+                 * ``!``
+                 * ``sign_plus``
+                 * ``sign_minus``
+                 * ``~``
             
-                Binary
-                  * ``&amp;&amp;``
-                  * ``||``
-                  * ``xor``
-                  * ``==``
-                  * ``!=``
-                  * ``>``
-                  * ``>=``
-                  * ``&lt;``
-                  * ``&lt;=``
-                  * ``&amp;``
-                  * ``|``
-                  * ``^``
-                  * ``&lt;&lt;``
-                  * ``>>``
-                  * ``+``
-                  * ``-``
-                  * ``*``
-                  * ``/``
-                  * ``div``
-                  * ``%``
-                  * ``is``
-                  * ``is_not``
-                  * ``regexp``
-                  * ``not_regexp``
-                  * ``like``
-                  * ``not_like``
-                  * ``cast``
-                  * ``cont_in``
-                  * ``not_cont_in``
+               Binary
+                 * ``&amp;&amp;``
+                 * ``||``
+                 * ``xor``
+                 * ``==``
+                 * ``!=``
+                 * ``>``
+                 * ``>=``
+                 * ``&lt;``
+                 * ``&lt;=``
+                 * ``&amp;``
+                 * ``|``
+                 * ``^``
+                 * ``&lt;&lt;``
+                 * ``>>``
+                 * ``+``
+                 * ``-``
+                 * ``*``
+                 * ``/``
+                 * ``div``
+                 * ``%``
+                 * ``is``
+                 * ``is_not``
+                 * ``regexp``
+                 * ``not_regexp``
+                 * ``like``
+                 * ``not_like``
+                 * ``cast``
+                 * ``cont_in``
+                 * ``not_cont_in``
             
-                Using special representation, with more than 2 params
-                  * ``in`` (param[0] IN (param[1], param[2], ...))
-                  * ``not_in`` (param[0] NOT IN (param[1], param[2], ...))
+               Using special representation, with more than 2 params
+                 * ``in`` (param[0] IN (param[1], param[2], ...))
+                 * ``not_in`` (param[0] NOT IN (param[1], param[2], ...))
             
-                Ternary
-                  * ``between``
-                  * ``between_not``
-                  * ``date_add``
-                  * ``date_sub``
+               Ternary
+                 * ``between``
+                 * ``between_not``
+                 * ``date_add``
+                 * ``date_sub``
             
-                Units for date_add/date_sub
-                  * ``MICROSECOND``
-                  * ``SECOND``
-                  * ``MINUTE``
-                  * ``HOUR``
-                  * ``DAY``
-                  * ``WEEK``
-                  * ``MONTH``
-                  * ``QUARTER``
-                  * ``YEAR``
-                  * ``SECOND_MICROSECOND``
-                  * ``MINUTE_MICROSECOND``
-                  * ``MINUTE_SECOND``
-                  * ``HOUR_MICROSECOND``
-                  * ``HOUR_SECOND``
-                  * ``HOUR_MINUTE``
-                  * ``DAY_MICROSECOND``
-                  * ``DAY_SECOND``
-                  * ``DAY_MINUTE``
-                  * ``DAY_HOUR``
+               Units for date_add/date_sub
+                 * ``MICROSECOND``
+                 * ``SECOND``
+                 * ``MINUTE``
+                 * ``HOUR``
+                 * ``DAY``
+                 * ``WEEK``
+                 * ``MONTH``
+                 * ``QUARTER``
+                 * ``YEAR``
+                 * ``SECOND_MICROSECOND``
+                 * ``MINUTE_MICROSECOND``
+                 * ``MINUTE_SECOND``
+                 * ``HOUR_MICROSECOND``
+                 * ``HOUR_SECOND``
+                 * ``HOUR_MINUTE``
+                 * ``DAY_MICROSECOND``
+                 * ``DAY_SECOND``
+                 * ``DAY_MINUTE``
+                 * ``DAY_HOUR``
             
-                Types for cast
-                  * ``BINARY[(N)]``
-                  * ``CHAR[(N)]``
-                  * ``DATE``
-                  * ``DATETIME``
-                  * ``DECIMAL[(M[,D])]``
-                  * ``JSON``
-                  * ``SIGNED [INTEGER]``
-                  * ``TIME``
-                  * ``UNSIGNED [INTEGER]``
+               Types for cast
+                 * ``BINARY[(N)]``
+                 * ``CHAR[(N)]``
+                 * ``DATE``
+                 * ``DATETIME``
+                 * ``DECIMAL[(M[,D])]``
+                 * ``JSON``
+                 * ``SIGNED [INTEGER]``
+                 * ``TIME``
+                 * ``UNSIGNED [INTEGER]``
             
-              .. productionlist::
-                operator: `name` "(" [ `expr` ["," `expr` ]* ] ")"
+             .. productionlist::
+               operator: `name` "(" [ `expr` ["," `expr` ]* ] ")"
              </summary>
         </member>
         <member name="F:Mysqlx.Expr.Operator.NameFieldNumber">
             <summary>Field number for the "name" field.</summary>
         </member>
         <member name="P:Mysqlx.Expr.Operator.Name">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Expr.Operator.ParamFieldNumber">
             <summary>Field number for the "param" field.</summary>
         </member>
         <member name="T:Mysqlx.Expr.Object">
             <summary>
-             an object (with expression values)
+            an object (with expression values)
             </summary>
         </member>
         <member name="F:Mysqlx.Expr.Object.FldFieldNumber">
@@ -15602,21 +15965,21 @@
             <summary>Field number for the "key" field.</summary>
         </member>
         <member name="P:Mysqlx.Expr.Object.Types.ObjectField.Key">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Expr.Object.Types.ObjectField.ValueFieldNumber">
             <summary>Field number for the "value" field.</summary>
         </member>
         <member name="P:Mysqlx.Expr.Object.Types.ObjectField.Value">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="T:Mysqlx.Expr.Array">
             <summary>
-             a Array of expressions
+            a Array of expressions
             </summary>
         </member>
         <member name="F:Mysqlx.Expr.Array.ValueFieldNumber">
@@ -15801,6 +16164,175 @@
             .. more to be added
             </summary>
         </member>
+        <member name="T:Mysqlx.Prepare.MysqlxPrepareReflection">
+            <summary>Holder for reflection information generated from mysqlx_prepare.proto</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.MysqlxPrepareReflection.Descriptor">
+            <summary>File descriptor for mysqlx_prepare.proto</summary>
+        </member>
+        <member name="T:Mysqlx.Prepare.Prepare">
+             <summary>
+             Prepare a new statement
+            
+             .. uml::
+            
+               client -> server: Prepare
+               alt Success
+                 client &lt;- server: Ok
+               else Failure
+                 client &lt;- server: Error
+               end
+            
+             :param stmt_id: client side assigned statement id, which is going to identify the result of preparation
+             :param stmt: defines one of following messages to be prepared - Crud.Find, Crud.Insert, Crud.Delete, Crud.Upsert, Sql.StmtExecute
+             :Returns: :protobuf:msg:`Mysqlx.Ok|Mysqlx.Error`
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Prepare.StmtIdFieldNumber">
+            <summary>Field number for the "stmt_id" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Prepare.StmtId">
+             <summary>
+            required
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Prepare.StmtFieldNumber">
+            <summary>Field number for the "stmt" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Prepare.Stmt">
+             <summary>
+            required
+             </summary>
+        </member>
+        <member name="T:Mysqlx.Prepare.Prepare.Types">
+            <summary>Container for nested types declared in the Prepare message type.</summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Prepare.Types.OneOfMessage.TypeFieldNumber">
+            <summary>Field number for the "type" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Prepare.Types.OneOfMessage.Type">
+             <summary>
+            required
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Prepare.Types.OneOfMessage.FindFieldNumber">
+            <summary>Field number for the "find" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Prepare.Types.OneOfMessage.Find">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Prepare.Types.OneOfMessage.InsertFieldNumber">
+            <summary>Field number for the "insert" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Prepare.Types.OneOfMessage.Insert">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Prepare.Types.OneOfMessage.UpdateFieldNumber">
+            <summary>Field number for the "update" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Prepare.Types.OneOfMessage.Update">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Prepare.Types.OneOfMessage.DeleteFieldNumber">
+            <summary>Field number for the "delete" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Prepare.Types.OneOfMessage.Delete">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Prepare.Types.OneOfMessage.StmtExecuteFieldNumber">
+            <summary>Field number for the "stmt_execute" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Prepare.Types.OneOfMessage.StmtExecute">
+             <summary>
+            optional
+             </summary>
+        </member>
+        <member name="T:Mysqlx.Prepare.Prepare.Types.OneOfMessage.TypePresentOneofCase">
+            <summary>Enum of possible cases for the "Type_present" oneof.</summary>
+        </member>
+        <member name="T:Mysqlx.Prepare.Prepare.Types.OneOfMessage.Types">
+            <summary>Container for nested types declared in the OneOfMessage message type.</summary>
+        </member>
+        <member name="T:Mysqlx.Prepare.Prepare.Types.OneOfMessage.Types.Type">
+            <summary>
+            Determine which of optional fields was set by the client
+            (Workaround for missing "oneof" keyword in pb2.5)
+            </summary>
+        </member>
+        <member name="T:Mysqlx.Prepare.Execute">
+             <summary>
+             Execute already prepared statement
+            
+             .. uml::
+            
+               client -> server: Execute
+               alt Success
+                 ... Resultsets...
+                 client &lt;- server: StmtExecuteOk
+              else Failure
+                 client &lt;- server: Error
+              end
+            
+             :param stmt_id: client side assigned statement id, must be already prepared
+             :param args_list: Arguments to bind to the prepared statement
+             :param compact_metadata: send only type information for :protobuf:msg:`Mysqlx.Resultset::ColumnMetadata`, skipping names and others
+             :Returns: :protobuf:msg:`Mysqlx.Ok::`
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Execute.StmtIdFieldNumber">
+            <summary>Field number for the "stmt_id" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Execute.StmtId">
+             <summary>
+            required
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Execute.ArgsFieldNumber">
+            <summary>Field number for the "args" field.</summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Execute.CompactMetadataFieldNumber">
+            <summary>Field number for the "compact_metadata" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Execute.CompactMetadata">
+            <summary>
+            [ default = false ]; optional
+            </summary>
+        </member>
+        <member name="T:Mysqlx.Prepare.Deallocate">
+             <summary>
+             Deallocate already prepared statement
+            
+             Deallocating the statement.
+            
+             .. uml::
+            
+               client -> server: Deallocate
+               alt Success
+                 client &lt;- server: Ok
+               else Failure
+                 client &lt;- server: Error
+               end
+            
+             :param stmt_id: client side assigned statement id, must be already prepared
+             :Returns: :protobuf:msg:`Mysqlx.Ok|Mysqlx.Error`
+             </summary>
+        </member>
+        <member name="F:Mysqlx.Prepare.Deallocate.StmtIdFieldNumber">
+            <summary>Field number for the "stmt_id" field.</summary>
+        </member>
+        <member name="P:Mysqlx.Prepare.Deallocate.StmtId">
+             <summary>
+            required
+             </summary>
+        </member>
         <member name="T:Mysqlx.Resultset.MysqlxResultsetReflection">
             <summary>Holder for reflection information generated from mysqlx_resultset.proto</summary>
         </member>
@@ -15809,357 +16341,362 @@
         </member>
         <member name="T:Mysqlx.Resultset.ContentType_BYTES">
              <summary>
-              a hint about the higher-level encoding of a BYTES field
+             a hint about the higher-level encoding of a BYTES field
             
-              ====== ====== ===========
-              type   value  description
-              ====== ====== ===========
-              BYTES  0x0001 GEOMETRY (WKB encoding)
-              BYTES  0x0002 JSON (text encoding)
-              BYTES  0x0003 XML (text encoding)
-              ====== ====== ===========
+             ====== ====== ===========
+             type   value  description
+             ====== ====== ===========
+             BYTES  0x0001 GEOMETRY (WKB encoding)
+             BYTES  0x0002 JSON (text encoding)
+             BYTES  0x0003 XML (text encoding)
+             ====== ====== ===========
             
-              .. note::
-                this list isn't comprehensive. As guideline: the field's value is expected
-                to pass a validator check on client and server if this field is set.
-                If the server adds more internal datatypes that rely on BLOB storage
-                like image manipulation, seeking into complex types in BLOBs, ... more
-                types will be added.
+             .. note::
+               this list isn't comprehensive. As guideline: the field's value is expected
+               to pass a validator check on client and server if this field is set.
+               If the server adds more internal datatypes that rely on BLOB storage
+               like image manipulation, seeking into complex types in BLOBs, ... more
+               types will be added.
              </summary>
         </member>
         <member name="T:Mysqlx.Resultset.ContentType_DATETIME">
              <summary>
-              a hint about the higher-level encoding of a DATETIME field
+             a hint about the higher-level encoding of a DATETIME field
             
-              ======   ====== ===========
-              type     value  description
-              ======== ====== ===========
-              DATE     0x0001 DATETIME contains only date part
-              DATETIME 0x0002 DATETIME contains both date and time parts
-              ======   ====== ===========
+             ======   ====== ===========
+             type     value  description
+             ======== ====== ===========
+             DATE     0x0001 DATETIME contains only date part
+             DATETIME 0x0002 DATETIME contains both date and time parts
+             ======   ====== ===========
              </summary>
         </member>
         <member name="T:Mysqlx.Resultset.FetchDoneMoreOutParams">
             <summary>
-             resultsets are finished, OUT paramset is next
+            resultsets are finished, OUT paramset is next
             </summary>
         </member>
         <member name="T:Mysqlx.Resultset.FetchDoneMoreResultsets">
             <summary>
-             resultset and out-params are finished, but more resultsets available
+            resultset and out-params are finished, but more resultsets available
             </summary>
         </member>
         <member name="T:Mysqlx.Resultset.FetchDone">
             <summary>
-             all resultsets are finished
+            all resultsets are finished
+            </summary>
+        </member>
+        <member name="T:Mysqlx.Resultset.FetchSuspended">
+            <summary>
+            cursor is opened still the execution of PrepFetch or PrepExecute ended
             </summary>
         </member>
         <member name="T:Mysqlx.Resultset.ColumnMetaData">
              <summary>
-              meta data of a Column
-            
-              .. note:: the encoding used for the different ``bytes`` fields in the meta data is externally
-                controlled.
-                .. seealso:: https://dev.mysql.com/doc/refman/8.0/en/charset-connection.html
-            
-              .. note::
-                The server may not set the ``original_{table|name}`` fields if they are equal to the plain
-                ``{table|name}`` field.
-            
-                A client has to reconstruct it like::
-            
-                  if .original_name is empty and .name is not empty:
-                    .original_name = .name
-            
-                  if .original_table is empty and .table is not empty:
-                    .original_table = .table
-            
-              .. note::
-                ``compact metadata format`` can be requested by the client. In that case only ``.type`` is set and
-                all other fields are empty.
-            
-              :param type:
-                .. table:: Expected Datatype of Mysqlx.Resultset.Row per SQL Type for non NULL values
-            
-                  ================= ============ ======= ========== ====== ========
-                  SQL Type          .type        .length .frac_dig  .flags .charset
-                  ================= ============ ======= ========== ====== ========
-                  TINY              SINT         x
-                  TINY UNSIGNED     UINT         x                  x
-                  SHORT             SINT         x
-                  SHORT UNSIGNED    UINT         x                  x
-                  INT24             SINT         x
-                  INT24 UNSIGNED    UINT         x                  x
-                  INT               SINT         x
-                  INT UNSIGNED      UINT         x                  x
-                  LONGLONG          SINT         x
-                  LONGLONG UNSIGNED UINT         x                  x
-                  DOUBLE            DOUBLE       x       x          x
-                  FLOAT             FLOAT        x       x          x
-                  DECIMAL           DECIMAL      x       x          x
-                  VARCHAR,CHAR,...  BYTES        x                  x      x
-                  GEOMETRY          BYTES
-                  TIME              TIME         x
-                  DATE              DATETIME     x
-                  DATETIME          DATETIME     x
-                  YEAR              UINT         x                  x
-                  TIMESTAMP         DATETIME     x
-                  SET               SET                                    x
-                  ENUM              ENUM                                   x
-                  NULL              BYTES
-                  BIT               BIT          x
-                  ================= ============ ======= ========== ====== ========
-            
-                .. note:: the SQL "NULL" value is sent as an empty field value in :protobuf:msg:`Mysqlx.Resultset::Row`
-                .. seealso:: protobuf encoding of primitive datatypes are decribed in https://developers.google.com/protocol-buffers/docs/encoding
-            
-                SINT
-            
-                  ``.length``
-                    maximum number of displayable decimal digits (including minus sign) of the type
-            
-                    .. note::
-                      valid range is 0-255, but usually you'll see 1-20
-            
-                    =============== ==
-                    SQL Type        max digits per type
-                    =============== ==
-                    TINY SIGNED      4
-                    SHORT SIGNED     6
-                    INT24 SIGNED     8
-                    INT SIGNED      11
-                    LONGLONG SIGNED 20
-                    =============== ==
-            
-                    .. seealso:: definition of ``M`` in https://dev.mysql.com/doc/refman/8.0/en/numeric-type-overview.html
-            
-                  ``value``
-                    variable length encoded signed 64 integer
-            
-                UINT
-            
-                  ``.flags &amp; 1`` (zerofill)
-                    the client has to left pad with 0's up to .length
-            
-                  ``.length``
-                    maximum number of displayable decimal digits of the type
-            
-                    .. note::
-                      valid range is 0-255, but usually you'll see 1-20
-            
-                    ================= ==
-                    SQL Type          max digits per type
-                    ================= ==
-                    TINY UNSIGNED      3
-                    SHORT UNSIGNED     5
-                    INT24 UNSIGNED     8
-                    INT UNSIGNED      10
-                    LONGLONG UNSIGNED 20
-                    ================= ==
-            
-                    .. seealso:: definition of ``M`` in https://dev.mysql.com/doc/refman/8.0/en/numeric-type-overview.html
+             meta data of a Column
+            
+             .. note:: the encoding used for the different ``bytes`` fields in the meta data is externally
+               controlled.
+               .. seealso:: https://dev.mysql.com/doc/refman/8.0/en/charset-connection.html
+            
+             .. note::
+               The server may not set the ``original_{table|name}`` fields if they are equal to the plain
+               ``{table|name}`` field.
+            
+               A client has to reconstruct it like::
+            
+                 if .original_name is empty and .name is not empty:
+                   .original_name = .name
+            
+                 if .original_table is empty and .table is not empty:
+                   .original_table = .table
+            
+             .. note::
+               ``compact metadata format`` can be requested by the client. In that case only ``.type`` is set and
+               all other fields are empty.
+            
+             :param type:
+               .. table:: Expected Datatype of Mysqlx.Resultset.Row per SQL Type for non NULL values
+            
+                 ================= ============ ======= ========== ====== ========
+                 SQL Type          .type        .length .frac_dig  .flags .charset
+                 ================= ============ ======= ========== ====== ========
+                 TINY              SINT         x
+                 TINY UNSIGNED     UINT         x                  x
+                 SHORT             SINT         x
+                 SHORT UNSIGNED    UINT         x                  x
+                 INT24             SINT         x
+                 INT24 UNSIGNED    UINT         x                  x
+                 INT               SINT         x
+                 INT UNSIGNED      UINT         x                  x
+                 LONGLONG          SINT         x
+                 LONGLONG UNSIGNED UINT         x                  x
+                 DOUBLE            DOUBLE       x       x          x
+                 FLOAT             FLOAT        x       x          x
+                 DECIMAL           DECIMAL      x       x          x
+                 VARCHAR,CHAR,...  BYTES        x                  x      x
+                 GEOMETRY          BYTES
+                 TIME              TIME         x
+                 DATE              DATETIME     x
+                 DATETIME          DATETIME     x
+                 YEAR              UINT         x                  x
+                 TIMESTAMP         DATETIME     x
+                 SET               SET                                    x
+                 ENUM              ENUM                                   x
+                 NULL              BYTES
+                 BIT               BIT          x
+                 ================= ============ ======= ========== ====== ========
+            
+               .. note:: the SQL "NULL" value is sent as an empty field value in :protobuf:msg:`Mysqlx.Resultset::Row`
+               .. seealso:: protobuf encoding of primitive datatypes are decribed in https://developers.google.com/protocol-buffers/docs/encoding
+            
+               SINT
+            
+                 ``.length``
+                   maximum number of displayable decimal digits (including minus sign) of the type
+            
+                   .. note::
+                     valid range is 0-255, but usually you'll see 1-20
+            
+                   =============== ==
+                   SQL Type        max digits per type
+                   =============== ==
+                   TINY SIGNED      4
+                   SHORT SIGNED     6
+                   INT24 SIGNED     8
+                   INT SIGNED      11
+                   LONGLONG SIGNED 20
+                   =============== ==
+            
+                   .. seealso:: definition of ``M`` in https://dev.mysql.com/doc/refman/8.0/en/numeric-type-overview.html
+            
+                 ``value``
+                   variable length encoded signed 64 integer
+            
+               UINT
+            
+                 ``.flags &amp; 1`` (zerofill)
+                   the client has to left pad with 0's up to .length
+            
+                 ``.length``
+                   maximum number of displayable decimal digits of the type
+            
+                   .. note::
+                     valid range is 0-255, but usually you'll see 1-20
+            
+                   ================= ==
+                   SQL Type          max digits per type
+                   ================= ==
+                   TINY UNSIGNED      3
+                   SHORT UNSIGNED     5
+                   INT24 UNSIGNED     8
+                   INT UNSIGNED      10
+                   LONGLONG UNSIGNED 20
+                   ================= ==
+            
+                   .. seealso:: definition of ``M`` in https://dev.mysql.com/doc/refman/8.0/en/numeric-type-overview.html
             
-                  ``value``
-                    variable length encoded unsigned 64 integer
+                 ``value``
+                   variable length encoded unsigned 64 integer
             
-                BIT
+               BIT
             
-                  ``.length``
-                    maximum number of displayable binary digits
+                 ``.length``
+                   maximum number of displayable binary digits
             
-                    .. note:: valid range for M of the ``BIT`` type is 1 - 64
-                    .. seealso:: https://dev.mysql.com/doc/refman/8.0/en/numeric-type-overview.html
+                   .. note:: valid range for M of the ``BIT`` type is 1 - 64
+                   .. seealso:: https://dev.mysql.com/doc/refman/8.0/en/numeric-type-overview.html
             
-                  ``value``
-                    variable length encoded unsigned 64 integer
+                 ``value``
+                   variable length encoded unsigned 64 integer
             
-                DOUBLE
+               DOUBLE
             
-                  ``.length``
-                    maximum number of displayable decimal digits (including the decimal point and ``.fractional_digits``)
+                 ``.length``
+                   maximum number of displayable decimal digits (including the decimal point and ``.fractional_digits``)
             
-                  ``.fractional_digits``
-                    maximum number of displayable decimal digits following the decimal point
+                 ``.fractional_digits``
+                   maximum number of displayable decimal digits following the decimal point
             
-                  ``value``
-                    encoded as Protobuf's 'double'
+                 ``value``
+                   encoded as Protobuf's 'double'
             
-                FLOAT
+               FLOAT
             
-                  ``.length``
-                    maximum number of displayable decimal digits (including the decimal point and ``.fractional_digits``)
+                 ``.length``
+                   maximum number of displayable decimal digits (including the decimal point and ``.fractional_digits``)
             
-                  ``.fractional_digits``
-                    maximum number of displayable decimal digits following the decimal point
+                 ``.fractional_digits``
+                   maximum number of displayable decimal digits following the decimal point
             
-                  ``value``
-                    encoded as Protobuf's 'float'
+                 ``value``
+                   encoded as Protobuf's 'float'
             
-                BYTES, ENUM
-                  BYTES is used for all opaque byte strings that may have a charset
+               BYTES, ENUM
+                 BYTES is used for all opaque byte strings that may have a charset
             
-                    * TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB
-                    * TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT
-                    * VARCHAR, VARBINARY
-                    * CHAR, BINARY
-                    * ENUM
+                   * TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB
+                   * TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT
+                   * VARCHAR, VARBINARY
+                   * CHAR, BINARY
+                   * ENUM
             
-                  ``.length``
-                    the maximum length of characters of the underlying type
+                 ``.length``
+                   the maximum length of characters of the underlying type
             
-                  ``.flags &amp; 1`` (rightpad)
-                    if the length of the field is less than ``.length``, the receiver is
-                    supposed to add padding characters to the right end of the string.
-                    If the ``.charset`` is "binary", the padding character is ``0x00``,
-                    otherwise it is a space character as defined by that character set.
+                 ``.flags &amp; 1`` (rightpad)
+                   if the length of the field is less than ``.length``, the receiver is
+                   supposed to add padding characters to the right end of the string.
+                   If the ``.charset`` is "binary", the padding character is ``0x00``,
+                   otherwise it is a space character as defined by that character set.
             
-                    ============= ======= ======== =======
-                    SQL Type      .length .charset .flags
-                    ============= ======= ======== =======
-                    TINYBLOB      256     binary
-                    BLOB          65535   binary
-                    VARCHAR(32)   32      utf8
-                    VARBINARY(32) 32      utf8_bin
-                    BINARY(32)    32      binary   rightpad
-                    CHAR(32)      32      utf8     rightpad
-                    ============= ======= ======== =======
+                   ============= ======= ======== =======
+                   SQL Type      .length .charset .flags
+                   ============= ======= ======== =======
+                   TINYBLOB      256     binary
+                   BLOB          65535   binary
+                   VARCHAR(32)   32      utf8
+                   VARBINARY(32) 32      utf8_bin
+                   BINARY(32)    32      binary   rightpad
+                   CHAR(32)      32      utf8     rightpad
+                   ============= ======= ======== =======
             
-                  ``value``
-                    sequence of bytes with added one extra '\0' byte at the end. To obtain the
-                    original string, the extra '\0' should be removed.
-                    .. note:: the length of the string can be acquired with protobuf's field length() method
-                      length of sequence-of-bytes = length-of-field - 1
-                    .. note:: the extra byte allows to distinguish between a NULL and empty byte sequence
+                 ``value``
+                   sequence of bytes with added one extra '\0' byte at the end. To obtain the
+                   original string, the extra '\0' should be removed.
+                   .. note:: the length of the string can be acquired with protobuf's field length() method
+                     length of sequence-of-bytes = length-of-field - 1
+                   .. note:: the extra byte allows to distinguish between a NULL and empty byte sequence
             
-                TIME
-                  A time value.
+               TIME
+                 A time value.
             
-                  ``value``
-                    the following bytes sequence:
+                 ``value``
+                   the following bytes sequence:
             
-                      ``| negate [ | hour | [ | minutes | [ | seconds | [ | useconds | ]]]]``
+                     ``| negate [ | hour | [ | minutes | [ | seconds | [ | useconds | ]]]]``
             
-                    * negate - one byte, should be one of: 0x00 for "+", 0x01 for "-"
-                    * hour - optional variable length encoded unsigned64 value for the hour
-                    * minutes - optional variable length encoded unsigned64 value for the minutes
-                    * seconds - optional variable length encoded unsigned64 value for the seconds
-                    * useconds - optional variable length encoded unsigned64 value for the microseconds
+                   * negate - one byte, should be one of: 0x00 for "+", 0x01 for "-"
+                   * hour - optional variable length encoded unsigned64 value for the hour
+                   * minutes - optional variable length encoded unsigned64 value for the minutes
+                   * seconds - optional variable length encoded unsigned64 value for the seconds
+                   * useconds - optional variable length encoded unsigned64 value for the microseconds
             
-                    .. seealso:: protobuf encoding in https://developers.google.com/protocol-buffers/docs/encoding
-                    .. note:: hour, minutes, seconds, useconds are optional if all the values to the right are 0
+                   .. seealso:: protobuf encoding in https://developers.google.com/protocol-buffers/docs/encoding
+                   .. note:: hour, minutes, seconds, useconds are optional if all the values to the right are 0
             
-                    Example: 0x00 -> +00:00:00.000000
+                   Example: 0x00 -> +00:00:00.000000
             
-                DATETIME
-                  A date or date and time value.
+               DATETIME
+                 A date or date and time value.
             
-                  ``value``
-                    a sequence of variants, arranged as follows:
+                 ``value``
+                   a sequence of variants, arranged as follows:
             
-                      ``| year | month | day | [ | hour | [ | minutes | [ | seconds | [ | useconds | ]]]]``
+                     ``| year | month | day | [ | hour | [ | minutes | [ | seconds | [ | useconds | ]]]]``
             
-                    * year - variable length encoded unsigned64 value for the year
-                    * month - variable length encoded unsigned64 value for the month
-                    * day - variable length encoded unsigned64 value for the day
-                    * hour - optional variable length encoded unsigned64 value for the hour
-                    * minutes - optional variable length encoded unsigned64 value for the minutes
-                    * seconds - optional variable length encoded unsigned64 value for the seconds
-                    * useconds - optional variable length encoded unsigned64 value for the microseconds
+                   * year - variable length encoded unsigned64 value for the year
+                   * month - variable length encoded unsigned64 value for the month
+                   * day - variable length encoded unsigned64 value for the day
+                   * hour - optional variable length encoded unsigned64 value for the hour
+                   * minutes - optional variable length encoded unsigned64 value for the minutes
+                   * seconds - optional variable length encoded unsigned64 value for the seconds
+                   * useconds - optional variable length encoded unsigned64 value for the microseconds
             
-                    .. note:: hour, minutes, seconds, useconds are optional if all the values to the right are 0
+                   .. note:: hour, minutes, seconds, useconds are optional if all the values to the right are 0
             
-                  ``.flags &amp; 1`` (timestamp)
+                 ``.flags &amp; 1`` (timestamp)
             
-                    ============= =======
-                    SQL Type      .flags
-                    ============= =======
-                    DATETIME
-                    TIMESTAMP     1
+                   ============= =======
+                   SQL Type      .flags
+                   ============= =======
+                   DATETIME
+                   TIMESTAMP     1
             
-                DECIMAL
-                  An arbitrary length number. The number is encoded as a single byte
-                  indicating the position of the decimal point followed by the Packed BCD
-                  encoded number. Packed BCD is used to simplify conversion to and
-                  from strings and other native arbitrary precision math datatypes.
-                  .. seealso:: packed BCD in https://en.wikipedia.org/wiki/Binary-coded_decimal
+               DECIMAL
+                 An arbitrary length number. The number is encoded as a single byte
+                 indicating the position of the decimal point followed by the Packed BCD
+                 encoded number. Packed BCD is used to simplify conversion to and
+                 from strings and other native arbitrary precision math datatypes.
+                 .. seealso:: packed BCD in https://en.wikipedia.org/wiki/Binary-coded_decimal
             
-                  ``.length``
-                    maximum number of displayable decimal digits (*excluding* the decimal point and sign, but including ``.fractional_digits``)
+                 ``.length``
+                   maximum number of displayable decimal digits (*excluding* the decimal point and sign, but including ``.fractional_digits``)
             
-                    .. note:: should be in the range of 1 - 65
+                   .. note:: should be in the range of 1 - 65
             
-                  ``.fractional_digits``
-                    is the decimal digits to display out of length
+                 ``.fractional_digits``
+                   is the decimal digits to display out of length
             
-                    .. note:: should be in the range of 0 - 30
+                   .. note:: should be in the range of 0 - 30
             
-                  ``value``
-                    the following bytes sequence:
+                 ``value``
+                   the following bytes sequence:
             
-                      ``| scale | BCD | sign | [0x0] |``
+                     ``| scale | BCD | sign | [0x0] |``
             
-                    * scale - 8bit scale value (number of decimal digit after the '.')
-                    * BCD - BCD encoded digits (4 bits for each digit)
-                    * sign - sign encoded on 4 bits (0xc = "+", 0xd = "-")
-                    * 0x0 - last 4bits if length(digits) % 2 == 0
+                   * scale - 8bit scale value (number of decimal digit after the '.')
+                   * BCD - BCD encoded digits (4 bits for each digit)
+                   * sign - sign encoded on 4 bits (0xc = "+", 0xd = "-")
+                   * 0x0 - last 4bits if length(digits) % 2 == 0
             
-                    Example: x04 0x12 0x34 0x01 0xd0 -> -12.3401
+                   Example: x04 0x12 0x34 0x01 0xd0 -> -12.3401
             
-                SET
-                  A list of strings representing a SET of values.
+               SET
+                 A list of strings representing a SET of values.
             
-                  ``value``
-                    A sequence of 0 or more of protobuf's bytes (length prepended octets) or one of
-                    the special sequences with a predefined meaning listed below.
+                 ``value``
+                   A sequence of 0 or more of protobuf's bytes (length prepended octets) or one of
+                   the special sequences with a predefined meaning listed below.
             
-                    Example (length of the bytes array shown in brackets):
-                      * ``[0]`` - the NULL value
-                      * ``[1] 0x00`` - a set containing a blank string ''
-                      * ``[1] 0x01`` - this would be an invalid value, but is to be treated as the empty set
-                      * ``[2] 0x01 0x00`` - a set with a single item, which is the '\0' character
-                      * ``[8] 0x03 F O O 0x03 B A R`` - a set with 2 items: FOO,BAR
+                   Example (length of the bytes array shown in brackets):
+                     * ``[0]`` - the NULL value
+                     * ``[1] 0x00`` - a set containing a blank string ''
+                     * ``[1] 0x01`` - this would be an invalid value, but is to be treated as the empty set
+                     * ``[2] 0x01 0x00`` - a set with a single item, which is the '\0' character
+                     * ``[8] 0x03 F O O 0x03 B A R`` - a set with 2 items: FOO,BAR
             
-              :param name: name of the column
-              :param original_name: name of the column before an alias was applied
-              :param table: name of the table the column orginates from
-              :param original_table: name of the table the column orginates from before an alias was applied
-              :param schema: schema the column originates from
-              :param catalog:
-                catalog the schema originates from
+             :param name: name of the column
+             :param original_name: name of the column before an alias was applied
+             :param table: name of the table the column orginates from
+             :param original_table: name of the table the column orginates from before an alias was applied
+             :param schema: schema the column originates from
+             :param catalog:
+               catalog the schema originates from
             
-                .. note::
-                  as there is current no support for catalogs in MySQL, don't expect this field to be set.
-                  In the MySQL C/S protocol the field had the value ``def`` all the time.
+               .. note::
+                 as there is current no support for catalogs in MySQL, don't expect this field to be set.
+                 In the MySQL C/S protocol the field had the value ``def`` all the time.
             
-              :param fractional_digits: displayed factional decimal digits for floating point and fixed point numbers
-              :param length: maximum count of displayable characters of .type
-              :param flags:
-                ``.type`` specific flags
+             :param fractional_digits: displayed factional decimal digits for floating point and fixed point numbers
+             :param length: maximum count of displayable characters of .type
+             :param flags:
+               ``.type`` specific flags
             
-                ======= ====== ===========
-                type    value  description
-                ======= ====== ===========
-                UINT    0x0001 zerofill
-                DOUBLE  0x0001 unsigned
-                FLOAT   0x0001 unsigned
-                DECIMAL 0x0001 unsigned
-                BYTES   0x0001 rightpad
-                ======= ====== ===========
+               ======= ====== ===========
+               type    value  description
+               ======= ====== ===========
+               UINT    0x0001 zerofill
+               DOUBLE  0x0001 unsigned
+               FLOAT   0x0001 unsigned
+               DECIMAL 0x0001 unsigned
+               BYTES   0x0001 rightpad
+               ======= ====== ===========
             
-                ====== ================
-                value  description
-                ====== ================
-                0x0010 NOT_NULL
-                0x0020 PRIMARY_KEY
-                0x0040 UNIQUE_KEY
-                0x0080 MULTIPLE_KEY
-                0x0100 AUTO_INCREMENT
-                ====== ================
+               ====== ================
+               value  description
+               ====== ================
+               0x0010 NOT_NULL
+               0x0020 PRIMARY_KEY
+               0x0040 UNIQUE_KEY
+               0x0080 MULTIPLE_KEY
+               0x0100 AUTO_INCREMENT
+               ====== ================
             
-                default: 0
-              :param content_type:
-                a hint about the higher-level encoding of a BYTES field, for more informations
-                please refer to Mysqlx.Resultset.ContentType_BYTES enum.
+               default: 0
+             :param content_type:
+               a hint about the higher-level encoding of a BYTES field, for more informations
+               please refer to Mysqlx.Resultset.ContentType_BYTES enum.
              </summary>
         </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.TypeFieldNumber">
@@ -16167,109 +16704,54 @@
         </member>
         <member name="P:Mysqlx.Resultset.ColumnMetaData.Type">
             <summary>
-             datatype of the field in a row
+            datatype of the field in a row
             </summary>
         </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.NameFieldNumber">
             <summary>Field number for the "name" field.</summary>
         </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.Name">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.OriginalNameFieldNumber">
             <summary>Field number for the "original_name" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.OriginalName">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.TableFieldNumber">
             <summary>Field number for the "table" field.</summary>
         </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.Table">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.OriginalTableFieldNumber">
             <summary>Field number for the "original_table" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.OriginalTable">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.SchemaFieldNumber">
             <summary>Field number for the "schema" field.</summary>
         </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.Schema">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.CatalogFieldNumber">
             <summary>Field number for the "catalog" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.Catalog">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.CollationFieldNumber">
             <summary>Field number for the "collation" field.</summary>
         </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.Collation">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.FractionalDigitsFieldNumber">
             <summary>Field number for the "fractional_digits" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.FractionalDigits">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.LengthFieldNumber">
             <summary>Field number for the "length" field.</summary>
         </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.Length">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.FlagsFieldNumber">
             <summary>Field number for the "flags" field.</summary>
         </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.Flags">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Resultset.ColumnMetaData.ContentTypeFieldNumber">
             <summary>Field number for the "content_type" field.</summary>
-        </member>
-        <member name="P:Mysqlx.Resultset.ColumnMetaData.ContentType">
-            <summary>
-            optional
-            </summary>
         </member>
         <member name="T:Mysqlx.Resultset.ColumnMetaData.Types">
             <summary>Container for nested types declared in the ColumnMetaData message type.</summary>
         </member>
         <member name="T:Mysqlx.Resultset.Row">
              <summary>
-                Row in a Resultset
+               Row in a Resultset
             
-                a row is represented as a list of fields encoded as byte blobs.
-                Blob of size 0 represents the NULL value. Otherwise, if it contains at least
-                one byte, it encodes a non-null value of the field using encoding appropriate for the
-                type of the value given by ``ColumnMetadata``, as specified
-                in the :protobuf:msg:`Mysqlx.Resultset::ColumnMetaData` description.
+               a row is represented as a list of fields encoded as byte blobs.
+               Blob of size 0 represents the NULL value. Otherwise, if it contains at least
+               one byte, it encodes a non-null value of the field using encoding appropriate for the
+               type of the value given by ``ColumnMetadata``, as specified
+               in the :protobuf:msg:`Mysqlx.Resultset::ColumnMetaData` description.
              </summary>
         </member>
         <member name="F:Mysqlx.Resultset.Row.FieldFieldNumber">
@@ -16283,83 +16765,73 @@
         </member>
         <member name="T:Mysqlx.Session.AuthenticateStart">
              <summary>
-              the initial message send from the client to the server to start the
-              authentication proccess
+             the initial message send from the client to the server to start the
+             authentication proccess
             
-              :param mech_name: authentication mechanism name
-              :param auth_data: authentication data
-              :param initial_response: initial response
-              :Returns: :protobuf:msg:`Mysqlx.Session::AuthenticateContinue`
+             :param mech_name: authentication mechanism name
+             :param auth_data: authentication data
+             :param initial_response: initial response
+             :Returns: :protobuf:msg:`Mysqlx.Session::AuthenticateContinue`
              </summary>
         </member>
         <member name="F:Mysqlx.Session.AuthenticateStart.MechNameFieldNumber">
             <summary>Field number for the "mech_name" field.</summary>
         </member>
         <member name="P:Mysqlx.Session.AuthenticateStart.MechName">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="F:Mysqlx.Session.AuthenticateStart.AuthDataFieldNumber">
             <summary>Field number for the "auth_data" field.</summary>
         </member>
-        <member name="P:Mysqlx.Session.AuthenticateStart.AuthData">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="F:Mysqlx.Session.AuthenticateStart.InitialResponseFieldNumber">
             <summary>Field number for the "initial_response" field.</summary>
         </member>
-        <member name="P:Mysqlx.Session.AuthenticateStart.InitialResponse">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="T:Mysqlx.Session.AuthenticateContinue">
              <summary>
-              send by client or server after a :protobuf:msg:`Mysqlx.Session::AuthenticateStart` to
-              exchange more auth data
+             send by client or server after a :protobuf:msg:`Mysqlx.Session::AuthenticateStart` to
+             exchange more auth data
             
-              :param auth_data: authentication data
-              :Returns: :protobuf:msg:`Mysqlx.Session::AuthenticateContinue`
+             :param auth_data: authentication data
+             :Returns: :protobuf:msg:`Mysqlx.Session::AuthenticateContinue`
              </summary>
         </member>
         <member name="F:Mysqlx.Session.AuthenticateContinue.AuthDataFieldNumber">
             <summary>Field number for the "auth_data" field.</summary>
         </member>
         <member name="P:Mysqlx.Session.AuthenticateContinue.AuthData">
-            <summary>
+             <summary>
             required
-            </summary>
+             </summary>
         </member>
         <member name="T:Mysqlx.Session.AuthenticateOk">
              <summary>
-              sent by the server after successful authentication
+             sent by the server after successful authentication
             
-              :param auth_data: authentication data
+             :param auth_data: authentication data
              </summary>
         </member>
         <member name="F:Mysqlx.Session.AuthenticateOk.AuthDataFieldNumber">
             <summary>Field number for the "auth_data" field.</summary>
         </member>
-        <member name="P:Mysqlx.Session.AuthenticateOk.AuthData">
-            <summary>
-            optional
-            </summary>
-        </member>
         <member name="T:Mysqlx.Session.Reset">
              <summary>
-              reset the current session
+             reset the current session
+             param keep_open: if is true the session will be reset, but stays authenticated.
+                   otherwise, the session will be closed and needs to be authenticated again.
             
-              :Returns: :protobuf:msg:`Mysqlx::Ok`
+             :Returns: :protobuf:msg:`Mysqlx::Ok`
              </summary>
+        </member>
+        <member name="F:Mysqlx.Session.Reset.KeepOpenFieldNumber">
+            <summary>Field number for the "keep_open" field.</summary>
         </member>
         <member name="T:Mysqlx.Session.Close">
              <summary>
-              close the current session
+             close the current session
             
-              :Returns: :protobuf:msg:`Mysqlx::Ok`
+             :Returns: :protobuf:msg:`Mysqlx::Ok`
              </summary>
         </member>
         <member name="T:Mysqlx.Sql.MysqlxSqlReflection">

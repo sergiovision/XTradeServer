@@ -12,10 +12,14 @@
 
 #define TEMPLATE_NAME   "ObjectiveService"
 
-
 #include <XTrade\TradeExpert.mqh>
 
 TradeExpert* expert = NULL;
+
+void CExpert::ReloadExpert()
+{
+     ChartApplyTemplate(0, TEMPLATE_NAME);
+}
 
 //+------------------------------------------------------------------+ 
 //| Script program start function                                    | 

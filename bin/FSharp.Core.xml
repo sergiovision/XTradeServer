@@ -4526,7 +4526,7 @@
  &lt;example&gt;
  From F# Interactive the default settings can be adjusted using, for example, 
  &lt;pre&gt;
-   open Microsoft.FSharp.Compiler.Interactive.Settings;;
+   open FSharp.Compiler.Interactive.Settings;;
    setPrintWidth 120;;
  &lt;/pre&gt;
  &lt;/example&gt;
@@ -5873,6 +5873,20 @@
  <exception cref="System.ArgumentOutOfRangeException">Thrown when the due time is negative
  and not infinite.</exception>
 </member>
+<member name="M:Microsoft.FSharp.Control.FSharpAsync.Sequential``1(System.Collections.Generic.IEnumerable{Microsoft.FSharp.Control.FSharpAsync{``0}})">
+ <summary>Creates an asynchronous computation that executes all the given asynchronous computations sequentially.</summary>
+
+ <remarks>If all child computations succeed, an array of results is passed to the success continuation.
+
+ If any child computation raises an exception, then the overall computation will trigger an
+ exception, and cancel the others.
+
+ The overall computation will respond to cancellation while executing the child computations.
+ If cancelled, the computation will cancel any remaining child computations but will still wait
+ for the other child computations to complete.</remarks>
+ <param name="computations">A sequence of distinct computations to be run in sequence.</param>
+ <returns>A computation that returns an array of values from the sequence of input computations.</returns>
+</member>
 <member name="M:Microsoft.FSharp.Control.FSharpAsync.RunSynchronously``1(Microsoft.FSharp.Control.FSharpAsync{``0},Microsoft.FSharp.Core.FSharpOption{System.Int32},Microsoft.FSharp.Core.FSharpOption{System.Threading.CancellationToken})">
  <summary>Runs the asynchronous computation and await its result.</summary>
 
@@ -5891,6 +5905,21 @@
  <param name="cancellationToken">The cancellation token to be associated with the computation.
  If one is not supplied, the default cancellation token is used.</param>
  <returns>The result of the computation.</returns>
+</member>
+<member name="M:Microsoft.FSharp.Control.FSharpAsync.Parallel``1(System.Collections.Generic.IEnumerable{Microsoft.FSharp.Control.FSharpAsync{``0}},Microsoft.FSharp.Core.FSharpOption{System.Int32})">
+ <summary>Creates an asynchronous computation that executes all the given asynchronous computations,
+ initially queueing each as work items and using a fork/join pattern.</summary>
+
+ <remarks>If all child computations succeed, an array of results is passed to the success continuation.
+
+ If any child computation raises an exception, then the overall computation will trigger an
+ exception, and cancel the others.
+
+ The overall computation will respond to cancellation while executing the child computations.
+ If cancelled, the computation will cancel any remaining child computations but will still wait
+ for the other child computations to complete.</remarks>
+ <param name="computations">A sequence of distinct computations to be parallelized.</param>
+ <returns>A computation that returns an array of values from the sequence of input computations.</returns>
 </member>
 <member name="M:Microsoft.FSharp.Control.FSharpAsync.Parallel``1(System.Collections.Generic.IEnumerable{Microsoft.FSharp.Control.FSharpAsync{``0}})">
  <summary>Creates an asynchronous computation that executes all the given asynchronous computations, 
@@ -8981,6 +9010,9 @@
 <member name="T:Microsoft.FSharp.Core.MatchFailureException">
  <summary>Non-exhaustive match failures will raise the MatchFailureException exception</summary>
 </member>
+<member name="P:Microsoft.FSharp.Core.SR.maxDegreeOfParallelismNotPositive">
+ <summary>maxDegreeOfParallelism must be positive, was {0}</summary>
+</member>
 <member name="P:Microsoft.FSharp.Core.SR.unsupportedQueryConstructKind">
  <summary>This is not a valid query expression. The construct '{0}' was used in a query but is not recognized by the F#-to-LINQ query translator. Check the specification of permitted queries and consider moving some of the operations out of the query expression.</summary>
 </member>
@@ -9682,6 +9714,9 @@
 <member name="M:Microsoft.FSharp.Core.Operators.MethodHandleOf``2(Microsoft.FSharp.Core.FSharpFunc{``0,``1})">
  <summary>An internal, library-only compiler intrinsic for compile-time 
  generation of a RuntimeMethodHandle.</summary>
+</member>
+<member name="M:Microsoft.FSharp.Core.Operators.NameOf``1(``0)">
+ <summary>Returns the name of the given symbol.</summary>        
 </member>
 <member name="M:Microsoft.FSharp.Core.Operators.TypeOf``1">
  <summary>Generate a System.Type runtime representation of a static type.</summary>

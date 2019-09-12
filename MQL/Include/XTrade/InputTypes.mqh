@@ -47,7 +47,6 @@
 #endif
 
 EXPERT_PARAMS_CLASS
-//INPUT_VARIABLE(ClusterMode, long)
 INPUT_VARIABLE(LotsBUY, double)
 INPUT_VARIABLE(LotsSELL, double)
 //INPUT_VARIABLE(LotsMIN, double, 0.02)
@@ -74,7 +73,7 @@ INPUT_VARIABLE(CoeffTP, double)
 INPUT_VARIABLE(CoeffBE, double) // If BE == 0 then no BE. BE should be more than spread
 INPUT_VARIABLE(PendingOrderStep, long)
 INPUT_VARIABLE(MoreTriesOpenOrder, bool)
-
+INPUT_VARIABLE(AllowMarketOrders, bool)
 //--------------------------------------------------------------------
 // Indicators 
 INPUT_VARIABLE(EnableRenko, bool)
@@ -83,7 +82,7 @@ INPUT_VARIABLE(FilterIndicator, long)
 INPUT_VARIABLE(SignalIndicator, long)
 INPUT_VARIABLE(WeightCalculation, long)
 INPUT_VARIABLE(NumBarsToAnalyze, long)
-//INPUT_VARIABLE(NumBarsFlatPeriod, long)
+// INPUT_VARIABLE(NumBarsFlatPeriod, long)
 INPUT_VARIABLE(IshimokuPeriod1, long)
 INPUT_VARIABLE(IshimokuPeriod2, long)
 INPUT_VARIABLE(IshimokuPeriod3, long)
@@ -128,6 +127,7 @@ STORE_DBL_VARIABLE(CoeffTP, double, "CoeffTP", 3.5)
 STORE_DBL_VARIABLE(CoeffBE, double, "CoeffBE", 1.5) // If BE == 0 then no BE. BE should be more than spread
 STORE_INT_VARIABLE(PendingOrderStep, long, "PendingOrderStep", 4)
 STORE_BOOL_VARIABLE(MoreTriesOpenOrder, bool, "MoreTriesOpenOrder", false)
+STORE_BOOL_VARIABLE(AllowMarketOrders, bool,  "AllowMarketOrders", false)
 STORE_BOOL_VARIABLE(EnableRenko, bool, "EnableRenko", false)
 STORE_BOOL_VARIABLE(EnableRenkoMA, bool, "EnableRenkoMA", false)
 STORE_INT_VARIABLE(FilterIndicator, long, "FilterIndicator", (long)DefaultIndicator)
@@ -148,6 +148,7 @@ STORE_INT_VARIABLE(RaiseSignalBeforeEventMinutes, long, "RaiseSignalBeforeEventM
 STORE_INT_VARIABLE(NewsPeriodMinutes, long, "NewsPeriodMinutes", 200)
 STORE_INT_VARIABLE(MinImportance, long, "MinImportance", 1)
 STORE_INT_VARIABLE(Slippage, long,  "Slippage", 10)
+
 EXPERT_CLASS_STORE_END
 END_EXPERT_PARAMS_CLASS
 

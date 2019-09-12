@@ -9,6 +9,7 @@
 
 #include <XTrade\GenericTypes.mqh>
 #include <XTrade\Signals.mqh>
+#include <XTrade\CommandsController.mqh>
 
 #define MAX_NEWS_PER_DAY  5
 
@@ -16,12 +17,12 @@ class SettingsFile;
 
 class ITradeService
 {
-
 protected:
    bool   isActive;
    long   magic;
    bool   isMaster;
-   //SettingsFile* set;
+   // SettingsFile* set;
+
 public:
    string fileName;
    string IniFilePath;
@@ -31,6 +32,7 @@ public:
    ushort sep;   
    ushort sepList; 
    bool IsEA;
+   CommandsController* controller;
 
    ITradeService(short Port, string EA)
    {
@@ -63,7 +65,11 @@ public:
    {
    }
 
-   
+   void SetController(CommandsController* c) 
+   {
+      controller = c;   
+   }
+
    virtual void CallLoadParams(CJAVal* pars) {
    }
    
@@ -81,7 +87,7 @@ public:
    
    virtual Signal* ListenSignal(long flags, long ObjectId) { return NULL; };
    
-   virtual SignalNews* GetLastNewsEvent() {return NULL; }
+   virtual SignalNews* GetLastNewsEvent() {  return NULL; }
    
    virtual bool GetNextNewsEvent(ushort Importance, SignalNews& eventInfo) 
    {
@@ -137,18 +143,21 @@ public:
        
    }
    
-   virtual void PostSignal(Signal* s) {
-      PostSignalLocally(s);
-   }
+   virtual void PostSignal(Signal* s)  {  }
+   //{
+   //   PostSignalLocally(s);
+   //}
    
+   virtual Signal* SendSignal(Signal* s) { return NULL; }
+
    virtual void PostSignalLocally(Signal* signal)
    {
-      if (IsEA) 
-      {
-         ushort event_id = (ushort)signal.type;
-         EventChartCustom(Utils.Trade().ChartId(), event_id, signal.ObjectId, signal.Value, signal.Serialize());
-         DELETE_PTR(signal);
-      } 
+      
+   }
+   
+   virtual void DealsHistory(int days)
+   {
+      
    }
    
    //void NotifyUpdatePositions()

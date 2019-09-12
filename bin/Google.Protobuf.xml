@@ -388,6 +388,11 @@
             Internal-only property; when set to true, unknown fields will be discarded while parsing.
             </summary>
         </member>
+        <member name="P:Google.Protobuf.CodedInputStream.ExtensionRegistry">
+            <summary>
+            Internal-only property; provides extension identifiers to compatible messages while parsing.
+            </summary>
+        </member>
         <member name="M:Google.Protobuf.CodedInputStream.Dispose">
             <summary>
             Disposes of this instance, potentially closing any underlying stream.
@@ -492,7 +497,7 @@
         <member name="M:Google.Protobuf.CodedInputStream.ReadMessage(Google.Protobuf.IMessage)">
             <summary>
             Reads an embedded message field value from the stream.
-            </summary>   
+            </summary>
         </member>
         <member name="M:Google.Protobuf.CodedInputStream.ReadGroup(Google.Protobuf.IMessage)">
             <summary>
@@ -1676,6 +1681,199 @@
             </remarks>
             <exception cref="T:System.Reflection.AmbiguousMatchException">One type in the hierarchy declared more than one method with the same name</exception>
         </member>
+        <member name="T:Google.Protobuf.Extension">
+            <summary>
+            Represents a non-generic extension definition. This API is experimental and subject to change.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Extension.#ctor(System.Int32)">
+            <summary>
+            Internal use. Creates a new extension with the specified field number.
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Extension.FieldNumber">
+            <summary>
+            Gets the field number of this extension
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.Extension`2">
+            <summary>
+            Represents a type-safe extension identifier used for getting and setting single extension values in <see cref="T:Google.Protobuf.IExtendableMessage`1"/> instances. 
+            This API is experimental and subject to change.
+            </summary>
+            <typeparam name="TTarget">The message type this field applies to</typeparam>
+            <typeparam name="TValue">The field value type of this extension</typeparam>
+        </member>
+        <member name="M:Google.Protobuf.Extension`2.#ctor(System.Int32,Google.Protobuf.FieldCodec{`1})">
+            <summary>
+            Creates a new extension identifier with the specified field number and codec
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.RepeatedExtension`2">
+            <summary>
+            Represents a type-safe extension identifier used for getting repeated extension values in <see cref="T:Google.Protobuf.IExtendableMessage`1"/> instances.
+            This API is experimental and subject to change.
+            </summary>
+            <typeparam name="TTarget">The message type this field applies to</typeparam>
+            <typeparam name="TValue">The repeated field value type of this extension</typeparam>
+        </member>
+        <member name="M:Google.Protobuf.RepeatedExtension`2.#ctor(System.Int32,Google.Protobuf.FieldCodec{`1})">
+            <summary>
+            Creates a new repeated extension identifier with the specified field number and codec
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.ExtensionRegistry">
+            <summary>
+            Provides extensions to messages while parsing. This API is experimental and subject to change.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionRegistry.#ctor">
+            <summary>
+            Creates a new empty extension registry
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.ExtensionRegistry.Count">
+            <summary>
+            Gets the total number of extensions in this extension registry
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.ExtensionRegistry.System#Collections#Generic#ICollection{Google#Protobuf#Extension}#IsReadOnly">
+            <summary>
+            Returns whether the registry is readonly
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionRegistry.Add(Google.Protobuf.Extension)">
+            <summary>
+            Adds the specified extension to the registry
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionRegistry.AddRange(System.Collections.Generic.IEnumerable{Google.Protobuf.Extension})">
+            <summary>
+            Adds the specified extensions to the reigstry
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionRegistry.Clear">
+            <summary>
+            Clears the registry of all values
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionRegistry.Contains(Google.Protobuf.Extension)">
+            <summary>
+            Gets whether the extension registry contains the specified extension
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionRegistry.System#Collections#Generic#ICollection{Google#Protobuf#Extension}#CopyTo(Google.Protobuf.Extension[],System.Int32)">
+            <summary>
+            Copies the arrays in the registry set to the specified array at the specified index
+            </summary>
+            <param name="array">The array to copy to</param>
+            <param name="arrayIndex">The array index to start at</param>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionRegistry.GetEnumerator">
+            <summary>
+            Returns an enumerator to enumerate through the items in the registry
+            </summary>
+            <returns>Returns an enumerator for the extensions in this registry</returns>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionRegistry.Remove(Google.Protobuf.Extension)">
+            <summary>
+            Removes the specified extension from the set
+            </summary>
+            <param name="item">The extension</param>
+            <returns><c>true</c> if the extension was removed, otherwise <c>false</c></returns>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionRegistry.Clone">
+            <summary>
+            Clones the registry into a new registry
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.ExtensionSet">
+            <summary>
+            Methods for managing <see cref="T:Google.Protobuf.ExtensionSet`1"/>s with null checking.
+            
+            Most users will not use this class directly and its API is experimental and subject to change.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.Get``2(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.Extension{``0,``1})">
+            <summary>
+            Gets the value of the specified extension
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.Get``2(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.RepeatedExtension{``0,``1})">
+            <summary>
+            Gets the value of the specified repeated extension or null if it doesn't exist in this set
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.GetOrRegister``2(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.RepeatedExtension{``0,``1})">
+            <summary>
+            Gets the value of the specified repeated extension, registering it if it doesn't exist
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.Set``2(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.Extension{``0,``1},``1)">
+            <summary>
+            Sets the value of the specified extension. This will make a new instance of ExtensionSet if the set is null.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.Has``2(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.Extension{``0,``1})">
+            <summary>
+            Gets whether the value of the specified extension is set
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.Clear``2(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.Extension{``0,``1})">
+            <summary>
+            Clears the value of the specified extension
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.Clear``2(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.RepeatedExtension{``0,``1})">
+            <summary>
+            Clears the value of the specified extension
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.TryMergeFieldFrom``1(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.CodedInputStream)">
+            <summary>
+            Tries to merge a field from the coded input, returning true if the field was merged.
+            If the set is null or the field was not otherwise merged, this returns false.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.MergeFrom``1(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.ExtensionSet{``0})">
+            <summary>
+            Merges the second set into the first set, creating a new instance if first is null
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet.Clone``1(Google.Protobuf.ExtensionSet{``0})">
+            <summary>
+            Clones the set into a new set. If the set is null, this returns null
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.ExtensionSet`1">
+            <summary>
+            Used for keeping track of extensions in messages. 
+            <see cref="T:Google.Protobuf.IExtendableMessage`1"/> methods route to this set.
+            
+            Most users will not need to use this class directly
+            </summary>
+            <typeparam name="TTarget">The message type that extensions in this set target</typeparam>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet`1.GetHashCode">
+            <summary>
+            Gets a hash code of the set
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet`1.Equals(System.Object)">
+            <summary>
+            Returns whether this set is equal to the other object
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet`1.CalculateSize">
+            <summary>
+            Calculates the size of this extension set
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ExtensionSet`1.WriteTo(Google.Protobuf.CodedOutputStream)">
+            <summary>
+            Writes the extension values in this set to the output stream
+            </summary>
+        </member>
         <member name="T:Google.Protobuf.FieldCodec">
             <summary>
             Factory methods for <see cref="T:Google.Protobuf.FieldCodec`1"/>.
@@ -1795,6 +1993,136 @@
             <param name="fromInt32">A conversion function from the enum type to <see cref="T:System.Int32"/>.</param>
             <returns>A codec for the given tag.</returns>
         </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForString(System.UInt32,System.String)">
+            <summary>
+            Retrieves a codec suitable for a string field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForBytes(System.UInt32,Google.Protobuf.ByteString)">
+            <summary>
+            Retrieves a codec suitable for a bytes field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForBool(System.UInt32,System.Boolean)">
+            <summary>
+            Retrieves a codec suitable for a bool field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForInt32(System.UInt32,System.Int32)">
+            <summary>
+            Retrieves a codec suitable for an int32 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForSInt32(System.UInt32,System.Int32)">
+            <summary>
+            Retrieves a codec suitable for an sint32 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForFixed32(System.UInt32,System.UInt32)">
+            <summary>
+            Retrieves a codec suitable for a fixed32 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForSFixed32(System.UInt32,System.Int32)">
+            <summary>
+            Retrieves a codec suitable for an sfixed32 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForUInt32(System.UInt32,System.UInt32)">
+            <summary>
+            Retrieves a codec suitable for a uint32 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForInt64(System.UInt32,System.Int64)">
+            <summary>
+            Retrieves a codec suitable for an int64 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForSInt64(System.UInt32,System.Int64)">
+            <summary>
+            Retrieves a codec suitable for an sint64 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForFixed64(System.UInt32,System.UInt64)">
+            <summary>
+            Retrieves a codec suitable for a fixed64 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForSFixed64(System.UInt32,System.Int64)">
+            <summary>
+            Retrieves a codec suitable for an sfixed64 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForUInt64(System.UInt32,System.UInt64)">
+            <summary>
+            Retrieves a codec suitable for a uint64 field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForFloat(System.UInt32,System.Single)">
+            <summary>
+            Retrieves a codec suitable for a float field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForDouble(System.UInt32,System.Double)">
+            <summary>
+            Retrieves a codec suitable for a double field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
+        <member name="M:Google.Protobuf.FieldCodec.ForEnum``1(System.UInt32,System.Func{``0,System.Int32},System.Func{System.Int32,``0},``0)">
+            <summary>
+            Retrieves a codec suitable for an enum field with the given tag.
+            </summary>
+            <param name="tag">The tag.</param>
+            <param name="toInt32">A conversion function from <see cref="T:System.Int32"/> to the enum type.</param>
+            <param name="fromInt32">A conversion function from the enum type to <see cref="T:System.Int32"/>.</param>
+            <param name="defaultValue">The default value.</param>
+            <returns>A codec for the given tag.</returns>
+        </member>
         <member name="M:Google.Protobuf.FieldCodec.ForMessage``1(System.UInt32,Google.Protobuf.MessageParser{``0})">
             <summary>
             Retrieves a codec suitable for a message field with the given tag.
@@ -1856,6 +2184,16 @@
             in repeated fields itself, other than to know whether or not the field *should* be packed.
             </remarks>
         </member>
+        <member name="T:Google.Protobuf.FieldCodec`1.InputMerger">
+            <summary>
+            Merges an input stream into a value
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.FieldCodec`1.ValuesMerger">
+            <summary>
+            Merges a value into a reference to another value, returning a boolean if the value was set
+            </summary>
+        </member>
         <member name="P:Google.Protobuf.FieldCodec`1.ValueWriter">
             <summary>
             Returns a delegate to write a value (unconditionally) to a coded output stream.
@@ -1870,6 +2208,17 @@
             <summary>
             Returns a delegate to read a value from a coded input stream. It is assumed that
             the stream is already positioned on the appropriate tag.
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.FieldCodec`1.ValueMerger">
+            <summary>
+            Returns a delegate to merge a value from a coded input stream.
+            It is assumed that the stream is already positioned on the appropriate tag
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.FieldCodec`1.FieldMerger">
+            <summary>
+            Returns a delegate to merge two values together.
             </summary>
         </member>
         <member name="P:Google.Protobuf.FieldCodec`1.FixedSize">
@@ -2050,6 +2399,47 @@
             Creates a deep clone of this object.
             </summary>
             <returns>A deep clone of this object.</returns>
+        </member>
+        <member name="T:Google.Protobuf.IExtendableMessage`1">
+            <summary>
+            Generic interface for a Protocol Buffers message containing one or more extensions, where the type parameter is expected to be the same type as the implementation class
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.IExtendableMessage`1.GetExtension``1(Google.Protobuf.Extension{`0,``0})">
+            <summary>
+            Gets the value of the specified extension
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.IExtendableMessage`1.GetExtension``1(Google.Protobuf.RepeatedExtension{`0,``0})">
+            <summary>
+            Gets the value of the specified repeated extension or null if the extension isn't registered in this set.
+            For a version of this method that never returns null, use <see cref="M:Google.Protobuf.IExtendableMessage`1.GetOrRegisterExtension``1(Google.Protobuf.RepeatedExtension{`0,``0})"/>
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.IExtendableMessage`1.GetOrRegisterExtension``1(Google.Protobuf.RepeatedExtension{`0,``0})">
+            <summary>
+            Gets the value of the specified repeated extension, registering it if it isn't
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.IExtendableMessage`1.SetExtension``1(Google.Protobuf.Extension{`0,``0},``0)">
+            <summary>
+            Sets the value of the specified extension
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.IExtendableMessage`1.HasExtension``1(Google.Protobuf.Extension{`0,``0})">
+            <summary>
+            Gets whether the value of the specified extension is set
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.IExtendableMessage`1.ClearExtension``1(Google.Protobuf.Extension{`0,``0})">
+            <summary>
+            Clears the value of the specified extension
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.IExtendableMessage`1.ClearExtension``1(Google.Protobuf.RepeatedExtension{`0,``0})">
+            <summary>
+            Clears the value of the specified repeated extension
+            </summary>
         </member>
         <member name="T:Google.Protobuf.IMessage">
             <summary>
@@ -2833,6 +3223,13 @@
             <param name="discardUnknownFields">Whether or not to discard unknown fields when parsing.</param>
             <returns>A newly configured message parser.</returns>
         </member>
+        <member name="M:Google.Protobuf.MessageParser.WithExtensionRegistry(Google.Protobuf.ExtensionRegistry)">
+            <summary>
+            Creates a new message parser which registers extensions from the specified registry upon creating the message instance
+            </summary>
+            <param name="registry">The extensions to register</param>
+            <returns>A newly configured message parser.</returns>
+        </member>
         <member name="T:Google.Protobuf.MessageParser`1">
             <summary>
             A parser for a specific message type.
@@ -2931,6 +3328,19 @@
             <param name="discardUnknownFields">Whether or not to discard unknown fields when parsing.</param>
             <returns>A newly configured message parser.</returns>
         </member>
+        <member name="M:Google.Protobuf.MessageParser`1.WithExtensionRegistry(Google.Protobuf.ExtensionRegistry)">
+            <summary>
+            Creates a new message parser which registers extensions from the specified registry upon creating the message instance
+            </summary>
+            <param name="registry">The extensions to register</param>
+            <returns>A newly configured message parser.</returns>
+        </member>
+        <member name="T:Google.Protobuf.ObjectIntPair`1">
+            <summary>
+            Struct used to hold the keys for the fieldByNumber table in DescriptorPool and the keys for the 
+            extensionByNumber table in ExtensionRegistry.
+            </summary>
+        </member>
         <member name="T:Google.Protobuf.ProtoPreconditions">
             <summary>
             Helper methods for throwing exceptions when preconditions are not met.
@@ -2982,18 +3392,6 @@
             all the set values are merged together.
             </para>
             </remarks>
-        </member>
-        <member name="F:Google.Protobuf.Reflection.CustomOptions.Empty">
-            <summary>
-            Singleton for all descriptors with an empty set of options.
-            </summary>
-        </member>
-        <member name="F:Google.Protobuf.Reflection.CustomOptions.valuesByField">
-            <summary>
-            A sequence of values per field. This needs to be per field rather than per tag to allow correct deserialization
-            of repeated fields which could be "int, ByteString, int" - unlikely as that is. The fact that values are boxed
-            is unfortunate; we might be able to use a struct instead, and we could combine uint and ulong values.
-            </summary>
         </member>
         <member name="M:Google.Protobuf.Reflection.CustomOptions.TryGetBool(System.Int32,System.Boolean@)">
             <summary>
@@ -3128,24 +3526,6 @@
             <param name="field">The field to fetch the value for.</param>
             <param name="value">The output variable to populate.</param>
             <returns><c>true</c> if a suitable value for the field was found; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:Google.Protobuf.Reflection.CustomOptions.ReadOrSkipUnknownField(Google.Protobuf.CodedInputStream)">
-            <summary>
-            Reads an unknown field, either parsing it and storing it or skipping it.
-            </summary>
-            <remarks>
-            If the current set of options is empty and we manage to read a field, a new set of options
-            will be created and returned. Otherwise, the return value is <c>this</c>. This allows
-            us to start with a singleton empty set of options and just create new ones where necessary.
-            </remarks>
-            <param name="input">Input stream to read from. </param>
-            <returns>The resulting set of custom options, either <c>this</c> or a new set.</returns>
-        </member>
-        <member name="T:Google.Protobuf.Reflection.CustomOptions.FieldValue">
-            <summary>
-            All field values can be stored as a byte string or a 64-bit integer.
-            This struct avoids unnecessary boxing.
-            </summary>
         </member>
         <member name="T:Google.Protobuf.Reflection.DescriptorReflection">
             <summary>Holder for reflection information generated from google/protobuf/descriptor.proto</summary>
@@ -3337,6 +3717,11 @@
         <member name="F:Google.Protobuf.Reflection.DescriptorProto.Types.ExtensionRange.StartFieldNumber">
             <summary>Field number for the "start" field.</summary>
         </member>
+        <member name="P:Google.Protobuf.Reflection.DescriptorProto.Types.ExtensionRange.Start">
+            <summary>
+            Inclusive.
+            </summary>
+        </member>
         <member name="P:Google.Protobuf.Reflection.DescriptorProto.Types.ExtensionRange.HasStart">
             <summary>Gets whether the "start" field is set</summary>
         </member>
@@ -3345,6 +3730,11 @@
         </member>
         <member name="F:Google.Protobuf.Reflection.DescriptorProto.Types.ExtensionRange.EndFieldNumber">
             <summary>Field number for the "end" field.</summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.DescriptorProto.Types.ExtensionRange.End">
+            <summary>
+            Exclusive.
+            </summary>
         </member>
         <member name="P:Google.Protobuf.Reflection.DescriptorProto.Types.ExtensionRange.HasEnd">
             <summary>Gets whether the "end" field is set</summary>
@@ -5114,11 +5504,6 @@
             If it starts being used more widely, we should look at performance more carefully.
             </remarks>
         </member>
-        <member name="T:Google.Protobuf.Reflection.DescriptorPool.DescriptorIntPair">
-            <summary>
-            Struct used to hold the keys for the fieldByNumber table.
-            </summary>
-        </member>
         <member name="T:Google.Protobuf.Reflection.DescriptorUtil">
             <summary>
             Internal class containing utility methods when working with descriptors.
@@ -5222,6 +5607,29 @@
             The (possibly empty) set of custom options for this enum value.
             </summary>
         </member>
+        <member name="T:Google.Protobuf.Reflection.ExtensionCollection">
+            <summary>
+            A collection to simplify retrieving the descriptors of extensions in a descriptor for a message
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.ExtensionCollection.UnorderedExtensions">
+            <summary>
+            Returns a readonly list of all the extensions defined in this type in 
+            the order they were defined in the source .proto file
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.ExtensionCollection.GetExtensionsInDeclarationOrder(Google.Protobuf.Reflection.MessageDescriptor)">
+            <summary>
+            Returns a readonly list of all the extensions define in this type that extend 
+            the provided descriptor type in the order they were defined in the source .proto file
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.ExtensionCollection.GetExtensionsInNumberOrder(Google.Protobuf.Reflection.MessageDescriptor)">
+            <summary>
+            Returns a readonly list of all the extensions define in this type that extend 
+            the provided descriptor type in accending field order
+            </summary>
+        </member>
         <member name="T:Google.Protobuf.Reflection.FieldAccessorBase">
             <summary>
             Base class for field accessors.
@@ -5234,7 +5642,7 @@
         </member>
         <member name="P:Google.Protobuf.Reflection.FieldDescriptor.ContainingType">
             <summary>
-            Get the field's containing message type.
+            Get the field's containing message type, or <c>null</c> if it is a field defined at the top level of a file as an extension.
             </summary>
         </member>
         <member name="P:Google.Protobuf.Reflection.FieldDescriptor.ContainingOneof">
@@ -5329,6 +5737,11 @@
         <member name="P:Google.Protobuf.Reflection.FieldDescriptor.MessageType">
             <summary>
             For embedded message and group fields, returns the field's type.
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FieldDescriptor.ExtendeeType">
+            <summary>
+            For extension fields, returns the extended type
             </summary>
         </member>
         <member name="P:Google.Protobuf.Reflection.FieldDescriptor.CustomOptions">
@@ -5485,6 +5898,11 @@
             Unmodifiable list of top-level services declared in this file.
             </value>
         </member>
+        <member name="P:Google.Protobuf.Reflection.FileDescriptor.Extensions">
+            <summary>
+            Unmodifiable list of top-level extensions declared in this file.
+            </summary>
+        </member>
         <member name="P:Google.Protobuf.Reflection.FileDescriptor.Dependencies">
             <value>
             Unmodifiable list of this file's dependencies (imports).
@@ -5625,6 +6043,11 @@
             for fields in the message for message descriptors.
             </summary>
         </member>
+        <member name="P:Google.Protobuf.Reflection.GeneratedClrTypeInfo.Extensions">
+            <summary>
+            The extensions defined within this file/message descriptor
+            </summary>
+        </member>
         <member name="P:Google.Protobuf.Reflection.GeneratedClrTypeInfo.OneofNames">
             <summary>
             Irrelevant for file descriptors; the CLR property "base" names (in message descriptor oneof order)
@@ -5643,11 +6066,23 @@
             The CLR types for enums within this file/message descriptor.
             </summary>
         </member>
+        <member name="M:Google.Protobuf.Reflection.GeneratedClrTypeInfo.#ctor(System.Type,Google.Protobuf.MessageParser,System.String[],System.String[],System.Type[],Google.Protobuf.Extension[],Google.Protobuf.Reflection.GeneratedClrTypeInfo[])">
+            <summary>
+            Creates a GeneratedClrTypeInfo for a message descriptor, with nested types, nested enums, the CLR type, property names and oneof names.
+            Each array parameter may be null, to indicate a lack of values.
+            The parameter order is designed to make it feasible to format the generated code readably.
+            </summary>
+        </member>
         <member name="M:Google.Protobuf.Reflection.GeneratedClrTypeInfo.#ctor(System.Type,Google.Protobuf.MessageParser,System.String[],System.String[],System.Type[],Google.Protobuf.Reflection.GeneratedClrTypeInfo[])">
             <summary>
             Creates a GeneratedClrTypeInfo for a message descriptor, with nested types, nested enums, the CLR type, property names and oneof names.
             Each array parameter may be null, to indicate a lack of values.
             The parameter order is designed to make it feasible to format the generated code readably.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.GeneratedClrTypeInfo.#ctor(System.Type[],Google.Protobuf.Extension[],Google.Protobuf.Reflection.GeneratedClrTypeInfo[])">
+            <summary>
+            Creates a GeneratedClrTypeInfo for a file descriptor, with only types, enums, and extensions.
             </summary>
         </member>
         <member name="M:Google.Protobuf.Reflection.GeneratedClrTypeInfo.#ctor(System.Type[],Google.Protobuf.Reflection.GeneratedClrTypeInfo[])">
@@ -5790,6 +6225,11 @@
             <value>
             A collection of fields, which can be retrieved by name or field number.
             </value>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.MessageDescriptor.Extensions">
+            <summary>
+            An unmodifiable list of extensions defined in this message's scrope
+            </summary>
         </member>
         <member name="P:Google.Protobuf.Reflection.MessageDescriptor.NestedTypes">
             <value>
@@ -6074,6 +6514,12 @@
             </summary>
             <param name="method">The method to create a delegate for, which must be declared in an IMessage
             implementation.</param>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.ReflectionUtil.CreateExtensionHelper(Google.Protobuf.Extension)">
+            <summary>
+            Creates a delegate which will execute the given method after casting the first argument to
+            the type that declares the method, and the second argument to the first parameter type of the method.
+            </summary>
         </member>
         <member name="M:Google.Protobuf.Reflection.ReflectionUtil.GetReflectionHelper(System.Type,System.Type)">
             <summary>

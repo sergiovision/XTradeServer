@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
+using System.Text;
 
 namespace XTrade.MainServer
 {
@@ -26,10 +27,38 @@ namespace XTrade.MainServer
             xtrade = Program.Container.Resolve<IMainService>();
             todayDeals = new Dictionary<long, DealInfo>();
             terminals = new Dictionary<long, Terminal>();
-            foreach (var term in xtrade.GetTerminals()) terminals.Add(term.AccountNumber, term);
             todayStat = new TodayStat();
+            fillRiskProps();
+            foreach (var term in xtrade.GetTerminals())
+            {
+                terminals.Add(term.AccountNumber, term);
+                if (term.Disabled == false)
+                {
+                    var acc = new Account();
+                    acc.Number = term.AccountNumber;
+                    acc.TerminalId = term.Id;
+                    todayStat.Accounts.Add(acc);
+                }
+            }
         }
 
+        protected void fillRiskProps()
+        {
+            string riskPerDay = xtrade.GetGlobalProp(xtradeConstants.SETTINGS_PROPERTY_RISK_PER_DAY);
+            decimal dRiskPerDay = new decimal(0.02);
+            decimal.TryParse(riskPerDay, out dRiskPerDay);
+            todayStat.RISK_PER_DAY = dRiskPerDay;
+
+            string riskDailyMinGain = xtrade.GetGlobalProp(xtradeConstants.SETTINGS_PROPERTY_RISK_DAILY_MIN_GAIN);
+            decimal dRiskDailyMinGain = new decimal(0.007);
+            decimal.TryParse(riskDailyMinGain, out dRiskDailyMinGain);
+            todayStat.DAILY_MIN_GAIN = dRiskDailyMinGain;
+
+            string riskDailyLossAfterGain = xtrade.GetGlobalProp(xtradeConstants.SETTINGS_PROPERY_RISK_DAILY_LOSS_AFTER_GAIN);
+            decimal dRiskDailyLossAfterGain = new decimal(0.3);
+            decimal.TryParse(riskDailyLossAfterGain, out dRiskDailyLossAfterGain);
+            todayStat.DAILY_LOSS_AFTER_GAIN = dRiskDailyLossAfterGain;
+        }
 
         public List<PositionInfo> GetAllPositions()
         {
@@ -186,24 +215,139 @@ namespace XTrade.MainServer
             return todayDeals.Values.OrderByDescending(x=>x.CloseTime).ToList();
         }
 
+        protected string AccountRiskInfo(long AccountNumber, string AccountName)
+        {
+            StringBuilder res = new StringBuilder(AccountName);
+            var acc = todayStat.Accounts.Find(c => (c.Number == AccountNumber));
+            if (acc != null)
+            {
+                CheckRiskForAccount(ref acc);
+                res.Append(string.Format(" {0:0.##},{1:0.##},", acc.DailyProfit, acc.DailyMaxGain));
+                if (acc.StopTrading)
+                {
+                    //if (!String.IsNullOrEmpty(acc.StopReason))
+                    //    res.Append(acc.StopReason);
+                    res.Append("Blocked");
+                }
+                else 
+                    res.Append("Allowed");
+            }
+            return res.ToString();
+        }
+
         public TodayStat GetTodayStat()
         {
-            if (todayDeals.Count <= 0)
-                GetTodayDeals();
+            todayStat.Deals = GetTodayDeals();
+            // reset profits
+            todayStat.Accounts.ForEach(c => { c.DailyProfit = 0;c.DailyMaxGain = 0;c.StopTrading = false; });
             double sumReal = 0;
             double sumDemo = 0;
-            foreach (var deal in todayDeals)
+            foreach (var deal in todayDeals.OrderBy(c=>c.Value.CloseTime))
             {
                 bool IsDemo = terminals[deal.Value.Account].Demo;
                 if (IsDemo)
                     sumDemo += deal.Value.Profit;
                 else
                     sumReal += deal.Value.Profit;
-
+                var acc = todayStat.Accounts.Find(c => (c.Number == deal.Value.Account));
+                if (acc != null)
+                {
+                    acc.DailyProfit += new decimal(deal.Value.Profit);
+                    if (acc.DailyProfit > 0)
+                        acc.DailyMaxGain = Math.Max(acc.DailyMaxGain, acc.DailyProfit);
+                }
+            }
+            foreach (var deal in todayDeals)
+            {
+                deal.Value.AccountName = AccountRiskInfo(deal.Value.Account, terminals[deal.Value.Account].Broker);
             }
             todayStat.TodayGainDemo = decimal.Round((decimal)sumDemo, 2);
             todayStat.TodayGainReal = decimal.Round((decimal)sumReal, 2);
+            // UpdateRiskManager();
             return todayStat;
+        }
+
+        public void UpdateBalance(int AccountNumber, decimal Balance, decimal Equity)
+        {
+            var acc = todayStat.Accounts.Find(c => (c.Number == AccountNumber));
+            if (acc != null)
+            {
+                acc.Balance = Balance;
+                acc.Equity = Equity;
+            }
+        }
+
+        public bool CheckTradeAllowed(SignalInfo signal)
+        {
+            var acc = todayStat.Accounts.Find(c => (c.Number == signal.ObjectId));
+            if (acc != null)
+            {
+                decimal balance = new decimal(0);
+                decimal.TryParse((string)signal.Data, out balance);
+                if (balance > 0)
+                    acc.Balance = balance;
+                CheckRiskForAccount(ref acc);
+                signal.Value = acc.StopTrading?1:0;
+                signal.Data = acc.StopReason;
+                if (acc.StopTrading && !String.IsNullOrEmpty(acc.StopReason))
+                {
+                    IWebLog log = Program.Container.Resolve<IWebLog>();
+                    if (log != null)
+                        log.Log(acc.StopReason);
+                }
+                return acc.StopTrading;
+            }
+            return true;
+        }
+
+        protected void CheckRiskForAccount(ref Account acc)
+        {
+            DayOfWeek dow = DateTime.Now.DayOfWeek;
+            if ((dow == DayOfWeek.Sunday) || (dow == DayOfWeek.Saturday) || (dow == DayOfWeek.Wednesday))
+            {
+                acc.StopReason = "Today is non trading day of the week: " + dow.ToString() + "!!! RELAX!";
+                acc.StopTrading = true;
+                return;
+            }
+            decimal allowedLoss = todayStat.RISK_PER_DAY * acc.Balance;
+            decimal startBalance =  acc.Balance; //allowedLoss +
+            if (startBalance <= 0)
+            {
+                //acc.StopReason = string.Format("Account [{0}] has zero balance!", acc.Number);
+                //acc.StopTrading = true;
+                return;
+            }
+            if (acc.DailyProfit < 0)
+            {
+                decimal currentDailyRisk = Math.Abs(acc.DailyProfit) / startBalance;
+                if (currentDailyRisk > todayStat.RISK_PER_DAY)  // GAME OVER FOR TODAY
+                {
+                    acc.StopReason = string.Format("[{0}] ", acc.Number);
+                    acc.StopReason += string.Format("GAME OVER FOR TODAY! Risk too high for today = {0:0.##}%! RELAX.", currentDailyRisk*100);
+                    acc.StopTrading = true;
+                    return;
+                }
+            }
+            decimal dailyMinGain = todayStat.DAILY_MIN_GAIN * startBalance;
+            if ((acc.DailyProfit > 0) && (acc.DailyMaxGain > dailyMinGain) && (acc.DailyMaxGain > 0)) // Check to save what we alredy earned today
+            {
+                decimal gainDifferencePercent = (acc.DailyMaxGain - acc.DailyProfit) / acc.DailyMaxGain;
+                if (gainDifferencePercent >= todayStat.DAILY_LOSS_AFTER_GAIN)
+                {
+                    // ENOUGH PLAY FOR TODAY
+                    acc.StopReason = string.Format("[{0}] ", acc.Number);
+                    acc.StopReason += string.Format("ENOUGH PLAY FOR TODAY! YOU ALREADY EARNED = {0:0.##}! IT IS ENOUGH. RELAX.", acc.DailyProfit);
+                    acc.StopTrading = true;
+                    return;
+                }
+            }
+            acc.StopTrading = false;
+        }
+
+        public void UpdateRiskManager()
+        {
+            //IWebLog log = Program.Container.Resolve<IWebLog>();
+            todayStat.Accounts.ForEach(c => CheckRiskForAccount(ref c));
         }
 
         public void DeletePosition(long Ticket)

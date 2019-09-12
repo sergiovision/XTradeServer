@@ -9,18 +9,15 @@
 
 #include <XTrade\GenericTypes.mqh>
 
-
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-
 class Signal : public SerializableEntity
 {
 protected:
     string Name;
     datetime RaiseDateTime; // date returned in MTFormat
 public:
-    //bool Handled;
     int Value;
     long ObjectId;
     SignalType type;
@@ -34,9 +31,9 @@ public:
         obj["Value"] = Value;
         obj["Id"] = (int)type;
         obj["Flags"] = (int)flags;
-        //obj["Data"].AddBase(data);
         obj["Name"] = Name;
         obj["ObjectId"] = ObjectId;
+        //obj["Data"].AddBase(data);
         return &obj;
     }
     
@@ -53,7 +50,7 @@ public:
         if (obj.FindKey("Name"))
            Name = obj["Name"].ToStr();
         if (obj.FindKey("ObjectId"))
-           ObjectId = obj["ObjectId"].ToInt();
+           ObjectId = obj["ObjectId"].ToInt();           
     }
     
     Signal(SignalFlags fl, SignalType id, long objId) {
@@ -87,7 +84,7 @@ public:
     virtual void Init(bool isFilter = true)
     {
         RaiseDateTime = 0;
-        //Handled = false;
+        // Handled = false;
         Value = 0;
         flags = SignalToAuto;
         UseAsFilter = isFilter;
@@ -105,7 +102,7 @@ public:
         Value = n.Value;
         UseAsFilter = n.UseAsFilter;
         type = n.type;
-   }
+    }
       
    virtual bool operator==(const Signal &n) const
    {
@@ -199,4 +196,3 @@ public:
      return Currency + " "+ IntegerToString(Importance) + " " + DateToString() + " " + Name;
   }
 };
-

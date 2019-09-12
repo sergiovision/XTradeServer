@@ -21,5 +21,8 @@ namespace BusinessObjects
         List<DealInfo> GetTodayDeals();
 
         TodayStat GetTodayStat();
+        bool CheckTradeAllowed(SignalInfo signal);
+
+        void UpdateBalance(int TerminalId, decimal Balance, decimal Equity);
     }
 }

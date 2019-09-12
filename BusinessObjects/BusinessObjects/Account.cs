@@ -27,5 +27,9 @@ namespace BusinessObjects
         public DateTime? Lastupdate { get; set; }
         public virtual bool Retired { get; set; }
         public AccountType Typ { get; set; }
+        public decimal DailyProfit { get; set; }
+        public decimal DailyMaxGain { get; set; }
+        public bool StopTrading { get; set; }
+        public string StopReason { get; set; }
     }
 }

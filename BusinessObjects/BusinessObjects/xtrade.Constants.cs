@@ -40,5 +40,11 @@ namespace BusinessObjects
         public const string SETTINGS_PROPERTY_RUNTERMINALUSER = "XTrade.TerminalUser";
         public const string SETTINGS_PROPERTY_MTCOMMONFILES = "Metatrader.CommonFiles";
         public const string SETTINGS_PROPERTY_MQLSOURCEFOLDER = "MQL.Sources";
+        // Max Amount in % you may loose daily
+        public const string SETTINGS_PROPERTY_RISK_PER_DAY = "RISK.PERDAY";  // 0.02
+        // Mini daily gain that taken into account to do checks losses after gains
+        public const string SETTINGS_PROPERTY_RISK_DAILY_MIN_GAIN = "RISK.DAILY_MIN_GAIN";  // 0.0065
+        // Losses in % after gains today
+        public const string SETTINGS_PROPERY_RISK_DAILY_LOSS_AFTER_GAIN = "RISK.DAILY_LOSS_AFTER_GAIN";  // 0.3
     }
 }

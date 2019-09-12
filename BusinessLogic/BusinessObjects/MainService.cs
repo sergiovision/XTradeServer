@@ -20,6 +20,7 @@ using NHibernate.Type;
 using Quartz;
 using System.Collections.Concurrent;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BusinessLogic.BusinessObjects
 {
@@ -802,8 +803,33 @@ namespace BusinessLogic.BusinessObjects
                         result.Data = JsonConvert.SerializeObject(expertInfo);
                     }
                     break;
+                case EnumSignals.SIGNAL_TODAYS_STAT:
+                    {
+                        var ds = Container.Resolve<ITerminalEvents>();
+                        if (ds == null)
+                            break;
+                        result = CreateSignal(SignalFlags.Expert, signal.ObjectId, (EnumSignals)signal.Id);
+                        var stat = ds.GetTodayStat();
+                        result.Data = JsonConvert.SerializeObject(stat);
+                    }
+                    break;
+                case EnumSignals.SIGNAL_CHECK_TRADEALLOWED:
+                    {
+                        var ds = Container.Resolve<ITerminalEvents>();
+                        if ((ds == null) && (signal.Data == null))
+                            break;
+                        JArray arr = signal.Data as JArray;
+                        if ((arr == null) || (arr.Count <= 0))
+                            break;
+                        string data = arr.FirstOrDefault().ToString();
+                        Dictionary<string, string> paramsList = JsonConvert.DeserializeObject<Dictionary<string, string>>(data);
+                        signal.Data = paramsList["Balance"];
+                        ds.GetTodayStat();
+                        ds.CheckTradeAllowed(signal);
+                        result = signal;
+                    }
+                    break;
             }
-
             return result;
         }
 
@@ -811,7 +837,8 @@ namespace BusinessLogic.BusinessObjects
         {
             //if (expert.OrderTicketsToLoad == null)
             //    expert.OrderTicketsToLoad = new List<string>();
-            /*List<PositionInfo> positions = new List<PositionInfo>();
+            /*
+            List<PositionInfo> positions = new List<PositionInfo>();
             string filePath = GetAdviserFilePath(adviser);
             if (!File.Exists(filePath))
                 return false;
@@ -1291,11 +1318,13 @@ namespace BusinessLogic.BusinessObjects
             return null;
         }
 
-        public void UpdateBalance(int TerminalId, decimal Balance, decimal Equity)
+        public void UpdateBalance(int AccountNumber, decimal Balance, decimal Equity)
         {
-            data.UpdateBalance(TerminalId, Balance, Equity);
+            data.UpdateBalance(AccountNumber, Balance, Equity);
+            var ds = Container.Resolve<ITerminalEvents>();
+            if (ds != null)
+                ds.UpdateBalance(AccountNumber, Balance, Equity);
         }
-
 
         public bool UpdateAdviser(Adviser adviser)
         {

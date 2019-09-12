@@ -1,12 +1,11 @@
 //+------------------------------------------------------------------+
-//|                                                 TradeIndicators.mqh |
+//|                                              TradeIndicators.mqh |
 //|                        Copyright 2018, MetaQuotes Software Corp. |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
 #property copyright "Sergei Zhuravlev"
 #property link      "http://github.com/sergiovision"
 #property strict
-
 
 #include <XTrade\InputTypes.mqh>
 #include <XTrade\ITradeService.mqh>
@@ -82,9 +81,8 @@ public:
       // currentImportance = MinImportance;
       InNewsPeriod = false;
       timeNewsPeriodStarted = TimeCurrent();
-      //LastSignal.Handled = true; // first signal is handled!
+      // LastSignal.Handled = true; // first signal is handled!
       Symbol = Symbol();
-      
       if (GET(EnableRenko))
       {
          InitMedianRenko(methods.Period);
@@ -107,7 +105,7 @@ public:
          News.Init(methods.Period);
       }
       
-      //InitBands(methods.Period);
+      // InitBands(methods.Period);
       
       if (GET(FilterIndicator) == GET(SignalIndicator))
       {
@@ -217,9 +215,10 @@ public:
    }
    
       void RefreshIndicators()
-      {    
+      {
          if (!AllowAutoTrading)
              return;
+             
           if (GET(EnableRenko)) {
              if (medianRenko != NULL)
                medianRenko.Process();  
@@ -227,10 +226,11 @@ public:
              if (ssaTrend != NULL)
                ssaTrend.Process();  
           }
+          
 /*
           if (ATRCurrent.Handle() != INVALID_HANDLE)
             ATRCurrent.Refresh();
-
+   
           if (ATRD1.Handle() != INVALID_HANDLE)
             ATRD1.Refresh();
              

@@ -12,16 +12,74 @@
 #include <Indicators\Indicator.mqh>
 #include <XTrade\ITrade.mqh>
 
+
 class Order;
 
 class IUtils 
 {
 protected:
-   ITrade* trade; 
+   ITrade* trade;
+   
+   // RISK Management Params
+   double  dailyProfit; 
+   double  dailyMaxGain;  
 public:
+   IUtils()
+   {
+      dailyProfit = 0;
+      dailyMaxGain = 0;
+   }
    string Symbol;
    ENUM_TIMEFRAMES Period;
-   MqlTick tick; 
+   MqlTick tick;
+   
+   int DayOfWeek()
+   {
+      MqlDateTime tm;
+      TimeCurrent(tm);
+      return(tm.day_of_week);
+   }
+   
+   virtual bool CheckRiskManager() 
+   {       
+       Signal retSignal(SignalToServer, SIGNAL_CHECK_TRADEALLOWED, this.GetAccountNumer());
+       CJAVal obj;
+       obj["Balance"] = AccountInfoDouble(ACCOUNT_BALANCE);
+       obj["Equity"] = AccountInfoDouble(ACCOUNT_EQUITY);
+       obj["Account"] = (long)Utils.AccountNumber();
+       retSignal.obj["Data"].Add(obj);
+       Signal* newSignal = this.Service().SendSignal(&retSignal);
+       if (newSignal != NULL)
+       {
+           if (newSignal.Value > 0) {
+               if (newSignal.obj.FindKey("Data"))
+               {   
+                  Print(newSignal.obj["Data"].ToStr());
+               }
+               DELETE_PTR(newSignal);
+               return false;
+           }
+       }
+       DELETE_PTR(newSignal);
+       return true;
+   }
+
+   virtual double GetDailyProfit() 
+   {
+      return dailyProfit;
+   }
+   
+   virtual double GetMaxGain() 
+   {
+      return dailyMaxGain;
+   }
+   
+   virtual void SetDailyProfit(double profit)
+   {
+      dailyProfit = profit;
+      if (dailyProfit > 0)
+         dailyMaxGain = MathMax(dailyMaxGain, dailyProfit);
+   }
 
    virtual ITrade* Trade() { return trade; }
    virtual void SetTrade(ITrade* tr) { trade = tr; }
@@ -34,6 +92,10 @@ public:
 
    virtual datetime CurrentTimeOnTF() {return 0;}
    virtual bool SelectOrder(long ticket) {return false;}
+   virtual bool SelectOrderBySymbol(string sym) {
+       bool Sel = PositionSelect(sym);
+       return Sel;
+   }
    virtual bool SelectOrderByPos(int Positiong) {return false;}
    
    virtual int OrdersTotal() {return 0;}
@@ -58,24 +120,35 @@ public:
       return AccountInfoInteger(ACCOUNT_LOGIN); 
    }
    
-   virtual bool IsVisualMode() {return false;}
+   virtual bool IsVisualMode() {    return false;  }
+   
    virtual bool RefreshRates() {
       Info("RefreshRates not overriden!");
       return false;
    }
-   virtual double AccountBalance() {return 0;}
    
+   virtual double AccountBalance() {
+      return AccountInfoDouble(ACCOUNT_BALANCE);
+   }
+   
+   virtual double AccountEquity() {
+      return AccountInfoDouble(ACCOUNT_EQUITY);
+   }
+   
+  
    virtual void Info(string message)
    {
       Print(message);
       Service().Log(message);
    }
    
-   /*virtual void Info(long ticket, string message)
+   /*
+   virtual void Info(long ticket, string message)
    {
       Print(StringFormat(" order: %d: %s", ticket, message));
       Service().Log(ticket, message);
-   }*/
+   }
+   */
    
    virtual void Debug(string message)
    {

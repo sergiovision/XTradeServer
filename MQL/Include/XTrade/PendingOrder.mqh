@@ -7,7 +7,6 @@
 #property link      "http://github.com/sergiovision"
 #property strict
 
-
 #define ADD_MINUTES 68
 
 // default lifetime in minutes
@@ -18,6 +17,7 @@
 #include <XTrade\InputTypes.mqh>
 #include <ChartObjects\ChartObjectsShapes.mqh>
 #include <ChartObjects\ChartObjectsBmpControls.mqh>
+#include <ChartObjects\ChartObjectsTxtControls.mqh>
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -25,17 +25,19 @@
 class PendingOrder : public Order
 {
 protected:
-   double defaultPriceShift;
+   double                defaultPriceShift;
    CChartObjectRectangle rectReward;
    CChartObjectRectangle rectRisk;
-   CChartObjectBitmap OP_arrow;
-   datetime shiftTime;
+   CChartObjectBitmap    OP_arrow;
+   datetime              shiftTime;
+   CChartObjectLabel     textObj;
 public:
+   PendingOrder(int typ, int t, ushort nContracts);
    string idRewardRect;
    string idRiskRect;
    string idPending;
-   PendingOrder(int type, int t = -1);
    virtual void SetId(long t);
+   virtual void SetNContracts(ushort n);
    virtual void ShiftUp();
    virtual void ShiftDown();
    virtual void SetOPLine();
@@ -45,29 +47,29 @@ public:
    void InitLoaded();
    string OPLineName() const;
    virtual ~PendingOrder();
-   virtual void Delete();
+   virtual void Delete();   
 };
 
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-PendingOrder::PendingOrder(int typ, int t = -1)
+PendingOrder::PendingOrder(int typ, int t, ushort nContr)
    :Order(t)
 {
    slColor = clrBlue;
    tpColor = clrLightBlue;
    opColor = clrGray;
-   SL_LINE_WIDTH = 1; 
-   TP_LINE_WIDTH = 1;   
+   SL_LINE_WIDTH = 1;
+   TP_LINE_WIDTH = 1;
    symbol = Utils.Symbol;
-   ITrade* parent = Utils.Trade();
+   //ITrade* parent = Utils.Trade();
    magic = Utils.Service().MagicNumber();
    bDirty = false;
    type = typ;
    SetRole(PendingLimit);
-   lots = parent.CalculateLotSize(typ);
    double ask = Utils.Ask();
    double bid = Utils.Bid();
+   SetNContracts(nContr);
    this.expiration = TimeCurrent() + PENDING_ORDER_LIFETIME * 60;
    shiftTime = 5 * ADD_MINUTES * PeriodSeconds() / 60;
    if (type == OP_BUY)
@@ -87,7 +89,20 @@ PendingOrder::PendingOrder(int typ, int t = -1)
       openPrice = bid + defaultPriceShift;
       stopLoss = Utils.Trade().StopLoss(openPrice, type);
       takeProfit = Utils.Trade().TakeProfit(openPrice, type);
-   }   
+   }
+}
+
+void PendingOrder::SetNContracts(ushort n) 
+{
+   if ((n<=0) || (n>9))
+   {
+      Utils.Info("NContracts should be in range [1,9]!");
+      return;
+   }
+   this.numberContracts = n;
+   ITrade* parent = Utils.Trade();
+   lots = parent.ContractsToLots(type, numberContracts);
+   textObj.SetString(OBJPROP_TEXT, IntegerToString(this.numberContracts));
 }
 
 void PendingOrder::SetId(long t)
@@ -102,15 +117,21 @@ void PendingOrder::SetId(long t)
    idRiskRect = StringFormat("riskRect_%d", ticket);
 
    OP_arrow.Create(parent.ChartId(), idPending, parent.SubWindow(), AddTime, openPrice);   
+   textObj.Create(parent.ChartId(), idPending + "text", parent.SubWindow(), AddTime, openPrice); 
+   textObj.SetString(OBJPROP_TEXT, IntegerToString(this.numberContracts));
+   textObj.SetString(OBJPROP_FONT,"Arial Black");
+
    
    if (type == OP_BUY)
    {
+      textObj.SetInteger(OBJPROP_COLOR, clrGreen);
       OP_arrow.BmpFile("/Images/buy.bmp");
    }
    
    if (type == OP_SELL)
    {
       OP_arrow.BmpFile("/Images/sell.bmp");
+      textObj.SetInteger(OBJPROP_COLOR, clrRed);
    }
    
    rectUpdate(AddTime);
@@ -119,16 +140,15 @@ void PendingOrder::SetId(long t)
    OP_arrow.Selected(true);
 }
 
-
 string PendingOrder::OPLineName() const { return StringFormat("OPLINE_%s_%s:%d", TypeToString(), symbol, ticket); }
 
 void PendingOrder::doSelect(bool v) 
 { 
-   updateSL(true);
-   //setStopLoss(stopLoss);
+   // setStopLoss(stopLoss);
    updateTP(true);
+   updateSL(true);
    InitLoaded();
-   //setTakeProfit(takeProfit);
+   // setTakeProfit(takeProfit);
    OP_arrow.Selected(v);
 }   
 
@@ -187,6 +207,7 @@ void PendingOrder::ShiftUp()
    double shift = MathMax(GET(PendingOrderStep), Utils.Spread())*Point();
    openPrice += shift;
    OP_arrow.SetDouble(OBJPROP_PRICE, openPrice);
+   textObj.SetDouble(OBJPROP_PRICE, openPrice);
 
    stopLoss += shift;
    setStopLoss(stopLoss);
@@ -207,7 +228,8 @@ void PendingOrder::ShiftDown()
    double shift = MathMax(GET(PendingOrderStep), Utils.Spread())*Point();
    openPrice -=  shift;
    OP_arrow.SetDouble(OBJPROP_PRICE, openPrice);
-   
+   textObj.SetDouble(OBJPROP_PRICE, openPrice);
+
    stopLoss -= shift;
    setStopLoss(stopLoss);
    takeProfit -= shift;

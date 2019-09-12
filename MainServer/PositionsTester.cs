@@ -140,6 +140,18 @@ namespace XTrade.MainServer
             throw new NotImplementedException();
         }
 
+        public void UpdateBalance(int TerminalId, decimal Balance, decimal Equity)
+        {
+            throw new NotImplementedException();
+
+        }
+
+        public bool CheckTradeAllowed(SignalInfo signal)
+        {
+            throw new NotImplementedException();
+        }
+
+
         #endregion
     }
 }

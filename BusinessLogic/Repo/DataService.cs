@@ -191,11 +191,11 @@ namespace BusinessLogic.Repo
             return false;
         }
 
-        public void UpdateBalance(int TerminalId, decimal Balance, decimal Equity)
+        public void UpdateBalance(int AccountNumber, decimal Balance, decimal Equity)
         {
             try
             {
-                accounts.UpdateBalance(TerminalId, Balance, Equity);
+                accounts.UpdateBalance(AccountNumber, Balance, Equity);
             }
             catch (Exception e)
             {
