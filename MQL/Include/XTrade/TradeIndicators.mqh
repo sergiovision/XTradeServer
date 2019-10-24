@@ -82,7 +82,7 @@ public:
       InNewsPeriod = false;
       timeNewsPeriodStarted = TimeCurrent();
       // LastSignal.Handled = true; // first signal is handled!
-      Symbol = Symbol();
+      Symbol = _Symbol;
       if (GET(EnableRenko))
       {
          InitMedianRenko(methods.Period);

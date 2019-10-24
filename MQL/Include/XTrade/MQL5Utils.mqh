@@ -22,8 +22,8 @@ protected:
 public:
    MQL5Utils(short Port, string EA)
    {
-       Symbol = Symbol();
-       Period = (ENUM_TIMEFRAMES)Period();
+       Symbol = _Symbol;
+       Period = (ENUM_TIMEFRAMES)_Period;
 #ifdef THRIFT   
        service = new TradeConnector(Port, EA);
 #else 

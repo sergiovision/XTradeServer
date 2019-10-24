@@ -253,14 +253,14 @@ public:
             return ArrayPercentile(candles, rank);            
          } else {
          
-            return PercentileATR(Symbol(), tf, rank, atr_Period, shift); 
+            return PercentileATR(_Symbol, tf, rank, atr_Period, shift); 
          
          }
     }
     
     double BarsPerPeriod(ENUM_TIMEFRAMES tf)
     {
-       double period = PeriodSeconds(Period())/60;
+       double period = PeriodSeconds(_Period)/60;
        double acttf = PeriodSeconds(tf)/60;
        double barsPerTma = (acttf / period);
        return barsPerTma;
@@ -363,8 +363,8 @@ public:
       
       double CalculateTMA(ENUM_TIMEFRAMES tf, int tmaPeriod, int inx, const datetime& time[], const double& close[])
       {
-         ENUM_TIMEFRAMES curtf = (ENUM_TIMEFRAMES)Period();
-         double dblSum  = (tmaPeriod + 1) * iClose(Symbol(),tf,inx);
+         ENUM_TIMEFRAMES curtf = (ENUM_TIMEFRAMES)_Period;
+         double dblSum  = (tmaPeriod + 1) * iClose(_Symbol,tf,inx);
          double dblSumw = (tmaPeriod + 1);
          int jnx, knx;         
          for ( jnx = 1, knx = tmaPeriod; jnx <= tmaPeriod; jnx++, knx-- )
@@ -373,7 +373,7 @@ public:
             if (curtf == tf)
                closeValue = close[inx+jnx];
             else
-               closeValue = iClose(Symbol(),tf,inx+jnx);
+               closeValue = iClose(_Symbol,tf,inx+jnx);
             dblSum  += ( knx * closeValue );
             dblSumw += knx;      
             
@@ -383,18 +383,18 @@ public:
                if (curtf == tf)
                   timeValue = time[inx-jnx];
                else
-                  timeValue = iTime(Symbol(),tf,inx-jnx);
+                  timeValue = iTime(_Symbol,tf,inx-jnx);
       
                if (timeValue > time[0])
                {
-                  //Print (" TimeFrameValue ", TimeFrameValue , " inx ", inx," jnx ", jnx, " iTime(Symbol(),TimeFrameValue,inx-jnx) ", TimeToStr(iTime(Symbol(),TimeFrameValue,inx-jnx)), " Time[0] ", TimeToStr(Time[0])); 
+                  //Print (" TimeFrameValue ", TimeFrameValue , " inx ", inx," jnx ", jnx, " iTime(_Symbol,TimeFrameValue,inx-jnx) ", TimeToStr(iTime(_Symbol,TimeFrameValue,inx-jnx)), " Time[0] ", TimeToStr(Time[0])); 
                   continue;
                }
                double closeValue2 = 0;
                if (curtf == tf)
                   closeValue2 = close[inx-jnx];
                else
-                  closeValue2 = iClose(Symbol(),tf,inx-jnx);
+                  closeValue2 = iClose(_Symbol,tf,inx-jnx);
       
                dblSum += ( knx * closeValue2 );
                dblSumw += knx;
@@ -486,7 +486,7 @@ public:
    
    //--- if the line price is not set, move it to the current Bid price level
       if(!pricel)
-         pricel=SymbolInfoDouble(Symbol(),SYMBOL_BID);
+         pricel=SymbolInfoDouble(_Symbol,SYMBOL_BID);
    //--- reset the error value
       ResetLastError();
    //--- move a horizontal line
