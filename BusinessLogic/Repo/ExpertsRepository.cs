@@ -139,7 +139,11 @@ namespace BusinessLogic.Repo
                 result.Retired = cluster.Retired;
                 if (cluster.Typ != null)
                     result.Typ = cluster.Typ.Value;
-                if (cluster.Metasymbol != null) result.MetaSymbol = cluster.Metasymbol.Name;
+                if (cluster.Metasymbol != null)
+                {
+                    result.MetaSymbol = cluster.Metasymbol.Name;
+                    result.MetaSymbolId = cluster.Metasymbol.Id;
+                }
 
                 if (cluster.Adviser != null) result.MasterAdviserId = cluster.Adviser.Id;
 

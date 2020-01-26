@@ -54,6 +54,7 @@
     <Compile Include="BusinessObjects\CurrencyInfo.cs" />
     <Compile Include="BusinessObjects\DealInfo.cs" />
     <Compile Include="BusinessObjects\EnumSignals.cs" />
+    <Compile Include="BusinessObjects\DynamicProperties.cs" />
     <Compile Include="BusinessObjects\ExpertsCluster.cs" />
     <Compile Include="BusinessObjects\PositionInfo.cs" />
     <Compile Include="BusinessObjects\Rates.cs" />

@@ -1455,6 +1455,11 @@
       </code>
     </example>
         </member>
+        <member name="F:MySql.Data.MySqlClient.MySqlConnection._sshHandler">
+            <summary>
+            The used client to handle SSH connections.
+            </summary>
+        </member>
         <member name="E:MySql.Data.MySqlClient.MySqlConnection.InfoMessage">
             <summary>Occurs when MySQL returns warnings as a result of executing a command or query.</summary><remarks>
     </remarks>
@@ -1709,7 +1714,7 @@
         myConnection.Close();
         }
       </code>
-    </example>#if !NETSTANDARD1_6
+    </example>
         </member>
         <member name="P:MySql.Data.MySqlClient.MySqlConnection.ConnectionString">
             <summary>
@@ -10737,6 +10742,36 @@
             <param name="s">socket</param>
             <param name="time">keepalive timeout, in seconds</param>
         </member>
+        <member name="T:MySql.Data.Common.MySqlSshClientManager">
+            <summary>
+            Static class to manage SSH connections created with SSH .NET.
+            </summary>
+        </member>
+        <member name="P:MySql.Data.Common.MySqlSshClientManager.CurrentSshClient">
+            <summary>
+            Gets or sets the SSH client initialized when calling the <seealso cref="M:MySql.Data.Common.MySqlSshClientManager.SetupSshClient(System.String,System.String,System.String,System.String,System.String,System.UInt32,System.String,System.UInt32,System.Boolean)"/> method.
+            </summary>
+        </member>
+        <member name="F:MySql.Data.Common.MySqlSshClientManager._sshClientList">
+            <summary>
+            Stores a list of SSH clients having different connection settings.
+            </summary>
+        </member>
+        <member name="M:MySql.Data.Common.MySqlSshClientManager.SetupSshClient(System.String,System.String,System.String,System.String,System.String,System.UInt32,System.String,System.UInt32,System.Boolean)">
+            <summary>
+            Initializes an <see cref="T:Renci.SshNet.SshClient"/> instance if no SSH client with similar connection options has already been initialized.
+            </summary>
+            <param name="sshHostName">The SSH host name.</param>
+            <param name="sshUserName">The SSH user name.</param>
+            <param name="sshPassword">The SSH password.</param>
+            <param name="sshKeyFile">The SSH key file.</param>
+            <param name="sshPassphrase">The SSH pass phrase.</param>
+            <param name="sshPort">The SSH port.</param>
+            <param name="server">The local host name.</param>
+            <param name="port">The local port number.</param>
+            <param name="isXProtocol">Flag to indicate if the connection will be created for the classic or X Protocol.</param>
+            <returns></returns>
+        </member>
         <member name="M:MySql.Data.Common.MySqlTokenizer.ReadQuotedToken(System.Char)">
             <summary>
              Read a single quoted identifier from the stream
@@ -10765,6 +10800,21 @@
             Mark - or + signs that are unary ops as no output
             </summary>
             <param name="tok"></param>
+        </member>
+        <member name="T:MySql.Data.Common.Ssh">
+            <summary>
+            Wrapper class used for handling SSH connections.
+            </summary>
+        </member>
+        <member name="M:MySql.Data.Common.Ssh.StartClient">
+            <summary>
+            Starts the SSH client.
+            </summary>
+        </member>
+        <member name="M:MySql.Data.Common.Ssh.StopClient">
+            <summary>
+            Stops the SSH client.
+            </summary>
         </member>
         <member name="T:MySql.Data.Common.Ssl">
             <summary>
@@ -11170,6 +11220,11 @@
               Looks up a localized string similar to The requested value &apos;{0}&apos; is invalid for the given keyword &apos;{1}&apos;..
             </summary>
         </member>
+        <member name="P:MySql.Data.Resources.InvalidHostNameOrAddress">
+            <summary>
+              Looks up a localized string similar to The host name or IP address is invalid..
+            </summary>
+        </member>
         <member name="P:MySql.Data.Resources.InvalidMicrosecondValue">
             <summary>
               Looks up a localized string similar to Microsecond must be a value between 0 and 999999..
@@ -11288,7 +11343,7 @@
         </member>
         <member name="P:MySql.Data.Resources.LocalInfileDisabled">
             <summary>
-              Looks up a localized string similar to Server asked for stream in response to LOAD DATA LOCAL INFILE, but the functionality is disabled by client setting &apos;allowlocalinfile&apos; to &apos;false&apos;..
+              Looks up a localized string similar to Server asked for stream in response to LOAD DATA LOCAL INFILE, but the functionality is disabled by the client setting &apos;allowlocalinfile&apos; to &apos;false&apos;..
             </summary>
         </member>
         <member name="P:MySql.Data.Resources.MixedParameterNamingNotAllowed">
@@ -12734,6 +12789,11 @@
         <member name="T:MySqlX.Sessions.XInternalSession">
             <summary>
             Implementation class of InternalSession to manage connections using the Xprotocol type object.
+            </summary>
+        </member>
+        <member name="F:MySqlX.Sessions.XInternalSession._sshHandler">
+            <summary>
+            The used client to handle SSH connections.
             </summary>
         </member>
         <member name="T:MySqlX.XDevAPI.BaseSession">

@@ -67,7 +67,7 @@ INPUT_VARIABLE(BUYEnd, string)
 INPUT_VARIABLE(SELLBegin, string)
 INPUT_VARIABLE(SELLEnd, string)
 INPUT_VARIABLE(AllowVirtualStops, bool)
-INPUT_VARIABLE(Levels, string)
+// INPUT_VARIABLE(Levels, string)
 INPUT_VARIABLE(CoeffSL, double)
 INPUT_VARIABLE(CoeffTP, double)
 INPUT_VARIABLE(CoeffBE, double) // If BE == 0 then no BE. BE should be more than spread
@@ -121,7 +121,7 @@ STORE_STR_VARIABLE(BUYEnd, string, "BUYEnd", "")
 STORE_STR_VARIABLE(SELLBegin, string, "SELLBegin", "")
 STORE_STR_VARIABLE(SELLEnd, string, "SELLEnd", "")
 STORE_BOOL_VARIABLE(AllowVirtualStops, bool, "AllowVirtualStops", true)
-STORE_STR_VARIABLE(Levels, string, "Levels", "0")
+// STORE_STR_VARIABLE(Levels, string, "Levels", "")
 STORE_DBL_VARIABLE(CoeffSL, double, "CoeffSL", 3)
 STORE_DBL_VARIABLE(CoeffTP, double, "CoeffTP", 3.5)
 STORE_DBL_VARIABLE(CoeffBE, double, "CoeffBE", 1.5) // If BE == 0 then no BE. BE should be more than spread
@@ -155,4 +155,6 @@ END_EXPERT_PARAMS_CLASS
 int ThriftPORT = Constants::MQL_PORT;
 long actualSlippage = GET(Slippage);
 int MaxOpenedTrades = 4;
-//INPUT_VARIABLE(ThriftPORT, int, 2010)
+
+// INPUT_VARIABLE(ThriftPORT, int, 2010)
+

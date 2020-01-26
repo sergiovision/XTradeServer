@@ -148,7 +148,7 @@ namespace XTrade.MainServer
 
         public bool CheckTradeAllowed(SignalInfo signal)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
 

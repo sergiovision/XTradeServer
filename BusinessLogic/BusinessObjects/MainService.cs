@@ -829,6 +829,45 @@ namespace BusinessLogic.BusinessObjects
                         result = signal;
                     }
                     break;
+                case EnumSignals.SIGNAL_LEVELS4SYMBOL:
+                    {
+                        string symbol = signal.Data.ToString();
+                        string levelsString = Levels4Symbol(symbol);
+                        result = CreateSignal(SignalFlags.Expert, signal.ObjectId, (EnumSignals)signal.Id);
+                        result.Data = levelsString;
+                    }
+                    break;
+            }
+            return result;
+        }
+        private string Levels4Symbol(string strSymbol)
+        {
+            string result = "";
+            try
+            {
+                using (ISession Session = ConnectionHelper.CreateNewSession())
+                {
+                    DBSymbol dbSymbol = data.getSymbolByName(strSymbol);
+                    if (dbSymbol == null)
+                    {
+                        log.Log("ERROR. Unknown Symbol: " + strSymbol + " .");
+                        return "";
+                    }
+                    DBMetasymbol metaSymbol = dbSymbol.Metasymbol;
+                    DynamicProperties props = data.GetPropertiesInstance((short)EntitiesEnum.MetaSymbol, metaSymbol.Id);
+                    if (!String.IsNullOrEmpty(props.Vals) && props.Vals.Contains("Level"))
+                    {
+                        Dictionary<string, DynamicProperty> propsList = JsonConvert.DeserializeObject<Dictionary<string, DynamicProperty>>(props.Vals);
+                        if (propsList.Any())
+                        {
+                            return propsList["Levels"].value;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
             }
             return result;
         }

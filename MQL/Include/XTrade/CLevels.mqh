@@ -9,9 +9,8 @@
 
 class CLevels : public IndiBase
 {
-protected:
-   string levels_string;
 public:
+   string levels_string;
    CLevels();
    ~CLevels();
    virtual bool Init(ENUM_TIMEFRAMES timeframe);
@@ -37,7 +36,7 @@ bool CLevels::Init(ENUM_TIMEFRAMES timeframe)
    if (Initialized())
       return true;      
    m_period = timeframe;
-   levels_string = (string)GET(Levels);
+   //levels_string = (string)GET(Levels);
   
    SetSymbolPeriod(Utils.Symbol, m_period);
    MqlParam params[];   

@@ -23,24 +23,40 @@
 #endif
 
 input string levels_string = "";
+string actual_string = "";
 string levels_result[];
+ITradeService* Service = NULL;
 
 void OnInit()
 {
    string name = StringFormat("Levels (%s) - %s", Symbol(), levels_string);
-   Utils = CreateUtils((short)2010, name); 
+   Utils = CreateUtils((short)Constants::MQL_PORT, name); 
    if (Utils == NULL)
       Print("Failed create Utils!!!");
    Utils.SetIndiName(name);
+   Service = Utils.Service();
+
+   //if (StringLen(levels_string) <= 0) {
+   //   ObtainLevelsFromDB();
+   //}
+   //else
+      actual_string = levels_string;
    
    string sep = ",";              // A separator as a character 
    ushort u_sep;                  // The code of the separator characte
    u_sep = StringGetCharacter(sep, 0);
-   StringSplit(levels_string, u_sep, levels_result);
+   StringSplit(actual_string, u_sep, levels_result);
    
    IndicatorSetInteger(INDICATOR_DIGITS, _Digits);
    CreateLevels();
    Utils.Info(StringFormat("Inited %s", name));
+}
+
+void ObtainLevelsFromDB()
+{
+   string levels = Service.Levels4Symbol(Symbol());
+   if (StringLen(levels) > 0)
+      actual_string = levels;
 }
 
 //+------------------------------------------------------------------+
@@ -48,6 +64,7 @@ void OnInit()
 //+------------------------------------------------------------------+    
 void CreateLevels()
 {
+
    for (int i = 0; i < ArraySize(levels_result); i++)
    {
       double level_price = StringToDouble(levels_result[i]);
@@ -58,8 +75,7 @@ void CreateLevels()
       else 
          Utils.HLineMove(level_name, level_price, level_tooplip);
    }
-   ChartRedraw(0);  
-
+   ChartRedraw(0);
 }
 //+------------------------------------------------------------------+
 //| Custom indicator deinitialization function                       |
@@ -97,4 +113,4 @@ int OnCalculate(
 //----
    return(rates_total);
 }
-//+------------------------------------------------------------------+
+//+------------------------------------------------------------------

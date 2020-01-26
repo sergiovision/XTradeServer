@@ -17,8 +17,8 @@ namespace XTrade.MainServer
     [AllowAnonymous]
     public class MTController : BaseController
     {
-        [HttpPost]
-        [AcceptVerbs("POST")]
+        [HttpGet]
+        [AcceptVerbs("GET")]
         public HttpResponseMessage SendSignal(HttpRequestMessage request)
         {
             try
@@ -64,8 +64,8 @@ namespace XTrade.MainServer
             }
         }
 
-        [HttpPost]
-        [AcceptVerbs("POST")]
+        [HttpGet]
+        [AcceptVerbs("GET")]
         public HttpResponseMessage ListenSignal(HttpRequestMessage request)
         {
             try
@@ -84,7 +84,6 @@ namespace XTrade.MainServer
             {
                 log.Error(e.ToString());
             }
-
             return Request.CreateResponse(HttpStatusCode.InternalServerError);
         }
     }

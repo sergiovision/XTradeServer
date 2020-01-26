@@ -241,5 +241,7 @@ int IndicatorCounted(int prev_calculated)
 #define MODE_UPPER 1
 #define MODE_LOWER 2
 
+#define BUFF_SIZE 512
+
 
 #endif

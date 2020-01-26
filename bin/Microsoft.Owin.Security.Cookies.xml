@@ -117,6 +117,12 @@
             to script on the page.
             </summary>
         </member>
+        <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions.CookieSameSite">
+            <summary>
+            Determines if the browser should allow the cookie to be sent with requests initiated from other sites.
+            The default is 'null' to exclude the setting and let the browser choose the default behavior.
+            </summary>
+        </member>
         <member name="P:Microsoft.Owin.Security.Cookies.CookieAuthenticationOptions.CookieSecure">
             <summary>
             Determines if the cookie should only be transmitted on HTTPS request. The default is to limit the cookie

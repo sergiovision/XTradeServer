@@ -9,6 +9,21 @@ namespace UnitTests
     [TestClass]
     public class ContollersTests : BaseControllerTests
     {
+
+        [TestMethod]
+        public void TestProps()
+        {
+            string url = "/api/props/GetInstance?entityType=" + 4 + "&objId=" + 1;
+            var result = httpWebApi.Get(url);
+            Assert.IsNotNull(result.Result);
+            Assert.IsTrue(!string.IsNullOrEmpty(result.Result));
+            DynamicProperties prop = JsonConvert.DeserializeObject<DynamicProperties> (result.Result);
+            prop.Vals = "[{'type':'string', 'name':'Levels','value': '1'}]";
+            string jsonString = JsonConvert.SerializeObject(prop);
+            var result2 = httpWebApi.PutJson("/api/props/SaveInstance", jsonString);
+            Assert.IsTrue(string.IsNullOrEmpty(result2.Result));
+        }
+
         [TestMethod]
         public void TestJobs()
         {
@@ -68,7 +83,8 @@ namespace UnitTests
             Assert.IsTrue(string.IsNullOrEmpty(result2.Result));
         }
 
-        [TestMethod]
+        // News functionality disabled
+        /* [TestMethod]
         public void TestNews()
         {
             DateTime now = DateTime.UtcNow;
@@ -79,5 +95,6 @@ namespace UnitTests
             List<NewsCalendarEvent> list2 = JsonConvert.DeserializeObject<List<NewsCalendarEvent>>(result2.Result);
             Assert.IsTrue(list2.Count >= 0);
         }
+        */
     }
 }

@@ -160,6 +160,12 @@ public:
       
    }
    
+   virtual string Levels4Symbol(string sym) 
+   {
+      string result = "";
+      return result;
+   }
+   
    //void NotifyUpdatePositions()
    //{ 
    //   if (Utils.IsTesting())

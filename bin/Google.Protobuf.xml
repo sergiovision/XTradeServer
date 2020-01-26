@@ -31,7 +31,7 @@
         </member>
         <member name="T:Google.Protobuf.ByteString.Unsafe">
             <summary>
-            Unsafe operations that can cause IO Failure and/or other catestrophic side-effects.
+            Unsafe operations that can cause IO Failure and/or other catastrophic side-effects.
             </summary>
         </member>
         <member name="M:Google.Protobuf.ByteString.Unsafe.FromBytes(System.Byte[])">
@@ -64,6 +64,12 @@
         <member name="P:Google.Protobuf.ByteString.IsEmpty">
             <summary>
             Returns <c>true</c> if this byte string is empty, <c>false</c> otherwise.
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.ByteString.Span">
+            <summary>
+            Provides read-only access to the data of this <see cref="T:Google.Protobuf.ByteString"/>.
+            No data is copied so this is the most efficient way of accessing.
             </summary>
         </member>
         <member name="M:Google.Protobuf.ByteString.ToByteArray">
@@ -115,6 +121,13 @@
         <member name="M:Google.Protobuf.ByteString.CopyFrom(System.Byte[],System.Int32,System.Int32)">
             <summary>
             Constructs a <see cref="T:Google.Protobuf.ByteString" /> from a portion of a byte array.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.ByteString.CopyFrom(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Constructs a <see cref="T:Google.Protobuf.ByteString" /> from a read only span. The contents
+            are copied, so further modifications to the span will not
+            be reflected in the returned <see cref="T:Google.Protobuf.ByteString" />.
             </summary>
         </member>
         <member name="M:Google.Protobuf.ByteString.CopyFrom(System.String,System.Text.Encoding)">
@@ -1493,6 +1506,12 @@
             <param name="output">The output stream to write to.</param>
             <param name="codec">The codec to use when encoding each value.</param>
         </member>
+        <member name="P:Google.Protobuf.Collections.RepeatedField`1.Capacity">
+            <summary>
+            Gets and sets the capacity of the RepeatedField's internal array.  WHen set, the internal array is reallocated to the given capacity.
+            <exception cref="T:System.ArgumentOutOfRangeException">The new value is less than Count -or- when Count is less than 0.</exception>
+            </summary>
+        </member>
         <member name="M:Google.Protobuf.Collections.RepeatedField`1.Add(`0)">
             <summary>
             Adds the specified item to the collection.
@@ -1804,7 +1823,7 @@
             Gets the value of the specified repeated extension or null if it doesn't exist in this set
             </summary>
         </member>
-        <member name="M:Google.Protobuf.ExtensionSet.GetOrRegister``2(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.RepeatedExtension{``0,``1})">
+        <member name="M:Google.Protobuf.ExtensionSet.GetOrInitialize``2(Google.Protobuf.ExtensionSet{``0}@,Google.Protobuf.RepeatedExtension{``0,``1})">
             <summary>
             Gets the value of the specified repeated extension, registering it if it doesn't exist
             </summary>
@@ -2402,7 +2421,8 @@
         </member>
         <member name="T:Google.Protobuf.IExtendableMessage`1">
             <summary>
-            Generic interface for a Protocol Buffers message containing one or more extensions, where the type parameter is expected to be the same type as the implementation class
+            Generic interface for a Protocol Buffers message containing one or more extensions, where the type parameter is expected to be the same type as the implementation class.
+            This interface is experiemental and is subject to change.
             </summary>
         </member>
         <member name="M:Google.Protobuf.IExtendableMessage`1.GetExtension``1(Google.Protobuf.Extension{`0,``0})">
@@ -2413,12 +2433,12 @@
         <member name="M:Google.Protobuf.IExtendableMessage`1.GetExtension``1(Google.Protobuf.RepeatedExtension{`0,``0})">
             <summary>
             Gets the value of the specified repeated extension or null if the extension isn't registered in this set.
-            For a version of this method that never returns null, use <see cref="M:Google.Protobuf.IExtendableMessage`1.GetOrRegisterExtension``1(Google.Protobuf.RepeatedExtension{`0,``0})"/>
+            For a version of this method that never returns null, use <see cref="M:Google.Protobuf.IExtendableMessage`1.GetOrInitializeExtension``1(Google.Protobuf.RepeatedExtension{`0,``0})"/>
             </summary>
         </member>
-        <member name="M:Google.Protobuf.IExtendableMessage`1.GetOrRegisterExtension``1(Google.Protobuf.RepeatedExtension{`0,``0})">
+        <member name="M:Google.Protobuf.IExtendableMessage`1.GetOrInitializeExtension``1(Google.Protobuf.RepeatedExtension{`0,``0})">
             <summary>
-            Gets the value of the specified repeated extension, registering it if it isn't
+            Gets the value of the specified repeated extension, registering it if it hasn't already been registered.
             </summary>
         </member>
         <member name="M:Google.Protobuf.IExtendableMessage`1.SetExtension``1(Google.Protobuf.Extension{`0,``0},``0)">
@@ -5582,6 +5602,16 @@
             The (possibly empty) set of custom options for this enum.
             </summary>
         </member>
+        <member name="M:Google.Protobuf.Reflection.EnumDescriptor.GetOption``1(Google.Protobuf.Extension{Google.Protobuf.Reflection.EnumOptions,``0})">
+            <summary>
+            Gets a single value enum option for this descriptor
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.EnumDescriptor.GetOption``1(Google.Protobuf.RepeatedExtension{Google.Protobuf.Reflection.EnumOptions,``0})">
+            <summary>
+            Gets a repeated value enum option for this descriptor
+            </summary>
+        </member>
         <member name="T:Google.Protobuf.Reflection.EnumValueDescriptor">
             <summary>
             Descriptor for a single enum value within an enum in a .proto file.
@@ -5605,6 +5635,16 @@
         <member name="P:Google.Protobuf.Reflection.EnumValueDescriptor.CustomOptions">
             <summary>
             The (possibly empty) set of custom options for this enum value.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.EnumValueDescriptor.GetOption``1(Google.Protobuf.Extension{Google.Protobuf.Reflection.EnumValueOptions,``0})">
+            <summary>
+            Gets a single value enum value option for this descriptor
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.EnumValueDescriptor.GetOption``1(Google.Protobuf.RepeatedExtension{Google.Protobuf.Reflection.EnumValueOptions,``0})">
+            <summary>
+            Gets a repeated value enum value option for this descriptor
             </summary>
         </member>
         <member name="T:Google.Protobuf.Reflection.ExtensionCollection">
@@ -5654,6 +5694,11 @@
             <summary>
             The effective JSON name for this field. This is usually the lower-camel-cased form of the field name,
             but can be overridden using the <c>json_name</c> option in the .proto file.
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FieldDescriptor.Extension">
+            <summary>
+            An extension identifier for this field, or <c>null</c> if this field isn't an extension.
             </summary>
         </member>
         <member name="P:Google.Protobuf.Reflection.FieldDescriptor.Name">
@@ -5711,6 +5756,11 @@
             Returns <c>true</c> if this field is a packed, repeated field; <c>false</c> otherwise.
             </summary>
         </member>
+        <member name="P:Google.Protobuf.Reflection.FieldDescriptor.IsExtension">
+            <summary>
+            Returns <c>true</c> if this field extends another message type; <c>false</c> otherwise.
+            </summary>
+        </member>
         <member name="P:Google.Protobuf.Reflection.FieldDescriptor.FieldType">
             <summary>
             Returns the type of the field.
@@ -5747,6 +5797,16 @@
         <member name="P:Google.Protobuf.Reflection.FieldDescriptor.CustomOptions">
             <summary>
             The (possibly empty) set of custom options for this field.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FieldDescriptor.GetOption``1(Google.Protobuf.Extension{Google.Protobuf.Reflection.FieldOptions,``0})">
+            <summary>
+            Gets a single value field option for this descriptor
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FieldDescriptor.GetOption``1(Google.Protobuf.RepeatedExtension{Google.Protobuf.Reflection.FieldOptions,``0})">
+            <summary>
+            Gets a repeated value field option for this descriptor
             </summary>
         </member>
         <member name="M:Google.Protobuf.Reflection.FieldDescriptor.CrossLink">
@@ -5849,6 +5909,26 @@
             The field type used for enum fields.
             </summary>
         </member>
+        <member name="T:Google.Protobuf.Reflection.Syntax">
+            <summary>
+            The syntax of a .proto file
+            </summary>
+        </member>
+        <member name="F:Google.Protobuf.Reflection.Syntax.Proto2">
+            <summary>
+            Proto2 syntax
+            </summary>
+        </member>
+        <member name="F:Google.Protobuf.Reflection.Syntax.Proto3">
+            <summary>
+            Proto3 syntax
+            </summary>
+        </member>
+        <member name="F:Google.Protobuf.Reflection.Syntax.Unknown">
+            <summary>
+            An unknown declared syntax
+            </summary>
+        </member>
         <member name="T:Google.Protobuf.Reflection.FileDescriptor">
             <summary>
             Describes a .proto file, including everything defined within.
@@ -5871,6 +5951,11 @@
             <value>
             The descriptor in its protocol message representation.
             </value>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FileDescriptor.Syntax">
+            <summary>
+            The syntax of the file
+            </summary>
         </member>
         <member name="P:Google.Protobuf.Reflection.FileDescriptor.Name">
             <value>
@@ -5901,6 +5986,9 @@
         <member name="P:Google.Protobuf.Reflection.FileDescriptor.Extensions">
             <summary>
             Unmodifiable list of top-level extensions declared in this file.
+            Note that some extensions may be incomplete (FieldDescriptor.Extension may be null)
+            if this descriptor was generated using a version of protoc that did not fully
+            support extensions in C#.
             </summary>
         </member>
         <member name="P:Google.Protobuf.Reflection.FileDescriptor.Dependencies">
@@ -6005,6 +6093,16 @@
         <member name="P:Google.Protobuf.Reflection.FileDescriptor.CustomOptions">
             <summary>
             The (possibly empty) set of custom options for this file.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptor.GetOption``1(Google.Protobuf.Extension{Google.Protobuf.Reflection.FileOptions,``0})">
+            <summary>
+            Gets a single value file option for this descriptor
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptor.GetOption``1(Google.Protobuf.RepeatedExtension{Google.Protobuf.Reflection.FileOptions,``0})">
+            <summary>
+            Gets a repeated value file option for this descriptor
             </summary>
         </member>
         <member name="M:Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization``1">
@@ -6126,16 +6224,16 @@
             this clears the list.)
             </summary>
         </member>
-        <member name="M:Google.Protobuf.Reflection.IFieldAccessor.HasValue(Google.Protobuf.IMessage)">
-            <summary>
-            Indicates whether the field in the specified message is set. For proto3 fields, this throws an <see cref="T:System.InvalidOperationException"/>
-            </summary>
-        </member>
         <member name="M:Google.Protobuf.Reflection.IFieldAccessor.GetValue(Google.Protobuf.IMessage)">
             <summary>
             Fetches the field value. For repeated values, this will be an
             <see cref="T:System.Collections.IList"/> implementation. For map values, this will be an
             <see cref="T:System.Collections.IDictionary"/> implementation.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.IFieldAccessor.HasValue(Google.Protobuf.IMessage)">
+            <summary>
+            Indicates whether the field in the specified message is set. For proto3 fields, this throws an <see cref="T:System.InvalidOperationException"/>
             </summary>
         </member>
         <member name="M:Google.Protobuf.Reflection.IFieldAccessor.SetValue(Google.Protobuf.IMessage,System.Object)">
@@ -6228,7 +6326,10 @@
         </member>
         <member name="P:Google.Protobuf.Reflection.MessageDescriptor.Extensions">
             <summary>
-            An unmodifiable list of extensions defined in this message's scrope
+            An unmodifiable list of extensions defined in this message's scope.
+            Note that some extensions may be incomplete (FieldDescriptor.Extension may be null)
+            if they are declared in a file generated using a version of protoc that did not fully
+            support extensions in C#.
             </summary>
         </member>
         <member name="P:Google.Protobuf.Reflection.MessageDescriptor.NestedTypes">
@@ -6271,6 +6372,16 @@
         <member name="P:Google.Protobuf.Reflection.MessageDescriptor.CustomOptions">
             <summary>
             The (possibly empty) set of custom options for this message.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.MessageDescriptor.GetOption``1(Google.Protobuf.Extension{Google.Protobuf.Reflection.MessageOptions,``0})">
+            <summary>
+            Gets a single value message option for this descriptor
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.MessageDescriptor.GetOption``1(Google.Protobuf.RepeatedExtension{Google.Protobuf.Reflection.MessageOptions,``0})">
+            <summary>
+            Gets a repeated value message option for this descriptor
             </summary>
         </member>
         <member name="M:Google.Protobuf.Reflection.MessageDescriptor.CrossLink">
@@ -6358,6 +6469,16 @@
             The (possibly empty) set of custom options for this method.
             </summary>
         </member>
+        <member name="M:Google.Protobuf.Reflection.MethodDescriptor.GetOption``1(Google.Protobuf.Extension{Google.Protobuf.Reflection.MethodOptions,``0})">
+            <summary>
+            Gets a single value method option for this descriptor
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.MethodDescriptor.GetOption``1(Google.Protobuf.RepeatedExtension{Google.Protobuf.Reflection.MethodOptions,``0})">
+            <summary>
+            Gets a repeated value method option for this descriptor
+            </summary>
+        </member>
         <member name="P:Google.Protobuf.Reflection.MethodDescriptor.Name">
             <summary>
             The brief name of the descriptor's target.
@@ -6435,6 +6556,16 @@
         <member name="P:Google.Protobuf.Reflection.OneofDescriptor.CustomOptions">
             <summary>
             The (possibly empty) set of custom options for this oneof.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.OneofDescriptor.GetOption``1(Google.Protobuf.Extension{Google.Protobuf.Reflection.OneofOptions,``0})">
+            <summary>
+            Gets a single value oneof option for this descriptor
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.OneofDescriptor.GetOption``1(Google.Protobuf.RepeatedExtension{Google.Protobuf.Reflection.OneofOptions,``0})">
+            <summary>
+            Gets a repeated value oneof option for this descriptor
             </summary>
         </member>
         <member name="T:Google.Protobuf.Reflection.OriginalNameAttribute">
@@ -6559,6 +6690,16 @@
         <member name="P:Google.Protobuf.Reflection.ServiceDescriptor.CustomOptions">
             <summary>
             The (possibly empty) set of custom options for this service.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.ServiceDescriptor.GetOption``1(Google.Protobuf.Extension{Google.Protobuf.Reflection.ServiceOptions,``0})">
+            <summary>
+            Gets a single value service option for this descriptor
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.ServiceDescriptor.GetOption``1(Google.Protobuf.RepeatedExtension{Google.Protobuf.Reflection.ServiceOptions,``0})">
+            <summary>
+            Gets a repeated value service option for this descriptor
             </summary>
         </member>
         <member name="T:Google.Protobuf.Reflection.SingleFieldAccessor">
@@ -7287,7 +7428,7 @@
                  if (duration.seconds &lt; 0 &amp;&amp; duration.nanos > 0) {
                    duration.seconds += 1;
                    duration.nanos -= 1000000000;
-                 } else if (durations.seconds > 0 &amp;&amp; duration.nanos &lt; 0) {
+                 } else if (duration.seconds > 0 &amp;&amp; duration.nanos &lt; 0) {
                    duration.seconds -= 1;
                    duration.nanos += 1000000000;
                  }
@@ -7672,7 +7813,7 @@
             
              The implementation of any API method which has a FieldMask type field in the
              request should verify the included field paths, and return an
-             `INVALID_ARGUMENT` error if any path is duplicated or unmappable.
+             `INVALID_ARGUMENT` error if any path is unmappable.
              </summary>
         </member>
         <member name="F:Google.Protobuf.WellKnownTypes.FieldMask.PathsFieldNumber">

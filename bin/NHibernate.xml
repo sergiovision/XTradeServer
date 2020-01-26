@@ -3649,11 +3649,11 @@
         </member>
         <member name="M:NHibernate.Connection.ConnectionProvider.GetNamedConnectionString(System.Collections.Generic.IDictionary{System.String,System.String})">
             <summary>
-            Get the .NET 2.0 named connection string 
+             Get a named connection string, if configured.
             </summary>
             <exception cref="T:NHibernate.HibernateException">
             Thrown when a <see cref="F:NHibernate.Cfg.Environment.ConnectionStringName"/> was found 
-            in the <c>settings</c> parameter but could not be found in the app.config
+            in the <c>settings</c> parameter but could not be found in the app.config.
             </exception>
         </member>
         <member name="M:NHibernate.Connection.ConnectionProvider.ConfigureDriver(System.Collections.Generic.IDictionary{System.String,System.String})">
@@ -10693,6 +10693,12 @@
             Author: <a href="mailto:ib@stalker.ro"> Ioan Bizau </a>
             </p>
             </remarks>
+        </member>
+        <member name="F:NHibernate.Dialect.SQLiteDialect._binaryGuid">
+            <summary>
+            The effective value of the BinaryGuid connection string parameter.
+            The default value in SQLite is true.
+            </summary>
         </member>
         <member name="M:NHibernate.Dialect.SQLiteDialect.#ctor">
             <summary>
@@ -30274,6 +30280,11 @@
             Read any collection elements contained in a single row of the result set
             </summary>
         </member>
+        <member name="M:NHibernate.Loader.Loader.StopLoadingCollections(NHibernate.Engine.ISessionImplementor,System.Data.Common.DbDataReader)">
+            <summary>
+            Stops further collection population without actual collection initialization.
+            </summary>
+        </member>
         <member name="M:NHibernate.Loader.Loader.ResolveResultTransformer(NHibernate.Transform.IResultTransformer)">
             <summary>
             Determine the actual ResultTransformer that will be used to transform query results.
@@ -30696,7 +30707,7 @@
             For a component, add to a list of associations to be fetched by outerjoin
             </summary>
         </member>
-        <member name="M:NHibernate.Loader.JoinWalker.WalkCompositeElementTree(NHibernate.Type.IAbstractComponentType,System.String[],NHibernate.Persister.Collection.IQueryableCollection,System.String,System.String,System.String,System.Int32)">
+        <member name="M:NHibernate.Loader.JoinWalker.WalkCompositeElementTree(NHibernate.Type.IAbstractComponentType,System.String[],NHibernate.Persister.Collection.IQueryableCollection,System.String,System.String,System.Int32)">
             <summary>
             For a composite element, add to a list of associations to be fetched by outerjoin
             </summary>
@@ -31345,6 +31356,9 @@
         <member name="M:NHibernate.Multi.QueryBatchItemBase`1.ProcessResultsSetAsync(System.Data.Common.DbDataReader,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:NHibernate.Multi.QueryBatchItemBase`1.ProcessResultsAsync(System.Threading.CancellationToken)">
+            <inheritdoc cref="M:NHibernate.Multi.IQueryBatchItem.ProcessResults" />
+        </member>
         <member name="M:NHibernate.Multi.QueryBatchItemBase`1.ExecuteNonBatchedAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
@@ -31428,7 +31442,7 @@
             <inheritdoc />
         </member>
         <member name="M:NHibernate.Multi.QueryBatchItemBase`1.ProcessResults">
-            <inheritdoc />
+            <inheritdoc cref="M:NHibernate.Multi.IQueryBatchItem.ProcessResults" />
         </member>
         <member name="M:NHibernate.Multi.QueryBatchItemBase`1.ExecuteNonBatched">
             <inheritdoc />
@@ -36410,7 +36424,7 @@
             <summary>
             Handle the transaction completion. Notify <see cref="T:NHibernate.AdoNet.ConnectionManager"/> of the end of the
             transaction. Notify end of transaction to the session and to <see cref="P:NHibernate.AdoNet.ConnectionManager.DependentSessions"/>
-            if any. Close sessions requiring it then cleanup transaction contextes and then <see cref="M:NHibernate.Transaction.AdoNetWithSystemTransactionFactory.SystemTransactionContext.Unlock"/> blocked
+            if any. Close sessions requiring it then cleanup transaction contexts and then <see cref="M:NHibernate.Transaction.AdoNetWithSystemTransactionFactory.SystemTransactionContext.Unlock"/> blocked
             threads.
             </summary>
             <param name="isCommitted"><see langword="true"/> if the transaction is committed, <see langword="false"/>
@@ -42177,6 +42191,18 @@
             </para>
             </summary>
         </member>
+        <member name="F:NHibernate.Cfg.Environment.SqliteBinaryGuid">
+            <summary>
+            <para>
+            SQLite can store GUIDs in binary or text form, controlled by the BinaryGuid
+            connection string parameter (default is 'true'). The BinaryGuid setting will affect
+            how to cast GUID to string in SQL. NHibernate will attempt to detect this
+            setting automatically from the connection string, but if the connection
+            or connection string is being handled by the application instead of by NHibernate,
+            you can use the 'sqlite.binaryguid' NHibernate setting to override the behavior.
+            </para>
+            </summary>
+        </member>
         <member name="F:NHibernate.Cfg.Environment.TrackSessionId">
             <summary>
             <para>Set whether tracking the session id or not. When <see langword="true"/>, each session 
@@ -42245,6 +42271,22 @@
             manually. This should only be done before a configuration object
             is created, otherwise the change may not take effect.
             </remarks>
+        </member>
+        <member name="M:NHibernate.Cfg.Environment.GetNamedConnectionString(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Get a named connection string, if configured.
+            </summary>
+            <exception cref="T:NHibernate.HibernateException">
+            Thrown when a <see cref="F:NHibernate.Cfg.Environment.ConnectionStringName"/> was found 
+            in the <c>settings</c> parameter but could not be found in the app.config.
+            </exception>
+        </member>
+        <member name="M:NHibernate.Cfg.Environment.GetConfiguredConnectionString(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Get the configured connection string, from <see cref="F:NHibernate.Cfg.Environment.ConnectionString"/> if that
+            is set, otherwise from <see cref="F:NHibernate.Cfg.Environment.ConnectionStringName"/>, or null if that isn't
+            set either.
+            </summary>
         </member>
         <member name="T:NHibernate.Cfg.ExtendsQueueEntry">
             <summary> 
@@ -54907,6 +54949,12 @@
         </member>
         <member name="T:NHibernate.Util.PropertiesHelper">
             <summary></summary>
+        </member>
+        <member name="T:NHibernate.Util.ReferenceComparer`1">
+            <summary>
+            Compares objects by reference equality
+            </summary>
+            <typeparam name="T"></typeparam>
         </member>
         <member name="T:NHibernate.Util.ReflectHelper">
             <summary>

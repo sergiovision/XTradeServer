@@ -2,7 +2,6 @@
 #property link      "http://github.com/sergiovision"
 #property strict
 
-#include <XTrade\SettingsFile.mqh>
 #include <XTrade\IUtils.mqh>
 #include <XTrade\Orders.mqh>
 

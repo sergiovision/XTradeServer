@@ -206,6 +206,11 @@ public:
    bool InitLevels(ENUM_TIMEFRAMES tf)
    {
       levels = new CLevels();
+      
+      levels.levels_string = Utils.Service().Levels4Symbol(this.Symbol);
+      //if (StringLen(levels.levels_string) <= 0)
+      // levels.levels_string = (string)GET(Levels);
+
       bool res = levels.Init(tf);
       if (res)
       {
