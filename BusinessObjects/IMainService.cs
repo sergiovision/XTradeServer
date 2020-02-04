@@ -46,7 +46,7 @@ namespace BusinessObjects
 
         ExpertInfo InitTerminal(ExpertInfo expert);
 
-        void SaveExpert(ExpertInfo expert);
+        // void SaveExpert(ExpertInfo expert);
 
         void DeInitExpert(ExpertInfo expert);
 

@@ -96,15 +96,14 @@ INPUT_VARIABLE(TrailingIndent, long)
 // INPUT_VARIABLE(TrailInLoss, bool) // If true - stoploss should be defined!!!
 
 // News Params
-INPUT_VARIABLE(EnableNews, bool)
-INPUT_VARIABLE(RaiseSignalBeforeEventMinutes, long)
-INPUT_VARIABLE(NewsPeriodMinutes, long)
-INPUT_VARIABLE(MinImportance, long)
+//INPUT_VARIABLE(EnableNews, bool)
+//INPUT_VARIABLE(RaiseSignalBeforeEventMinutes, long)
+//INPUT_VARIABLE(NewsPeriodMinutes, long)
+//INPUT_VARIABLE(MinImportance, long)
 //--------------------------------------------------------------------
 INPUT_VARIABLE(Slippage, long)
 
 EXPERT_CLASS_STORE
-//STORE_INT_VARIABLE(ClusterMode, long, "ClusterMode", (long)LocalMode)
 STORE_DBL_VARIABLE(LotsBUY, double, "LotsBUY", 0.02)
 STORE_DBL_VARIABLE(LotsSELL, double, "LotsSELL", 0.02)
 STORE_INT_VARIABLE(BrickSize, long, "BrickSize", 100)
@@ -121,7 +120,6 @@ STORE_STR_VARIABLE(BUYEnd, string, "BUYEnd", "")
 STORE_STR_VARIABLE(SELLBegin, string, "SELLBegin", "")
 STORE_STR_VARIABLE(SELLEnd, string, "SELLEnd", "")
 STORE_BOOL_VARIABLE(AllowVirtualStops, bool, "AllowVirtualStops", true)
-// STORE_STR_VARIABLE(Levels, string, "Levels", "")
 STORE_DBL_VARIABLE(CoeffSL, double, "CoeffSL", 3)
 STORE_DBL_VARIABLE(CoeffTP, double, "CoeffTP", 3.5)
 STORE_DBL_VARIABLE(CoeffBE, double, "CoeffBE", 1.5) // If BE == 0 then no BE. BE should be more than spread
@@ -143,10 +141,10 @@ STORE_DBL_VARIABLE(BandsDeviation, double, "BandsDeviation", 1.6)
 STORE_INT_VARIABLE(TrailingType, long, "TrailingType", (long)TrailingStairs)
 STORE_INT_VARIABLE(TrailingIndent, long, "TrailingIndent", 0)
 // STORE_BOOL_VARIABLE(TrailInLoss, bool, "TrailInLoss", false) // If true - stoploss should be defined!!!
-STORE_BOOL_VARIABLE(EnableNews, bool, "EnableNews", false)
-STORE_INT_VARIABLE(RaiseSignalBeforeEventMinutes, long, "RaiseSignalBeforeEventMinutes", 65)
-STORE_INT_VARIABLE(NewsPeriodMinutes, long, "NewsPeriodMinutes", 200)
-STORE_INT_VARIABLE(MinImportance, long, "MinImportance", 1)
+//STORE_BOOL_VARIABLE(EnableNews, bool, "EnableNews", false)
+//STORE_INT_VARIABLE(RaiseSignalBeforeEventMinutes, long, "RaiseSignalBeforeEventMinutes", 65)
+//STORE_INT_VARIABLE(NewsPeriodMinutes, long, "NewsPeriodMinutes", 200)
+//STORE_INT_VARIABLE(MinImportance, long, "MinImportance", 1)
 STORE_INT_VARIABLE(Slippage, long,  "Slippage", 10)
 
 EXPERT_CLASS_STORE_END

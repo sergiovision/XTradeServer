@@ -24,6 +24,7 @@ namespace BusinessObjects
         public bool Running { get; set; }
         public DateTime LastUpdate { get; set; }
         public int CloseReason { get; set; }
-        public string State { get; set; }
+
+        // public string State { get; set; }
     }
 }

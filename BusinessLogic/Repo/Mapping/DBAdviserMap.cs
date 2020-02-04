@@ -20,7 +20,7 @@ namespace BusinessLogic.Repo
             Map(x => x.Timeframe).Column("Timeframe");
             Map(x => x.Running).Column("Running");
             Map(x => x.Disabled).Column("Disabled");
-            Map(x => x.State).Column("State");
+            // Map(x => x.State).Column("State");
             Map(x => x.Lastupdate).Column("Lastupdate");
             Map(x => x.Closereason).Column("Closereason");
         }

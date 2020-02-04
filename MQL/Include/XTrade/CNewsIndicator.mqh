@@ -40,7 +40,7 @@ bool CNewsIndicator::Init(ENUM_TIMEFRAMES timeframe)
    SetSymbolPeriod(Utils.Symbol, timeframe);
    //signals.NewsMinsRemained = INT_MIN;
    
-   MqlParam params[6];
+  /* MqlParam params[6];
    params[0].type = TYPE_STRING;
    params[0].string_value = m_name;
    params[1].type = TYPE_INT;
@@ -59,7 +59,7 @@ bool CNewsIndicator::Init(ENUM_TIMEFRAMES timeframe)
    {
       AddToChart(Utils.Trade().ChartId(), Utils.Trade().IndiSubWindow());
       FullRelease(!Utils.IsTesting());
-   }
+   }*/
    return m_bInited;
 }
 

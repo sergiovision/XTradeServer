@@ -147,7 +147,16 @@ namespace BusinessLogic.BusinessObjects
             InitScheduler(true);
 
             Initialized = true;
+
+            // doMigration();
         }
+
+        /*protected void doMigration()
+        {
+            log.Info("Start Migration: Adviser");
+            data.MigrateAdvisers();
+            log.Info("End Migration: Adviser");
+        }*/
 
         public bool InitScheduler(bool serverMode /*unused*/)
         {
@@ -716,10 +725,23 @@ namespace BusinessLogic.BusinessObjects
 
                     adviser.Running = true;
                     adviser.Lastupdate = DateTime.UtcNow;
-                    if (!string.IsNullOrEmpty(adviser.State))
-                        expert.Data = adviser.State;
                     if (adviser.Id <= 0)
                         data.SaveInsertAdviser(Session, adviser);
+
+                    var dynProps = this.data.GetPropertiesInstance((short)EntitiesEnum.Adviser, adviser.Id);
+                    if ((dynProps == null) || (dynProps.Vals == null) || (dynProps.Vals.Length == 0))
+                    {
+                        expert.Data = "";
+                    }
+                    else
+                    {
+                        Dictionary<string, DynamicProperty> res = JsonConvert.DeserializeObject<Dictionary<string, DynamicProperty>>(dynProps.Vals);
+                        var state = DefaultProperties.transformProperties(res);
+                        expert.Data = JsonConvert.SerializeObject(state);
+                    }
+                    //if (!string.IsNullOrEmpty(adviser.State))
+                    //    expert.Data = adviser.State;
+
                     GetOrdersListToLoad(adviser, ref expert);
                     expert.Magic = adviser.Id;
                     SubscribeToSignals(adviser.Id);
@@ -912,7 +934,7 @@ namespace BusinessLogic.BusinessObjects
             return false;
         }
 
-        public void SaveExpert(ExpertInfo expert)
+        /* public void SaveExpert(ExpertInfo expert)
         {
             try
             {
@@ -944,29 +966,6 @@ namespace BusinessLogic.BusinessObjects
                         terminals.UpdateSLTP(magicNumber, accountNumber, positions);
                     }
 
-                    /*
-                    string filePath = GetAdviserFilePath(adviser);
-                    string[] sections = GetSectionNames(filePath);
-                    if (sections.Length > 0)
-                    {
-                        List<string> sectionsList = sections.ToList();
-                        IEnumerable<string> ordersToDelete = null;
-                        if (expert.OrderTicketsToLoad != null)
-                            ordersToDelete = sectionsList.Except(expert.OrderTicketsToLoad);
-                        if ((ordersToDelete != null) && (ordersToDelete.Count() > 0))
-                        {
-                            foreach (var order in ordersToDelete)
-                            {
-                                int histVal = (int)ENUM_ORDERROLE.History;
-                                WritePrivateProfileStringW2(order, "role", histVal.ToString(), filePath);
-
-                                //DeleteSection(order, filePath);
-                                //if (!order.Equals(xtradeConstants.GLOBAL_SECTION_NAME))
-                                //    WritePrivateProfileStringW(order, 0, 0, filePath);
-                            }
-                        }
-                    }
-                    */
 
                     data.SaveInsertAdviser(Session, adviser);
                 }
@@ -975,7 +974,7 @@ namespace BusinessLogic.BusinessObjects
             {
                 log.Error(e);
             }
-        }
+        }*/
 
         public int DeleteHistoryOrders(string filePath)
         {
@@ -1052,18 +1051,6 @@ namespace BusinessLogic.BusinessObjects
             return false;
         }
 
-        /*
-         * protected bool SaveState(string filePath, Repo.DBAdviser adviser)
-        {
-
-            if (FileLocked(filePath))
-
-                return false;
-            adviser.State = File.ReadAllText(filePath);
-            return true;
-        }
-        */
-
         private string ReasonToString(int Reason)
         {
             switch (Reason)
@@ -1114,14 +1101,9 @@ namespace BusinessLogic.BusinessObjects
 
                     adviser.Running = false;
                     adviser.Lastupdate = DateTime.UtcNow;
-                    //adviser.Closereason = expert.Reason;
-                    // string filePath = GetAdviserFilePath(adviser);
-                    //if (!String.IsNullOrEmpty(expert.Data))
-                    //    adviser.State = expert.Data;
+
                     data.SaveInsertAdviser(Session, adviser);
-                    //SaveState(filePath, adviser);
                     string infoMsg = $"Expert On <{adviser.Symbol.Name}> Closed";
-                    // weblog.Log(infoMsg);
                     log.Info(infoMsg); // with reason {ReasonToString(expert.Reason)}.
                 }
             }

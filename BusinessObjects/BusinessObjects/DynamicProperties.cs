@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Drawing;
 
 namespace BusinessObjects
 {
@@ -42,9 +43,13 @@ namespace BusinessObjects
     public class DynamicProperty
     {
         public string type;
-        public string name;
-        public string group;
         public string value;
+    }
+
+    public class TDynamicProperty<T>
+    {
+        public string type;
+        public T value;
     }
 
     public class DefaultProperties {
@@ -53,50 +58,69 @@ namespace BusinessObjects
             DynamicProperty p1 = new DynamicProperty()
             {
                 type = "integer",
-                name = "ID",
-                group = "System",
                 value = id.ToString()
             };
-            if (!result.ContainsKey(p1.name))
-                result.Add(p1.name, p1);
+            if (!result.ContainsKey("ID"))
+                result.Add("ID", p1);
             else
-                result[p1.name] = p1;
+                result["ID"] = p1;
             DynamicProperty p2 = new DynamicProperty()
             {
                 type = "integer",
-                name = "ObjectID",
-                group = "System",
                 value = objid.ToString()
             };
-            if (!result.ContainsKey(p2.name))
-                result.Add(p2.name, p2);
+            if (!result.ContainsKey("ObjectID"))
+                result.Add("ObjectID", p2);
             else
-                result[p2.name] = p2;
+                result["ObjectID"] = p2;
             DynamicProperty p3 = new DynamicProperty()
             {
                 type = "integer",
-                group = "Specification"
             };
-            switch (etype)
+            return result;
+        }
+
+        public static int RGBtoInt(int r, int g, int b)
+        {
+            return (r << 0) | (g << 8) | (b << 16);
+        }
+
+        public static Dictionary<string, object> transformProperties(Dictionary<string, DynamicProperty> dbProps)
+        {
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            if ((dbProps == null)||(dbProps.Count == 0))
+                return result;
+            foreach( var prop in dbProps)
             {
-                case EntitiesEnum.MetaSymbol:
-                    p3.name = "Levels";
-                    p3.value = value;
-                    if (!result.ContainsKey(p3.name))
-                        result.Add(p3.name, p3);
-                    else
-                        result[p3.name] = p3;
-                    break;
-                case EntitiesEnum.Terminal:
-                    p3.name = "Risk Per Day";
-                    p3.value = value;
-                    if (!result.ContainsKey(p3.name))
-                        result.Add(p3.name, p3);
-                    else
-                        result[p3.name] = p3;
-                    break;
+                switch(prop.Value.type)
+                {
+                    case "integer":
+                        result.Add(prop.Key, int.Parse(prop.Value.value));
+                        break;
+                    case "hexinteger":
+                        {
+                           string hexValue = prop.Value.value;
+                           if (hexValue.StartsWith("#"))
+                                hexValue = hexValue.Substring(1);
+                           int value = int.Parse(hexValue, System.Globalization.NumberStyles.HexNumber);
+                           Color c = Color.FromArgb(value);
+                           value = RGBtoInt(c.R, c.G, c.B);
+                           result.Add(prop.Key, value);
+                        }
+                        break;
+                    case "double":
+                        result.Add(prop.Key, double.Parse(prop.Value.value));
+                        break;
+                    case "boolean":
+                        result.Add(prop.Key, bool.Parse(prop.Value.value));
+                        break;
+                    default:
+                        result.Add(prop.Key, prop.Value.value);
+                        break;
+                }
             }
             return result;
+
         }
 
     }

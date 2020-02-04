@@ -22,5 +22,7 @@ namespace BusinessObjects
         public decimal InvestingValue { get; set; }
         public decimal CheckingChange { get; set; }
         public decimal InvestingChange { get; set; }
+        public decimal Gains { get; set; }
+        public decimal Losses { get; set; }
     }
 }

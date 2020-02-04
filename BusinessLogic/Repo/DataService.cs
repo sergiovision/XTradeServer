@@ -235,6 +235,20 @@ namespace BusinessLogic.Repo
             return result;
         }
 
+        /*
+        public void MigrateAdvisers()
+        {
+            try
+            {
+                experts.MigrateAdvisersData();
+            }
+            catch (Exception e)
+            {
+                log.Error("Error: MigrateAdvisers: " + e);
+            }
+
+        }*/
+
         public List<Adviser> GetAdvisers()
         {
             try
@@ -419,48 +433,70 @@ namespace BusinessLogic.Repo
                         ts.X = i;
                         ts.Date = forDate;
                         ts.Period = period;
+                        ts.Gains = 0;
+                        ts.Losses = 0;
                         foreach (var acc in Accounts)
                         {
                             if (acc.Terminal != null)
                                 if (acc.Terminal.Demo)
                                     continue;
                             var accStateAll = Session.Query<DBAccountstate>().Where(x => x.Account.Id == acc.Id);
-                            var accResultsStart = accStateAll.Where(x => x.Date <= forDate) //&& (x.Date >= from)
+                            var accResultsStart = accStateAll.Where(x => x.Date <= forDate) 
                                 .OrderByDescending(x => x.Date);
-                            var accResults = accStateAll.Where(x => x.Date <= forDateEnd) //&& (x.Date >= from)
+                            var accResultsEnd = accStateAll.Where(x => x.Date <= forDateEnd) 
                                 .OrderByDescending(x => x.Date);
 
-                            if (accResults == null || accResults.Count() == 0)
+                            if (accResultsEnd == null || accResultsEnd.Count() == 0)
                                 continue;
                             if (accResultsStart == null || accResultsStart.Count() == 0)
                                 continue;
 
-                            var accState = accResults.FirstOrDefault();
-                            if (accState != null)
+                            var accStateEnd = accResultsEnd.FirstOrDefault();
+                            decimal balanceStart = new decimal(0);
+                            decimal balanceEnd = new decimal(0);
+                            if (accStateEnd != null)
                             {
+                                balanceEnd = ConvertToUSD(accStateEnd.Balance, acc.Currency.Name);
                                 if (acc.Typ > 0)
-                                    ts.InvestingValue += ConvertToUSD(accState.Balance, acc.Currency.Name);
+                                    ts.InvestingValue += balanceEnd;
 
-                                ts.CheckingValue += ConvertToUSD(accState.Balance, acc.Currency.Name);
+                                ts.CheckingValue += balanceEnd;
                             }
 
                             var accStateStart = accResultsStart.FirstOrDefault();
                             if (accStateStart != null)
                             {
+                                balanceStart = ConvertToUSD(accStateStart.Balance, acc.Currency.Name);
                                 if (acc.Typ > 0)
-                                    ts.InvestingChange += ConvertToUSD(accStateStart.Balance, acc.Currency.Name);
-                                ts.CheckingChange += ConvertToUSD(accStateStart.Balance, acc.Currency.Name);
+                                    ts.InvestingChange += balanceStart;
+
+                                ts.CheckingChange += balanceStart;
                             }
+
+                            /*if (balanceStart > balanceEnd)
+                            {
+                                ts.Losses += (balanceStart - balanceEnd);
+                            }
+                            if (balanceEnd > balanceStart)
+                            {
+                                ts.Gains += (balanceEnd - balanceStart);
+                            }*/
                         }
-              
 
                         ts.CheckingChange = ts.CheckingValue - ts.CheckingChange;
                         ts.InvestingChange = ts.InvestingValue - ts.InvestingChange;
+                        if (ts.CheckingChange > 0)
+                            ts.Gains = ts.CheckingChange;
+                        else
+                            ts.Losses = Math.Abs(ts.CheckingChange);
 
                         ts.CheckingChange = Math.Round(ts.CheckingChange, 2);
                         ts.InvestingChange = Math.Round(ts.InvestingChange, 2);
                         ts.CheckingValue = Math.Round(ts.CheckingValue, 2);
                         ts.InvestingValue = Math.Round(ts.InvestingValue, 2);
+                        ts.Losses = Math.Round(ts.Losses, 2);
+                        ts.Gains = Math.Round(ts.Gains, 2);
+
                         result.Add(ts);
                     }
                 }

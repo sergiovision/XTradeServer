@@ -13,7 +13,7 @@ namespace BusinessLogic.Repo
         public virtual string Timeframe { get; set; }
         public virtual bool Running { get; set; }
         public virtual bool Disabled { get; set; }
-        public virtual string State { get; set; }
+        // public virtual string State { get; set; }
         public virtual string SaveOrders { get; set; }
         public virtual DateTime? Lastupdate { get; set; }
         public virtual int? Closereason { get; set; }

@@ -109,13 +109,14 @@ namespace BusinessLogic.BusinessObjects
                         xtrade.DeInitTerminal(expert);
                     }
                     break;
-                case EnumSignals.SIGNAL_SAVE_EXPERT:
-                {
-                    ExpertInfo expert = JsonConvert.DeserializeObject<ExpertInfo>(signal.Data.ToString());
-                    if (expert != null)
-                        xtrade.SaveExpert(expert);
-                }
-                    break;
+               // case EnumSignals.SIGNAL_SAVE_EXPERT:
+               // {
+                        // deprecated
+                    //ExpertInfo expert = JsonConvert.DeserializeObject<ExpertInfo>(signal.Data.ToString());
+                    //if (expert != null)
+                    //    xtrade.SaveExpert(expert);
+               // }
+               //     break;
                 case EnumSignals.SIGNAL_POST_LOG:
                 {
                     if (signal.Data == null)

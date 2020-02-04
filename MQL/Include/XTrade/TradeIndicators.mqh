@@ -96,14 +96,14 @@ public:
       
       InitLevels(methods.Period);
       
-      if (GET(EnableNews))
+      /*if (GET(EnableNews))
       {
          GlobalVariablesDeleteAll("NewsSignal");
          string strMagic = IntegerToString(thrift.MagicNumber());
          thrift.InitNewsVariables(strMagic);
          News = new CNewsIndicator();
          News.Init(methods.Period);
-      }
+      }*/
       
       // InitBands(methods.Period);
       
