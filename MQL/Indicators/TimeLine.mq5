@@ -26,7 +26,7 @@ input int                  SubWindow = 1;
 input color                InfoTextColor = clrBlack;    // Font color
 input int                  InpFontSize  = 9;                // Font size
 input int                  InpSpacing = 8;                  // Date/Time spacing
-input int                  Height = 28;                  // Date/Time spacing
+// input int                  Height = 28;                  // Date/Time spacing
 
 int prevDay = 0;
 string strPREFIX = PREFIX_SEED;
@@ -48,7 +48,7 @@ int OnInit()
    IndicatorSetString(INDICATOR_SHORTNAME,"\n");
    IndicatorSetDouble(INDICATOR_MINIMUM,0); 
    IndicatorSetDouble(INDICATOR_MAXIMUM,9);  
-   IndicatorSetInteger(INDICATOR_HEIGHT, Height);  
+   //IndicatorSetInteger(INDICATOR_HEIGHT, Height);  
    IndicatorSetInteger(INDICATOR_DIGITS,0);
    //---
 

@@ -20,6 +20,7 @@
 #property indicator_levelstyle STYLE_DOT
 //--- input parameters
 input int InpRSIPeriod=14; // RSI Period
+input ENUM_APPLIED_PRICE InpRSIPrice = PRICE_CLOSE; // RSI Price
 //--- buffers
 double ExtRSIBuffer[];
 double ExtPosBuffer[];
@@ -65,6 +66,7 @@ int OnInit(void)
      }
 //---
    PlotIndexSetInteger(0,PLOT_DRAW_BEGIN,InpRSIPeriod);
+   medianRenkoIndicator.SetUseAppliedPriceFlag(InpRSIPrice);
 //--- initialization done
    return(INIT_SUCCEEDED);
   }
@@ -126,7 +128,8 @@ int OnCalculate(const int rates_total,const int prev_calculated,
    ArraySetAsSeries(ExtRSIBuffer,false);
    ArraySetAsSeries(ExtPosBuffer,false);
    ArraySetAsSeries(ExtNegBuffer,false);
-   ArraySetAsSeries(medianRenkoIndicator.Close,false);
+   ArraySetAsSeries(medianRenkoIndicator.Price,false);
+
 //--- preliminary calculations
    pos=_prev_calculated-1;
    if(pos<=InpRSIPeriod)
@@ -142,7 +145,7 @@ int OnCalculate(const int rates_total,const int prev_calculated,
          ExtRSIBuffer[i]=0.0;
          ExtPosBuffer[i]=0.0;
          ExtNegBuffer[i]=0.0;
-         diff=medianRenkoIndicator.Close[i]-medianRenkoIndicator.Close[i-1];
+         diff=medianRenkoIndicator.Price[i]-medianRenkoIndicator.Price[i-1];
          if(diff>0)
             sump+=diff;
          else
@@ -166,7 +169,7 @@ int OnCalculate(const int rates_total,const int prev_calculated,
 //--- the main loop of calculations
    for(i=pos; i<rates_total && !IsStopped(); i++)
      {
-      diff=medianRenkoIndicator.Close[i]-medianRenkoIndicator.Close[i-1];
+      diff=medianRenkoIndicator.Price[i]-medianRenkoIndicator.Price[i-1];
       ExtPosBuffer[i]=(ExtPosBuffer[i-1]*(InpRSIPeriod-1)+(diff>0.0?diff:0.0))/InpRSIPeriod;
       ExtNegBuffer[i]=(ExtNegBuffer[i-1]*(InpRSIPeriod-1)+(diff<0.0?-diff:0.0))/InpRSIPeriod;
       if(ExtNegBuffer[i]!=0.0)
@@ -183,3 +186,4 @@ int OnCalculate(const int rates_total,const int prev_calculated,
    return(rates_total);
   }
 //+------------------------------------------------------------------+
+

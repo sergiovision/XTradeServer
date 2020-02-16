@@ -43,7 +43,7 @@ bool CTimeLine::Init(ENUM_TIMEFRAMES timeframe)
    int                  InpFontSize  = 9;           // Font size
    int                  InpSpacing = 8;             // Date/Time spacing
 
-   MqlParam params[9];
+   MqlParam params[8];
    params[0].type = TYPE_STRING;
    params[0].string_value = m_name;
    params[1].type = TYPE_INT;
@@ -58,11 +58,14 @@ bool CTimeLine::Init(ENUM_TIMEFRAMES timeframe)
    params[5].integer_value = InpFontSize;
    params[6].type = TYPE_INT;
    params[6].integer_value = InpSpacing;
+   //params[7].type = TYPE_INT;
+   //if (GET(EnableRSI) || GET(EnableStochastic))
+   //   params[7].integer_value = 80;
+   //else 
+   //   params[7].integer_value = 28;
    params[7].type = TYPE_INT;
-   params[7].integer_value = 28;
-   params[8].type = TYPE_INT;
    bool isUsedByIndicatorOnRenkoChart = true;//!Utils.IsTesting();   
-   params[8].integer_value = isUsedByIndicatorOnRenkoChart; // Use on Charts = should be true = 1
+   params[7].integer_value = isUsedByIndicatorOnRenkoChart; // Use on Charts = should be true = 1
    
    m_bInited = Create(Utils.Symbol, (ENUM_TIMEFRAMES)m_period, IND_CUSTOM, ArraySize(params), params);
    if (m_bInited)

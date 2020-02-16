@@ -24,6 +24,11 @@ bool                 ExtDirectionLong;
 double               ExtSarStep;
 double               ExtSarMaximum;
 
+//
+// Initialize MedianRenko indicator for data processing 
+// according to settings of the MedianRenko indicator already on chart
+//
+
 #define GET 
 color                InfoTextColor = clrBlack;    // Font color
 
@@ -33,6 +38,7 @@ color                InfoTextColor = clrBlack;    // Font color
 //
 
 #include <XTrade/MedianRenko/MedianRenkoIndicator.mqh>
+
 MedianRenkoIndicator medianRenkoIndicator;
 
 //

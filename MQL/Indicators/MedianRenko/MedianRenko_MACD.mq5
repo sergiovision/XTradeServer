@@ -35,6 +35,12 @@ double                   ExtFastMaBuffer[];
 double                   ExtSlowMaBuffer[];
 double                   ExtMacdBuffer[];
 
+//
+// Initialize MedianRenko indicator for data processing 
+// according to settings of the MedianRenko indicator already on chart
+//
+#define DISPLAY_DEBUG_MSG
+
 #define GET 
 color                InfoTextColor = clrBlack;    // Font color
 
@@ -44,6 +50,7 @@ color                InfoTextColor = clrBlack;    // Font color
 //
 
 #include <XTrade/MedianRenko/MedianRenkoIndicator.mqh>
+
 MedianRenkoIndicator medianRenkoIndicator;
 
 //
@@ -66,8 +73,7 @@ void OnInit()
 //--- sets first bar from what index will be drawn
    PlotIndexSetInteger(2,PLOT_DRAW_BEGIN,InpSignalSMA-1);
 //--- name for Dindicator subwindow label
-   //IndicatorSetString(INDICATOR_SHORTNAME,"MACD("+string(InpFastEMA)+","+string(InpSlowEMA)+","+string(InpSignalSMA)+")");
-   IndicatorSetString(INDICATOR_SHORTNAME,"MACD");
+   IndicatorSetString(INDICATOR_SHORTNAME,"MACD("+string(InpFastEMA)+","+string(InpSlowEMA)+","+string(InpSignalSMA)+")");
 //--- initialization done
   }
 //+------------------------------------------------------------------+
@@ -88,8 +94,10 @@ int OnCalculate(const int rates_total,const int prev_calculated,
    //
    
    if(!medianRenkoIndicator.OnCalculate(rates_total,prev_calculated,Time))
+   {
+      Print("ret => false");
       return(0);
-   
+   }
    //
    // Make the following modifications in the code below:
    //
@@ -142,6 +150,7 @@ int OnCalculate(const int rates_total,const int prev_calculated,
       limit=0;
    else limit=_prev_calculated-1;
 //--- calculate MACD
+
    for(int i=limit;i<rates_total && !IsStopped();i++)
    {
       ExtMacdBuffer[i] = ExtFastMaBuffer[i]-ExtSlowMaBuffer[i];

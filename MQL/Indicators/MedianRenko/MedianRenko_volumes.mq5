@@ -20,6 +20,12 @@ input ENUM_APPLIED_VOLUME InpVolumeType=VOLUME_TICK; // Volumes
 double                    ExtVolumesBuffer[];
 double                    ExtColorsBuffer[];
 
+//
+// Initialize MedianRenko indicator for data processing 
+// according to settings of the MedianRenko indicator already on chart
+//
+
+
 #define GET 
 color                InfoTextColor = clrBlack;    // Font color
 

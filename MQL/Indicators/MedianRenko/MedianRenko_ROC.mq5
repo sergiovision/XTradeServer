@@ -28,6 +28,7 @@ color                InfoTextColor = clrBlack;    // Font color
 //
 
 #include <XTrade/MedianRenko/MedianRenkoIndicator.mqh>
+
 MedianRenkoIndicator medianRenkoIndicator;
 
 //

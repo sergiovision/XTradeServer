@@ -16,7 +16,6 @@
 #include <XTrade\CMedianRenko.mqh>
 
 class CIchimoku;
-class CNewsIndicator;
 class COsMA;
 class CHeikenAshi;
 class CNATR;
@@ -27,7 +26,6 @@ class SSAFastTrend;
 class CLevels;
 
 #include <XTrade\CIchimoku.mqh>
-#include <XTrade\CNewsIndicator.mqh>
 #include <XTrade\COsMA.mqh>
 #include <XTrade\CNATR.mqh>
 #include <XTrade\CBBands.mqh>
@@ -35,6 +33,8 @@ class CLevels;
 #include <XTrade\CIchimokuRenko.mqh>
 #include <XTrade\CTimeLine.mqh>
 #include <XTrade\CMACD.mqh>
+#include <XTrade\CStoch.mqh>
+#include <XTrade\CRSI.mqh>
 #include <XTrade\SSAFastTrend.mqh>
 #include <XTrade\CLevels.mqh>
 
@@ -49,17 +49,18 @@ public:
    ITradeService* thrift;
    string Symbol;
    TradeMethods* methods;
-   bool InNewsPeriod;
    int NewsMinsRemained;
    TYPE_TREND Trend;
    CNATR*  ATRD1;
-   CBBands* Bands;
-   CNewsIndicator* News;
+   // CNewsIndicator* News;
    CMedianRenko*  medianRenko;
    CTimeLine*     timeLine;
    CMACD*         macd;
    CLevels*       levels;
-   SSAFastTrend* ssaTrend;
+   SSAFastTrend*  ssaTrend;
+   CBBands*       Bands;
+   CStoch*        stoch;
+   CRSI*        rsi;
    IndiBase*   FI;
    IndiBase*   SI;
    double deltaCross;
@@ -78,9 +79,6 @@ public:
       methods = me;
       Trend = LATERAL;
       thrift = Utils.Service();
-      // currentImportance = MinImportance;
-      InNewsPeriod = false;
-      timeNewsPeriodStarted = TimeCurrent();
       // LastSignal.Handled = true; // first signal is handled!
       Symbol = _Symbol;
       if (GET(EnableRenko))
@@ -105,7 +103,14 @@ public:
          News.Init(methods.Period);
       }*/
       
-      // InitBands(methods.Period);
+      if (GET(EnableBBands))
+         InitBands(methods.Period);
+      
+      if (GET(EnableStochastic))
+         InitStoch(methods.Period);
+      
+      if (GET(EnableRSI))
+         InitRSI(methods.Period);
       
       if (GET(FilterIndicator) == GET(SignalIndicator))
       {
@@ -116,7 +121,21 @@ public:
       {
          FI = InitIndicator((ENUM_INDICATORS)GET(FilterIndicator), methods.Period);
          SI = InitIndicator((ENUM_INDICATORS)GET(SignalIndicator), methods.Period);
-      }  
+      }
+      
+      //if (GET(EnableRenko) == false) 
+      //{
+         int chartHeight = 28;
+         if (GET(EnableRSI) || GET(EnableStochastic))
+         {
+            if (GET(PanelSize) == PanelNormal)
+               chartHeight = 160;
+            else 
+               chartHeight = 80;
+            ChartSetInteger(methods.ChartId(),CHART_HEIGHT_IN_PIXELS, methods.IndiSubWindow(),chartHeight);
+         }
+      //}
+      
    }
    
    IndiBase* InitIndicator(ENUM_INDICATORS indi, ENUM_TIMEFRAMES tf)
@@ -142,7 +161,6 @@ public:
             return ind;
          case OsMAIndicator:
             //InitMFI(0, FilterTimeFrame);
-            //InitBands(methods.Period);
             ind = new COsMA();
             ind.Init(tf);
             return ind;
@@ -191,6 +209,18 @@ public:
       Bands = new CBBands();         
       return Bands.Init(tf);
    }      
+   
+   bool InitStoch(ENUM_TIMEFRAMES tf)
+   {
+      stoch = new CStoch();         
+      return stoch.Init(tf);
+   }
+   
+   bool InitRSI(ENUM_TIMEFRAMES tf)
+   {
+      rsi = new CRSI();         
+      return rsi.Init(tf);
+   }
             
    bool InitATR()
    {
@@ -239,9 +269,12 @@ public:
           if (ATRD1.Handle() != INVALID_HANDLE)
             ATRD1.Refresh();
              
-          if (Bands.Handle() != INVALID_HANDLE)
+          if (Bands != NULL)
               Bands.Refresh();
 */
+              
+
+
           //if (OsMA.Initialized())
           //   OsMA.Refresh();
              
@@ -268,8 +301,11 @@ public:
 
                 if (timeLine != NULL)            
                 {
-                   if (timeLine.Initialized())
+                   if (timeLine.Initialized()) 
+                   {
                       timeLine.Delete();
+                      timeLine.DeleteFromChart(methods.ChartId(), methods.IndiSubWindow());
+                   }
                 }
              } else {
                   if (ssaTrend != NULL) {
@@ -285,15 +321,23 @@ public:
                 Bands.DeleteFromChart(methods.ChartId(), methods.SubWindow());
              }
              
+             if (stoch != NULL)            
+             if (stoch.Initialized())
+             {
+                Bands.Delete();
+                Bands.DeleteFromChart(methods.ChartId(), methods.IndiSubWindow());
+             }
+             
+             if (rsi != NULL)            
+             if (rsi.Initialized())
+             {
+                rsi.Delete();
+                Bands.DeleteFromChart(methods.ChartId(), methods.IndiSubWindow());
+             }
+             
              if (levels.Initialized())
              {
                 levels.DeleteFromChart(methods.ChartId(), methods.SubWindow());
-             }
-
-             if (News != NULL)            
-             if (News.Initialized())
-             {
-                 News.DeleteFromChart(methods.ChartId(), methods.IndiSubWindow());
              }
 
              if (FI != NULL)
@@ -308,14 +352,16 @@ public:
                  SI.DeleteFromChart(methods.ChartId(), methods.SubWindow());
              }
 
-
           }
           DELETE_PTR(FI);
           DELETE_PTR(SI);
           DELETE_PTR(levels);
           DELETE_PTR(ATRD1);
-          DELETE_PTR(News);
+          //DELETE_PTR(News);
           DELETE_PTR(Bands);
+          DELETE_PTR(stoch);
+          DELETE_PTR(rsi);
+          
           if (GET(EnableRenko))
           {
             DELETE_PTR(macd);

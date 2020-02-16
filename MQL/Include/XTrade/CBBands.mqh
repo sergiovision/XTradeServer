@@ -40,6 +40,9 @@ bool CBBands::Init(ENUM_TIMEFRAMES timeframe)
    if (Initialized())
       return true;      
    m_period = timeframe;
+   
+   if (GET(EnableRenko))
+      return true;
 
    IPC = PRICE_CLOSE_;
    MA_Method = MODE_SMA;
@@ -62,7 +65,7 @@ bool CBBands::Init(ENUM_TIMEFRAMES timeframe)
    if (m_bInited)
    {
       FullRelease(!Utils.IsTesting());
-      AddToChart(Utils.Trade().ChartId(), Utils.Trade().IndiSubWindow());
+      AddToChart(Utils.Trade().ChartId(), Utils.Trade().SubWindow());
       return true;
    }
    Utils.Info(StringFormat("Indicator %s - failed to load!!!!!!!!!!!!!", m_name));

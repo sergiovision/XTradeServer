@@ -11,7 +11,6 @@
 #include <XTrade\Signals.mqh>
 #include <XTrade\CommandsController.mqh>
 
-#define MAX_NEWS_PER_DAY  5
 
 class SettingsFile;
 
@@ -80,19 +79,9 @@ public:
    virtual string Name() { return EAName; }
    virtual bool CheckActive() { return isActive;}
    virtual bool IsActive() { return isActive; }
-   virtual int  GetTodayNews(ushort Importance, SignalNews &arr[], datetime curtime)
-   {
-      return -1;
-   }
    
    virtual Signal* ListenSignal(long flags, long ObjectId) { return NULL; };
    
-   virtual SignalNews* GetLastNewsEvent() {  return NULL; }
-   
-   virtual bool GetNextNewsEvent(ushort Importance, SignalNews& eventInfo) 
-   {
-      return false;
-   }
    
    virtual void Log(string message)
    {
@@ -131,16 +120,6 @@ public:
    virtual string FilePath()
    {
       return IniFilePath;
-   }
-
-   virtual void InitNewsVariables(string strMagic) 
-   {
-      
-   }
-   
-   virtual void SetGlobalNewsSignal()
-   {
-       
    }
    
    virtual void PostSignal(Signal* s)  {  }

@@ -15,11 +15,13 @@
    #include <Trade\PositionInfo.mqh>
    CPositionInfo positioninfo;
 
-   #include <XTrade\IUtils.mqh>
-
    //--- introduce the predefined variables from MQL4 for versatility of the code
-   //#define Ask   Utils.Ask() //SymbolInfoDouble(_symbol,SYMBOL_ASK)
-   //#define Bid   Utils.Bid() // SymbolInfoDouble(_symbol,SYMBOL_BID)
+   #define ASK    SymbolInfoDouble(_symbol,SYMBOL_ASK)
+   #define BID    SymbolInfoDouble(_symbol,SYMBOL_BID)
+   
+   bool suppressLogOutput = false;
+   
+   void SuppressGlobalLogOutput() { suppressLogOutput = true; };
    
 #endif
 
@@ -51,6 +53,7 @@ class CTradingChecks
    private:
    
    ENUM_TC_ERROR _err;
+   bool _suppressLogOutput;
    
    public:
    
@@ -58,6 +61,7 @@ class CTradingChecks
    ~CTradingChecks();
    
    string GetCheckErrorToString();
+   void SuppressLogOutput() { _suppressLogOutput = true; };
    
    bool OkToOpenOrder(string _symbol,ENUM_ORDER_TYPE type, double lots, double entryPrice, double sl, double tp);
    bool OkToModifyOrder(string _symbol,ulong ticket,double price, double sl, double tp);
@@ -69,6 +73,7 @@ class CTradingChecks
 
 CTradingChecks::CTradingChecks(void)
 {
+   suppressLogOutput = false;
 }
 
 CTradingChecks::~CTradingChecks(void)
@@ -228,15 +233,22 @@ bool CheckMoneyForTrade(string symb,double lots,ENUM_ORDER_TYPE type)
    if(!OrderCalcMargin(type,symb,lots,price,margin))
      {
       //--- something went wrong, report and return false
-      Print("Error in ",__FUNCTION__," code=",GetLastError());
+      if(suppressLogOutput == false)
+      {
+         Print("Error in ",__FUNCTION__," code=",GetLastError());
+      }
+        
       return(false);
      }
    //--- if there are insufficient funds to perform the operation
    if(margin>free_margin)
      {
       //--- report the error and return false
-      Print("Not enough money for ",EnumToString(type)," ",lots," ",symb," Error code=",GetLastError());
-      Print("Required margin:"+DoubleToString(margin,2)+"; free margin:"+DoubleToString(free_margin,2));
+      if(suppressLogOutput == false)
+      {
+         Print("Not enough money for ",EnumToString(type)," ",lots," ",symb," Error code=",GetLastError());
+         Print("Required margin:"+DoubleToString(margin,2)+"; free margin:"+DoubleToString(free_margin,2));
+      }
       return(false);
      }
 //--- checking successful
@@ -250,7 +262,11 @@ bool CheckMoneyForTrade(string symb, double lots,int type)
    if(free_margin<0)
      {
       string oper=(type==OP_BUY)? "Buy":"Sell";
-      Print("Not enough money for ", oper," ",lots, " ", symb, " Error code=",GetLastError());
+      if(suppressLogOutput == false)
+      {
+         Print("Not enough money for ", oper," ",lots, " ", symb, " Error code=",GetLastError());
+      }
+      
       return(false);
      }
    //--- checking successful
@@ -292,8 +308,11 @@ double PositionVolume(string symbol)
    else
      {
       //--- report a failure to select position
-      Print(__FUNCTION__," Failed to perform PositionSelect() for symbol ",
+      if(suppressLogOutput == false)
+      {
+         Print(__FUNCTION__," Failed to perform PositionSelect() for symbol ",
             symbol," Error ",GetLastError());
+      }
       return(-1);
      }
   }
@@ -359,11 +378,14 @@ bool CheckStopLoss_Takeprofit(string _symbol, ENUM_ORDER_TYPE type,double price,
   {
 //--- get the SYMBOL_TRADE_STOPS_LEVEL level
    int stops_level=(int)SymbolInfoInteger(_symbol,SYMBOL_TRADE_STOPS_LEVEL);
-   //if(stops_level!=0)
-   //  {
-   //   Utils.Info(StringFormat("SYMBOL_TRADE_STOPS_LEVEL=%d: StopLoss and TakeProfit must"+
-   //               " not be nearer than %d points from the closing price",stops_level,stops_level));
-   //  }
+   if(stops_level!=0)
+     {
+      if(suppressLogOutput == false)
+      {
+         PrintFormat("SYMBOL_TRADE_STOPS_LEVEL=%d: StopLoss and TakeProfit must"+
+                  " not be nearer than %d points from the closing price",stops_level,stops_level);
+      }
+     }
 //---
    bool SL_check=false,TP_check=false;
 //--- check the order type
@@ -373,17 +395,17 @@ bool CheckStopLoss_Takeprofit(string _symbol, ENUM_ORDER_TYPE type,double price,
       case  ORDER_TYPE_BUY:
         {
          //--- check the StopLoss
-         SL_check= (SL==0) ? true : (Utils.Bid()-SL>stops_level*_point);
-         if(!SL_check)
-            Utils.Info(StringFormat("For order %s   StopLoss=%.5f must be less than %.5f"+
+         SL_check= (SL==0) ? true : (BID-SL>stops_level*_point);
+         if(!SL_check && suppressLogOutput == false)
+            PrintFormat("For order %s   StopLoss=%.5f must be less than %.5f"+
                         " (Bid=%.5f - SYMBOL_TRADE_STOPS_LEVEL=%d points)",
-                        EnumToString(type),SL,Utils.Bid()-stops_level*_point,Utils.Bid(),stops_level));
+                        EnumToString(type),SL,BID-stops_level*_point,BID,stops_level);
          //--- check the TakeProfit
-         TP_check= (TP==0) ? true : (TP-Utils.Bid()>stops_level*_point);
-         if(!TP_check)
-            Utils.Info(StringFormat("For order %s   TakeProfit=%.5f must be greater than %.5f"+
+         TP_check= (TP==0) ? true : (TP-BID>stops_level*_point);
+         if(!TP_check && suppressLogOutput == false)
+            PrintFormat("For order %s   TakeProfit=%.5f must be greater than %.5f"+
                         " (Bid=%.5f + SYMBOL_TRADE_STOPS_LEVEL=%d points)",
-                        EnumToString(type),TP,Utils.Bid()+stops_level*_point,Utils.Bid(),stops_level));
+                        EnumToString(type),TP,BID+stops_level*_point,BID,stops_level);
          //--- return the result of checking
          return(SL_check&&TP_check);
         }
@@ -391,17 +413,17 @@ bool CheckStopLoss_Takeprofit(string _symbol, ENUM_ORDER_TYPE type,double price,
       case  ORDER_TYPE_SELL:
         {
          //--- check the StopLoss
-         SL_check= (SL==0) ? true : (SL-Utils.Ask()>stops_level*_point);
-         if(!SL_check)
-            Utils.Info(StringFormat("For order %s   StopLoss=%.5f must be greater than %.5f"+
+         SL_check= (SL==0) ? true : (SL-ASK>stops_level*_point);
+         if(!SL_check && suppressLogOutput == false)
+            PrintFormat("For order %s   StopLoss=%.5f must be greater than %.5f"+
                         " (Ask=%.5f + SYMBOL_TRADE_STOPS_LEVEL=%d points)",
-                        EnumToString(type),SL,Utils.Ask()+stops_level*_point,Utils.Ask(),stops_level));
+                        EnumToString(type),SL,ASK+stops_level*_point,ASK,stops_level);
          //--- check the TakeProfit
-         TP_check= (TP==0) ? true : (Utils.Ask()-TP>stops_level*_point);
-         if(!TP_check)
-            Utils.Info(StringFormat("For order %s   TakeProfit=%.5f must be less than %.5f"+
+         TP_check= (TP==0) ? true : (ASK-TP>stops_level*_point);
+         if(!TP_check && suppressLogOutput == false)
+            PrintFormat("For order %s   TakeProfit=%.5f must be less than %.5f"+
                         " (Ask=%.5f - SYMBOL_TRADE_STOPS_LEVEL=%d points)",
-                        EnumToString(type),TP,Utils.Ask()-stops_level*_point,Utils.Ask(),stops_level));
+                        EnumToString(type),TP,ASK-stops_level*_point,ASK,stops_level);
          //--- return the result of checking
          return(TP_check&&SL_check);
         }
@@ -411,13 +433,13 @@ bool CheckStopLoss_Takeprofit(string _symbol, ENUM_ORDER_TYPE type,double price,
         {
          //--- check the StopLoss
          SL_check= (SL==0) ? true : ((price-SL)>stops_level*_point);
-         if(!SL_check)
+         if(!SL_check && suppressLogOutput == false)
             PrintFormat("For order %s   StopLoss=%.5f must be less than %.5f"+
                         " (Open-StopLoss=%d points ==> SYMBOL_TRADE_STOPS_LEVEL=%d points)",
                         EnumToString(type),SL,price-stops_level*_point,(int)((price-SL)/_point),stops_level);
          //--- check the TakeProfit
          TP_check= (TP==0) ? true : ((TP-price)>stops_level*_point);
-         if(!TP_check)
+         if(!TP_check && suppressLogOutput == false)
             PrintFormat("For order %s   TakeProfit=%.5f must be greater than %.5f"+
                         " (TakeProfit-Open=%d points ==> SYMBOL_TRADE_STOPS_LEVEL=%d points)",
                         EnumToString(type),TP,price+stops_level*_point,(int)((TP-price)/_point),stops_level);
@@ -429,13 +451,13 @@ bool CheckStopLoss_Takeprofit(string _symbol, ENUM_ORDER_TYPE type,double price,
         {
          //--- check the StopLoss
          SL_check= (SL==0) ? true : ((SL-price)>stops_level*_point);
-         if(!SL_check)
+         if(!SL_check && suppressLogOutput == false)
             PrintFormat("For order %s   StopLoss=%.5f must be greater than %.5f"+
                         " (StopLoss-Open=%d points ==> SYMBOL_TRADE_STOPS_LEVEL=%d points)",
                         EnumToString(type),SL,price+stops_level*_point,(int)((SL-price)/_point),stops_level);
          //--- check the TakeProfit
          TP_check= (TP==0) ? true : ((price-TP)>stops_level*_point);
-         if(!TP_check)
+         if(!TP_check && suppressLogOutput == false)
             PrintFormat("For order %s   TakeProfit=%.5f must be less than %.5f"+
                         " (Open-TakeProfit=%d points ==> SYMBOL_TRADE_STOPS_LEVEL=%d points)",
                         EnumToString(type),TP,price-stops_level*_point,(int)((price-TP)/_point),stops_level);
@@ -448,13 +470,13 @@ bool CheckStopLoss_Takeprofit(string _symbol, ENUM_ORDER_TYPE type,double price,
         {
          //--- check the StopLoss
          SL_check= (SL==0) ? true : ((price-SL)>stops_level*_point);
-         if(!SL_check)
+         if(!SL_check && suppressLogOutput == false)
             PrintFormat("For order %s   StopLoss=%.5f must be less than %.5f"+
                         " (Open-StopLoss=%d points ==> SYMBOL_TRADE_STOPS_LEVEL=%d points)",
                         EnumToString(type),SL,price-stops_level*_point,(int)((price-SL)/_point),stops_level);
          //--- check the TakeProfit
          TP_check= (TP==0) ? true : ((TP-price)>stops_level*_point);
-         if(!TP_check)
+         if(!TP_check && suppressLogOutput == false)
             PrintFormat("For order %s   TakeProfit=%.5f must be greater than %.5f"+
                         " (TakeProfit-Open=%d points ==> SYMBOL_TRADE_STOPS_LEVEL=%d points)",
                         EnumToString(type),TP,price-stops_level*_point,(int)((TP-price)/_point),stops_level);
@@ -466,13 +488,13 @@ bool CheckStopLoss_Takeprofit(string _symbol, ENUM_ORDER_TYPE type,double price,
         {
          //--- check the StopLoss
          SL_check= (SL==0) ? true : ((SL-price)>stops_level*_point);
-         if(!SL_check)
+         if(!SL_check && suppressLogOutput == false)
             PrintFormat("For order %s   StopLoss=%.5f must be greater than %.5f"+
                         " (StopLoss-Open=%d points ==> SYMBOL_TRADE_STOPS_LEVEL=%d points)",
                         EnumToString(type),SL,price+stops_level*_point,(int)((SL-price)/_point),stops_level);
          //--- check the TakeProfit
          TP_check= (TP==0) ? true : ((price-TP)>stops_level*_point);
-         if(!TP_check)
+         if(!TP_check && suppressLogOutput == false)
             PrintFormat("For order %s   TakeProfit=%.5f must be less than %.5f"+
                         " (Open-TakeProfit=%d points ==> SYMBOL_TRADE_STOPS_LEVEL=%d points)",
                         EnumToString(type),TP,price-stops_level*_point,(int)((price-TP)/_point),stops_level);
@@ -510,9 +532,14 @@ bool OrderModifyCheck(ulong ticket,double price,double sl,double tp)
          return(true);  // order can be modified      
       //--- there are no changes in the Open, StopLoss and Takeprofit levels
       else
+      {
       //--- notify about the error
-         Utils.Info(StringFormat("Order #%d already has levels of Open=%.5f SL=%.5f TP=%.5f",
-                     ticket,orderinfo.PriceOpen(),orderinfo.StopLoss(),orderinfo.TakeProfit()));
+         if(suppressLogOutput == false)
+         {
+            PrintFormat("Order #%d already has levels of Open=%.5f SL=%.5f TP=%.5f",
+                     ticket,orderinfo.PriceOpen(),orderinfo.StopLoss(),orderinfo.TakeProfit());
+         }
+      }
      }
 //--- came to the end, no changes for the order
    return(false);       // no point in modifying 
@@ -537,9 +564,14 @@ bool PositionModifyCheck(ulong ticket,double sl,double tp)
          return(true);  // position can be modified      
       //--- there are no changes in the StopLoss and Takeprofit levels
       else
+      {
       //--- notify about the error
-         Utils.Info(StringFormat("Order #%d already has levels of Open=%.5f SL=%.5f TP=%.5f",
-                     ticket,orderinfo.PriceOpen(),orderinfo.StopLoss(),orderinfo.TakeProfit()));
+         if(suppressLogOutput == false)
+         {
+            PrintFormat("Order #%d already has levels of Open=%.5f SL=%.5f TP=%.5f",
+                     ticket,orderinfo.PriceOpen(),orderinfo.StopLoss(),orderinfo.TakeProfit());
+         }
+      }
      }
 //--- came to the end, no changes for the order
    return(false);       // no point in modifying 
@@ -572,9 +604,14 @@ bool OrderModifyCheck(int ticket,double price,double sl,double tp)
          return(true);  // order can be modified      
       //--- there are no changes in the Open, StopLoss and Takeprofit levels
       else
+      {
       //--- notify about the error
-         Utils.Info(StringFormat(("Order #%d already has levels of Open=%.5f SL=%.5f TP=%.5f",
-                     ticket,OrderOpenPrice(),OrderStopLoss(),OrderTakeProfit()));
+         if(suppressLogOutput == false)
+         {
+            PrintFormat("Order #%d already has levels of Open=%.5f SL=%.5f TP=%.5f",
+                     ticket,OrderOpenPrice(),OrderStopLoss(),OrderTakeProfit());
+         }
+      }
      }
 //--- came to the end, no changes for the order
    return(false);       // no point in modifying 
@@ -592,8 +629,11 @@ bool CheckOrderForFREEZE_LEVEL(string _symbol, ulong ticket)
    int freeze_level=(int)SymbolInfoInteger(_symbol,SYMBOL_TRADE_FREEZE_LEVEL);
    if(freeze_level!=0)
      {
-      PrintFormat("SYMBOL_TRADE_FREEZE_LEVEL=%d: Cannot modify order"+
+      if(suppressLogOutput == false)
+      {
+         PrintFormat("SYMBOL_TRADE_FREEZE_LEVEL=%d: Cannot modify order"+
                   "  nearer than %d points from the activation price",freeze_level,freeze_level);
+      }
      }
 //--- select order for working
    if(!OrderSelect(ticket))
@@ -615,20 +655,20 @@ bool CheckOrderForFREEZE_LEVEL(string _symbol, ulong ticket)
       case  ORDER_TYPE_BUY_LIMIT:
         {
          //--- check the distance from the opening price to the activation price
-         check=((Utils.Ask()-price)>freeze_level*_point);
-         if(!check)
-            Utils.Info(StringFormat("Order %s #%d cannot be modified: Ask-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        EnumToString(type),ticket,(int)((Utils.Ask()-price)/_point),freeze_level));
+         check=((ASK-price)>freeze_level*_point);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order %s #%d cannot be modified: Ask-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        EnumToString(type),ticket,(int)((ASK-price)/_point),freeze_level);
          return(check);
         }
       //--- BuyLimit pending order
       case  ORDER_TYPE_SELL_LIMIT:
         {
          //--- check the distance from the opening price to the activation price
-         check=((price-Utils.Bid())>freeze_level*_point);
-         if(!check)
-            Utils.Info(StringFormat("Order %s #%d cannot be modified: Open-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        EnumToString(type),ticket,(int)((price-Utils.Bid())/_point),freeze_level));
+         check=((price-BID)>freeze_level*_point);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order %s #%d cannot be modified: Open-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        EnumToString(type),ticket,(int)((price-BID)/_point),freeze_level);
          return(check);
         }
       break;
@@ -636,20 +676,20 @@ bool CheckOrderForFREEZE_LEVEL(string _symbol, ulong ticket)
       case  ORDER_TYPE_BUY_STOP:
         {
          //--- check the distance from the opening price to the activation price
-         check=((price-Utils.Ask())>freeze_level*_point);
-         if(!check)
-            Utils.Info(StringFormat("Order %s #%d cannot be modified: Utils.Ask()-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        EnumToString(type),ticket,(int)((price-Utils.Ask())/_point),freeze_level));
+         check=((price-ASK)>freeze_level*_point);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order %s #%d cannot be modified: Ask-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        EnumToString(type),ticket,(int)((price-ASK)/_point),freeze_level);
          return(check);
         }
       //--- SellStop pending order
       case  ORDER_TYPE_SELL_STOP:
         {
          //--- check the distance from the opening price to the activation price
-         check=((Utils.Bid()-price)>freeze_level*_point);
-         if(!check)
-            Utils.Info(StringFormat("Order %s #%d cannot be modified: Bid-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        EnumToString(type),ticket,(int)((Utils.Bid()-price)/_point),freeze_level));
+         check=((BID-price)>freeze_level*_point);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order %s #%d cannot be modified: Bid-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        EnumToString(type),ticket,(int)((BID-price)/_point),freeze_level);
          return(check);
         }
       break;
@@ -665,7 +705,7 @@ bool CheckPositionForFREEZE_LEVEL(string _symbol, ulong ticket)
      
 //--- get the SYMBOL_TRADE_FREEZE_LEVEL level
    int freeze_level=(int)SymbolInfoInteger(_symbol,SYMBOL_TRADE_FREEZE_LEVEL);
-   if(freeze_level!=0)
+   if(freeze_level!=0 && suppressLogOutput == false)
      {
       PrintFormat("SYMBOL_TRADE_FREEZE_LEVEL=%d: Cannot modify order"+
                   "  nearer than %d points from the activation price",freeze_level,freeze_level);
@@ -688,16 +728,16 @@ bool CheckPositionForFREEZE_LEVEL(string _symbol, ulong ticket)
       //--- buy
       case POSITION_TYPE_BUY:
         {
-         SL_check=(sl == 0) ? true: (Utils.Bid()-sl>freeze_level*_point);
-         if(!SL_check)
-            Utils.Info(StringFormat("Position %s #%d cannot be modified: Utils.Bid()-StopLoss=%d points"+
+         SL_check=(sl == 0) ? true: (BID-sl>freeze_level*_point);
+         if(!SL_check && suppressLogOutput == false)
+            PrintFormat("Position %s #%d cannot be modified: Bid-StopLoss=%d points"+
                         " < SYMBOL_TRADE_FREEZE_LEVEL=%d points)",
-                        EnumToString(pos_type),ticket,(int)((Utils.Bid()-sl)/_point),freeze_level));
-         TP_check=(tp == 0) ? true: (tp-Utils.Bid()>freeze_level*_point);
-         if(!TP_check)
-            Utils.Info(StringFormat("Position %s #%d cannot be modified: TakeProfit-Bid=%d points"+
+                        EnumToString(pos_type),ticket,(int)((BID-sl)/_point),freeze_level);
+         TP_check=(tp == 0) ? true: (tp-BID>freeze_level*_point);
+         if(!TP_check && suppressLogOutput == false)
+            PrintFormat("Position %s #%d cannot be modified: TakeProfit-Bid=%d points"+
                         " < SYMBOL_TRADE_FREEZE_LEVEL=%d points)",
-                        EnumToString(pos_type),ticket,(int)((tp-Utils.Bid())/_point),freeze_level));
+                        EnumToString(pos_type),ticket,(int)((tp-BID)/_point),freeze_level);
          //--- return the result of checking
          return(SL_check&&TP_check);
         }
@@ -705,16 +745,16 @@ bool CheckPositionForFREEZE_LEVEL(string _symbol, ulong ticket)
       //--- sell
       case POSITION_TYPE_SELL:
         {
-         SL_check=(sl == 0) ? true: (sl-Utils.Ask()>freeze_level*_point);
-         if(!SL_check)
-            Utils.Info(StringFormat("Position %s cannot be modified: StopLoss-Ask=%d points"+
+         SL_check=(sl == 0) ? true: (sl-ASK>freeze_level*_point);
+         if(!SL_check && suppressLogOutput == false)
+            PrintFormat("Position %s cannot be modified: StopLoss-Ask=%d points"+
                         " < SYMBOL_TRADE_FREEZE_LEVEL=%d points)",
-                        EnumToString(pos_type),(int)((sl-Utils.Ask())/_point),freeze_level));
-         TP_check=(tp == 0) ? true: (Utils.Ask()-tp>freeze_level*_point);
-         if(!TP_check)
-            Utils.Info(StringFormat("Position %s cannot be modified: Ask-TakeProfit=%d points"+
+                        EnumToString(pos_type),(int)((sl-ASK)/_point),freeze_level);
+         TP_check=(tp == 0) ? true: (ASK-tp>freeze_level*_point);
+         if(!TP_check && suppressLogOutput == false)
+            PrintFormat("Position %s cannot be modified: Ask-TakeProfit=%d points"+
                      " < SYMBOL_TRADE_FREEZE_LEVEL=%d points)",
-                     EnumToString(pos_type),(int)((Utils.Ask()-tp)/_point),freeze_level));
+                     EnumToString(pos_type),(int)((ASK-tp)/_point),freeze_level);
          //--- return the result of checking
          return(SL_check&&TP_check);
         }
@@ -728,10 +768,10 @@ bool CheckOrderForFREEZE_LEVEL(string _symbol,int ticket)
   {
 //--- get the SYMBOL_TRADE_FREEZE_LEVEL level
    int freeze_level=(int)SymbolInfoInteger(_symbol,SYMBOL_TRADE_FREEZE_LEVEL);
-   if(freeze_level!=0)
+   if(freeze_level!=0 && suppressLogOutput == false)
      {
-      Utils.Info(StringFormat(("SYMBOL_TRADE_FREEZE_LEVEL=%d: Cannot modify order"+
-                  "  nearer than %d points from the activation price",freeze_level,freeze_level));
+      PrintFormat("SYMBOL_TRADE_FREEZE_LEVEL=%d: Cannot modify order"+
+                  "  nearer than %d points from the activation price",freeze_level,freeze_level);
      }
 //--- select order for working
    if(!OrderSelect(ticket,SELECT_BY_TICKET,MODE_TRADES))
@@ -753,20 +793,20 @@ bool CheckOrderForFREEZE_LEVEL(string _symbol,int ticket)
       case  OP_BUYLIMIT:
         {
          //--- check the distance from the opening price to the activation price
-         check=((Utils.Ask()-price)>freeze_level*_point);
-         if(!check)
-            Utils.Info(StringFormat(("Order OP_BUYLIMIT #%d cannot be modified: Ask-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        ticket,(int)((Utils.Ask()-price)/_point),freeze_level));
+         check=((Ask-price)>freeze_level*_point);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order OP_BUYLIMIT #%d cannot be modified: Ask-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        ticket,(int)((Ask-price)/_point),freeze_level);
          return(check);
         }
       //--- BuyLimit pending order
       case  OP_SELLLIMIT:
         {
          //--- check the distance from the opening price to the activation price
-         check=((price-Utils.Bid())>freeze_level*_point);
-         if(!check)
-            Utils.Info(StringFormat(("Order OP_SELLLIMIT #%d cannot be modified: Open-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        ticket,(int)((price-Utils.Bid())/_point),freeze_level));
+         check=((price-Bid)>freeze_level*_point);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order OP_SELLLIMIT #%d cannot be modified: Open-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        ticket,(int)((price-Bid)/_point),freeze_level);
          return(check);
         }
       break;
@@ -774,20 +814,20 @@ bool CheckOrderForFREEZE_LEVEL(string _symbol,int ticket)
       case  OP_BUYSTOP:
         {
          //--- check the distance from the opening price to the activation price
-         check=((price-Utils.Ask())>freeze_level*_point);
-         if(!check)
-            Utils.Info(StringFormat("Order OP_BUYSTOP #%d cannot be modified: Ask-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        ticket,(int)((price-Utils.Ask())/_point),freeze_level));
+         check=((price-Ask)>freeze_level*_point);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order OP_BUYSTOP #%d cannot be modified: Ask-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        ticket,(int)((price-Ask)/_point),freeze_level);
          return(check);
         }
       //--- SellStop pending order
       case  OP_SELLSTOP:
         {
          //--- check the distance from the opening price to the activation price
-         check=((Utils.Bid()-price)>freeze_level*_point);
-         if(!check)
-            Utils.Info(StringFormat("Order OP_SELLSTOP #%d cannot be modified: Bid-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        ticket,(int)((Utils.Bid()-price)/_point),freeze_level));
+         check=((Bid-price)>freeze_level*_point);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order OP_SELLSTOP #%d cannot be modified: Bid-Open=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        ticket,(int)((Bid-price)/_point),freeze_level);
          return(check);
         }
       break;
@@ -795,15 +835,15 @@ bool CheckOrderForFREEZE_LEVEL(string _symbol,int ticket)
       case  OP_BUY:
         {
          //--- check TakeProfit distance to the activation price
-         bool TP_check=(tp == 0) ? true: (tp-Utils.Bid()>freeze_level*_point);
-         if(!TP_check)
-            Utils.Info(StringFormat("Order OP_BUY %d cannot be modified: TakeProfit-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        ticket,(int)((tp-Utils.Bid())/_point),freeze_level));
+         bool TP_check=(tp == 0) ? true: (tp-Bid>freeze_level*_point);
+         if(!TP_check && suppressLogOutput == false)
+            PrintFormat("Order OP_BUY %d cannot be modified: TakeProfit-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        ticket,(int)((tp-Bid)/_point),freeze_level);
          //--- check TakeProfit distance to the activation price
-         bool SL_check=(sl == 0) ? true: (Utils.Bid()-sl>freeze_level*_point);
-         if(!SL_check)
-            Utils.Info(StringFormat("Order OP_BUY %d cannot be modified: TakeProfit-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        ticket,(int)((Utils.Bid()-sl)/_point),freeze_level));
+         bool SL_check=(sl == 0) ? true: (Bid-sl>freeze_level*_point);
+         if(!SL_check && suppressLogOutput == false)
+            PrintFormat("Order OP_BUY %d cannot be modified: TakeProfit-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        ticket,(int)((Bid-sl)/_point),freeze_level);
          return(SL_check&&TP_check);
         }
       break;
@@ -811,15 +851,15 @@ bool CheckOrderForFREEZE_LEVEL(string _symbol,int ticket)
       case  OP_SELL:
         {
          //--- check TakeProfit distance to the activation price
-         bool TP_check=(tp == 0) ? true: (Utils.Ask()-tp>freeze_level*_point);
-         if(!TP_check)
-            Utils.Info(StringFormat("Order OP_SELL %d cannot be modified: Ask-TakeProfit=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        ticket,(int)((Utils.Ask()-tp)/_point),freeze_level));
+         bool TP_check=(tp == 0) ? true: (Ask-tp>freeze_level*_point);
+         if(!TP_check && suppressLogOutput == false)
+            PrintFormat("Order OP_SELL %d cannot be modified: Ask-TakeProfit=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        ticket,(int)((Ask-tp)/_point),freeze_level);
          //--- check TakeProfit distance to the activation price
-         bool SL_check=(sl == 0) ? true: (sl-Utils.Ask()>freeze_level*_point);
-         if(!SL_check)
-            Utils.Info(StringFormat("Order OP_BUY %d cannot be modified: TakeProfit-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
-                        ticket,(int)((sl-Utils.Ask())/_point),freeze_level));
+         bool SL_check=(sl == 0) ? true: (sl-Ask>freeze_level*_point);
+         if(!SL_check && suppressLogOutput == false)
+            PrintFormat("Order OP_BUY %d cannot be modified: TakeProfit-Bid=%d points < SYMBOL_TRADE_FREEZE_LEVEL=%d points",
+                        ticket,(int)((sl-Ask)/_point),freeze_level);
          return(SL_check&&TP_check);
         }
       break;
@@ -848,20 +888,20 @@ bool CheckPendingOrderEntryChange(string _symbol, ulong ticket, double newEntryP
       case  ORDER_TYPE_BUY_LIMIT:
         {
          //--- check the distance from the opening price to the activation price
-         check= (newEntryPrice < Utils.Ask());
-         if(!check)
-            Utils.Info(StringFormat("Order %s #%d cannot be modified",
-                        EnumToString(type),ticket));
+         check= (newEntryPrice < ASK);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order %s #%d cannot be modified",
+                        EnumToString(type),ticket);
          return(check);
         }
       //--- BuyLimit pending order
       case  ORDER_TYPE_SELL_LIMIT:
         {
          //--- check the distance from the opening price to the activation price
-         check=(newEntryPrice > Utils.Bid());
-         if(!check)
-            Utils.Info(StringFormat("Order %s #%d cannot be modified",
-                        EnumToString(type),ticket));
+         check=(newEntryPrice > BID);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order %s #%d cannot be modified",
+                        EnumToString(type),ticket);
          return(check);
         }
       break;
@@ -869,20 +909,20 @@ bool CheckPendingOrderEntryChange(string _symbol, ulong ticket, double newEntryP
       case  ORDER_TYPE_BUY_STOP:
         {
          //--- check the distance from the opening price to the activation price
-         check=(newEntryPrice > Utils.Ask());
-         if(!check)
-            Utils.Info(StringFormat("Order %s #%d cannot be modified",
-                        EnumToString(type),ticket));
+         check=(newEntryPrice > ASK);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order %s #%d cannot be modified",
+                        EnumToString(type),ticket);
          return(check);
         }
       //--- SellStop pending order
       case  ORDER_TYPE_SELL_STOP:
         {
          //--- check the distance from the opening price to the activation price
-         check=(newEntryPrice < Utils.Bid());
-         if(!check)
-            Utils.Info(StringFormat("Order %s #%d cannot be modified",
-                        EnumToString(type),ticket));
+         check=(newEntryPrice < BID);
+         if(!check && suppressLogOutput == false)
+            PrintFormat("Order %s #%d cannot be modified",
+                        EnumToString(type),ticket);
          return(check);
         }
       break;
