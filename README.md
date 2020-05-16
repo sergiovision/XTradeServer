@@ -1,3 +1,7 @@
+**Current project is already obsolete and evolved into FinCore application where Backend Server and Frontend Client tied together in one .NET Core + Angular application.
+New application can be downloaded here: [FinCore](https://github.com/sergiovision/FinCore)
+**
+
 XTrade is a good project for managing trading experience and personal capital state.
 Project consists from Server XTradeServer app and XTrade Web App. XTrade Main Server is a Windows service which manages all trading terminals, process all data and signals, stores everything in MySQL database, hosts XTrade Web app as a self host. 
 XTrade Web App is an Angular Web application which administrates XTrade Server.
